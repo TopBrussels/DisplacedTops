@@ -15,7 +15,7 @@
 #include "../TopTreeProducer/interface/TRootEvent.h"
 #include "../TopTreeAnalysisBase/Selection/interface/SelectionTable.h"
 #include "../TopTreeAnalysisBase/Selection/interface/DisplacedSelection.h"
-#include "TopTreeProducer/interface/TRootPFJet.h"
+#include "../TopTreeProducer/interface/TRootPFJet.h"
 #include "../TopTreeAnalysisBase/Tools/interface/PlottingTools.h"
 #include "../TopTreeAnalysisBase/Tools/interface/MultiSamplePlot.h"
 #include "../TopTreeAnalysisBase/Tools/interface/TTreeLoader.h"
@@ -131,15 +131,15 @@ int main (int argc, char *argv[])
     //nof selected events
     Double_t NEvtsData = 0;
     Double_t *nEvents = new Double_t[datasets.size()];
-    //vector<string> cutFlowTableText;
-    //SelectionTable cutFlowTable(cutFlowTableText, datasets);
-    //cutFlowTable.SetLuminosity(Luminosity);
-    //cutFlowTable.SetPrecision(1);
+    vector<string> cutFlowTableText;
+    SelectionTable cutFlowTable(cutFlowTableText, datasets);
+    cutFlowTable.SetLuminosity(Luminosity);
+    cutFlowTable.SetPrecision(1);
 
-    //cutFlowTableText.push_back(string("Event cleaning and Trigger"));
-    //cutFlowTableText.push_back(string("Exactly 1 isolated muon"));
-    //cutFlowTableText.push_back(string("Exactly 1 isolated muonsssssss"));
-    //cutFlowTableText.push_back(string("Exactly 1 isolated muonsssssss"));
+    cutFlowTableText.push_back(string("Event cleaning and Trigger"));
+    cutFlowTableText.push_back(string("Exactly 1 isolated muon"));
+    cutFlowTableText.push_back(string("Exactly 1 isolated muonsssssss"));
+    cutFlowTableText.push_back(string("Exactly 1 isolated muonsssssss"));
 
 
     /*|---------------------|
@@ -330,7 +330,7 @@ int main (int argc, char *argv[])
 
 	  //A simple filter to remove events which arise from the interaction LHC beam with the beampipe known as "beam scraping events".     
 	  if(dataSetName.find("Data") != 0 || dataSetName.find("data") != 0 || dataSetName.find("DATA") != 0) {  
-	    if(isScrapingVeto(event)==false)continue;
+	    if(isScrapingVeto(event)==false) continue;
 	  }
 	  else {
 	    double lumiWeight = LumiWeights.ITweight( (int)event->nTruePU() );
@@ -357,17 +357,12 @@ int main (int argc, char *argv[])
 	    previousFilename = currentFilename;
 	    iFile++;
 	    std::cout<<"File changed!!! => iFile = "<<iFile << " new file is " << datasets[d]->eventTree()->GetFile()->GetName() << " in sample " << dataSetName << std::endl;
-
-	    //HLT_Mu22_Photon22_CaloIdL_v
-
 	  }
           
-	  int currentRun = event->runId();
-          
-	  if(previousRun != currentRun)
-	    previousRun = currentRun;
+	  int currentRun = event->runId();          
+	  if(previousRun != currentRun) previousRun = currentRun;
 	  cout << "currentRun " << currentRun << " iFile " << iFile << endl;	  
-          int trigger = treeLoader.iTrigger("HLT_Mu17_Mu8_v1",currentRun,iFile); 
+          int trigger = treeLoader.iTrigger("HLT_Mu22_Photon22_CaloIdL_v",currentRun,iFile); 
 	  cout << "trigger: " << trigger <<endl; 
 
 	  /////////////////////////////////////////////////////////////////////////////
@@ -380,9 +375,11 @@ int main (int argc, char *argv[])
 	  /*|-----------------|
 	    | Event Selection |
 	    |-----------------|*/
+
+	  if(isScrapingVeto (event)==false){cout << "scraping veto is true" << isScrapingVeto << endl;}
 	  
+	  //Electron Selection
 	  std::vector<TRootElectron*> displacedelectrons;
-	  //	  std::cout << "THIS IS THE ELECTRON COLLECTION SIZE: "<< electrons_.size() << endl;
           for(unsigned int i=0;i<electrons_.size();i++) {
             if (fabs(electrons_[i]->Eta())<2.5) {
 	      if(fabs(electrons_[i]->superClusterEta()) < 1.4442 || fabs(electrons_[i]->superClusterEta()) > 1.5660){
@@ -390,8 +387,7 @@ int main (int argc, char *argv[])
 		  if(mvaNonTrig_HtoZZto4l(electrons_[i])) {
 		    if(electrons_[i]->passConversion() && electrons_[i]->missingHits()==0){
 		      if ((electronRelPFrhoIso(electrons_[i], event))<0.1){
-		      cout << "electronRelPFrhoIso in the code : " << (electronRelPFrhoIso(electrons_[i], event)) << endl;
-		      displacedelectrons.push_back(electrons_[i]);
+			displacedelectrons.push_back(electrons_[i]);
 		      }
 		    }
 		  }
@@ -399,34 +395,39 @@ int main (int argc, char *argv[])
 	      }
 	    }
 	  }
-	      //  cout << "I am the electron and I have eta value of " << electrons_[i]->superClusterEta() << endl; }
-	    //            if (electrons_[i]->Eta()<2.5 && electrons_[i]->Pt()>25){}
-	    // if (tightIDdisplacedElectrons(electrons_[i])){}
-            //if(selectedDisplacedElectrons(electrons_[i])){displacedelectrons.push_back(electrons_[i]);}
-	    //}
-	    //std::cout << " THIS IS THE DISPLACED ELECTRON VECTOR SIZE: " << displacedelectrons.size() << std::endl;
-	    //for(unsigned int i=0;i<displacedelectrons.size();i++){}
 
-	
-	  //leave this here in case we want to see the cutflow
+	  //Muon Selection
 	  std::vector<TRootMuon*> displacedmuons;
           for(unsigned int i=0;i<muons_.size();i++) {
-            if (muons_[i]->Eta()<2.5 && muons_[i]->Pt()>25){
-	      if (tightIDdisplacedMuons(muons_[i])){
-		if(selectedDisplacedMuons(muons_[i])){
-		  displacedmuons.push_back(muons_[i]);}
+            if (muons_[i]->Eta()<2.5){
+	      if (muons_[i]->Pt()>25){
+		if (tightIDdisplacedMuons(muons_[i])){
+		  if(selectedDisplacedMuons(muons_[i])){
+		    displacedmuons.push_back(muons_[i]);
+		  }
+		}
 	      }
 	    }
 	  }
-	  //	  std::cout << " THIS IS THE DISPLACED MUON VECTOR SIZE: " << displacedmuons.size() << std::endl;
-	  //          for(unsigned int i=0;i<displacedmuons.size();i++){}
 
+	  //Jet Selection
+	  for(unsigned int i=0;i<init_jets_corrected.size();i++) {
+            TRootJet* jets_ = (TRootJet*) init_jets_corrected[i];
+            if(jets_->jetType() == 2){
+              const TRootPFJet* PFJet = static_cast<const TRootPFJet*>(jets_);
+              if(jetIDLoose() == true){
+                if (PFJet->Pt() >25 && fabs(PFJet->Eta()) < 2.4 ){
+                }
+              }
+            }
+          }
+	  
 	  //if (displacedmuons.size()>0){
-	    //cutFlowTable.Fill(d,0,scaleFactor);
-	    //cout << "first row " << scaleFactor << endl;
+	  //cutFlowTable.Fill(d,0,scaleFactor);
+	  //cout << "first row " << scaleFactor << endl;
 	  //cutFlowTable.Fill(d,1,scaleFactor);
 	  //cout << "second row " << scaleFactor << endl;
-		//  }
+	  //  }
 	  //if(displacedmuons.size() =0 ){
 	  //  cutFlowTable.Fill(d,2,scaleFactor);
 	  //  cout << "fourth row " << scaleFactor << endl;	  
@@ -435,53 +436,24 @@ int main (int argc, char *argv[])
 	  //    cutFlowTable.Fill(d,3,scaleFactor);
 	  //   cout << "third row " << scaleFactor << endl;
 	  // }
-	   
+	  
 	  eventID = event->eventId();
           runID = event->runId();
           lumiBlockID = event->lumiBlockId();
-
+	  
 	  //Declare selection instance
-	  //See definitions in ../TopTreeAnalysisBase/Selection/src/Selection.cc
-	  Selection selection(init_jets_corrected, displacedmuons, electrons_, mets, event->kt6PFJets_rho());
+	  //See definitions in ../TopTreeAnalysisBase/Selection/src/DisplacedSelection.cc
 	  DisplacedSelection displacedselection(init_jets_corrected, displacedmuons, electrons_, event->kt6PFJets_rho());
-	  // Pt, eta, relIso, d0, NmatchedStations, dz, NtrackerLayers, NpixelHits
 	  //displacedselection.setDisplacedMuonCuts(25,2.5,0.4,0.3,1,5,0); // standard mu selection but with looser iso
 	  //displacedselection.setDisplacedElectronCuts(10,2.5,0.4,0.5,0.3,0); // standard ele selection but with looser iso
 	  //displacedselection.setJetCuts(20,2.5,0.01,1.,0.98,0.3,0.1); // standard TOP jet selection
-	  for(unsigned int i=0;i<muons_.size();i++) {
-	    //cout << "I am a displaced muon with pt: " << muons_[i]->Pt() << endl;
-	  }
-	  for(unsigned int i=0;i<electrons_.size();i++) {
-	    //	    cout << "electronRelPFrhoIso---------------> "<< displacedselection.electronRelPFrhoIso(electrons_[i]) <<endl;
-	  }
-	  
-	  for(unsigned int i=0;i<init_jets_corrected.size();i++) {
-	    TRootJet* jets_ = (TRootJet*) init_jets_corrected[i];
-	    if(jets_->jetType() == 2){
-	      const TRootPFJet* PFJet = static_cast<const TRootPFJet*>(jets_);
-	      if(jetIDLoose() == true){
-		if (PFJet->Pt() >25 && fabs(PFJet->Eta()) < 2.4 ){    
-		  //		  cout << "IN THE LOOP PF THE pfjets---------------> "<< PFJet->Pt() <<endl;   
-		}
-	      }
-	    }
-	  }
 
-	  if(isScrapingVeto(event)==false){cout << "scraping veto is true" << isScrapingVeto << endl;}
-
-	  
-	  bool isGoodPV = selection.isPVSelected(vertex, 4, 24, 2.);
-	  if(!isGoodPV)
-	    continue;
-	  
-	  missingEt=mets[0]->Pt();
-          
+	  bool isGoodPV = displacedselection.isPVSelected(vertex, 4, 24, 2.);
+          if(!isGoodPV) continue;	  
 
 	  vector<TRootJet*> selectedJets= displacedselection.GetSelectedJets(25, 2.4, true);
-	  vector<TRootMuon*> selectedMuons = displacedselection.GetSelectedMuons(25, 2.5, 0.12); //gives same answer as in loop and as in manually adding the cuts values in .cc
-	  vector<TRootElectron*> selectedElectrons = displacedselection.GetSelectedElectrons(25, 2.5, 0.1, 0); //gives also the same results - checked!
-	  //vector<TRootMuon*> selectedMuons = selection.GetSelectedMuons(vertex[0],selectedJets);          
-	  //vector<TRootElectron*> selectedElectrons = selection.GetSelectedElectrons(selectedJets);
+	  vector<TRootMuon*> selectedMuons = displacedselection.GetSelectedMuons(25, 2.5, 0.12);
+	  vector<TRootElectron*> selectedElectrons = displacedselection.GetSelectedElectrons(25, 2.5, 0.1, 0);
 	  
 	  nElectrons=0;
 	  for(int iele=0; iele<selectedElectrons.size() && nElectrons<10; iele++){
@@ -489,60 +461,35 @@ int main (int argc, char *argv[])
 	    pY_electron[nElectrons]=selectedElectrons[iele]->Py();
 	    pZ_electron[nElectrons]=selectedElectrons[iele]->Pz();
 	    E_electron[nElectrons]=selectedElectrons[iele]->E();
-	    Double_t isocorr=0;
-            
-	    //WHY ADD THIS HERE??
-	    // get isolation out, start by getting pu corrections
-	    //if(selectedElectrons[iele]->puChargedHadronIso()>0){
-	    //isocorr = selectedElectrons[iele]->puChargedHadronIso(); 
-	    //}
-	    //else if{
-	      // go through loads of pain to get rho correction, no function available. code below taken from TRootElectron selector in TopTreeAnalysisBase/*/Selector.cc
-	      Double_t EffectiveArea = 0.;
-
-	      if (fabs(selectedElectrons[iele]->superClusterEta()) >= 0.0 && fabs(selectedElectrons[iele]->superClusterEta()) < 1.0 ) EffectiveArea = 0.130;
-	      if (fabs(selectedElectrons[iele]->superClusterEta()) >= 1.0 && fabs(selectedElectrons[iele]->superClusterEta()) < 1.479 ) EffectiveArea = 0.137;
-	      if (fabs(selectedElectrons[iele]->superClusterEta()) >= 1.479 && fabs(selectedElectrons[iele]->superClusterEta()) < 2.0 ) EffectiveArea = 0.067;
-	      if (fabs(selectedElectrons[iele]->superClusterEta()) >= 2.0 && fabs(selectedElectrons[iele]->superClusterEta()) < 2.2 ) EffectiveArea = 0.089;
-	      if (fabs(selectedElectrons[iele]->superClusterEta()) >= 2.2 && fabs(selectedElectrons[iele]->superClusterEta()) < 2.3 ) EffectiveArea = 0.107;
-	      if (fabs(selectedElectrons[iele]->superClusterEta()) >= 2.3 && fabs(selectedElectrons[iele]->superClusterEta()) < 2.4 ) EffectiveArea = 0.110;
-	      if (fabs(selectedElectrons[iele]->superClusterEta()) >= 2.4) EffectiveArea = 0.138;
-	      isocorr = event->kt6PFJets_rho()*EffectiveArea;
-	      //cout << "FREYAisocorr " << isocorr << endl;
-	      //}
-	    
-	    pfIso_electron[nElectrons]=(selectedElectrons[iele]->chargedHadronIso() + max( selectedElectrons[iele]->neutralHadronIso() + selectedElectrons[iele]->photonIso()  - isocorr, 0.) )/ selectedElectrons[iele]->Pt();
-	    charge_electron[nElectrons]=selectedElectrons[iele]->charge();
 	    nElectrons++;
 	  }
+	  
 	  nMuons=0;
 	  for(int imuo=0; imuo<selectedMuons.size() && nMuons<10; imuo++){
 	    pX_muon[nMuons]=selectedMuons[imuo]->Px();
 	    pY_muon[nMuons]=selectedMuons[imuo]->Py();
 	    pZ_muon[nMuons]=selectedMuons[imuo]->Pz();
 	    E_muon[nMuons]=selectedMuons[imuo]->E();
-	    pfIso_muon[nMuons]=(selectedMuons[imuo]->chargedHadronIso() + max( 0.0, selectedMuons[imuo]->neutralHadronIso() + selectedMuons[imuo]->photonIso() - 0.5*selectedMuons[imuo]->puChargedHadronIso() ) ) / selectedMuons[imuo]->Pt(); // dBeta corrected
-
-	    
 	    charge_muon[nMuons]=selectedMuons[imuo]->charge();
 	    nMuons++;
 	  }
+
 	  nJets=0;
 	  for(int ijet=0; ijet<selectedJets.size() && nJets<10; ijet++){
-	    //cout << "check the selectedJets function: " << selectedJets[ijet]->Pt() << endl;
 	    pX_jet[nJets]=selectedJets[ijet]->Px();
 	    pY_jet[nJets]=selectedJets[ijet]->Py();
 	    pZ_jet[nJets]=selectedJets[ijet]->Pz();
 	    E_jet[nJets]=selectedJets[ijet]->E();
 	    nJets++;
 	  }
-	 
-          if(nElectrons+nMuons>0) {
+
+	  missingEt=mets[0]->Pt();
+          if(nElectrons+nMuons>1) {
 	    myTree->Fill();
 	    //std::cout << "found " << nMuons << " muons and " << nElectrons << " electrons!" << std::endl;
 	  }
           
-        }			//loop on events
+        }//end of loop on events
       
       std::cout<<std::endl;
               
@@ -562,7 +509,7 @@ int main (int argc, char *argv[])
       //important: free memory
       treeLoader.UnLoadDataset();
       
-    }				//loop on datasets
+    }//end of loop on datasets
 
 
 
