@@ -6,6 +6,7 @@
 <!-- ex with PreselEff NofPSEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofPSEvts="218404"/> -->
 
 <datasets>
+
  <!-- d name="Data_DoubleMuParked_Run2012B_223" title="default" add="1" color="4" ls="1" lw="2" normf="1" xsection="225.2" EqLumi="30330.5639" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/dhondt/DoubleMuParked/Run2012B-22Jan2013-v1/V5_0_5/06022014_224148/TOPTREE/06022014_224148_TOPTREE_267_2_yBR.root"/ -->
 
  <d name="data_MuEG_RunA" title="data"add="1"   color="1"  ls="1"  lw="2" normf="1"   filenames="dcap:///pnfs/iihe/cms/store/user/dhondt/MuEG/Run2012A-22Jan2013-v1/15102013_231533/TOPTREE/*.root"/> <!-- /MuEG/Run2012A-22Jan2013-v1/AOD  -->
