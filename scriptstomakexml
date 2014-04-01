@@ -1,0 +1,9 @@
+cat DYJetsToLL_M-50.txt | awk '{print "replace NAME "$1" FILENAME "$2" < dummyconfig.xml > xmlfiles/scripted_"$1".xml"}'
+cat MuEG-Run2012A.txt | awk '{print "replace NAME "$1" FILENAME "$2" < dummyconfig.xml > xmlfiles/scripted_"$1".xml"}'
+
+ls PNFSNAME | awk 'begin{i=0}{print "SAMPLENAME_"i" dcap://maite.iihe.ac.bePNFSNAME"$1; i++}' 
+ls /pnfs/iihe/cms/store/user/dhondt/DoubleMuParked/Run2012C-22Jan2013-v1/V5_0_5/30012014_224017/TOPTREE | awk 'begin{i=0}{print "DoubleMuParked-Run2012C_"i" dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/dhondt/DoubleMuParked/Run2012C-22Jan2013-v1/V5_0_5/30012014_224017/TOPTREE/"$1; i++}' > DoubleMuParked-Run2012C.txt
+cat DoubleMuParked-Run2012C.txt | awk '{print "replace NAME "$1" FILENAME "$2" < dummyconfig.xml > xmlfiles/scripted_"$1".xml"}'
+ls xmlfiles/*.xml | awk '{print "./Ntupler "$1;if(i==20){i=0; print "sleep 2m"}; i++}'
+ls ntuples/ | awk -F"_tree" '{print "rename scripted done xmlfiles/scripted_"$1".xml"}' | sh
+ls xmlfiles/scripted_Data_DoubleElectron-Run2012B_*.xml | awk '{if(i==3){i=0; print "./Ntupler "$1} else{print "./Ntupler "$1" &"}; i++}'
