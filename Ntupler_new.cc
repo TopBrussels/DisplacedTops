@@ -1,4 +1,4 @@
-/*|----------------------------------------------------------------------------------------------------------------------|
+ /*|----------------------------------------------------------------------------------------------------------------------|
   |   Modified Ntuple.cc from Freya intended to be an example analysis macro for new users of the TopBrussels framework  |
   |----------------------------------------------------------------------------------------------------------------------|*/
 
@@ -131,16 +131,17 @@ int main (int argc, char *argv[])
     //nof selected events
     Double_t NEvtsData = 0;
     Double_t *nEvents = new Double_t[datasets.size()];
+    /*
     vector<string> cutFlowTableText;
     SelectionTable cutFlowTable(cutFlowTableText, datasets);
     cutFlowTable.SetLuminosity(Luminosity);
     cutFlowTable.SetPrecision(1);
-
+    
     cutFlowTableText.push_back(string("Event cleaning and Trigger"));
     cutFlowTableText.push_back(string("Exactly 1 isolated muon"));
     cutFlowTableText.push_back(string("Exactly 1 isolated muonsssssss"));
     cutFlowTableText.push_back(string("Exactly 1 isolated muonsssssss"));
-
+    */
 
     /*|---------------------|
       |  PileUp Reweighting |
@@ -376,7 +377,7 @@ int main (int argc, char *argv[])
 	    | Event Selection |
 	    |-----------------|*/
 
-	  if(isScrapingVeto (event)==false){cout << "scraping veto is true" << isScrapingVeto << endl;}
+	  if(isScrapingVeto(event)==false){cout << "scraping veto is true" << isScrapingVeto(event) << endl;}
 	  
 	  //Electron Selection
 	  std::vector<TRootElectron*> displacedelectrons;
@@ -399,10 +400,15 @@ int main (int argc, char *argv[])
 	  //Muon Selection
 	  std::vector<TRootMuon*> displacedmuons;
           for(unsigned int i=0;i<muons_.size();i++) {
+	    //cutFlowTable.Fill(d,0,scaleFactor);
             if (muons_[i]->Eta()<2.5){
+	      //cutFlowTable.Fill(d,1,scaleFactor);
 	      if (muons_[i]->Pt()>25){
+		//cutFlowTable.Fill(d,3,scaleFactor);
 		if (tightIDdisplacedMuons(muons_[i])){
+		  //cout << "I am here4"<< endl;
 		  if(selectedDisplacedMuons(muons_[i])){
+		    //cutFlowTable.Fill(d,5,scaleFactor);
 		    displacedmuons.push_back(muons_[i]);
 		  }
 		}
@@ -421,21 +427,6 @@ int main (int argc, char *argv[])
               }
             }
           }
-	  
-	  //if (displacedmuons.size()>0){
-	  //cutFlowTable.Fill(d,0,scaleFactor);
-	  //cout << "first row " << scaleFactor << endl;
-	  //cutFlowTable.Fill(d,1,scaleFactor);
-	  //cout << "second row " << scaleFactor << endl;
-	  //  }
-	  //if(displacedmuons.size() =0 ){
-	  //  cutFlowTable.Fill(d,2,scaleFactor);
-	  //  cout << "fourth row " << scaleFactor << endl;	  
-	  //  }
-	  // if(displacedmuons.size() >0 ){
-	  //    cutFlowTable.Fill(d,3,scaleFactor);
-	  //   cout << "third row " << scaleFactor << endl;
-	  // }
 	  
 	  eventID = event->eventId();
           runID = event->runId();
