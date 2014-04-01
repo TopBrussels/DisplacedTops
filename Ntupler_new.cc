@@ -31,7 +31,7 @@
 #include "../TopTreeAnalysisBase/MCInformation/interface/ResolutionFit.h"
 #include "../TopTreeAnalysisBase/MCInformation/interface/JetPartonMatching.h"
 #include "../TopTreeAnalysisBase/Reconstruction/interface/JetCorrectorParameters.h"
-#include "../TopTreeAnalysis/macros/Style.C"
+//#include "../TopTreeAnalysis/macros/Style.C"
 #include "../TopTreeAnalysisBase/MCInformation/interface/LumiReWeighting.h"
 
 using namespace std;
@@ -45,7 +45,7 @@ int main (int argc, char *argv[])
   clock_t start = clock();
      
   //SetStyle if needed, this is defined in the ../TopTreeAnalysis/macros/Style.C
-  setTDRStyle();
+  //  setTDRStyle();
     
   /*|----------------|
     | Configuration  |
@@ -376,7 +376,7 @@ int main (int argc, char *argv[])
 	    | Event Selection |
 	    |-----------------|*/
 
-	  if(isScrapingVeto (event)==false){cout << "scraping veto is true" << isScrapingVeto << endl;}
+	  if(isScrapingVeto (event)==false){cout << "scraping veto is true" << isScrapingVeto(event) << endl;}
 	  
 	  //Electron Selection
 	  std::vector<TRootElectron*> displacedelectrons;
