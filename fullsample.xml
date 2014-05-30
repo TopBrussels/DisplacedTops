@@ -5,13 +5,11 @@
 <!-- ex with NofEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
 <!-- ex with PreselEff NofPSEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofPSEvts="218404"/> -->
 
-<datasets>
-
 
 <!--NOT SURE HOW I SHOULD USE THE DIFFERENT OPTION -->
 <!--FOR NOW ALL THE PATH ARE WRONG! "..v1/29042014_142402/TOPTREE" must be "...v1/V5_0_5/29042014_142402/TOPTREE/*.root" -->
 
-
+<datasets>
 <!--ALL the MC -->
 
 
