@@ -8,7 +8,8 @@ import ROOT
 # the analysis structure see TTree/TChain description on root.cern.ch
 ch = ROOT.TChain("tree","tree")
 # TChain accepts wildcards and ~infinite numbers of input files! So no need to merge files!
-ch.Add("TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/*.root")
+pathToRootFile="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/HToZZBachelorProjectNtupleMaker/FreyasNtuple"
+ch.Add(pathToRootFile+"TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/*.root")
 # very loud but useful to know what variables are stored in a tree... it prints them all
 #ch.Print()
 

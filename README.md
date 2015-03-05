@@ -2,7 +2,7 @@
 
 #To set up the code follow the following recipe
 
-# Firstly we need to set up CMSSW
+# Firstly, set up CMSSW
 cmsrel CMSSW_7_2_1_patch1
 cd CMSSW_7_2_1_patch1/src
 cmsenv
@@ -23,7 +23,7 @@ git checkout master
 make
 cd ../../
 
-# Get DisplacedTop directory
+# Get DisplacedTop directory from git
 cd TopBrussels
 git clone git@github.com:TopBrussels/DisplacedTops.git DisplacedTops
 cd DisplacedTops
