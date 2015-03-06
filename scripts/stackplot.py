@@ -52,7 +52,7 @@ lumivalue = 1000.0
 samplesnamesfancy = ["Drell-Yan","t#bar{t}+jets","W+jets","W+jets","QCD","QCD","QCD","QCD","QCD","QCD","QCD","QCD","QCD"]
 samplesaddtoleg=[1,1,1,0,1,0,0,0,0,0,0,0,0]
 samples = ["dy","ttbar","wjetsplus","wjetsminus","qcd1","qcd2","qcd3","qcd4","qcd5","qcd6","qcd7","qcd8","qcd9"]
-samplesxsecs = [2008.4,831.76,11811.4,8677.3,677300000.*0.007,866600000.*0.00044,164300000.*0.00816,21810000.*0.01522,2999000.*0.02424,3529000.*0.158,128500.*0.0406,185900000.*0.00272,3495000.*0.01255]
+samplesxsecs = [3*2008.4,831.76,3*11811.4,3*8677.3,677300000.*0.007,866600000.*0.00044,164300000.*0.00816,21810000.*0.01522,2999000.*0.02424,3529000.*0.158,128500.*0.0406,185900000.*0.00272,3495000.*0.01255]
 samplespresel = [2820473.0,25437856.0,699606.0,226439.0,1986513.0,4768929.0,3742583.0,3893676.0, 3468633.,1958930.0,999553.0,1730223.0,1999717.0,1000000.0]
 
 pathToRootFile="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/HToZZBachelorProjectNtupleMaker/FreyasNtuple"
