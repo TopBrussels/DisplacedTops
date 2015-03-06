@@ -12,11 +12,27 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 
+# double array containing an array of samples. Each sample is an array with different varaibles such as ["fancyname", "name" x-sec,samplepresels,...] 
+doubleArray=[
+#["fancyname","samples",xsec,presel,weight,"root",N1,N2,N3,SR1,SR2,SR3],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+["","",0,0,0,"",0,0,0,0,0,0],
+]
+
 # for bookkeeping
 lumivalue = 1000.0
-
-
-#samplesnamesfancy = ["Drell-Yan","t#bar{t}+jets","W+jets","W+jets","QCD","QCD","QCD","QCD","QCD","QCD","QCD","QCD","QCD"]
+samplesnamesfancy = ["Drell-Yan","t#bar{t}+jets","W+jets","W+jets","QCD","QCD","QCD","QCD","QCD","QCD","QCD","QCD","QCD"]
 samples = ["dy","ttbar","wjetsplus","wjetsminus","qcd1","qcd2","qcd3","qcd4","qcd5","qcd6","qcd7","qcd8","qcd9"]
 samplesxsecs = [2008.4,831.76,11811.4,8677.3,677300000.*0.007,866600000.*0.00044,164300000.*0.00816,21810000.*0.01522,2999000.*0.02424,3529000.*0.158,128500.*0.0406,185900000.*0.00272,3495000.*0.01255]
 samplespresel = [2820473.0,25437856.0,699606.0,226439.0,1986513.0,4768929.0,3742583.0,3893676.0, 3468633.,1958930.0,999553.0,1730223.0,1999717.0,1000000.0]
@@ -106,6 +122,20 @@ for isam in range(0,len(samples)) :
     SR2[isam]=N2[isam]-N3[isam]
     SR3[isam]=N3[isam]
 
+    # Fill the two D array for clearer output
+    doubleArray[isam][0]=samplesnamesfancy[isam]
+    doubleArray[isam][1]=samples[isam]
+    doubleArray[isam][2]=samplesxsecs[isam]
+    doubleArray[isam][3]=samplespresel[isam] 
+    doubleArray[isam][4]=weight[isam]
+    doubleArray[isam][5]=samplesrootfiles[isam]
+    doubleArray[isam][6]=N1[isam]
+    doubleArray[isam][7]=N2[isam]
+    doubleArray[isam][8]=N3[isam]
+    doubleArray[isam][9]=SR1[isam]
+    doubleArray[isam][10]=SR2[isam]
+    doubleArray[isam][11]=SR3[isam]
+    
     # compute the sum of background in the 3 SR
     Sum_SR1=Sum_SR1+SR1[isam]
     Sum_SR2=Sum_SR2+SR2[isam]
@@ -113,13 +143,35 @@ for isam in range(0,len(samples)) :
     
     # end of event loop
 
-print "the array of weight is", weight
+
 
 # print the final number per SR    
 print "we expect " , Sum_SR1 ,"events in the SR1"               
 print "we expect " , Sum_SR2 ,"events in the SR2"               
 print "we expect " , Sum_SR3 ,"events in the SR3"               
-print "end of the program"
+
+# print the summary contained it the double array
+for i in range (0,len(doubleArray)):
+    print "---------"
+    print "NEW SAMPLE!!!"
+    print "---------"
+    for j in range (0,len(doubleArray[i])):
+        print doubleArray[i][j]
+    print ""
+    print ""
+
+# print the minimum necessary for the Yiel
+for i in range (0,len(doubleArray)):
+    print "---------"
+    print "Sample is ", doubleArray[i][1], "and the yield in the signal regions are:"
+    print "---------"
+    for j in (9,10,11):
+        print doubleArray[i][j]
+    print ""
+    print ""
+
+
+print "end of the program !!!!"
 
 
 # end of sample loop
