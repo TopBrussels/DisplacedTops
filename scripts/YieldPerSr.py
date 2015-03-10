@@ -160,7 +160,7 @@ for i in range (0,len(doubleArray)):
     print ""
     print ""
 
-# print the minimum necessary for the Yiel
+# print the minimum necessary for the Yield
 for i in range (0,len(doubleArray)):
     print "---------"
     print "Sample is ", doubleArray[i][1], "and the yield in the signal regions are:"
