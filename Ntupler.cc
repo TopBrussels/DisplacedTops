@@ -198,6 +198,9 @@ int main (int argc, char *argv[])
         Double_t pZ_electron[10];
         Double_t E_electron[10];
         Double_t d0_electron[10];
+	Double_t chargedHadronIso_electron[10];
+	Double_t neutralHadronIso_electron[10];
+	Double_t photonIso_electron[10];
         Double_t pfIso_electron[10];
         Int_t charge_electron[10];
         
@@ -207,6 +210,9 @@ int main (int argc, char *argv[])
         Double_t pZ_muon[10];
         Double_t E_muon[10];
         Double_t d0_muon[10];
+	Double_t chargedHadronIso_muon[10];
+	Double_t neutralHadronIso_muon[10];
+	Double_t photonIso_muon[10];
         Double_t pfIso_muon[10];
         Int_t charge_muon[10];
         
@@ -226,12 +232,15 @@ int main (int argc, char *argv[])
         TTree* myTree = new TTree("tree","tree");
         myTree->Branch("isdata",&isdata,"isdata/I");
         
-        myTree->Branch("nElectrons",&nElectrons, "nElectrons/I");//faco
+        myTree->Branch("nElectrons",&nElectrons, "nElectrons/I");//
         myTree->Branch("pX_electron",pX_electron,"pX_electron[nElectrons]/D");
         myTree->Branch("pY_electron",pY_electron,"pY_electron[nElectrons]/D");
         myTree->Branch("pZ_electron",pZ_electron,"pZ_electron[nElectrons]/D");
         myTree->Branch("E_electron",E_electron,"E_electron[nElectrons]/D");
-        myTree->Branch("pfIso_electron",pfIso_electron,"pfIso_electron[nElectrons]/D");
+	myTree->Branch("chargedHadronIsoelectron",chargedHadronIso_electron,"chargedHadronIso_electron[nElectrons]/D");
+	myTree->Branch("neutralHadronIsoelectron",neutralHadronIso_electron,"neutralHadronIso_electron[nElectrons]/D");
+	myTree->Branch("photonIsoelectron",photonIso_electron,"photonIso_electron[nElectrons]/D");
+        myTree->Branch("pfIsoelectron",pfIso_electron,"pfIso_electron[nElectrons]/D");
         myTree->Branch("charge_electron",charge_electron,"charge_electron[nElectrons]/I");
         myTree->Branch("d0_electron",d0_electron,"d0_electron[nElectrons]/D");
 
@@ -241,6 +250,9 @@ int main (int argc, char *argv[])
         myTree->Branch("pY_muon",pY_muon,"pY_muon[nMuons]/D");
         myTree->Branch("pZ_muon",pZ_muon,"pZ_muon[nMuons]/D");
         myTree->Branch("E_muon",E_muon,"E_muon[nMuons]/D");
+	myTree->Branch("chargedHadronIsomuon",chargedHadronIso_muon,"chargedHadronIso_muon[nMuons]/D");
+	myTree->Branch("neutralHadronIsomuon",neutralHadronIso_muon,"neutralHadronIso_muon[nMuons]/D");
+	myTree->Branch("photonIsomuon",photonIso_muon,"photonIso_muon[nMuons]/D");
         myTree->Branch("pfIso_muon",pfIso_muon,"pfIso_muon[nMuons]/D");
         myTree->Branch("charge_muon",charge_muon,"charge_muon[nMuons]/I");
         myTree->Branch("d0_muon",d0_muon,"d0_muon[nMuons]/D");
@@ -289,8 +301,8 @@ int main (int argc, char *argv[])
         cout << "running over " << datasets[d]->NofEvtsToRunOver() << endl;
         
         // start event loop
-        for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
-            //for (unsigned int ievt = 0; ievt < 20000; ievt++) // if lazy for testing
+	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
+	//for (unsigned int ievt = 0; ievt < 5000; ievt++) // run on limited number of events for faster testing.
         {
             
             // the objects loaded in each event
@@ -385,8 +397,9 @@ int main (int argc, char *argv[])
 
             // the default selection is fine for normal use - if you want a special selection you can use the functions here
             //selection.setJetCuts(20,2.5,0.01,1.,0.98,0.3,0.1); //  void setJetCuts(float Pt, float Eta, float EMF, float n90Hits, float fHPD, float dRJetElectron, float dRJetMuon);
-            selection.setMuonCuts(20,2.5,1.0,2.0,0.3,1,0.5,5,0); // void setMuonCuts(float Pt, float Eta, float RelIso, float d0, float DRJets, int NMatchedStations, float Dz, int NTrackerLayersWithMeas, int NValidPixelHits);
-            selection.setElectronCuts(20,2.5,1.0,2.0,0.5,0.4,0); // void setElectronCuts(float Pt, float Eta, float RelIso, float d0, float MVAId, float DRJets, int MaxMissingHits);
+            selection.setMuonCuts(20,2.5,0.1,2.0,0.3,1,0.5,5,0); // void setMuonCuts(float Pt, float Eta, float RelIso, float d0, float DRJets, int NMatchedStations, float Dz, int NTrackerLayersWithMeas, int NValidPixelHits);
+            selection.setElectronCuts(20,2.5,0.1,2.0,0.5,0.4,0); // void setElectronCuts(float Pt, float Eta, float RelIso, float d0, float MVAId, float DRJets, int MaxMissingHits);
+
 	    //            /Users/qpython 
             bool isGoodPV = selection.isPVSelected(vertex, 4, 24, 2.);
             
@@ -417,8 +430,9 @@ int main (int argc, char *argv[])
                 pZ_electron[nElectrons]=selectedElectrons[iele]->Pz();
                 E_electron[nElectrons]=selectedElectrons[iele]->E();
                 d0_electron[nElectrons]=selectedElectrons[iele]->d0();
-               
-
+		chargedHadronIso_electron[nElectrons]=selectedElectrons[iele]->chargedHadronIso(3);
+		neutralHadronIso_electron[nElectrons]=selectedElectrons[iele]->neutralHadronIso(3);
+		photonIso_electron[nElectrons]=selectedElectrons[iele]->photonIso(3);
                 pfIso_electron[nElectrons]=selectedElectrons[iele]->relPfIso(3,0);
                 charge_electron[nElectrons]=selectedElectrons[iele]->charge();
                 nElectrons++;
@@ -431,9 +445,10 @@ int main (int argc, char *argv[])
                 pZ_muon[nMuons]=selectedMuons[imuo]->Pz();
                 E_muon[nMuons]=selectedMuons[imuo]->E();
                 d0_muon[nMuons]=selectedMuons[imuo]->d0();
-                pfIso_muon[nMuons]=selectedMuons[imuo]->relPfIso(3,0);
-
-
+		chargedHadronIso_muon[nMuons]=selectedMuons[imuo]->chargedHadronIso(4);
+		neutralHadronIso_muon[nMuons]=selectedMuons[imuo]->neutralHadronIso(4);
+		photonIso_muon[nMuons]=selectedMuons[imuo]->photonIso(4);
+                pfIso_muon[nMuons]=selectedMuons[imuo]->relPfIso(4,0);
                 charge_muon[nMuons]=selectedMuons[imuo]->charge();
                 nMuons++;
             }
