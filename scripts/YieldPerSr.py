@@ -91,7 +91,13 @@ for isam in range(0,len(samples)) :
         for imu in range(0,iev.nMuons) :
         
             for iele in range(0,iev.nElectrons) :
-                if iev.charge_muon[imu]*iev.charge_electron[iele]>0 :
+                if iev.charge_muon[imu]*iev.charge_electron[iele]>0 : # skip event with same charge
+                    continue
+                if iev.pfIso_electron[iele] > 0.1 : # skip non isolated electron
+                    print "isolation of the electron is " , iev.pfIso_electron[iele] , ". This event will be skiped"
+                    continue
+                if iev.pfIso_muon[imu] > 0.1 : # skip non isolated muon
+                    print "isolation of the muon is " , iev.pfIso_muon[imu] , ". This event will be skiped"
                     continue
 
                 lvmu.SetPxPyPzE(iev.pX_muon[imu],iev.pY_muon[imu],iev.pZ_muon[imu],iev.E_muon[imu])
