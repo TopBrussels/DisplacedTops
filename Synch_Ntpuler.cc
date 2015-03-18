@@ -340,14 +340,16 @@ int main (int argc, char *argv[])
         cout << "running over " << datasets[d]->NofEvtsToRunOver() << endl;
         
         // start event loop
-	//	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
-	for (unsigned int ievt = 0; ievt < 10; ievt++) // run on limited number of events for faster testing.
+	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
+	//	for (unsigned int ievt = 0; ievt < 10; ievt++) // run on limited number of events for faster testing.
         {
             
             // the objects loaded in each event
             vector < TRootVertex* > vertex;
             vector < TRootMuon* > init_muons;
-            vector < TRootElectron* > init_electrons;
+            vector < TRootMuon* > postCut_muons;
+	    vector < TRootElectron* > init_electrons;
+	    vector < TRootElectron* > postCut_electrons;
             vector < TRootJet* > init_jets_corrected;
             vector < TRootJet* > init_jets;
             vector < TRootMET* > mets;
@@ -507,7 +509,7 @@ int main (int argc, char *argv[])
 	    
 
 	    // put the vector in TLorenzt Vector
-	    vector<TLorentzVector> init_muonsTLV, init_electronsTLV;
+	    vector<TLorentzVector> init_muonsTLV, init_electronsTLV, postCut_muonsTLV, postCut_electronsTLV;
 	   
 	    for(int iele=0; iele<init_electrons.size() && nElectrons<10; iele++)
 	      {
@@ -518,6 +520,10 @@ int main (int argc, char *argv[])
 	      {
 		init_muonsTLV.push_back(*init_muons[imuo]);
 	      }
+
+
+
+	  
 
 
 	    // Synch cut 1: pt, eta, veto, DR
@@ -531,26 +537,58 @@ int main (int argc, char *argv[])
 	    Bool_t passedElMuOS = false; 
 	    Bool_t passedElMuNotOverlaping = false;
 
-	    for(int iele=0; iele<init_electronsTLV.size() && nElectrons<10; iele++){
+
+	    // first apply the cut on single collection
+
+	    // electrons
+	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
+              if (abs(init_electronsTLV[iele].Pt()) > 25){
+                if (abs(init_electronsTLV[iele].Eta()) < 2.5){
+		  //		  postCut_electrons.push_back(*init_electrons[iele]);
+		  postCut_electronsTLV.push_back(*init_electrons[iele]);// fill a new vector with the electrons that passed the cuts
+		}
+	      }
+	    }
+	    
+	    // muons
+	    for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){
+	      if (abs(init_muonsTLV[imuo].Pt()) > 25){
+		if (abs(init_muonsTLV[imuo].Eta()) < 2.5){
+		  //		  postCut_muons.push_back(*init_muons[imuo]);
+		  postCut_muonsTLV.push_back(*init_muons[imuo]);//fill a new vector with the muons that passed the cuts    
+		}
+	      }
+	    }
+
+
+	    
+
+	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
 	      if (abs(init_electronsTLV[iele].Pt()) > 25){
 		passedPtEl = true;
 		if (abs(init_electronsTLV[iele].Eta()) < 2.5){
 		  passedEtaEl = true;
-		  for(int imuo=0; imuo<init_muonsTLV.size() && nMuons<10; imuo++){
+		  for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){
 		    if (abs(init_muonsTLV[imuo].Pt()) > 25){
 		      passedPtMu=true;
-		      //			cout << pX_muon[imuo] << endl;
-		      //			cout << "event number is" << ievt << endl;
 		      if (abs(init_muonsTLV[imuo].Eta()) < 2.5){
 			passedEtaMu=true;
-			//			  cout << "eta muon is " << init_muons[imuo]->Eta() << endl;
-			if(nElectrons == 1){
+			cout << "Checking again the size of postCut_electrons. Size is " << postCut_electronsTLV.size() << endl;
+			if(postCut_electronsTLV.size() != 1 ){
+			  passedExtraElVeto=false;
+			  continue;
+			}
+			else {
 			  passedExtraElVeto=true;
-			  if(nMuons == 1){
+			  if(postCut_muonsTLV.size() != 1){
+			    passedExtraMuVeto=false;
+			    continue;
+			  }
+			  else{
 			    passedExtraMuVeto=true;
-			    if(charge_muon[imuo] * charge_electron[iele] == -1){
+			    if(init_electrons[iele]->charge() * init_muons[imuo]->charge() == -1){ // to do! make a new el/muon collection
 			      passedElMuOS=true;
-			      if(init_electronsTLV[iele].DeltaR(init_muonsTLV[imuo]) > 0.5){
+			      if(postCut_electronsTLV[iele].DeltaR(postCut_muonsTLV[imuo]) > 0.5){
 				passedElMuNotOverlaping=true;
 			      }
 			    }
@@ -633,7 +671,7 @@ int main (int argc, char *argv[])
             }
 
 	    
-	    if (1){
+	    if (0){
 	      cout << "New EVENT!!!!" << endl;
 	      cout << "the event number is " << ievt << endl; 
 	      cout << "there is " << init_electronsTLV.size() << " electrons in that event!" << endl;
