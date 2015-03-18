@@ -134,6 +134,25 @@ int main (int argc, char *argv[])
      CutFlow.push_back(string("extra muon veto"));
      CutFlow.push_back(string("electron and muon with OS"));
      CutFlow.push_back(string("electron-muon pair with deltaR $>$ 0.5"));
+     
+     // start a new table
+     vector<string> CutFlow2;
+     CutFlow2.push_back(string("Total"));
+     CutFlow2.push_back(string("Exactly 2 electrons"));
+
+
+     // start a new table
+     vector<string> CutFlow3;
+     CutFlow3.push_back(string("Total"));
+     CutFlow3.push_back(string("Exactly 2 muons"));
+
+     // start a new table
+     vector<string> CutFlow4;
+     CutFlow4.push_back(string("Total"));
+     CutFlow4.push_back(string("Exactly 1 electron and one muon"));
+
+
+
 
 
      /*
@@ -159,13 +178,24 @@ int main (int argc, char *argv[])
      sprintf(LabelNJets,"$\\geq$ %d jets", anaEnv.NofJets);
      CutFlow.push_back(string(LabelNJets));
      */
-     
-     if (verbose > 0)
-       cout << " - CutsSelectionTable instantiated ..." << endl;
+
      SelectionTable CutFlowTable(CutFlow, datasets);
      CutFlowTable.SetLuminosity(Luminosity);
-     if (verbose > 0)
+     
+     SelectionTable CutFlowTable2(CutFlow2, datasets);
+     CutFlowTable2.SetLuminosity(Luminosity);
+
+     SelectionTable CutFlowTable3(CutFlow3, datasets);
+     CutFlowTable3.SetLuminosity(Luminosity);
+
+     SelectionTable CutFlowTable4(CutFlow4, datasets);
+     CutFlowTable4.SetLuminosity(Luminosity);
+
+     if (verbose > 0){
+       cout << " - CutsSelectionTable instantiated ..." << endl;
        cout << " - SelectionTable instantiated ..." << endl;
+     }
+	 
      
 
     
@@ -310,8 +340,8 @@ int main (int argc, char *argv[])
         cout << "running over " << datasets[d]->NofEvtsToRunOver() << endl;
         
         // start event loop
-	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
-	//	for (unsigned int ievt = 0; ievt < 100; ievt++) // run on limited number of events for faster testing.
+	//	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
+	for (unsigned int ievt = 0; ievt < 10; ievt++) // run on limited number of events for faster testing.
         {
             
             // the objects loaded in each event
@@ -411,7 +441,6 @@ int main (int argc, char *argv[])
 
 	    //            /Users/qpython 
             bool isGoodPV = selection.isPVSelected(vertex, 4, 24, 2.);
-            
 	    //            if(!isGoodPV)
 	    //                continue;
             
@@ -476,7 +505,23 @@ int main (int argc, char *argv[])
 	    Bool_t trigged = true;
 	    //	    Bool_T 
 	    
-	    //event selection
+
+	    // put the vector in TLorenzt Vector
+	    vector<TLorentzVector> init_muonsTLV, init_electronsTLV;
+	   
+	    for(int iele=0; iele<init_electrons.size() && nElectrons<10; iele++)
+	      {
+		init_electronsTLV.push_back(*init_electrons[iele]);
+	      }
+
+	    for(int imuo=0; imuo<init_muons.size() && nMuons<10; imuo++)
+	      {
+		init_muonsTLV.push_back(*init_muons[imuo]);
+	      }
+
+
+	    // Synch cut 1: pt, eta, veto, DR
+	    // Declare one bool per cut
 	    Bool_t passedPtEl = false;
 	    Bool_t passedEtaEl = false;
 	    Bool_t passedPtMu =false;
@@ -486,47 +531,27 @@ int main (int argc, char *argv[])
 	    Bool_t passedElMuOS = false; 
 	    Bool_t passedElMuNotOverlaping = false;
 
-	    // put the vector in TLorenzt Vector
-	    vector<TLorentzVector> init_muonsTLV, init_electronsTLV;
-
-
-
-	    for(int iele=0; iele<init_electrons.size() && nElectrons<10; iele++)
-	      {
-		init_electronsTLV.push_back(*init_electrons[iele]);
-	      }
-
-
-	    for(int imuo=0; imuo<init_muons.size() && nMuons<10; imuo++)
-	      {
-		init_muonsTLV.push_back(*init_muons[imuo]);
-	      }
-
-
-
-            if(1){
-	      for(int iele=0; iele<init_electronsTLV.size() && nElectrons<10; iele++){
-		if (abs(init_electronsTLV[iele].Pt()) > 25){
-		  passedPtEl = true;
-		  if (abs(init_electronsTLV[iele].Eta()) < 2.5){
-		    passedEtaEl = true;
-		    for(int imuo=0; imuo<init_muonsTLV.size() && nMuons<10; imuo++){
-		      if (abs(init_muonsTLV[imuo].Pt()) > 25){
-			passedPtMu=true;
-			//			cout << pX_muon[imuo] << endl;
-			//			cout << "event number is" << ievt << endl;
-			if (abs(init_muonsTLV[imuo].Eta()) < 2.5){
-			  passedEtaMu=true;
-			  //			  cout << "eta muon is " << init_muons[imuo]->Eta() << endl;
-			  if(nElectrons == 1){
-			    passedExtraElVeto=true;
-			    if(nMuons == 1){
-			      passedExtraMuVeto=true;
-			      if(charge_muon[imuo] * charge_electron[iele] == -1){
-				passedElMuOS=true;
-				if(init_electronsTLV[iele].DeltaR(init_muonsTLV[imuo]) > 0.5){
-				  passedElMuNotOverlaping=true;
-				}
+	    for(int iele=0; iele<init_electronsTLV.size() && nElectrons<10; iele++){
+	      if (abs(init_electronsTLV[iele].Pt()) > 25){
+		passedPtEl = true;
+		if (abs(init_electronsTLV[iele].Eta()) < 2.5){
+		  passedEtaEl = true;
+		  for(int imuo=0; imuo<init_muonsTLV.size() && nMuons<10; imuo++){
+		    if (abs(init_muonsTLV[imuo].Pt()) > 25){
+		      passedPtMu=true;
+		      //			cout << pX_muon[imuo] << endl;
+		      //			cout << "event number is" << ievt << endl;
+		      if (abs(init_muonsTLV[imuo].Eta()) < 2.5){
+			passedEtaMu=true;
+			//			  cout << "eta muon is " << init_muons[imuo]->Eta() << endl;
+			if(nElectrons == 1){
+			  passedExtraElVeto=true;
+			  if(nMuons == 1){
+			    passedExtraMuVeto=true;
+			    if(charge_muon[imuo] * charge_electron[iele] == -1){
+			      passedElMuOS=true;
+			      if(init_electronsTLV[iele].DeltaR(init_muonsTLV[imuo]) > 0.5){
+				passedElMuNotOverlaping=true;
 			      }
 			    }
 			  }
@@ -537,6 +562,9 @@ int main (int argc, char *argv[])
 		}
 	      }
 	    }
+	    // Synch cut 1: pt, eta, veto, DR
+	    
+	    //making cut flow for Synch cut 1
 	    //	    cout << "checing the loop... Event number is " << ievt << endl;
 	    CutFlowTable.Fill(d,0,scaleFactor*lumiWeight);
 	    if(passedPtEl==true) {
@@ -563,10 +591,68 @@ int main (int argc, char *argv[])
 		}
 	      }
 	    }
+	    
+	    
+	    // test cut: exactly 2 electrons
+	    Bool_t passedNelectrons = false;
 
-	    myTree->Fill();			  		
+	    if (nElectrons == 2){
+	      passedNelectrons=true;	      
+	    }
+	    
+	    // Fill the table
+	    CutFlowTable2.Fill(d,0,scaleFactor*lumiWeight);
+	    if(passedNelectrons){
+	      CutFlowTable2.Fill(d,1,scaleFactor*lumiWeight);
+	    }
+	    
+	    // test cut: exactly 2 muons
+	    Bool_t passedNmuons = false;
+
+            if (nMuons == 2){
+              passedNmuons=true;
+            }
+	    
+	    // Fill the table
+            CutFlowTable3.Fill(d,0,scaleFactor*lumiWeight);
+            if(passedNmuons){
+              CutFlowTable3.Fill(d,1,scaleFactor*lumiWeight);
+            }
+
+	    // test cut: exactly 1 electron and one muon
+	    Bool_t passedNmuons_Nelectrons = false;
+
+            if (nMuons == 1 && nElectrons == 1){
+              passedNmuons_Nelectrons=true;
+            }
+	    
+	    // Fill the table
+            CutFlowTable4.Fill(d,0,scaleFactor*lumiWeight);
+            if(passedNmuons_Nelectrons){
+              CutFlowTable4.Fill(d,1,scaleFactor*lumiWeight);
+            }
+
+	    
+	    if (1){
+	      cout << "New EVENT!!!!" << endl;
+	      cout << "the event number is " << ievt << endl; 
+	      cout << "there is " << init_electronsTLV.size() << " electrons in that event!" << endl;
+	      cout << "there is " << init_muonsTLV.size() << " muons in that event!" << endl;
+		for(int iele=0; iele<init_electronsTLV.size(); iele++){
+		  cout << "the pt of the " << iele << "th electron is " << init_electronsTLV[iele].Pt() << endl;
+		}
+	      for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){
+		cout << "the pt of the " << imuo << "th electron is " << init_muonsTLV[imuo].Pt() << endl;  
+	      }
+	      cout << "End of EVENT" << endl << endl;
+	    }
+		  
+	    
+	    
+	    myTree->Fill();
+
 	}
-			  //		cutflow->Fill(0.5);
+
 
 	    
 	
@@ -609,6 +695,22 @@ int main (int argc, char *argv[])
     CutFlowTable.TableCalculator(false, true, true, true, true);
     string selectiontable = "SelectionTable_table.tex";
     CutFlowTable.Write(selectiontable.c_str(), true,true,true,true,true,true,false);
+    
+    CutFlowTable2.TableCalculator(false, true, true, true, true);
+    string selectiontable2 = "SelectionTable_table2.tex";
+    CutFlowTable2.Write(selectiontable2.c_str(), true,true,true,true,true,true,false);
+    
+    CutFlowTable3.TableCalculator(false, true, true, true, true);
+    string selectiontable3 = "SelectionTable_table3.tex";
+    CutFlowTable3.Write(selectiontable3.c_str(), true,true,true,true,true,true,false);
+
+    //    ofstream faco;
+    //    faco.open("faco_out.txt");
+    
+    CutFlowTable4.TableCalculator(false, true, true, true, true);
+    string selectiontable4 = "SelectionTable_table4.tex";
+    CutFlowTable4.Write(selectiontable4.c_str(), true,true,true,true,true,true,false);
+    //    CutFlowTable4.Write(faco , true,true,true,true,true,true,false);
     
 
     delete tcdatasets;
