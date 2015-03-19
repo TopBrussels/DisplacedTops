@@ -126,10 +126,10 @@ int main (int argc, char *argv[])
      // start a table
      vector<string> CutFlow;
      CutFlow.push_back(string("Total"));
-     CutFlow.push_back(string("ElPt"));
-     CutFlow.push_back(string("ElEta"));
-     CutFlow.push_back(string("MuPt"));
-     CutFlow.push_back(string("MuEta"));
+     CutFlow.push_back(string("At least one electron wiht pt > 25"));
+     CutFlow.push_back(string("At least one electron wiht abs(eta) < 2.5"));
+     CutFlow.push_back(string("At least one muon wiht pt > 25"));
+     CutFlow.push_back(string("At least one electron wiht abs(eta) < 2.5"));
      CutFlow.push_back(string("extra electron veto"));
      CutFlow.push_back(string("extra muon veto"));
      CutFlow.push_back(string("electron and muon with OS"));
@@ -573,7 +573,6 @@ int main (int argc, char *argv[])
 		      passedPtMu=true;
 		      if (abs(init_muonsTLV[imuo].Eta()) < 2.5){
 			passedEtaMu=true;
-			cout << "Checking again the size of postCut_electrons. Size is " << postCut_electronsTLV.size() << endl;
 			if(postCut_electronsTLV.size() != 1 ){
 			  passedExtraElVeto=false;
 			  continue;
