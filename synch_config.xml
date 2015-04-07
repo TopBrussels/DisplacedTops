@@ -13,9 +13,14 @@
 
 <!--<d name="TTJets"  title="t\bar{t}+jets MadGraph PHYS14"   add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/crab_TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_TOPTREE_v4/141205_074006/0000/TOPTREE_*.root"/>-->
 <!---->
-<!---->
 
-<d name="DYJets"  title="DYJetsToLL_M-50_13TeV"   add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/TopTreeProducer/prod/DY_single_file.root"/>
+
+<!-- Single file -->
+<d name="DYJets"  title="DYJetsToLL_M-50_13TeV"   add="0"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/TopTreeProducer/prod/DY_single_file.root"/>
+
+
+<!-- All files -->
+<d name="DYJets"  title="DYJetsToLL_M-50_13TeV"   add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/TopTreeProducer/prod/DY_all_files.root"/>
 
 
 
