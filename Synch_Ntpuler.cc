@@ -126,10 +126,10 @@ int main (int argc, char *argv[])
      // start a table
      vector<string> CutFlow;
      CutFlow.push_back(string("Total"));
-     CutFlow.push_back(string("At least one electron wiht pt $>$ 25"));
-     CutFlow.push_back(string("At least one electron wiht abs(eta)$<$ 2.5"));
-     CutFlow.push_back(string("At least one muon wiht pt $>$ 25"));
-     CutFlow.push_back(string("At least one electron wiht abs(eta) $<$ 2.5"));
+     CutFlow.push_back(string("At least one electron with pt $>$ 25"));
+     CutFlow.push_back(string("At least one electron with abs(eta)$<$ 2.5"));
+     CutFlow.push_back(string("At least one muon with pt $>$ 25"));
+     CutFlow.push_back(string("At least one muon with abs(eta) $<$ 2.5"));
      CutFlow.push_back(string("extra electron veto"));
      CutFlow.push_back(string("extra muon veto"));
      CutFlow.push_back(string("electron and muon with OS"));
