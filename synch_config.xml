@@ -23,6 +23,8 @@
 <d name="DYJets"  title="DYJetsToLL_M-50_13TeV"   add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/TopTreeProducer/prod/DY_all_files.root"/>
 
 
+<!--All files from Jesse, !!!! <pu>=20 --> 
+<d name="DYJets" title="DY+jets" add="0" color="433" ls="1" lw="2" normf="1" EqLumi="1408.6656" xsection="2008.4" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/DYJetsToLL_M-50_13TeV-madgraph-pythia8/crab_DYJetsToLL_M-50_13TeV-madgraph-pythia8_PHYS14_TOPTREE_v4/150126_091210/0000/TOPTREE_*.root"/>
 
 
 <!--    <d name="NAME" title="default" add="1" color="4" ls="1" lw="2" normf="1" xsection="225.2" EqLumi="30330.5639" filenames="FILENAME"/>-->
