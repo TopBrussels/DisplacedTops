@@ -126,10 +126,10 @@ int main (int argc, char *argv[])
      // start a table
      vector<string> CutFlow;
      CutFlow.push_back(string("Total"));
-     CutFlow.push_back(string("At least one electron wiht pt > 25"));
-     CutFlow.push_back(string("At least one electron wiht abs(eta) < 2.5"));
-     CutFlow.push_back(string("At least one muon wiht pt > 25"));
-     CutFlow.push_back(string("At least one electron wiht abs(eta) < 2.5"));
+     CutFlow.push_back(string("At least one electron wiht pt $>$ 25"));
+     CutFlow.push_back(string("At least one electron wiht abs(eta)$<$ 2.5"));
+     CutFlow.push_back(string("At least one muon wiht pt $>$ 25"));
+     CutFlow.push_back(string("At least one electron wiht abs(eta) $<$ 2.5"));
      CutFlow.push_back(string("extra electron veto"));
      CutFlow.push_back(string("extra muon veto"));
      CutFlow.push_back(string("electron and muon with OS"));
@@ -231,6 +231,7 @@ int main (int argc, char *argv[])
         //////////////////////////////
         // My tree - variables      //
         //////////////////////////////
+	Int_t nElectronsPostCut;
         Int_t nElectrons;
         Double_t pX_electron[10];
         Double_t pY_electron[10];
@@ -243,6 +244,7 @@ int main (int argc, char *argv[])
         Double_t pfIso_electron[10];
         Int_t charge_electron[10];
         
+        Int_t nMuonsPostCut;
         Int_t nMuons;
         Double_t pX_muon[10];
         Double_t pY_muon[10];
@@ -270,7 +272,9 @@ int main (int argc, char *argv[])
         // define the output tree
         TTree* myTree = new TTree("tree","tree");
         myTree->Branch("isdata",&isdata,"isdata/I");
+
         
+	//        myTree->Branch("nElectronsPostCut",&nElectronsPostCut, "nElectronsPostCut/I");//
         myTree->Branch("nElectrons",&nElectrons, "nElectrons/I");//
         myTree->Branch("pX_electron",pX_electron,"pX_electron[nElectrons]/D");
         myTree->Branch("pY_electron",pY_electron,"pY_electron[nElectrons]/D");
@@ -283,7 +287,7 @@ int main (int argc, char *argv[])
         myTree->Branch("charge_electron",charge_electron,"charge_electron[nElectrons]/I");
         myTree->Branch("d0_electron",d0_electron,"d0_electron[nElectrons]/D");
 
-        
+	//	myTree->Branch("nMuonsPostCut",&nMuonsPostCut, "nMuonsPostCut/I");
         myTree->Branch("nMuons",&nMuons, "nMuons/I");
         myTree->Branch("pX_muon",pX_muon,"pX_muon[nMuons]/D");
         myTree->Branch("pY_muon",pY_muon,"pY_muon[nMuons]/D");
@@ -340,8 +344,8 @@ int main (int argc, char *argv[])
         cout << "running over " << datasets[d]->NofEvtsToRunOver() << endl;
         
         // start event loop
-	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
-	//	for (unsigned int ievt = 0; ievt < 10; ievt++) // run on limited number of events for faster testing.
+	//	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
+	for (unsigned int ievt = 0; ievt < 25000; ievt++) // run on limited number of events for faster testing.
         {
             
             // the objects loaded in each event
@@ -438,10 +442,12 @@ int main (int argc, char *argv[])
 
             // the default selection is fine for normal use - if you want a special selection you can use the functions here
             //selection.setJetCuts(20,2.5,0.01,1.,0.98,0.3,0.1); //  void setJetCuts(float Pt, float Eta, float EMF, float n90Hits, float fHPD, float dRJetElectron, float dRJetMuon);
-            selection.setMuonCuts(20,2.5,0.1,2.0,0.3,1,0.5,5,0); // void setMuonCuts(float Pt, float Eta, float RelIso, float d0, float DRJets, int NMatchedStations, float Dz, int NTrackerLayersWithMeas, int NValidPixelHits);
-            selection.setElectronCuts(20,2.5,0.1,2.0,0.5,0.4,0); // void setElectronCuts(float Pt, float Eta, float RelIso, float d0, float MVAId, float DRJets, int MaxMissingHits);
+	    //            selection.setMuonCuts(25,2.5,0.12,0.2,0.3,1,0.5,5,0); // void setMuonCuts(float Pt, float Eta, float RelIso, float d0, float DRJets, int NMatchedStations, float Dz, int NTrackerLayersWithMeas, int NValidPixelHits);
+	    selection.setLooseMuonCuts();
+	    //            selection.setElectronCuts(25,2.5,0.1,0.02,0.,0.3,0); // void setElectronCuts(float Pt, float Eta, float RelIso, float d0, float MVAId, float DRJets, int MaxMissingHits);
+	    selection.setLooseElectronCuts();
 
-	    //            /Users/qpython 
+	    //            faco
             bool isGoodPV = selection.isPVSelected(vertex, 4, 24, 2.);
 	    //            if(!isGoodPV)
 	    //                continue;
@@ -461,7 +467,7 @@ int main (int argc, char *argv[])
             jeteffaverage[0]+=init_jets_corrected.size()*scaleFactor;
             jeteffaverage[1]+=selectedJets.size()*scaleFactor;
             
-            
+	    /*            
             // loop over electrons
             nElectrons=0;
             for(int iele=0; iele<selectedElectrons.size() && nElectrons<10; iele++){
@@ -503,6 +509,7 @@ int main (int argc, char *argv[])
                 dy_jet[nJets]=selectedJets[ijet]->vy();
                 nJets++;
             }
+	    */
 
 	    Bool_t trigged = true;
 	    //	    Bool_T 
@@ -620,6 +627,8 @@ int main (int argc, char *argv[])
 			  CutFlowTable.Fill(d,7,scaleFactor*lumiWeight);
 			  if(passedElMuNotOverlaping == true){
 			    CutFlowTable.Fill(d,8,scaleFactor*lumiWeight);
+			    //			    myTree->Fill();// faco
+			    
 			  }
 			}
 		      }
@@ -628,7 +637,68 @@ int main (int argc, char *argv[])
 		}
 	      }
 	    }
+
+
+	    //	    Filling the tree
+	    /*
+	    if (passedExtraElVeto == false)
+	      break;
+	    if (passedExtraMuVeto == false)
+	      break;
+	    if(passedElMuOS == false)
+	      break;
+	    if(passedElMuNotOverlaping == false)
+	      break;
+	    else{
+	    */
 	    
+		// loop over electrons
+
+	    nElectrons=0;
+	    if (passedExtraElVeto == true){
+	      for(int iele=0; iele<postCut_electronsTLV.size() ; iele++){
+		  //	    for(int iele=0; iele<init_electrons.size() ; iele++){
+		  pX_electron[nElectrons]=postCut_electronsTLV[iele].Px();
+		  pY_electron[nElectrons]=postCut_electronsTLV[iele].Py();
+		  pZ_electron[nElectrons]=postCut_electronsTLV[iele].Pz();
+		  E_electron[nElectrons]=postCut_electronsTLV[iele].E();
+		  //		d0_electron[nElectrons]=init_electrons[iele]->d0();
+		  //		chargedHadronIso_electron[nElectrons]=init_electrons[iele]->chargedHadronIso(3);
+		  //		neutralHadronIso_electron[nElectrons]=init_electrons[iele]->neutralHadronIso(3);
+		  //		photonIso_electron[nElectrons]=init_electrons[iele]->photonIso(3);
+		  //		pfIso_electron[nElectrons]=init_electrons[iele]->relPfIso(3,0);
+		  //		charge_electron[nElectrons]=init_electrons[iele]->charge();
+		  nElectrons++;
+		}
+	      }
+	    // loop over muons
+	    nMuons=0;
+	    for(int imuo=0; imuo<init_muons.size() && nMuons<10; imuo++){
+	      pX_muon[nMuons]=init_muons[imuo]->Px();
+	      pY_muon[nMuons]=init_muons[imuo]->Py();
+	      pZ_muon[nMuons]=init_muons[imuo]->Pz();
+	      E_muon[nMuons]=init_muons[imuo]->E();
+	      d0_muon[nMuons]=init_muons[imuo]->d0();
+	      chargedHadronIso_muon[nMuons]=init_muons[imuo]->chargedHadronIso(4);
+	      neutralHadronIso_muon[nMuons]=init_muons[imuo]->neutralHadronIso(4);
+	      photonIso_muon[nMuons]=init_muons[imuo]->photonIso(4);
+	      pfIso_muon[nMuons]=init_muons[imuo]->relPfIso(4,0);
+	      charge_muon[nMuons]=init_muons[imuo]->charge();
+	      nMuons++;
+	    }
+	    // loop over jets
+	    nJets=0;
+	    for(int ijet=0; ijet<init_jets.size() && nJets<10; ijet++){
+	      pX_jet[nJets]=init_jets[ijet]->Px();
+	      pY_jet[nJets]=init_jets[ijet]->Py();
+	      pZ_jet[nJets]=init_jets[ijet]->Pz();
+	      E_jet[nJets]=init_jets[ijet]->E();
+	      dx_jet[nJets]=init_jets[ijet]->vx();
+	      dy_jet[nJets]=init_jets[ijet]->vy();
+	      nJets++;
+	    }
+		//	      }
+
 	    
 	    // test cut: exactly 2 electrons
 	    Bool_t passedNelectrons = false;
