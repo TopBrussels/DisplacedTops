@@ -580,17 +580,8 @@ int main (int argc, char *argv[])
 		      passedPtMu=true;
 		      if (abs(init_muonsTLV[imuo].Eta()) < 2.5){
 			passedEtaMu=true;
-			if(postCut_electronsTLV.size() != 1 ){
-			  passedExtraElVeto=false;
-			  continue;
-			}
-			else {
-			  passedExtraElVeto=true;
-			  if(postCut_muonsTLV.size() != 1){
-			    passedExtraMuVeto=false;
-			    continue;
-			  }
-			  else{
+			if(postCut_electronsTLV.size() == 1 ){                                                                                passedExtraElVeto=true;   
+			  if(postCut_muonsTLV.size() == 1){
 			    passedExtraMuVeto=true;
 			    if(init_electrons[iele]->charge() * init_muons[imuo]->charge() == -1){ // to do! make a new el/muon collection
 			      passedElMuOS=true;
@@ -655,8 +646,12 @@ int main (int argc, char *argv[])
 		// loop over electrons
 
 	    nElectrons=0;
-	    if (passedExtraElVeto == true){
-	      for(int iele=0; iele<postCut_electronsTLV.size() ; iele++){
+	    nMuons=0;
+	    nJets=0;
+
+	    if (passedExtraElVeto == true && passedExtraMuVeto == true && passedElMuOS == true && passedElMuNotOverlaping ==true )
+	      {
+		for(int iele=0; iele<postCut_electronsTLV.size() ; iele++){
 		  //	    for(int iele=0; iele<init_electrons.size() ; iele++){
 		  pX_electron[nElectrons]=postCut_electronsTLV[iele].Px();
 		  pY_electron[nElectrons]=postCut_electronsTLV[iele].Py();
@@ -670,34 +665,35 @@ int main (int argc, char *argv[])
 		  //		charge_electron[nElectrons]=init_electrons[iele]->charge();
 		  nElectrons++;
 		}
+		//		/*
+		// loop over muons
+		for(int imuo=0; imuo<postCut_muonsTLV.size(); imuo++){
+		  pX_muon[nMuons]=postCut_muonsTLV[imuo].Px();
+		  pY_muon[nMuons]=postCut_muonsTLV[imuo].Py();
+		  pZ_muon[nMuons]=postCut_muonsTLV[imuo].Pz();
+		  E_muon[nMuons]=postCut_muonsTLV[imuo].E();
+		  /*
+		  d0_muon[nMuons]=init_muons[imuo]->d0();
+		  chargedHadronIso_muon[nMuons]=init_muons[imuo]->chargedHadronIso(4);
+		  neutralHadronIso_muon[nMuons]=init_muons[imuo]->neutralHadronIso(4);
+		  photonIso_muon[nMuons]=init_muons[imuo]->photonIso(4);
+		  pfIso_muon[nMuons]=init_muons[imuo]->relPfIso(4,0);
+		  charge_muon[nMuons]=init_muons[imuo]->charge();
+		  */
+		  nMuons++;
+		}
 	      }
-	    // loop over muons
-	    nMuons=0;
-	    for(int imuo=0; imuo<init_muons.size() && nMuons<10; imuo++){
-	      pX_muon[nMuons]=init_muons[imuo]->Px();
-	      pY_muon[nMuons]=init_muons[imuo]->Py();
-	      pZ_muon[nMuons]=init_muons[imuo]->Pz();
-	      E_muon[nMuons]=init_muons[imuo]->E();
-	      d0_muon[nMuons]=init_muons[imuo]->d0();
-	      chargedHadronIso_muon[nMuons]=init_muons[imuo]->chargedHadronIso(4);
-	      neutralHadronIso_muon[nMuons]=init_muons[imuo]->neutralHadronIso(4);
-	      photonIso_muon[nMuons]=init_muons[imuo]->photonIso(4);
-	      pfIso_muon[nMuons]=init_muons[imuo]->relPfIso(4,0);
-	      charge_muon[nMuons]=init_muons[imuo]->charge();
-	      nMuons++;
-	    }
-	    // loop over jets
-	    nJets=0;
-	    for(int ijet=0; ijet<init_jets.size() && nJets<10; ijet++){
-	      pX_jet[nJets]=init_jets[ijet]->Px();
-	      pY_jet[nJets]=init_jets[ijet]->Py();
-	      pZ_jet[nJets]=init_jets[ijet]->Pz();
-	      E_jet[nJets]=init_jets[ijet]->E();
-	      dx_jet[nJets]=init_jets[ijet]->vx();
-	      dy_jet[nJets]=init_jets[ijet]->vy();
-	      nJets++;
-	    }
-		//	      }
+		// loop over jets
+		for(int ijet=0; ijet<init_jets.size() && nJets<10; ijet++){
+		  pX_jet[nJets]=init_jets[ijet]->Px();
+		  pY_jet[nJets]=init_jets[ijet]->Py();
+		  pZ_jet[nJets]=init_jets[ijet]->Pz();
+		  E_jet[nJets]=init_jets[ijet]->E();
+		  dx_jet[nJets]=init_jets[ijet]->vx();
+		  dy_jet[nJets]=init_jets[ijet]->vy();
+		  nJets++;
+		}
+		//}
 
 	    
 	    // test cut: exactly 2 electrons
