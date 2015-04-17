@@ -134,9 +134,9 @@ int main (int argc, char *argv[])
      CutFlowElectron.push_back(string("At least one electron with abs(etaSC) $<$ 1.479"));
      CutFlowElectron.push_back(string("At least one electron with abs(deltaEtaIn) $<$ 0.006574"));
      CutFlowElectron.push_back(string("At least one electron with abs(deltaPhiIn) $<$ 0.022868 "));
-     CutFlowElectron.push_back(string("At least one electron with hadronicOverEm $<# 0.037553"));
-     CutFlowElectron.push_back(string("At least one electron with d0 < 0.009924"));
-     CutFlowElectron.push_back(string("At least one electron with dz < 0.015310 "));
+     CutFlowElectron.push_back(string("At least one electron with hadronicOverEm $<$ 0.037553"));
+     CutFlowElectron.push_back(string("At least one electron with d0 $<$ 0.009924"));
+     CutFlowElectron.push_back(string("At least one electron with dz $<$ 0.015310 "));
      CutFlowElectron.push_back(string("At least one electron with 1/E - 1/P $<$ 0.131191"));
      CutFlowElectron.push_back(string("At least one electron with passConversion"));
      CutFlowElectron.push_back(string("At least one electron with missingHits $<=$ 1)"));
@@ -153,9 +153,9 @@ int main (int argc, char *argv[])
      CutFlowMuon.push_back(string("At least one muon with GlobalPromptId "));
      CutFlowMuon.push_back(string("At least one muon with pt $>$ 26 "));
      CutFlowMuon.push_back(string("At least one muon with abs(eta) $<$ 2.1 "));
-     CutFlowMuon.push_back(string("At least one muon with chi2 < 10"));
+     CutFlowMuon.push_back(string("At least one muon with chi2 $<$ 10"));
      CutFlowMuon.push_back(string("At least one muon with nofTrackerLayersWithMeasurement() > 5"));
-     CutFlowMuon.push_back(string("At least one muon with nofValidMuHits() > 0"));
+     CutFlowMuon.push_back(string("At least one muon with nofValidMuHits() $>$ 0"));
      CutFlowMuon.push_back(string("At least one muon with d0 $<$ 0.2"));
      CutFlowMuon.push_back(string("At least one muon with dz $<$ 0.5"));
      CutFlowMuon.push_back(string("At least one muon with nofValidPixelHits $>$ 0 "));
