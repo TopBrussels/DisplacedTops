@@ -126,18 +126,18 @@ int main (int argc, char *argv[])
      
      // start a new table
      vector<string> CutFlowElectron;
+     CutFlowElectron.push_back(string("Total"));
      CutFlowElectron.push_back(string("At least one electron with pt $>$ 25"));
      CutFlowElectron.push_back(string("At least one electron with abs(eta) $<$ 2.5"));
-     CutFlowElectron.push_back(string("At least one electron with abs(eta) $<$ 2.5"));
-     CutFlowElectron.push_back(string("At least one electron with iso $<$ 0.014355 "));
+     CutFlowElectron.push_back(string("At least one electron with iso $<$ 0.10 "));
      CutFlowElectron.push_back(string("At least one electron with pt $>$ 30  "));
      CutFlowElectron.push_back(string("At least one electron with abs(etaSC) $<$ 1.479"));
-     CutFlowElectron.push_back(string("At least one electron with abs(deltaEtaIn) $<$ 0.006574"));
-     CutFlowElectron.push_back(string("At least one electron with abs(deltaPhiIn) $<$ 0.022868 "));
-     CutFlowElectron.push_back(string("At least one electron with hadronicOverEm $<$ 0.037553"));
-     CutFlowElectron.push_back(string("At least one electron with d0 $<$ 0.009924"));
-     CutFlowElectron.push_back(string("At least one electron with dz $<$ 0.015310 "));
-     CutFlowElectron.push_back(string("At least one electron with 1/E - 1/P $<$ 0.131191"));
+     CutFlowElectron.push_back(string("At least one electron with abs(deltaEtaIn) $<$ 0.005"));
+     CutFlowElectron.push_back(string("At least one electron with abs(deltaPhiIn) $<$ 0.02 "));
+     CutFlowElectron.push_back(string("At least one electron with hadronicOverEm $<$ 0.03"));
+     CutFlowElectron.push_back(string("At least one electron with d0 $<$ 0.05"));
+     CutFlowElectron.push_back(string("At least one electron with dz $<$ 0.2 "));
+     CutFlowElectron.push_back(string("At least one electron with 1/E - 1/P $<$ 0.15"));
      CutFlowElectron.push_back(string("At least one electron with passConversion"));
      CutFlowElectron.push_back(string("At least one electron with missingHits $<=$ 1)"));
 
@@ -150,11 +150,11 @@ int main (int argc, char *argv[])
      CutFlowMuon.push_back(string("At least one muon with pt $>$ 25"));
      CutFlowMuon.push_back(string("At least one muon with abs(eta)$<$ 2.5"));
      CutFlowMuon.push_back(string("At least one muon with Iso$<$ 0.12"));
-     CutFlowMuon.push_back(string("At least one muon with GlobalPromptId "));
+     CutFlowMuon.push_back(string("At least one muon with GlobalId "));
      CutFlowMuon.push_back(string("At least one muon with pt $>$ 26 "));
      CutFlowMuon.push_back(string("At least one muon with abs(eta) $<$ 2.1 "));
      CutFlowMuon.push_back(string("At least one muon with chi2 $<$ 10"));
-     CutFlowMuon.push_back(string("At least one muon with nofTrackerLayersWithMeasurement() > 5"));
+     CutFlowMuon.push_back(string("At least one muon with nofTrackerLayersWithMeasurement() $>$ 5"));
      CutFlowMuon.push_back(string("At least one muon with nofValidMuHits() $>$ 0"));
      CutFlowMuon.push_back(string("At least one muon with d0 $<$ 0.2"));
      CutFlowMuon.push_back(string("At least one muon with dz $<$ 0.5"));
@@ -525,6 +525,55 @@ int main (int argc, char *argv[])
 		passedPtEl = true;
                 if (abs(init_electrons[iele]->Eta()) < 2.5){
 		  passedEtaEl =true;
+		  if (init_electrons[iele]->relPfIso(3, 0.5) < 0.10){
+		    passedIsoEl = true;
+		    if (init_electrons[iele]->Pt() > 30){
+		      passedNewPtEl = true;
+		      //		      if (fabs(init_electrons[iele]->superClusterEta()) <= 1.479){
+		      if (1){
+			passedNewEtaEl = true;
+			if (fabs(init_electrons[iele]->deltaEtaIn()) < 0.005){
+			  passedDeltaEtaInEl = true;
+			  if (fabs(init_electrons[iele]->deltaPhiIn()) < 0.02){
+			    passedDeltaPhiInEl = true;
+			    if (init_electrons[iele]->hadronicOverEm() < 0.03){
+			      passedHadronicOverEmEl = true;
+			      if (init_electrons[iele]->d0() < 0.05){
+				passedD0El = true;
+				if (init_electrons[iele]->dz() < 0.2){
+				  passedDzEl = true;
+				  if (fabs(1/init_electrons[iele]->E() - 1/init_electrons[iele]->P()) < 0.15){
+				    passedEtoPFractionEl = true;
+				    if (init_electrons[iele]->passConversion()) {
+				      passedConversionEl = true;
+				      if (init_electrons[iele]->missingHits() <= 1) {
+					passedMissingHits = true;
+					//		  postCut_electrons.push_back(*init_electrons[iele]);
+					//	    postCut_electronsTLV.push_back(*init_electrons[iele]);// fill a new vector with the electrons that passed the cuts
+				      }
+				    }
+				  }
+				}
+			      }
+			    }
+			  }
+			}
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+
+
+	    // specific value
+	    /*
+	    // electrons
+	    for(int iele=0; iele<init_electrons.size(); iele++){
+              if (init_electrons[iele]->Pt() > 25){
+		passedPtEl = true;
+                if (abs(init_electrons[iele]->Eta()) < 2.5){
+		  passedEtaEl =true;
 		  if (init_electrons[iele]->relPfIso(3, 0.5) < 0.074355){
 		    passedIsoEl = true;
 		    if (init_electrons[iele]->Pt() > 30){
@@ -563,7 +612,7 @@ int main (int argc, char *argv[])
 		}
 	      }
 	    }
-
+	    */
 
 
 
@@ -590,10 +639,11 @@ int main (int argc, char *argv[])
 		passedPtMu = true;
 		if (abs(init_muons[imuo]->Eta()) < 2.5){
 		  passedEtaMu = true;
-		  if ( (init_muons[imuo]->chargedHadronIso() + max( 0.0, init_muons[imuo]->neutralHadronIso() + init_muons[imuo]->photonIso() - 0.5*init_muons[imuo]->puChargedHadronIso() ) )  / init_muons[imuo]->Pt() < 0.12 ){ //iso DBeta
-		    //		    cout << "ISO MUON!!!" << endl;
+		  float muRelIso = (init_muons[imuo]->chargedHadronIso(4) + max( 0.0, init_muons[imuo]->neutralHadronIso(4) + init_muons[imuo]->photonIso(4) - 0.5*init_muons[imuo]->puChargedHadronIso(4) ) )  / init_muons[imuo]->Pt();
+		  //		  if (1){ // faco
+		  if (muRelIso  < 0.12 ){ 
 		    passedIsoMu = true;
-		    if (init_muons[imuo]->idGlobalMuonPromptTight()){
+		    if (init_muons[imuo]->isGlobalMuon()){
 		      passedGlobalIdMu = true;
 		      if( init_muons[imuo]->Pt()>26){
 			passedNewPtMu = true;
@@ -601,8 +651,10 @@ int main (int argc, char *argv[])
 			  passedNewEtaMu = true;
 			  if ( init_muons[imuo]->chi2() < 10){
 			    passedChi2Mu = true; 
-			    if (init_muons[imuo]->nofTrackerLayersWithMeasurement() > 5){			      
+			    //			    if (1){
+			    if (init_muons[imuo]->nofTrackerLayersWithMeasurement() > 5){
 			      passedNofTrackerLayersWithMeasurement =true;
+			      //			      if (1){
 			      if (init_muons[imuo]->nofValidMuHits() > 0) {
 				passedNofValidMuHits =true;
 				if (fabs(init_muons[imuo]->d0()) < 0.2){
