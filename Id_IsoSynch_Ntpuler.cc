@@ -317,9 +317,12 @@ int main (int argc, char *argv[])
         // some printout
         cout << "running over " << datasets[d]->NofEvtsToRunOver() << endl;
         
+	//int N_loop = datasets[d]->NofEvtsToRunOver();
+	int N_loop = 3;
+	
+	
         // start event loop
-	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
-	  //for (unsigned int ievt = 0; ievt < 25000; ievt++) // run on limited number of events for faster testing.
+	for (unsigned int ievt = 0; ievt < N_loop; ievt++) // event loop
         {
             
             // the objects loaded in each event
@@ -885,53 +888,94 @@ int main (int argc, char *argv[])
 	    if (nElectrons == 2){
 	      passedNelectrons=true;	      
 	    }
-
-	    /*
-	    // Fill the table
-	    CutFlowTable2.Fill(d,0,scaleFactor*lumiWeight);
-	    if(passedNelectrons){
-	      CutFlowTable2.Fill(d,1,scaleFactor*lumiWeight);
-	    }
 	    
-	    // test cut: exactly 2 muons
-	    Bool_t passedNmuons = false;
 
-            if (nMuons == 2){
-              passedNmuons=true;
-            }
-	    
-	    // Fill the table
-            CutFlowTable3.Fill(d,0,scaleFactor*lumiWeight);
-            if(passedNmuons){
-              CutFlowTable3.Fill(d,1,scaleFactor*lumiWeight);
-            }
+	    // Print info
 
-	    // test cut: exactly 1 electron and one muon
-	    Bool_t passedNmuons_Nelectrons = false;
-
-            if (nMuons == 1 && nElectrons == 1){
-              passedNmuons_Nelectrons=true;
-            }
 	    
-	    // Fill the table
-            CutFlowTable4.Fill(d,0,scaleFactor*lumiWeight);
-            if(passedNmuons_Nelectrons){
-              CutFlowTable4.Fill(d,1,scaleFactor*lumiWeight);
-            }
-	    */
 	    
-	    if (0){
+	    if (1){
 	      cout << "New EVENT!!!!" << endl;
 	      cout << "the event number is " << ievt << endl; 
-	      cout << "there is " << init_electronsTLV.size() << " electrons in that event!" << endl;
-	      cout << "there is " << init_muonsTLV.size() << " muons in that event!" << endl;
-		for(int iele=0; iele<init_electronsTLV.size(); iele++){
-		  cout << "the pt of the " << iele << "th electron is " << init_electronsTLV[iele].Pt() << endl;
+	      // loop over electrons                                                                           
+
+	      
+	      /*
+	      for(int iele=0; iele<selectedElectrons.size() ; iele++){                         
+		cout << "    electron # " << iele << ":" << endl; 
+                cout << selectedElectrons[iele]->Pt();  
+		cout << selectedElectrons[iele]->d0();
+		pY_electron[nElectrons]=selectedElectrons[iele]->Py();                                       
+                pZ_electron[nElectrons]=selectedElectrons[iele]->Pz();                                       
+                E_electron[nElectrons]=selectedElectrons[iele]->E();                                         
+                d0_electron[nElectrons]=selectedElectrons[iele]->d0();                                       
+                chargedHadronIso_electron[nElectrons]=selectedElectrons[iele]->chargedHadronIso(3);          
+                neutralHadronIso_electron[nElectrons]=selectedElectrons[iele]->neutralHadronIso(3);          
+                photonIso_electron[nElectrons]=selectedElectrons[iele]->photonIso(3);                        
+                pfIso_electron[nElectrons]=selectedElectrons[iele]->relPfIso(3,0);                           
+                charge_electron[nElectrons]=selectedElectrons[iele]->charge();                               
+                nElectrons++;                                                                                
+	      }                                                                                                
+	      // loop over muons                                                                               
+	      nMuons=0;                                                                                        
+	      for(int imuo=0; imuo<selectedMuons.size() && nMuons<10; imuo++){                                 
+                pX_muon[nMuons]=selectedMuons[imuo]->Px();                                                   
+                pY_muon[nMuons]=selectedMuons[imuo]->Py();                                                   
+                pZ_muon[nMuons]=selectedMuons[imuo]->Pz();                                                   
+                E_muon[nMuons]=selectedMuons[imuo]->E();                                                     
+                d0_muon[nMuons]=selectedMuons[imuo]->d0();                                                   
+                chargedHadronIso_muon[nMuons]=selectedMuons[imuo]->chargedHadronIso(4);                      
+                neutralHadronIso_muon[nMuons]=selectedMuons[imuo]->neutralHadronIso(4);                      
+                photonIso_muon[nMuons]=selectedMuons[imuo]->photonIso(4);                                    
+                pfIso_muon[nMuons]=selectedMuons[imuo]->relPfIso(4,0);                                       
+                charge_muon[nMuons]=selectedMuons[imuo]->charge();                                           
+                nMuons++;                                                                                    
+	      } 
+	      */
+	      
+	      string ws = "    ";
+
+	      cout << "there is " << init_electrons.size() << " electron(s) in that event!" << endl;
+	      
+	      //loop on electron
+	      for(int iele=0; iele<init_electrons.size(); iele++){
+		cout << ws << "Pt() is: " << init_electrons[iele]->Pt() << endl;
+		cout << ws << "Eta() is: " << init_electrons[iele]->Eta() << endl;
+		cout << ws << "d0BeamSpot() is: " << init_electrons[iele]->d0BeamSpot() << endl;
+		cout << ws << "dzBeamSpot() is: " << init_electrons[iele]->dzBeamSpot() << endl;
+		cout << ws << "chargedHadronIso(3) is: " << init_electrons[iele]->chargedHadronIso(3) << endl;
+		cout << ws << "neutralHadronIso(3) is: " << init_electrons[iele]->neutralHadronIso(3) << endl;
+		cout << ws << "photonIso(3) is: " << init_electrons[iele]->photonIso(3) << endl;
+		cout << ws << "relPfIso(3, 0.5) is: " << init_electrons[iele]->relPfIso(3, 0.5) << endl;
+		cout << ws << "relPfIso(3, 0) is: " << init_electrons[iele]->relPfIso(3, 0) << endl;
+		cout << ws << "deltaEtaIn() is: " << init_electrons[iele]->deltaEtaIn() << endl;
+		cout << ws << "deltaPhiIn() is: " << init_electrons[iele]->deltaPhiIn() << endl;
+		cout << ws << "hadronicOverEm() is: " << init_electrons[iele]->hadronicOverEm() << endl;
+		cout << ws << "passConversion() is: " << init_electrons[iele]->passConversion() << endl;
+		cout << ws << "missingHits() is: " << init_electrons[iele]->missingHits() << endl;
 		}
-	      for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){
-		cout << "the pt of the " << imuo << "th electron is " << init_muonsTLV[imuo].Pt() << endl;  
-	      }
+
+	      cout << "there is " << init_muons.size() << " muon(s) in that event!" << endl;
+
+	      // loop on muons
+	      for(int imuo=0; imuo<init_muons.size(); imuo++){
+		cout << ws << "Pt() is: " << init_muons[imuo]->Pt() << endl;
+		cout << ws << "Eta() is: " << init_muons[imuo]->Eta() << endl;
+		cout << ws << "d0BeamSpot() is: " << init_muons[imuo]->d0BeamSpot() << endl;
+		cout << ws << "dzBeamSpot() is: " << init_muons[imuo]->dzBeamSpot() << endl;
+		cout << ws << "chargedHadronIso(4) is: " << init_muons[imuo]->chargedHadronIso(4) << endl;
+		cout << ws << "neutralHadronIso(4) is: " << init_muons[imuo]->neutralHadronIso(4) << endl;
+		cout << ws << "photonIso(4) is: " << init_muons[imuo]->photonIso(4) << endl;
+		cout << ws << "relPfIso(4, 0) is: " << init_muons[imuo]->relPfIso(4, 0) << endl;
+		cout << ws << "chi2() is: " << init_muons[imuo]->chi2() << endl;
+		cout << ws << "nofTrackerLayersWithMeasurement() is: " << init_muons[imuo]->nofTrackerLayersWithMeasurement() << endl;
+		cout << ws << "nofValidMuHits() is: " << init_muons[imuo]->nofValidMuHits() << endl;
+		cout << ws << "nofValidPixelHits() is: " << init_muons[imuo]->nofValidPixelHits() << endl;
+		cout << ws << "nofMatchedStations() is: " << init_muons[imuo]->nofMatchedStations() << endl;
+		}
+	      
 	      cout << "End of EVENT" << endl << endl;
+
 	    }
 		  
 	    
