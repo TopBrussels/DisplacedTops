@@ -23,8 +23,8 @@
 #include "../TopTreeAnalysisBase/Content/interface/Dataset.h"
 #include "../TopTreeAnalysisBase/MCInformation/interface/MCWeighter.h"
 #include "../TopTreeAnalysisBase/Selection/interface/ElectronPlotter.h"
-#include "../TopTreeAnalysisBase/Selection/interface/Selection.h"
-#include "../TopTreeAnalysisBase/Selection/interface/DisplacedSelection.h"
+//#include "../TopTreeAnalysisBase/Selection/interface/Selection.h"
+#include "../TopTreeAnalysisBase/Selection/interface/Run2Selection.h"
 #include "../TopTreeAnalysisBase/Selection/interface/MuonPlotter.h"
 #include "../TopTreeAnalysisBase/Selection/interface/JetPlotter.h"
 #include "../TopTreeAnalysisBase/Selection/interface/VertexPlotter.h"
@@ -128,42 +128,28 @@ int main (int argc, char *argv[])
      // start a new table
      vector<string> CutFlowElectron;
      CutFlowElectron.push_back(string("Total"));
-     CutFlowElectron.push_back(string("At least one electron with pt $>$ 25"));
-     CutFlowElectron.push_back(string("At least one electron with abs(eta) $<$ 2.5"));
-     CutFlowElectron.push_back(string("At least one electron with iso $<$ 0.10 "));
-     CutFlowElectron.push_back(string("At least one electron with pt $>$ 30  "));
-     CutFlowElectron.push_back(string("At least one electron with abs(etaSC) $<$ 1.479"));
-     CutFlowElectron.push_back(string("At least one electron with abs(deltaEtaIn) $<$ 0.005"));
-     CutFlowElectron.push_back(string("At least one electron with abs(deltaPhiIn) $<$ 0.02 "));
-     CutFlowElectron.push_back(string("At least one electron with hadronicOverEm $<$ 0.03"));
-     CutFlowElectron.push_back(string("At least one electron with d0 $<$ 0.05"));
-     CutFlowElectron.push_back(string("At least one electron with dz $<$ 0.2 "));
-     CutFlowElectron.push_back(string("At least one electron with 1/E - 1/P $<$ 0.15"));
-     CutFlowElectron.push_back(string("At least one electron with passConversion"));
-     CutFlowElectron.push_back(string("At least one electron with missingHits $<=$ 1)"));
+     CutFlowElectron.push_back(string("Contains at least two displaced electrons"));
 
      SelectionTable CutFlowTableElectron(CutFlowElectron, datasets);
      CutFlowTableElectron.SetLuminosity(Luminosity);
 
-     // start a table
+     // start a new table
      vector<string> CutFlowMuon;
      CutFlowMuon.push_back(string("Total"));
-     CutFlowMuon.push_back(string("At least one muon with pt $>$ 25"));
-     CutFlowMuon.push_back(string("At least one muon with abs(eta)$<$ 2.5"));
-     CutFlowMuon.push_back(string("At least one muon with Iso$<$ 0.12"));
-     CutFlowMuon.push_back(string("At least one muon with GlobalId "));
-     CutFlowMuon.push_back(string("At least one muon with pt $>$ 26 "));
-     CutFlowMuon.push_back(string("At least one muon with abs(eta) $<$ 2.1 "));
-     CutFlowMuon.push_back(string("At least one muon with chi2 $<$ 10"));
-     CutFlowMuon.push_back(string("At least one muon with nofTrackerLayersWithMeasurement() $>$ 5"));
-     CutFlowMuon.push_back(string("At least one muon with nofValidMuHits() $>$ 0"));
-     CutFlowMuon.push_back(string("At least one muon with d0 $<$ 0.2"));
-     CutFlowMuon.push_back(string("At least one muon with dz $<$ 0.5"));
-     CutFlowMuon.push_back(string("At least one muon with nofValidPixelHits $>$ 0 "));
-     CutFlowMuon.push_back(string("At least one muon with nofMatchedStations $>$ 1 "));
+     CutFlowMuon.push_back(string("Contains at least two displaced muons"));
 
      SelectionTable CutFlowTableMuon(CutFlowMuon, datasets);
      CutFlowTableMuon.SetLuminosity(Luminosity);
+
+
+     // start a new table
+     vector<string> CutFlowElectronMuon;
+     CutFlowElectronMuon.push_back(string("Total"));
+     CutFlowElectronMuon.push_back(string("Contains at least one displaced muon"));
+     CutFlowElectronMuon.push_back(string("Contains at least one displaced electron"));
+
+     SelectionTable CutFlowTableElectronMuon(CutFlowElectronMuon, datasets);
+     CutFlowTableElectronMuon.SetLuminosity(Luminosity);
 
 
      if (verbose > 0){
@@ -413,37 +399,14 @@ int main (int argc, char *argv[])
             /////////////////////
             
             //Declare selection instance
-            Selection selection (init_jets_corrected, init_muons, init_electrons, mets);
-	    //	    DisplacedSelection displacedSelection (init_jets_corrected, init_muons, init_electrons, mets);
-	    //	    DisplacedSelection displacedSelection ();
-
-
-
-	    selection.GetSelectedMuons();
-	    //	    displacedSelection.GetSelectedMuons();
-
-
-
-
-            // the default selection is fine for normal use - if you want a special selection you can use the functions here
-            //selection.setJetCuts(20,2.5,0.01,1.,0.98,0.3,0.1); //  void setJetCuts(float Pt, float Eta, float EMF, float n90Hits, float fHPD, float dRJetElectron, float dRJetMuon);
-	    //            selection.setMuonCuts(25,2.5,0.12,0.2,0.3,1,0.5,5,0); // void setMuonCuts(float Pt, float Eta, float RelIso, float d0, float DRJets, int NMatchedStations, float Dz, int NTrackerLayersWithMeas, int NValidPixelHits);
-	    selection.setLooseMuonCuts();
-	    //            selection.setElectronCuts(25,2.5,0.1,0.02,0.,0.3,0); // void setElectronCuts(float Pt, float Eta, float RelIso, float d0, float MVAId, float DRJets, int MaxMissingHits);
-	    selection.setLooseElectronCuts();
-
-	    //            faco
+            Run2Selection selection (init_jets_corrected, init_muons, init_electrons, mets);
             bool isGoodPV = selection.isPVSelected(vertex, 4, 24, 2.);
-	    //            if(!isGoodPV)
-	    //                continue;
-            
             missingEt=mets[0]->Pt();
 
             // get the 'good' objects from the selection object
-            vector<TRootJet*> selectedJets= selection.GetSelectedJets(true);
-	    vector<TRootMuon*> selectedMuons = selection.GetSelectedMuons(vertex[0],selectedJets);
-	    //	    vector<TRootMuon*> displacdSelectedMuons = displacedSelection.GetSelectedMuons();
-            vector<TRootElectron*> selectedElectrons = selection.GetSelectedElectrons(selectedJets);
+            vector<TRootPFJet*> selectedJets= selection.GetSelectedJets();
+	    vector<TRootMuon*> selectedMuons = selection.GetSelectedDisplacedMuons();
+            vector<TRootElectron*> selectedElectrons = selection.GetSelectedDisplacedElectrons();
             
             // bookkeeping
             eleeffaverage[0]+=init_electrons.size()*scaleFactor;
@@ -516,320 +479,53 @@ int main (int argc, char *argv[])
 
 
 
-	    // Synch cut on electron : pt, eta, Iso, ID                                                                                      
-            Bool_t passedPtEl = false;
-            Bool_t passedEtaEl = false;
-            Bool_t passedIsoEl = false;
-            Bool_t passedNewPtEl = false;
-            Bool_t passedNewEtaEl = false;
-            Bool_t passedDeltaEtaInEl = false;
-            Bool_t passedDeltaPhiInEl = false;
-            Bool_t passedHadronicOverEmEl = false;
-            Bool_t passedD0El = false;
-            Bool_t passedDzEl = false;
-            Bool_t passedEtoPFractionEl = false;
-            Bool_t passedConversionEl= false;
-            Bool_t passedMissingHits= false;
+	    // At least two displaced electrons 
+	    Bool_t passedTwoDisplacedElectrons = false;
 
 	    // electrons
-	    for(int iele=0; iele<init_electrons.size(); iele++){
-              if (init_electrons[iele]->Pt() > 25){
-		passedPtEl = true;
-                if (abs(init_electrons[iele]->Eta()) < 2.5){
-		  passedEtaEl =true;
-		  //		  float elRelIso = (init_electrons[iele]->chargedHadronIso(3) + max( 0.0, init_electrons[iele]->neutralHadronIso(3) + init_electrons[iele]->photonIso(3) - 0.5*init_electrons[iele]->puChargedHadronIso(3) ) )  / init_electrons[iele]->Pt();
-		  if (init_electrons[iele]->relPfIso(3, 0.5) < 0.10){
-		    //		  if (elRelIso < 0.10){
-		    passedIsoEl = true;
-		    if (init_electrons[iele]->Pt() > 30){
-		      passedNewPtEl = true;
-		      //		      if (fabs(init_electrons[iele]->superClusterEta()) <= 1.479){
-			if (1){
-			passedNewEtaEl = true;
-			if (fabs(init_electrons[iele]->deltaEtaIn()) < 0.005){
-			  passedDeltaEtaInEl = true;
-			  if (fabs(init_electrons[iele]->deltaPhiIn()) < 0.02){
-			    passedDeltaPhiInEl = true;
-			    if (init_electrons[iele]->hadronicOverEm() < 0.03){
-			      passedHadronicOverEmEl = true;
-			      if (init_electrons[iele]->d0() < 0.05){
-				passedD0El = true;
-				if (init_electrons[iele]->dz() < 0.2){
-				  passedDzEl = true;
-				  if (fabs(1/init_electrons[iele]->E() - 1/init_electrons[iele]->P()) < 0.15){
-				    passedEtoPFractionEl = true;
-				    if (init_electrons[iele]->passConversion()) {
-				      passedConversionEl = true;
-				      if (init_electrons[iele]->missingHits() <= 1) {
-					passedMissingHits = true;
-					//		  postCut_electrons.push_back(*init_electrons[iele]);
-					//	    postCut_electronsTLV.push_back(*init_electrons[iele]);// fill a new vector with the electrons that passed the cuts
-				      }
-				    }
-				  }
-				}
-			      }
-			    }
-			  }
-			}
-		      }
-		    }
-		  }
-		}
-	      }
+	    if ( selectedElectrons.size() >= 2 ){
+	      passedTwoDisplacedElectrons = true;
+	      cout << "displaced electrons!!!" << endl;
 	    }
-
-
-	    // specific value
-	    /*
-	    // electrons
-	    for(int iele=0; iele<init_electrons.size(); iele++){
-              if (init_electrons[iele]->Pt() > 25){
-		passedPtEl = true;
-                if (abs(init_electrons[iele]->Eta()) < 2.5){
-		  passedEtaEl =true;
-		  if (init_electrons[iele]->relPfIso(3, 0.5) < 0.074355){
-		    passedIsoEl = true;
-		    if (init_electrons[iele]->Pt() > 30){
-		      passedNewPtEl = true;
-		      if (fabs(init_electrons[iele]->superClusterEta()) <= 1.479){
-			passedNewEtaEl = true;
-			if (fabs(init_electrons[iele]->deltaEtaIn()) < 0.006574){
-			  passedDeltaEtaInEl = true;
-			  if (fabs(init_electrons[iele]->deltaPhiIn()) < 0.022868){
-			    passedDeltaPhiInEl = true;
-			    if (init_electrons[iele]->hadronicOverEm() < 0.037553){
-			      passedHadronicOverEmEl = true;
-			      if (init_electrons[iele]->d0() < 0.009924){
-				passedD0El = true;
-				if (init_electrons[iele]->dz() < 0.015310){
-				  passedDzEl = true;
-				  if (fabs(1/init_electrons[iele]->E() - 1/init_electrons[iele]->P()) < 0.131191){
-				    passedEtoPFractionEl = true;
-				    if (init_electrons[iele]->passConversion()) {
-				      passedConversionEl = true;
-				      if (init_electrons[iele]->missingHits() <= 1) {
-					passedMissingHits = true;
-					//		  postCut_electrons.push_back(*init_electrons[iele]);
-					//	    postCut_electronsTLV.push_back(*init_electrons[iele]);// fill a new vector with the electrons that passed the cuts
-				      }
-				    }
-				  }
-				}
-			      }
-			    }
-			  }
-			}
-		      }
-		    }
-		  }
-		}
-	      }
-	    }
-	    */
-
-
-
-
-	    // Synch cut on muon: pt, eta, Iso, ID
-	    // Declare one bool per cut
-	    Bool_t passedPtMu = false;
-	    Bool_t passedEtaMu = false;
-	    Bool_t passedIsoMu = false;
-	    Bool_t passedGlobalIdMu = false;
-	    Bool_t passedNewPtMu = false;
-	    Bool_t passedNewEtaMu = false;
-	    Bool_t passedChi2Mu = false;
-	    Bool_t passedNofTrackerLayersWithMeasurement = false;
-	    Bool_t passedNofValidMuHits = false;
-	    Bool_t passedD0Mu = false;
-	    Bool_t passedDzMu = false;
-	    Bool_t passedNofValidPixelHitsMu = false;
-	    Bool_t passedNofMatchedStationsMu = false;
 	    
-	    // muons
-	    for(int imuo=0; imuo<init_muons.size(); imuo++){
-	      double mu_vx, mu_vy, mu_vz;
-	      mu_vx=init_muons[imuo]->vx();
-	      mu_vy=init_muons[imuo]->vy();
-	      mu_vz=init_muons[imuo]->vz();
 
-	      if (abs(init_muons[imuo]->Pt()) > 25){
-		passedPtMu = true;
-		if (abs(init_muons[imuo]->Eta()) < 2.5){
-		  passedEtaMu = true;
-		  //		  float muRelIso = (init_muons[imuo]->chargedHadronIso(4) + max( 0.0, init_muons[imuo]->neutralHadronIso(4) + init_muons[imuo]->photonIso(4) - 0.5*init_muons[imuo]->puChargedHadronIso(4) ) )  / init_muons[imuo]->Pt();
-		  if (init_muons[imuo]->relPfIso(4, 0.5) < 0.12){
-		  //		  if (muRelIso  < 0.12 ){ 
-		    passedIsoMu = true;
-		    if (init_muons[imuo]->isGlobalMuon()){
-		      passedGlobalIdMu = true;
-		      if( init_muons[imuo]->Pt()>26){
-			passedNewPtMu = true;
-			if (fabs(init_muons[imuo]->Eta())<2.1){
-			  passedNewEtaMu = true;
-			  if ( init_muons[imuo]->chi2() < 10){
-			    passedChi2Mu = true; 
-			    //			    if (1){
-			    if (init_muons[imuo]->nofTrackerLayersWithMeasurement() > 5){
-			      passedNofTrackerLayersWithMeasurement =true;
-			      //			      if (1){
-			      if (init_muons[imuo]->nofValidMuHits() > 0) {
-				passedNofValidMuHits =true;
-				if (fabs(init_muons[imuo]->d0()) < 0.2){//0.2
-				  passedD0Mu = true;
-				  if (fabs(init_muons[imuo]->dz()) < 0.5){
-				    passedDzMu =true;
-				    //				    if (1){
-				      if(init_muons[imuo]->nofValidPixelHits() > 0){
-				      passedNofValidPixelHitsMu =true;
-				      if(init_muons[imuo]->nofMatchedStations() > 1){
-					passedNofMatchedStationsMu =true;
-					//					postCut_muons.push_back(*init_muons[imuo]);
-					//					postCut_muonsTLV.push_back(*init_muons[imuo]);//fill a new vector with the muons that passed the cuts    
-				      }
-				    }
-				  }
-				}
-			      }
-			    }
-			  }
-			}
-		      }
-		    }
-		  }
-		}
-	      }
+	    // At least two displaced muons
+	    Bool_t passedTwoDisplacedMuons = false;
+
+	    if (selectedMuons.size() >= 2){
+	      passedTwoDisplacedMuons = true;
+	      cout << "displaced muons!!!" << endl;
 	    }
 
+	    // At least one displaced muon and one displaced electron
+	    Bool_t passedOneDisplacedElectronAndMuon = false;
 
-
-
-
-
-	    /*
-
-	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
-	      if (abs(init_electronsTLV[iele].Pt()) > 25){
-		passedPtEl = true;
-		if (abs(init_electronsTLV[iele].Eta()) < 2.5){
-		  passedEtaEl = true;
-		  for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){
-		    if (abs(init_muonsTLV[imuo].Pt()) > 25){
-		      passedPtMu=true;
-		      if (abs(init_muonsTLV[imuo].Eta()) < 2.5){
-			passedEtaMu=true;
-			if(postCut_electronsTLV.size() == 1 ){                                                                                passedExtraElVeto=true;   
-			  if(postCut_muonsTLV.size() == 1){
-			    passedExtraMuVeto=true;
-			    if(init_electrons[iele]->charge() * init_muons[imuo]->charge() == -1){ // to do! make a new el/muon collection
-			      passedElMuOS=true;
-			      if(postCut_electronsTLV[iele].DeltaR(postCut_muonsTLV[imuo]) > 0.5){
-				passedElMuNotOverlaping=true;
-			      }
-			    }
-			  }
-			}
-		      }
-		    }
-		  }
-		}
-	      }
+	    if (selectedMuons.size() >= 1 && selectedElectrons.size() >= 1){
+	      passedOneDisplacedElectronAndMuon = true;
+	      cout << "displaced electrons and muons!!!" << endl;
 	    }
 
-	    */
-
-
-	    //	    cout << "checking the loop... Event number is " << ievt << endl;
 
 
 	    //making cut flow for electron
 	    CutFlowTableElectron.Fill(d,0,scaleFactor*lumiWeight);
-	    if(passedPtEl) {
+	    if(passedTwoDisplacedElectrons) {
 	      CutFlowTableElectron.Fill(d,1,scaleFactor*lumiWeight);
-	      if (passedEtaEl){
-		CutFlowTableElectron.Fill(d,2,scaleFactor*lumiWeight);
-		if (passedIsoEl){
-		  CutFlowTableElectron.Fill(d,3,scaleFactor*lumiWeight);
-		  if (passedNewPtEl){
-		    CutFlowTableElectron.Fill(d,4,scaleFactor*lumiWeight);
-		    if (passedNewEtaEl){
-		      CutFlowTableElectron.Fill(d,5,scaleFactor*lumiWeight);
-		      if (passedDeltaEtaInEl){
-			CutFlowTableElectron.Fill(d,6,scaleFactor*lumiWeight);
-			if(passedDeltaPhiInEl){
-			  CutFlowTableElectron.Fill(d,7,scaleFactor*lumiWeight);
-			  if(passedHadronicOverEmEl){
-			    CutFlowTableElectron.Fill(d,8,scaleFactor*lumiWeight);
-			    if (passedD0El) {
-			      CutFlowTableElectron.Fill(d,9,scaleFactor*lumiWeight);
-			      if(passedDzEl){
-				CutFlowTableElectron.Fill(d,10,scaleFactor*lumiWeight);
-				if (passedEtoPFractionEl) {
-				  CutFlowTableElectron.Fill(d,11,scaleFactor*lumiWeight);
-				  if (passedConversionEl) {
-				    CutFlowTableElectron.Fill(d,12,scaleFactor*lumiWeight);
-				    if (passedMissingHits) {
-				      CutFlowTableElectron.Fill(d,13,scaleFactor*lumiWeight);
-				    }
-				  }
-				}
-			      }
-			    }
-			  }
-			}
-		      }
-		    }
-		  }
-		}
-	      }
 	    }
-
-
-
-
 
 	    //making cut flow for muon
 	    CutFlowTableMuon.Fill(d,0,scaleFactor*lumiWeight);
-	    if(passedPtMu) {
+	    if(passedTwoDisplacedMuons) {
 	      CutFlowTableMuon.Fill(d,1,scaleFactor*lumiWeight);
-	      if (passedEtaMu){
-		CutFlowTableMuon.Fill(d,2,scaleFactor*lumiWeight);
-		if (passedIsoMu){
-		  CutFlowTableMuon.Fill(d,3,scaleFactor*lumiWeight);
-		  if (passedGlobalIdMu){
-		    CutFlowTableMuon.Fill(d,4,scaleFactor*lumiWeight);
-		    if (passedNewPtMu){
-		      CutFlowTableMuon.Fill(d,5,scaleFactor*lumiWeight);
-		      if ( passedNewEtaMu){
-			CutFlowTableMuon.Fill(d,6,scaleFactor*lumiWeight);
-			if( passedChi2Mu){
-			  CutFlowTableMuon.Fill(d,7,scaleFactor*lumiWeight);
-			  if(passedNofTrackerLayersWithMeasurement){
-			    CutFlowTableMuon.Fill(d,8,scaleFactor*lumiWeight);
-			    if (passedNofValidMuHits) {
-			      CutFlowTableMuon.Fill(d,9,scaleFactor*lumiWeight);
-			      if( passedD0Mu){
-				CutFlowTableMuon.Fill(d,10,scaleFactor*lumiWeight);
-				if (passedDzMu) {
-				  CutFlowTableMuon.Fill(d,11,scaleFactor*lumiWeight);
-				  if (passedNofValidPixelHitsMu) {
-				    CutFlowTableMuon.Fill(d,12,scaleFactor*lumiWeight);
-				    if (passedNofMatchedStationsMu) {
-				      CutFlowTableMuon.Fill(d,13,scaleFactor*lumiWeight);
-				    }
-				  }
-				}
-			      }
-			    }
-			  }
-			}
-		      }
-		    }
-		  }
-		}
-	      }
 	    }
+
+	    //making cut flow for electron and muon
+	    CutFlowTableElectronMuon.Fill(d,0,scaleFactor*lumiWeight);
+	    if(passedOneDisplacedElectronAndMuon) {
+	      CutFlowTableElectronMuon.Fill(d,1,scaleFactor*lumiWeight);
+	    }
+
+
 
 
 	    //	    Filling the tree
@@ -1003,10 +699,13 @@ int main (int argc, char *argv[])
     string selectiontableElectron = "SelectionTableElectron_table.tex";
     CutFlowTableElectron.Write(selectiontableElectron.c_str(), true,true,true,true,true,true,false);
 
-
     CutFlowTableMuon.TableCalculator(false, true, true, true, true);
     string selectiontableMuon = "SelectionTableMuon_table.tex";
     CutFlowTableMuon.Write(selectiontableMuon.c_str(), true,true,true,true,true,true,false);
+
+    CutFlowTableElectronMuon.TableCalculator(false, true, true, true, true);
+    string selectiontableElectronMuon = "SelectionTableElectronMuon_table.tex";
+    CutFlowTableElectronMuon.Write(selectiontableElectronMuon.c_str(), true,true,true,true,true,true,false);
 
 
     delete tcdatasets;
