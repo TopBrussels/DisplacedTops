@@ -1,9 +1,6 @@
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///// Ntuple.cc: This macro is intended to be an example analysis macro which works out of the box.           /////
-/////       It should serve as the first port of call for new users of the TopBrussels framework.             /////
-/////      (in addition it is used by Freya for occasional studies when she has time)                         /////
-/////     Last Modified: Mon 16 February 2015
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///// Id_IsoSynch_Ntpuler.cc: This macro is intended to be used to make a synchronisation exercise with people from Ohio  /////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "TStyle.h"
 #include <cmath>
@@ -318,7 +315,7 @@ int main (int argc, char *argv[])
         cout << "running over " << datasets[d]->NofEvtsToRunOver() << endl;
         
 	//int N_loop = datasets[d]->NofEvtsToRunOver();
-	int N_loop = 3;
+	int N_loop = 10;
 	
 	
         // start event loop
@@ -635,7 +632,8 @@ int main (int argc, char *argv[])
 	    Bool_t passedDzMu = false;
 	    Bool_t passedNofValidPixelHitsMu = false;
 	    Bool_t passedNofMatchedStationsMu = false;
-	    
+
+
 	    // muons
 	    for(int imuo=0; imuo<init_muons.size(); imuo++){
 	      if (abs(init_muons[imuo]->Pt()) > 25){
@@ -897,9 +895,70 @@ int main (int argc, char *argv[])
 	    if (1){
 	      cout << "New EVENT!!!!" << endl;
 	      cout << "the event number is " << ievt << endl; 
-	      // loop over electrons                                                                           
 
+	      string ws = "    ";
+
+
+	      //beam spot position
+	      double bx, by, bz;
+	      bx=0.243996;
+	      by=0.392837;
+	      bz=0.381877;
+
+	      // declare variables usefull to calculate d0 by hand
+	      double px, py, pt, vx, vy, vz, myd0BeamSpot;
+
+	      cout << "there is " << init_electrons.size() << " electron(s) in that event!" << endl;
 	      
+	      //loop on electron
+	      for(int iele=0; iele<init_electrons.size(); iele++){
+		px=init_electrons[iele]->Px();
+		py=init_electrons[iele]->Py();
+		pt=init_electrons[iele]->Pt();
+		vx=init_electrons[iele]->vx();
+		vy=init_electrons[iele]->vy();
+		myd0BeamSpot = (-(vx-bx)*py + (vy-by)*px)/pt;
+
+		cout << ws << "(-(vx-bx)*py + (vy-by)*px)/pt = " << myd0BeamSpot << endl;
+		cout << ws << "d0BeamSpot() is: " << init_electrons[iele]->d0BeamSpot() << endl;
+		cout << ws << "dzBeamSpot() is: " << init_electrons[iele]->dzBeamSpot() << endl;
+		cout << ws << "chargedHadronIso(3) is: " << init_electrons[iele]->chargedHadronIso(3) << endl;
+		cout << ws << "neutralHadronIso(3) is: " << init_electrons[iele]->neutralHadronIso(3) << endl;
+		cout << ws << "photonIso(3) is: " << init_electrons[iele]->photonIso(3) << endl;
+		cout << ws << "puChargedHadronIso(3) is: " << init_electrons[iele]->puChargedHadronIso(3) << endl;
+		cout << ws << "relPfIso(3, 0.5) is: " << init_electrons[iele]->relPfIso(3, 0.5) << endl;
+		cout << ws << "relPfIso(3, 0) is: " << init_electrons[iele]->relPfIso(3, 0) << endl;
+		cout << ws << "hadronicOverEm() is: " << init_electrons[iele]->hadronicOverEm() << endl;
+
+		cout << ws << "1/ET -1/pt is: " << fabs(1/init_electrons[iele]->E() - 1/init_electrons[iele]->P()) << endl;
+		}
+
+
+
+	      cout << "there is " << init_muons.size() << " muon(s) in that event!" << endl;
+	      
+	      // loop on muons
+	      for(int imuo=0; imuo<init_muons.size(); imuo++){
+		px=init_muons[imuo]->Px();
+		py=init_muons[imuo]->Py();
+		pt=init_muons[imuo]->Pt();
+		vx=init_muons[imuo]->vx();
+		vy=init_muons[imuo]->vy();
+		myd0BeamSpot = (-(vx-bx)*py + (vy-by)*px)/pt;
+
+		cout << ws << "(-(vx-bx)*py + (vy-by)*px)/pt = " << myd0BeamSpot << endl;
+		cout << ws << "d0BeamSpot() is: " << init_muons[imuo]->d0BeamSpot() << endl;
+		cout << ws << "dzBeamSpot() is: " << init_muons[imuo]->dzBeamSpot() << endl;
+		cout << ws << "chargedHadronIso(4) is: " << init_muons[imuo]->chargedHadronIso(4) << endl;
+		cout << ws << "neutralHadronIso(4) is: " << init_muons[imuo]->neutralHadronIso(4) << endl;
+		cout << ws << "photonIso(4) is: " << init_muons[imuo]->photonIso(4) << endl;
+		cout << ws << "puChargedHadronIso(4) is: " << init_muons[imuo]->puChargedHadronIso(4) << endl;
+		cout << ws << "relPfIso(4, 0) is: " << init_muons[imuo]->relPfIso(4, 0) << endl;
+		}
+	      
+	      cout << "End of EVENT" << endl << endl;
+
+	      // loop over electrons                                                                           
 	      /*
 	      for(int iele=0; iele<selectedElectrons.size() ; iele++){                         
 		cout << "    electron # " << iele << ":" << endl; 
@@ -932,49 +991,7 @@ int main (int argc, char *argv[])
                 nMuons++;                                                                                    
 	      } 
 	      */
-	      
-	      string ws = "    ";
 
-	      cout << "there is " << init_electrons.size() << " electron(s) in that event!" << endl;
-	      
-	      //loop on electron
-	      for(int iele=0; iele<init_electrons.size(); iele++){
-		cout << ws << "Pt() is: " << init_electrons[iele]->Pt() << endl;
-		cout << ws << "Eta() is: " << init_electrons[iele]->Eta() << endl;
-		cout << ws << "d0BeamSpot() is: " << init_electrons[iele]->d0BeamSpot() << endl;
-		cout << ws << "dzBeamSpot() is: " << init_electrons[iele]->dzBeamSpot() << endl;
-		cout << ws << "chargedHadronIso(3) is: " << init_electrons[iele]->chargedHadronIso(3) << endl;
-		cout << ws << "neutralHadronIso(3) is: " << init_electrons[iele]->neutralHadronIso(3) << endl;
-		cout << ws << "photonIso(3) is: " << init_electrons[iele]->photonIso(3) << endl;
-		cout << ws << "relPfIso(3, 0.5) is: " << init_electrons[iele]->relPfIso(3, 0.5) << endl;
-		cout << ws << "relPfIso(3, 0) is: " << init_electrons[iele]->relPfIso(3, 0) << endl;
-		cout << ws << "deltaEtaIn() is: " << init_electrons[iele]->deltaEtaIn() << endl;
-		cout << ws << "deltaPhiIn() is: " << init_electrons[iele]->deltaPhiIn() << endl;
-		cout << ws << "hadronicOverEm() is: " << init_electrons[iele]->hadronicOverEm() << endl;
-		cout << ws << "passConversion() is: " << init_electrons[iele]->passConversion() << endl;
-		cout << ws << "missingHits() is: " << init_electrons[iele]->missingHits() << endl;
-		}
-
-	      cout << "there is " << init_muons.size() << " muon(s) in that event!" << endl;
-
-	      // loop on muons
-	      for(int imuo=0; imuo<init_muons.size(); imuo++){
-		cout << ws << "Pt() is: " << init_muons[imuo]->Pt() << endl;
-		cout << ws << "Eta() is: " << init_muons[imuo]->Eta() << endl;
-		cout << ws << "d0BeamSpot() is: " << init_muons[imuo]->d0BeamSpot() << endl;
-		cout << ws << "dzBeamSpot() is: " << init_muons[imuo]->dzBeamSpot() << endl;
-		cout << ws << "chargedHadronIso(4) is: " << init_muons[imuo]->chargedHadronIso(4) << endl;
-		cout << ws << "neutralHadronIso(4) is: " << init_muons[imuo]->neutralHadronIso(4) << endl;
-		cout << ws << "photonIso(4) is: " << init_muons[imuo]->photonIso(4) << endl;
-		cout << ws << "relPfIso(4, 0) is: " << init_muons[imuo]->relPfIso(4, 0) << endl;
-		cout << ws << "chi2() is: " << init_muons[imuo]->chi2() << endl;
-		cout << ws << "nofTrackerLayersWithMeasurement() is: " << init_muons[imuo]->nofTrackerLayersWithMeasurement() << endl;
-		cout << ws << "nofValidMuHits() is: " << init_muons[imuo]->nofValidMuHits() << endl;
-		cout << ws << "nofValidPixelHits() is: " << init_muons[imuo]->nofValidPixelHits() << endl;
-		cout << ws << "nofMatchedStations() is: " << init_muons[imuo]->nofMatchedStations() << endl;
-		}
-	      
-	      cout << "End of EVENT" << endl << endl;
 
 	    }
 		  
