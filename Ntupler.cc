@@ -301,8 +301,8 @@ int main (int argc, char *argv[])
         cout << "running over " << datasets[d]->NofEvtsToRunOver() << endl;
         
         // start event loop
-	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
-	//for (unsigned int ievt = 0; ievt < 5000; ievt++) // run on limited number of events for faster testing.
+	//	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
+	for (unsigned int ievt = 0; ievt < 10; ievt++) // run on limited number of events for faster testing.
         {
             
             // the objects loaded in each event
@@ -467,20 +467,18 @@ int main (int argc, char *argv[])
 	    Bool_t trigged = true;
 	    //	    Bool_T 
 
-            if(1){ // ALLWAYS fill the tree
+            if(1) { // ALLWAYS fill the tree
 	      CutFlowTable.Fill(d,0,scaleFactor*lumiWeight);
-	      if(trigged==true) 
-		{
-		  CutFlowTable.Fill(d,1,scaleFactor*lumiWeight);
-		  if(0==1)
-		    {
-		      CutFlowTable.Fill(d,2,scaleFactor*lumiWeight);
-		    }
+	      if(trigged==true) {
+		CutFlowTable.Fill(d,1,scaleFactor*lumiWeight);
+		if(0==1){
+		  CutFlowTable.Fill(d,2,scaleFactor*lumiWeight);
 		}
-                myTree->Fill();
-		//		cutflow->Fill(0.5);
+	      }
+	      myTree->Fill();
+	      //		cutflow->Fill(0.5);
             }
-            
+	    
         }			//loop on events
         
         cout << "number of (weighted) selected jets: " << jeteffaverage[1] ; if(jeteffaverage[0]>0) cout << " at efficiency of " << jeteffaverage[1]/jeteffaverage[0];
