@@ -16,11 +16,19 @@
 
 
 <!-- Single file -->
-<d name="DYJets"  title="DYJetsToLL_M-50_13TeV"   add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/TopTreeProducer/prod/DY_single_file.root"/>
+<d name="DYJets"  title="DYJetsToLL_M-50_13TeV"   add="0"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/TopTreeProducer/prod/DY_single_file.root"/>
 
 
 <!-- All files -->
 <d name="DYJets"  title="DYJetsToLL_M-50_13TeV"   add="0"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/TopTreeProducer/prod/DY_all_files.root"/>
+
+
+<!-- Single file from phys14.v3 production -->
+<d name="DYJets"  title="DYJetsToLL_M-50_13TeV"   add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="/user/qpython/TopBrussels7X/CMSSW_7_3_6/src/TopBrussels/TopTreeProducer/prod/DY_single_fileV3.root"/>
+
+
+<!-- All files from phys14.v3 production -->
+<d name="DYJets"  title="DYJetsToEE_M-50_13TeV"   add="0"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_70X/phys14.v3/TopTree_CMSSW70X_phys14-v3_DYToEE_Tune4C_13TeV-pythia8_Phys14DR-AVE20BX25_tsg_PHYS14_25_V3-v1_MINIAODSIM/DYToEE_Tune4C_13TeV-pythia8/crab_TopTree_CMSSW70X_phys14-v3_DYToEE_Tune4C_13TeV-pythia8_Phys14DR-AVE20BX25_tsg_PHYS14_25_V3-v1_MINIAODSIM/150520_140511/0000/*.root"/>
 
 
 <!--All files from Jesse, !!!! <pu>=20 --> 
@@ -31,7 +39,7 @@
 
 
 <!--Signal -->
-<d name="stopTobl" title="stopTobl" add="1" color="433" ls="1" lw="2" normf="1" EqLumi="1408.6656" xsection="2008.4" PreselEff="0.0" filenames="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/TopTreeProducer/prod/Stop*.root"/>
+<d name="stopTobl" title="stopTobl" add="0" color="433" ls="1" lw="2" normf="1" EqLumi="1408.6656" xsection="2008.4" PreselEff="0.0" filenames="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/TopTreeProducer/prod/Stop*.root"/>
 
 
 </datasets>
