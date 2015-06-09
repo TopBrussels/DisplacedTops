@@ -192,7 +192,7 @@ int main (int argc, char *argv[])
         //////////////////////////////
         // My tree - variables      //
         //////////////////////////////
-	Int_t nElectronsPostCut;
+	//	Int_t nElectronsPostCut;
         Int_t nElectrons;
         Double_t pX_electron[10];
         Double_t pY_electron[10];
@@ -205,7 +205,7 @@ int main (int argc, char *argv[])
         Double_t pfIso_electron[10];
         Int_t charge_electron[10];
         
-        Int_t nMuonsPostCut;
+	//        Int_t nMuonsPostCut;
         Int_t nMuons;
         Double_t pX_muon[10];
         Double_t pY_muon[10];
@@ -416,7 +416,7 @@ int main (int argc, char *argv[])
             jeteffaverage[0]+=init_jets_corrected.size()*scaleFactor;
             jeteffaverage[1]+=selectedJets.size()*scaleFactor;
             
-	    //	    /*            
+
             // loop over electrons
             nElectrons=0;
             for(int iele=0; iele<selectedElectrons.size() && nElectrons<10; iele++){
@@ -458,7 +458,6 @@ int main (int argc, char *argv[])
                 dy_jet[nJets]=selectedJets[ijet]->vy();
                 nJets++;
             }
-	    //	    */
 
 	    Bool_t trigged = true;
 	    //	    Bool_T 
@@ -466,7 +465,8 @@ int main (int argc, char *argv[])
 
 	    // put the vector in TLorenzt Vector
 	    vector<TLorentzVector> init_muonsTLV, init_electronsTLV, postCut_muonsTLV, postCut_electronsTLV;
-	   
+
+
 	    for(int iele=0; iele<init_electrons.size() && nElectrons<10; iele++)
 	      {
 		init_electronsTLV.push_back(*init_electrons[iele]);
@@ -482,10 +482,10 @@ int main (int argc, char *argv[])
 	    // At least two displaced electrons 
 	    Bool_t passedTwoDisplacedElectrons = false;
 
-	    // electrons
+
 	    if ( selectedElectrons.size() >= 2 ){
 	      passedTwoDisplacedElectrons = true;
-	      cout << "displaced electrons!!!" << endl;
+	      cout << "Two displaced electrons!!!" << endl;
 	    }
 	    
 
@@ -494,7 +494,7 @@ int main (int argc, char *argv[])
 
 	    if (selectedMuons.size() >= 2){
 	      passedTwoDisplacedMuons = true;
-	      cout << "displaced muons!!!" << endl;
+	      cout << "Two displaced muons!!!" << endl;
 	    }
 
 	    // At least one displaced muon and one displaced electron
@@ -502,7 +502,7 @@ int main (int argc, char *argv[])
 
 	    if (selectedMuons.size() >= 1 && selectedElectrons.size() >= 1){
 	      passedOneDisplacedElectronAndMuon = true;
-	      cout << "displaced electrons and muons!!!" << endl;
+	      cout << "Displaced electron and muon!!!" << endl;
 	    }
 
 
@@ -543,12 +543,12 @@ int main (int argc, char *argv[])
 	    
 		// loop over electrons
 
-	    nElectrons=0;
-	    nMuons=0;
-	    nJets=0;
+	    //	    nElectrons=0;
+	    //	    nMuons=0;
+	    //	    nJets=0;
 
 	    //	    if (passedExtraElVeto == true && passedExtraMuVeto == true && passedElMuOS == true && passedElMuNotOverlaping ==true )
-	    if (1)
+	    if (0)
 	      {
 		for(int iele=0; iele<postCut_electronsTLV.size() ; iele++){
 		  //	    for(int iele=0; iele<init_electrons.size() ; iele++){
@@ -572,12 +572,12 @@ int main (int argc, char *argv[])
 		  pZ_muon[nMuons]=postCut_muonsTLV[imuo].Pz();
 		  E_muon[nMuons]=postCut_muonsTLV[imuo].E();
 		  /*
-		  d0_muon[nMuons]=init_muons[imuo]->d0();
-		  chargedHadronIso_muon[nMuons]=init_muons[imuo]->chargedHadronIso(4);
-		  neutralHadronIso_muon[nMuons]=init_muons[imuo]->neutralHadronIso(4);
-		  photonIso_muon[nMuons]=init_muons[imuo]->photonIso(4);
-		  pfIso_muon[nMuons]=init_muons[imuo]->relPfIso(4,0);
-		  charge_muon[nMuons]=init_muons[imuo]->charge();
+		    d0_muon[nMuons]=init_muons[imuo]->d0();
+		    chargedHadronIso_muon[nMuons]=init_muons[imuo]->chargedHadronIso(4);
+		    neutralHadronIso_muon[nMuons]=init_muons[imuo]->neutralHadronIso(4);
+		    photonIso_muon[nMuons]=init_muons[imuo]->photonIso(4);
+		    pfIso_muon[nMuons]=init_muons[imuo]->relPfIso(4,0);
+		    charge_muon[nMuons]=init_muons[imuo]->charge();
 		  */
 		  nMuons++;
 		}
@@ -641,15 +641,14 @@ int main (int argc, char *argv[])
 	      cout << "the event number is " << ievt << endl; 
 	      cout << "there is " << init_electronsTLV.size() << " electrons in that event!" << endl;
 	      cout << "there is " << init_muonsTLV.size() << " muons in that event!" << endl;
-		for(int iele=0; iele<init_electronsTLV.size(); iele++){
-		  cout << "the pt of the " << iele << "th electron is " << init_electronsTLV[iele].Pt() << endl;
-		}
+	      for(int iele=0; iele<init_electronsTLV.size(); iele++){
+		cout << "the pt of the " << iele << "th electron is " << init_electronsTLV[iele].Pt() << endl;
+	      }
 	      for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){
 		cout << "the pt of the " << imuo << "th electron is " << init_muonsTLV[imuo].Pt() << endl;  
 	      }
 	      cout << "End of EVENT" << endl << endl;
 	    }
-		  
 	    
 	    
 	    myTree->Fill();
