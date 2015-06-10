@@ -5,6 +5,7 @@ To set up the code follow the following recipe
 
 ## Firstly, set up CMSSW
 export SCRAM_ARCH=slc6_amd64_gcc491
+
 cmsrel CMSSW_7_4_2
 
 cd CMSSW_7_4_2/src
