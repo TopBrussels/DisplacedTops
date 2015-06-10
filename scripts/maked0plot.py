@@ -8,17 +8,18 @@ import ROOT
 # the analysis structure see TTree/TChain description on root.cern.ch
 ch = ROOT.TChain("tree","tree")
 # TChain accepts wildcards and ~infinite numbers of input files! So no need to merge files!
-pathToRootFile="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/HToZZBachelorProjectNtupleMaker/FreyasNtuple"
-ch.Add(pathToRootFile+"TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/*.root")
+#pathToRootFile="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/HToZZBachelorProjectNtupleMaker/FreyasNtuple"
+pathToRootFile="../"
+ch.Add(pathToRootFile+"DYJets_tree.root")
 # very loud but useful to know what variables are stored in a tree... it prints them all
 #ch.Print()
 
 # book some histograms
 h_mupt = ROOT.TH1F("h_mupt","muon p_{T}",100,0,500)
 h_mueta = ROOT.TH1F("h_mueta","muon #eta",100,-4,4)
+h_mud0 = ROOT.TH1F("h_mud0","muon |d_{0}|",200,0,2);
 h_elept = ROOT.TH1F("h_elept","ele p_{T}",100,0,500)
 h_eleeta = ROOT.TH1F("h_eleeta","ele #eta",100,-4,4)
-h_mud0 = ROOT.TH1F("h_mud0","muon |d_{0}|",200,0,2);
 h_eled0 = ROOT.TH1F("h_eled0","ele |d_{0}|",200,0,2);
 
 
@@ -69,12 +70,12 @@ h_mueta.Draw()
 t3.cd(2)
 h_mupt.Draw()
 t3.cd(3)
-h_eleeta.Draw()
+ROOT.gPad.SetLogy()
+h_mud0.Draw()
 t3.cd(4)
 h_elept.Draw()
 t3.cd(5)
-ROOT.gPad.SetLogy()
-h_mud0.Draw()
+h_eleeta.Draw()
 t3.cd(6)
 ROOT.gPad.SetLogy()
 h_eled0.Draw()
