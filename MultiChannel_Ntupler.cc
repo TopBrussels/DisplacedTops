@@ -125,31 +125,39 @@ int main (int argc, char *argv[])
     
 
      
-     // start a new table
+     // table for two electrons
      vector<string> CutFlowElectron;
      CutFlowElectron.push_back(string("Total"));
      CutFlowElectron.push_back(string("Contains at least two displaced electrons"));
-
      SelectionTable CutFlowTableElectron(CutFlowElectron, datasets);
      CutFlowTableElectron.SetLuminosity(Luminosity);
 
-     // start a new table
+     // table for two muons
      vector<string> CutFlowMuon;
      CutFlowMuon.push_back(string("Total"));
      CutFlowMuon.push_back(string("Contains at least two displaced muons"));
-
      SelectionTable CutFlowTableMuon(CutFlowMuon, datasets);
      CutFlowTableMuon.SetLuminosity(Luminosity);
 
 
-     // start a new table
+     // table for one electron and one muon
      vector<string> CutFlowElectronMuon;
      CutFlowElectronMuon.push_back(string("Total"));
-     CutFlowElectronMuon.push_back(string("Contains at least one displaced muon"));
-     CutFlowElectronMuon.push_back(string("Contains at least one displaced electron"));
-
+     //     CutFlowElectronMuon.push_back(string("Contains at least one displaced muon"));
+     //     CutFlowElectronMuon.push_back(string("Contains at least one displaced electron"));
+     CutFlowElectronMuon.push_back(string("Contains at least one displaced electron and muon"));
      SelectionTable CutFlowTableElectronMuon(CutFlowElectronMuon, datasets);
      CutFlowTableElectronMuon.SetLuminosity(Luminosity);
+
+     // table for one jet and one muon
+     vector<string> CutFlowJetMuon;
+     CutFlowJetMuon.push_back(string("Total"));
+     //     CutFlowJetMuon.push_back(string("Contains at least one jet"));
+     //     CutFlowJetMuon.push_back(string("Contains at least one displaced muon"));
+     CutFlowJetMuon.push_back(string("Contains at least one jet and one displaced muon"));    
+     SelectionTable CutFlowTableJetMuon(CutFlowJetMuon, datasets);
+     CutFlowTableJetMuon.SetLuminosity(Luminosity);
+
 
 
      if (verbose > 0){
@@ -479,54 +487,6 @@ int main (int argc, char *argv[])
 
 
 
-	    // At least two displaced electrons 
-	    Bool_t passedTwoDisplacedElectrons = false;
-
-
-	    if ( selectedElectrons.size() >= 2 ){
-	      passedTwoDisplacedElectrons = true;
-	      cout << "Two displaced electrons!!!" << endl;
-	    }
-	    
-
-	    // At least two displaced muons
-	    Bool_t passedTwoDisplacedMuons = false;
-
-	    if (selectedMuons.size() >= 2){
-	      passedTwoDisplacedMuons = true;
-	      cout << "Two displaced muons!!!" << endl;
-	    }
-
-	    // At least one displaced muon and one displaced electron
-	    Bool_t passedOneDisplacedElectronAndMuon = false;
-
-	    if (selectedMuons.size() >= 1 && selectedElectrons.size() >= 1){
-	      passedOneDisplacedElectronAndMuon = true;
-	      cout << "Displaced electron and muon!!!" << endl;
-	    }
-
-
-
-	    //making cut flow for electron
-	    CutFlowTableElectron.Fill(d,0,scaleFactor*lumiWeight);
-	    if(passedTwoDisplacedElectrons) {
-	      CutFlowTableElectron.Fill(d,1,scaleFactor*lumiWeight);
-	    }
-
-	    //making cut flow for muon
-	    CutFlowTableMuon.Fill(d,0,scaleFactor*lumiWeight);
-	    if(passedTwoDisplacedMuons) {
-	      CutFlowTableMuon.Fill(d,1,scaleFactor*lumiWeight);
-	    }
-
-	    //making cut flow for electron and muon
-	    CutFlowTableElectronMuon.Fill(d,0,scaleFactor*lumiWeight);
-	    if(passedOneDisplacedElectronAndMuon) {
-	      CutFlowTableElectronMuon.Fill(d,1,scaleFactor*lumiWeight);
-	    }
-
-
-
 
 	    //	    Filling the tree
 	    /*
@@ -649,9 +609,68 @@ int main (int argc, char *argv[])
 	      }
 	      cout << "End of EVENT" << endl << endl;
 	    }
+
+
+	    // Declare 4 bools, all of them corresponding to one of the final state namely: ee, emu, mumu, mujet
+	    Bool_t passedTwoDisplacedElectrons, passedTwoDisplacedMuons, passedOneDisplacedElectronAndMuon, passedJetAndDisplacedMuon = false;
+
+
+	    // At least two displaced electrons 
+	    if ( selectedElectrons.size() >= 2 ){
+	      passedTwoDisplacedElectrons = true;
+	      //	      cout << "Two displaced electrons!!!" << endl;
+	    }
 	    
+
+	    // At least two displaced muons
+	    if (selectedMuons.size() >= 2){
+	      passedTwoDisplacedMuons = true;
+	      //	      cout << "Two displaced muons!!!" << endl;
+	    }
+
+	    // At least one displaced muon and one displaced electron
+	    if (selectedMuons.size() >= 1 && selectedElectrons.size() >= 1){
+	      passedOneDisplacedElectronAndMuon = true;
+	      //	      cout << "Displaced electron and muon!!!" << endl;
+	    }
+
+	    // At least one displaced muon and one jet
+	    if (selectedMuons.size() >= 1 && selectedJets.size() >= 1 ){
+	      passedJetAndDisplacedMuon = true;
+	      //	      cout << "Jet and displaced Muon" << endl;
+	    }
+
+
+	    //making cut flow for electron
+	    CutFlowTableElectron.Fill(d,0,scaleFactor*lumiWeight);
+	    if(passedTwoDisplacedElectrons) {
+	      CutFlowTableElectron.Fill(d,1,scaleFactor*lumiWeight);
+	    }
+
+	    //making cut flow for muon
+	    CutFlowTableMuon.Fill(d,0,scaleFactor*lumiWeight);
+	    if(passedTwoDisplacedMuons) {
+	      CutFlowTableMuon.Fill(d,1,scaleFactor*lumiWeight);
+	    }
+
+	    //making cut flow for electron and muon
+	    CutFlowTableElectronMuon.Fill(d,0,scaleFactor*lumiWeight);
+	    if(passedOneDisplacedElectronAndMuon) {
+	      CutFlowTableElectronMuon.Fill(d,1,scaleFactor*lumiWeight);
+	    }
 	    
+	    //making cut flow for jet and muon
+	    CutFlowTableJetMuon.Fill(d,0,scaleFactor*lumiWeight);
+            if(passedJetAndDisplacedMuon) {
+              CutFlowTableElectronMuon.Fill(d,1,scaleFactor*lumiWeight);
+            }
+
+
+	    
+	    // fill the tree only if the event can end up in one of the four channels
+	    //	    if (passedTwoDisplacedElectrons || passedTwoDisplacedMuons || passedOneDisplacedElectronAndMuon || passedJetAndDisplacedMuon)
 	    myTree->Fill();
+	      
 
 	}
 
@@ -705,6 +724,10 @@ int main (int argc, char *argv[])
     CutFlowTableElectronMuon.TableCalculator(false, true, true, true, true);
     string selectiontableElectronMuon = "SelectionTableElectronMuon_table.tex";
     CutFlowTableElectronMuon.Write(selectiontableElectronMuon.c_str(), true,true,true,true,true,true,false);
+
+    CutFlowTableJetMuon.TableCalculator(false, true, true, true, true);
+    string selectiontableJetMuon = "SelectionTableJetMuon_table.tex";
+    CutFlowTableJetMuon.Write(selectiontableJetMuon.c_str(), true,true,true,true,true,true,false);
 
 
     delete tcdatasets;
