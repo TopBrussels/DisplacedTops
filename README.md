@@ -2,10 +2,12 @@ simple Ntuple maker
 
 To set up the code follow the following recipe
 
-## Firstly, set up CMSSW
-cmsrel CMSSW_7_2_1_patch1
 
-cd CMSSW_7_2_1_patch1/src
+## Firstly, set up CMSSW
+export SCRAM_ARCH=slc6_amd64_gcc491
+cmsrel CMSSW_7_4_2
+
+cd CMSSW_7_4_2/src
 
 cmsenv
 
@@ -14,7 +16,7 @@ git clone https://github.com/TopBrussels/TopTreeProducer TopBrussels/TopTreeProd
 
 cd TopBrussels/TopTreeProducer/
 
-git checkout CMSSW_70X
+git checkout CMSSW_74X
 
 cd src 
 
@@ -27,22 +29,19 @@ git clone https://github.com/TopBrussels/TopTreeAnalysisBase TopBrussels/TopTree
 
 cd TopBrussels/TopTreeAnalysisBase/
 
-git checkout master
+git checkout CMSSW_74X
 
 make
 
 cd ../../
 
 ## Get DisplacedTop directory from git
-cd TopBrussels
 
-git clone git@github.com:TopBrussels/DisplacedTops.git DisplacedTops
+git clone git@github.com:TopBrussels/DisplacedTops.git TopBrussels/DisplacedTops
 
-cd DisplacedTops
+cd TopBrussels/DisplacedTops
 
-git fetch origin
-
-git checkout CMSSW_7_2_X
+git checkout master
 
 ## Compile
 source compile.sh
