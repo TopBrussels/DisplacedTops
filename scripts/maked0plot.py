@@ -9,8 +9,8 @@ import ROOT
 ch = ROOT.TChain("tree","tree")
 # TChain accepts wildcards and ~infinite numbers of input files! So no need to merge files!
 #pathToRootFile="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/HToZZBachelorProjectNtupleMaker/FreyasNtuple"
-pathToRootFile="../"
-ch.Add(pathToRootFile+"DYJets_tree.root")
+pathToRootFile="../Craneen/"
+ch.Add(pathToRootFile+"stopTobl_m1100_Ctau10_tree.root")
 # very loud but useful to know what variables are stored in a tree... it prints them all
 #ch.Print()
 
@@ -66,9 +66,9 @@ t3=ROOT.TCanvas()
 # create sub-pads and cd() to them, draw some histograms
 t3.Divide(3,2)
 t3.cd(1)
-h_mueta.Draw()
-t3.cd(2)
 h_mupt.Draw()
+t3.cd(2)
+h_mueta.Draw()
 t3.cd(3)
 ROOT.gPad.SetLogy()
 h_mud0.Draw()
