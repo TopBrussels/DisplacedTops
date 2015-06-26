@@ -44,7 +44,14 @@ cd TopBrussels/DisplacedTops
 
 git checkout master
 
-## Compile
+## Compile and create executable from local macro
+
+cd ../../
+
+scram b -j8
+
+cd -
+
 source compile.sh
 
 # Run
