@@ -12,6 +12,8 @@ cd CMSSW_7_4_2/src
 
 cmsenv
 
+git cms-init
+
 ## Get TopTreeProducer from git
 git clone https://github.com/TopBrussels/TopTreeProducer TopBrussels/TopTreeProducer
 
@@ -19,7 +21,7 @@ cd TopBrussels/TopTreeProducer/
 
 git checkout CMSSW_74X
 
-cd src 
+cd src
 
 make
 
