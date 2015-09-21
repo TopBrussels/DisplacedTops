@@ -66,8 +66,6 @@
 
 
 #include "TopTreeAnalysisBase/Tools/interface/JetCombiner.h"
-#include "TopTreeAnalysisBase/Tools/interface/MVATrainer.h"
-#include "TopTreeAnalysisBase/Tools/interface/MVAComputer.h"
 #include "TopTreeAnalysisBase/Tools/interface/JetTools.h"
 
 using namespace std;
@@ -78,12 +76,8 @@ bool split_ttbar = false;
 bool debug = false;
 float topness;
 
-pair<float, vector<unsigned int> > MVAvals1;
-pair<float, vector<unsigned int> > MVAvals2;
-pair<float, vector<unsigned int> > MVAvals2ndPass;
-pair<float, vector<unsigned int> > MVAvals3rdPass;
 
-int nMVASuccesses=0;
+
 int nMatchedEvents=0;
 
 /// Normal Plots (TH1F* and TH2F*)
@@ -212,7 +206,7 @@ int main (int argc, char *argv[])
     cout << "domisTagEffShift: " << domisTagEffShift << endl;
 
     cout << "*************************************************************" << endl;
-    cout << " Beginning of the program for the FourTop search ! "           << endl;
+    cout << " Beginning of the program for the Displaced Top search ! "           << endl;
     cout << "*************************************************************" << endl;
 
 
@@ -271,9 +265,6 @@ int main (int argc, char *argv[])
         exit(1);
     }
 
-    bool TrainMVA = false; // If false, the previously trained MVA will be used to calculate stuff
-    bool trainEventMVA = false; // If false, the previously trained MVA will be used to calculate stuff
-    bool computeEventMVA = false;
 
 
     const char *xmlfile = xmlFileName.c_str();
@@ -320,58 +311,21 @@ int main (int argc, char *argv[])
     theDataset->SetEquivalentLuminosity(EqLumi*normf);
     datasets.push_back(theDataset);
     float Luminosity = 5.59; //pb^-1??
-    vector<string> MVAvars;
-
-    MVAvars.push_back("topness");
-    MVAvars.push_back("muonpt");
-    MVAvars.push_back("muoneta");
-    MVAvars.push_back("HTH");
-    MVAvars.push_back("HTRat");
-    MVAvars.push_back("HTb");
-    MVAvars.push_back("nLtags");
-    MVAvars.push_back("nMtags");
-    MVAvars.push_back("nTtags");
-    MVAvars.push_back("nJets");
-    MVAvars.push_back("Jet3Pt");
-    MVAvars.push_back("Jet4Pt");
-    MVAvars.push_back("HT2M");
-    MVAvars.push_back("EventSph");
-//    MVAvars.push_back("EventCen");
-    MVAvars.push_back("DiLepSph");
-//    MVAvars.push_back("DiLepCen");
-//    MVAvars.push_back("TopDiLepSph");
-//    MVAvars.push_back("TopDiLepCen");
-
-
-/*
-    MVAComputer* Eventcomputer_;
-
-    if(dilepton && Muon && Electron)
-    {
-      //        Eventcomputer_ = new MVAComputer("BDT","MVA/MasterMVA_MuEl_13thJuly.root","MasterMVA_MuEl_13thJuly",MVAvars, "_MuElJuly13th2015");
-        Eventcomputer_ = new MVAComputer("BDT","MVA/whatever.root","MasterMVA_SingleMuon_24thMarch",MVAvars, "_SingleMuon24thMarch2015");
-    }
-    else if(dilepton && Muon && !Electron)
-    {
-        Eventcomputer_ = new MVAComputer("BDT","MVA/MasterMVA_MuMu_9thJuly.root","MasterMVA_MuMu_9thJuly",MVAvars, "_MuMuJuly9th2015");
-    }
-    else if(dilepton && !Muon && Electron)
-    {
-        Eventcomputer_ = new MVAComputer("BDT","MVA/MasterMVA_ElEl_9thJuly.root","MasterMVA_ElEl_9thJuly",MVAvars, "_ElElJuly9th2015");
-    }
-
-    cout << " Initialized Eventcomputer_" << endl;
-*/
 
 
     string dataSetName;
 
-    string MVAmethod = "BDT"; // MVAmethod to be used to get the good jet combi calculation (not for training! this is chosen in the jetcombiner class)
+    // declare Scale factor related objects                                                                               
+    LeptonTools ElectronSF = new LeptonTools(true); // true-> will enable some cout
+    LeptonTools MuonsSF = new LeptonTools(true);  // true-> will enable some cout
 
-    cout <<"Instantiating jet combiner..."<<endl;
+    // load Sf
+    ElectronSF.readElectronSF();
+    double el_SfValue;
+    //    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch4/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/";
 
-    JetCombiner* jetCombiner = new JetCombiner(TrainMVA, Luminosity, datasets, MVAmethod, false);
-    cout <<"Instantiated jet combiner..."<<endl;
+    //    double el_SfValue = ElectronSF.getElectronSF(1.2,30.0,"Nominal");
+
 
 
     /////////////////////////////////
@@ -470,16 +424,6 @@ int main (int argc, char *argv[])
     MSPlot["DiLepCentrality"]                               = new MultiSamplePlot(datasets, "DiLepCentrality", 20, 0, 1, "Centrality_{ll}");
     MSPlot["TopDiLepSphericity"]                            = new MultiSamplePlot(datasets, "TopDiLepSphericity", 20, 0, 1, "Sphericity_{tll}");
     MSPlot["TopDiLepCentrality"]                            = new MultiSamplePlot(datasets, "TopDiLepCentrality", 20, 0, 1, "Centrality_{tll}");
-    //MVA Top Roconstruction Plots
-    MSPlot["MVA1TriJet"]                                    = new MultiSamplePlot(datasets, "MVA1TriJet", 30, -1.0, 0.2, "MVA1TriJet");
-    MSPlot["MVA1TriJetMass"]                                = new MultiSamplePlot(datasets, "MVA1TriJetMass", 75, 0, 500, "m_{bjj}");
-    MSPlot["MVA1DiJetMass"]                                 = new MultiSamplePlot(datasets, "MVA1DiJetMass", 75, 0, 500, "m_{bjj}");
-    MSPlot["MVA1PtRat"]                                     = new MultiSamplePlot(datasets, "MVA1PtRat", 25, 0, 2, "P_{t}^{Rat}");
-    MSPlot["MVA1BTag"]                                      = new MultiSamplePlot(datasets, "MVA1BTag", 35, 0, 1, "BTag");
-    MSPlot["MVA1AnThBh"]                                    = new MultiSamplePlot(datasets, "MVA1AnThBh", 35, 0, 3.14, "AnThBh");
-    MSPlot["MVA1AnThWh"]                                    = new MultiSamplePlot(datasets, "MVA1AnThWh", 35, 0, 3.14, "AnThWh");
-    MSPlot["MVA1dPhiThDiLep"]                               = new MultiSamplePlot(datasets, "MVA1dPhiThDiLep", 35, 0, 3.14, "dPhiThDiLep");
-    MSPlot["MVA1dRThDiLep"]                                 = new MultiSamplePlot(datasets, "MVA1dRThDiLep", 35, 0, 3.14, "dRThDiLep");
 
     //ZMass window plots
     MSPlot["ZMassWindowWidthAcc"]                           = new MultiSamplePlot(datasets, "ZMassWindowWidthAcc", 20, 0, 100, "Z mass window width");
@@ -634,6 +578,7 @@ int main (int argc, char *argv[])
         Double_t neutralHadronIso_electron[10];
         Double_t photonIso_electron[10];
         Double_t pfIso_electron[10];
+	Double_t sf_electron[10];
         Int_t charge_electron[10];
 
         Int_t nMuonsPostCut;
@@ -667,6 +612,7 @@ int main (int argc, char *argv[])
         myTree->Branch("pfIsoelectron",pfIso_electron,"pfIso_electron[nElectrons]/D");
         myTree->Branch("charge_electron",charge_electron,"charge_electron[nElectrons]/I");
         myTree->Branch("d0_electron",d0_electron,"d0_electron[nElectrons]/D");
+	myTree->Branch("sf_electron",sf_electron,"sf_electron[nElectrons]/D");
 	
 
 	// muons
@@ -793,7 +739,6 @@ int main (int argc, char *argv[])
         vector<TRootElectron*> selectedElectrons;
         vector<TRootPFJet*>    selectedJets;
         vector<TRootSubstructureJet*>    selectedFatJets;
-        vector<TRootPFJet*>    MVASelJets1;
         vector<TRootMuon*>     selectedMuons;
         vector<TRootElectron*> selectedExtraElectrons;
         vector<TRootMuon*>     selectedExtraMuons;
@@ -1100,6 +1045,10 @@ int main (int argc, char *argv[])
 	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);                   
 	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);                      
 	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();                          
+	      if (selectedElectrons[selel]->Pt() >= 35 ) {
+                cout << "filling branch" << endl;
+                sf_electron[nElectrons]=ElectronSF.getElectronSF(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),"Nominal");
+              }
 	      nElectrons++;         
             }
 
@@ -1218,12 +1167,10 @@ int main (int argc, char *argv[])
     selecTable.Write(  outputDirectory+"/FourTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
 
     fout->cd();
-    //TFile *foutmva = new TFile ("foutMVA.root","RECREATE");
     cout <<" after cd .."<<endl;
 
     string pathPNGJetCombi = pathPNG + "JetCombination/";
     mkdir(pathPNGJetCombi.c_str(),0777);
-//    if(TrainMVA)jetCombiner->Write(foutmva, true, pathPNGJetCombi.c_str());
 
 //Output ROOT file
     for(map<string,MultiSamplePlot*>::const_iterator it = MSPlot.begin();
