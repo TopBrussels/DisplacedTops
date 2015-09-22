@@ -623,7 +623,7 @@ int main (int argc, char *argv[])
         // Loop on events
         /////////////////////////////////////////////////
 
-        int itrigger = -1, previousRun = -1;
+	int itrigger = -1, previousRun = -1;
 
         int start = 0;
         cout << "teh bugz!" << endl;
@@ -642,7 +642,7 @@ int main (int argc, char *argv[])
         else
             end_d = endEvent;
 
-	//        end_d = 10000; //artifical ending for debug
+	end_d = 10000; //artifical ending for debug
         int nEvents = end_d - event_start;
         cout <<"Will run over "<<  (end_d - event_start) << " events..."<<endl;
         cout <<"Starting event = = = = "<< event_start  << endl;
@@ -747,7 +747,7 @@ int main (int argc, char *argv[])
 
 	    
 	    
-            bool trigged = false;
+
             std::string filterName = "";
             int currentRun = event->runId();
             if(previousRun != currentRun)
@@ -761,34 +761,6 @@ int main (int argc, char *argv[])
                     if (debug)cout <<"event loop 6a"<<endl;
 
                     // cout << " RUN " << event->runId() << endl;
-
-                    if( Muon && Electron )
-                        itrigger = treeLoader.iTrigger (string ("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2"), currentRun, iFile);
-                    else if( Muon && !Electron )
-                        itrigger = treeLoader.iTrigger (string ("HLT_IsoMu20_eta2p1_v2"), currentRun, iFile);
-                    else if( !Muon && Electron )
-                        itrigger = treeLoader.iTrigger (string ("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2"), currentRun, iFile);
-
-                    if(itrigger == 9999)
-                    {
-                        cout << "NO VALID TRIGGER FOUND FOR THIS EVENT (DATA) IN RUN " << event->runId() << endl;
-                        //   exit(1);
-                    }
-                }
-                else
-                {
-                    if( Muon && Electron )
-                        itrigger = treeLoader.iTrigger (string ("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1"), currentRun, iFile);
-                    else if( Muon && !Electron )
-                        itrigger = treeLoader.iTrigger (string ("HLT_IsoMu20_eta2p1_v1"), currentRun, iFile);
-                    else if( !Muon && Electron )
-                        itrigger = treeLoader.iTrigger (string ("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1"), currentRun, iFile);
-
-                    if(itrigger == 9999)
-                    {
-                        cerr << "NO VALID TRIGGER FOUND FOR THIS EVENT (" << dataSetName << ") IN RUN " << event->runId() << endl;
-                        //exit(1);
-                    }
                 }
 
             } //end previousRun != currentRun
@@ -801,12 +773,7 @@ int main (int argc, char *argv[])
             // Event selection
             ///////////////////////////////////////////////////////////
 
-            // Apply trigger selection
-            trigged = treeLoader.EventTrigged (itrigger);
-            //trigged = true;  // Disabling the HLT requirement
-            if (debug)cout<<"triggered? Y/N?  "<< trigged  <<endl;
-            if(itrigger == 9999 ) cout << "Lumi Block: " << event->lumiBlockId() << " Event: " << event->eventId() << endl;
-	    //            if(!trigged)		   continue;  //If an HLT condition is not present, skip this event in the loop.
+
             // Declare selection instance
             Run2Selection selection(init_jets, init_fatjets, init_muons, init_electrons, mets);
 
@@ -845,7 +812,6 @@ int main (int argc, char *argv[])
             if (debug)	cout <<" applying baseline event selection for cut table..."<<endl;
             // Apply primary vertex selection
             bool isGoodPV = selection.isPVSelected(vertex, 4, 24., 2);
-            if (debug)	cout <<"PrimaryVertexBit: " << isGoodPV << " TriggerBit: " << trigged <<endl;
 	    //            selecTable.Fill(d,0,scaleFactor);
 
 
@@ -871,7 +837,6 @@ int main (int argc, char *argv[])
 
             //Filling Histogram of the number of vertices before Event Selection
 
-//            if (!trigged) continue;  // Redunant check that an HLT was triggered
             if (!isGoodPV) continue; // Check that there is a good Primary Vertex
 ////            if (!(selectedJets.size() >= 6)) continue; //Selection of a minimum of 6 Jets in Event
 //
@@ -922,7 +887,7 @@ int main (int argc, char *argv[])
 	    
 	    nElectrons=0;
             for (Int_t selel =0; selel < selectedElectrons.size() && selel < 10; selel++ )
-            {
+	    {
 	      pt_electron[nElectrons]=selectedElectrons[selel]->Pt();
 	      phi_electron[nElectrons]=selectedElectrons[selel]->Phi();
 	      eta_electron[nElectrons]=selectedElectrons[selel]->Eta();
@@ -934,7 +899,6 @@ int main (int argc, char *argv[])
 	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);
 	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();
 	      if (selectedElectrons[selel]->Pt() >= 35 ) {
-                cout << "filling branch" << endl;
                 sf_electron[nElectrons]=ElectronSF.getElectronSF(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),"Nominal");
               }
 	      nElectrons++;
@@ -984,10 +948,10 @@ int main (int argc, char *argv[])
             //Filling Tree//
             //////////////////
 	    //	    /*
-	    if (nElectrons + nMuons >= 2)
-	      {
-		myTree->Fill();
-	      }
+	    if (nElectrons + nMuons >= 2){
+	      passed++;
+	      myTree->Fill();
+	    }
 	    //	    */
 	    
 	    /*
