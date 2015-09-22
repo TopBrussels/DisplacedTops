@@ -91,27 +91,9 @@ map<string,MultiSamplePlot*> MSPlot;
 /// MultiPadPlot
 map<string,MultiSamplePlot*> MultiPadPlot;
 
-struct HighestTCHEBtag
-{
-    bool operator()( TRootJet* j1, TRootJet* j2 ) const
-    {
-        return j1->btag_trackCountingHighEffBJetTags() > j2->btag_trackCountingHighEffBJetTags();
-    }
-};
-struct HighestCVSBtag
-{
-    bool operator()( TRootJet* j1, TRootJet* j2 ) const
-    {
-        return j1->btag_combinedInclusiveSecondaryVertexV2BJetTags() > j2->btag_combinedInclusiveSecondaryVertexV2BJetTags();
-    }
-};
-
 bool match;
 
 //To cout the Px, Py, Pz, E and Pt of objects
-int Factorial(int N);
-float Sphericity(vector<TLorentzVector> parts );
-float Centrality(vector<TLorentzVector> parts);
 float ElectronRelIso(TRootElectron* el, float rho);
 
 int main (int argc, char *argv[])
@@ -177,21 +159,11 @@ int main (int argc, char *argv[])
     float weightCount = 0.0;
     int eventCount = 0;
 
-    string btagger = "CSVL";
-    float scalefactorbtageff, mistagfactor;
-    float workingpointvalue = 0.679; //working points updated to 2012 BTV-POG recommendations.
-    bool bx25 = false;
 
-    if(btagger == "CSVL")
-        workingpointvalue = .244;
-    else if(btagger == "CSVM")
-        workingpointvalue = .679;
-    else if(btagger == "CSVT")
-        workingpointvalue = .898;
+    bool bx25 = false;
 
     clock_t start = clock();
 
-    BTagWeightTools * bTool = new BTagWeightTools("SFb-pt_NOttbar_payload_EPS13.txt", "CSVM") ;
 
     int doJESShift = 0; // 0: off 1: minus 2: plus
     cout << "doJESShift: " << doJESShift << endl;
@@ -199,8 +171,6 @@ int main (int argc, char *argv[])
     int doJERShift = 0; // 0: off (except nominal scalefactor for jer) 1: minus 2: plus
     cout << "doJERShift: " << doJERShift << endl;
 
-    int dobTagEffShift = 0; //0: off (except nominal scalefactor for btag eff) 1: minus 2: plus
-    cout << "dobTagEffShift: " << dobTagEffShift << endl;
 
     int domisTagEffShift = 0; //0: off (except nominal scalefactor for mistag eff) 1: minus 2: plus
     cout << "domisTagEffShift: " << domisTagEffShift << endl;
@@ -211,23 +181,6 @@ int main (int argc, char *argv[])
 
 
     string postfix = "_Run2_TopTree_Study_" + dName; // to relabel the names of the output file
-
-    if (doJESShift == 1)
-        postfix= postfix+"_JESMinus";
-    if (doJESShift == 2)
-        postfix= postfix+"_JESPlus";
-    if (doJERShift == 1)
-        postfix= postfix+"_JERMinus";
-    if (doJERShift == 2)
-        postfix= postfix+"_JERPlus";
-    if (dobTagEffShift == -1)
-        postfix= postfix+"_bTagMinus";
-    if (dobTagEffShift == 1)
-        postfix= postfix+"_bTagPlus";
-    if(domisTagEffShift == -1)
-        postfix= postfix+"_misTagMinus";
-    if(domisTagEffShift == 1)
-        postfix= postfix+"_misTagPlus";
 
     ///////////////////////////////////////
     // Configuration
@@ -665,42 +618,6 @@ int main (int argc, char *argv[])
 
 
 
-
-        //////////////////////////////////////////////////
-        /// Initialize JEC factors ///////////////////////
-        //////////////////////////////////////////////////
-
-	/*
-        vector<JetCorrectorParameters> vCorrParam;
-
-        if(dataSetName.find("Data") == 0 || dataSetName.find("data") == 0 || dataSetName.find("DATA") == 0 ) // Data!
-        {
-            JetCorrectorParameters *L1JetCorPar = new JetCorrectorParameters("../TopTreeAnalysisBase/Calibrations/JECFiles/FT_53_V21_AN4_Summer13_Data_L1FastJet_AK5PFchs.txt");
-            vCorrParam.push_back(*L1JetCorPar);
-            JetCorrectorParameters *L2JetCorPar = new JetCorrectorParameters("../TopTreeAnalysisBase/Calibrations/JECFiles/FT_53_V21_AN4_Summer13_Data_L2Relative_AK5PFchs.txt");
-            vCorrParam.push_back(*L2JetCorPar);
-            JetCorrectorParameters *L3JetCorPar = new JetCorrectorParameters("../TopTreeAnalysisBase/Calibrations/JECFiles/FT_53_V21_AN4_Summer13_Data_L3Absolute_AK5PFchs.txt");
-            vCorrParam.push_back(*L3JetCorPar);
-            JetCorrectorParameters *L2L3ResJetCorPar = new JetCorrectorParameters("../TopTreeAnalysisBase/Calibrations/JECFiles/FT_53_V21_AN4_Summer13_Data_L2L3Residual_AK5PFchs.txt");
-            vCorrParam.push_back(*L2L3ResJetCorPar);
-        }
-        else
-        {
-            JetCorrectorParameters *L1JetCorPar = new JetCorrectorParameters("../TopTreeAnalysisBase/Calibrations/JECFiles/START53_V23_Summer13_L1FastJet_AK5PFchs.txt");
-            vCorrParam.push_back(*L1JetCorPar);
-            JetCorrectorParameters *L2JetCorPar = new JetCorrectorParameters("../TopTreeAnalysisBase/Calibrations/JECFiles/START53_V23_Summer13_L2Relative_AK5PFchs.txt");
-            vCorrParam.push_back(*L2JetCorPar);
-            JetCorrectorParameters *L3JetCorPar = new JetCorrectorParameters("../TopTreeAnalysisBase/Calibrations/JECFiles/START53_V23_Summer13_L3Absolute_AK5PFchs.txt");
-            vCorrParam.push_back(*L3JetCorPar);
-        }
-        JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("../TopTreeAnalysisBase/Calibrations/JECFiles/START53_V23_Summer13_Uncertainty_AK5PFchs.txt");
-//    JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(*(new JetCorrectorParameters("JECFiles/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt", "SubTotalMC")));
-//    JetCorrectionUncertainty *jecUncTotal = new JetCorrectionUncertainty(*(new JetCorrectorParameters("JECFiles/Fall12_V7_DATA_UncertaintySources_AK5PFchs.txt", "Total")));
-
-        JetTools *jetTools = new JetTools(vCorrParam, jecUnc, true);
-
-
-	*/
 	
         //////////////////////////////////////////////////
         // Loop on events
@@ -801,32 +718,6 @@ int main (int argc, char *argv[])
             //////////////////
             //Loading Gen jets
             //////////////////
-	    /*
-            vector<TRootGenJet*> genjets;
-            if( ! (dataSetName == "Data" || dataSetName == "data" || dataSetName == "DATA" ) )
-            {
-                // loading GenJets as I need them for JER
-                genjets = treeLoader.LoadGenJet(ievt);
-            }
-            string currentFilename = datasets[d]->eventTree()->GetFile()->GetName();
-            if(previousFilename != currentFilename)
-            {
-                previousFilename = currentFilename;
-                iFile++;
-                cout<<"File changed!!! => "<<currentFilename<<endl;
-            }
-	    
-	    */
-
-            ///////////////////////////////////////////
-            //  Trigger
-            ///////////////////////////////////////////
-	    
-	    // list of tirgger 
-	    //"HLT_Mu28NoFiltersNoVtxDisplaced_Photon28_CaloIdL_v2"
-	    //"HLT_Mu33NoFiltersNoVtxDisplaced_Photon33_CaloIdL_v2"
-	    //"HLT_Mu17_Photon30_CaloIdL_L1ISO_v2"
-
 
 	    // Synch cut 1: pt, eta, veto, DR                                                                                                                           
             // Declare one bool per cut                                                                                                                                 
@@ -931,9 +822,6 @@ int main (int argc, char *argv[])
 	    selectedElectrons = init_electrons;
 
 
-            vector<TRootJet*>      selectedLBJets;
-            vector<TRootJet*>      selectedMBJets;
-            vector<TRootJet*>      selectedTBJets;
             vector<TRootJet*>      selectedLightJets;
 
             int JetCut =0;
@@ -1014,17 +902,17 @@ int main (int argc, char *argv[])
 	    nMuons=0;
             for (Int_t selmu =0; selmu < selectedMuons.size() && selmu < 10; selmu++ )
             {
-	      pt_muon[nMuons]=selectedMuons[selmu]->Pt(); 
-	      phi_muon[nMuons]=selectedMuons[selmu]->Phi();                                              
+	      pt_muon[nMuons]=selectedMuons[selmu]->Pt();
+	      phi_muon[nMuons]=selectedMuons[selmu]->Phi();
 	      eta_muon[nMuons]=selectedMuons[selmu]->Eta();
-	      E_muon[nMuons]=selectedMuons[selmu]->E();                                                
-	      d0_muon[nMuons]=selectedMuons[selmu]->d0();                                              
-	      chargedHadronIso_muon[nMuons]=selectedMuons[selmu]->chargedHadronIso(4);                 
-	      neutralHadronIso_muon[nMuons]=selectedMuons[selmu]->neutralHadronIso(4);                 
-	      photonIso_muon[nMuons]=selectedMuons[selmu]->photonIso(4);                               
-	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0);                                  
-	      charge_muon[nMuons]=selectedMuons[selmu]->charge();                                      
-	      nMuons++;                    
+	      E_muon[nMuons]=selectedMuons[selmu]->E();
+	      d0_muon[nMuons]=selectedMuons[selmu]->d0();
+	      chargedHadronIso_muon[nMuons]=selectedMuons[selmu]->chargedHadronIso(4);
+	      neutralHadronIso_muon[nMuons]=selectedMuons[selmu]->neutralHadronIso(4);
+	      photonIso_muon[nMuons]=selectedMuons[selmu]->photonIso(4);
+	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0);
+	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
+	      nMuons++;
 
 	    }
 
@@ -1036,20 +924,20 @@ int main (int argc, char *argv[])
             for (Int_t selel =0; selel < selectedElectrons.size() && selel < 10; selel++ )
             {
 	      pt_electron[nElectrons]=selectedElectrons[selel]->Pt();
-	      phi_electron[nElectrons]=selectedElectrons[selel]->Phi(); 
+	      phi_electron[nElectrons]=selectedElectrons[selel]->Phi();
 	      eta_electron[nElectrons]=selectedElectrons[selel]->Eta();
-	      E_electron[nElectrons]=selectedElectrons[selel]->E();                                    
-	      d0_electron[nElectrons]=selectedElectrons[selel]->d0();                                  
-	      chargedHadronIso_electron[nElectrons]=selectedElectrons[selel]->chargedHadronIso(3);     
-	      neutralHadronIso_electron[nElectrons]=selectedElectrons[selel]->neutralHadronIso(3);     
-	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);                   
-	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);                      
-	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();                          
+	      E_electron[nElectrons]=selectedElectrons[selel]->E();
+	      d0_electron[nElectrons]=selectedElectrons[selel]->d0();
+	      chargedHadronIso_electron[nElectrons]=selectedElectrons[selel]->chargedHadronIso(3);
+	      neutralHadronIso_electron[nElectrons]=selectedElectrons[selel]->neutralHadronIso(3);
+	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);
+	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);
+	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();
 	      if (selectedElectrons[selel]->Pt() >= 35 ) {
                 cout << "filling branch" << endl;
                 sf_electron[nElectrons]=ElectronSF.getElectronSF(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),"Nominal");
               }
-	      nElectrons++;         
+	      nElectrons++;
             }
 
 
@@ -1203,79 +1091,6 @@ int main (int argc, char *argv[])
     cout << "********************************************" << endl;
 
     return 0;
-}
-
-int Factorial(int N = 1)
-{
-    int fact = 1;
-    for( int i=1; i<=N; i++ )
-        fact = fact * i;  // OR fact *= i;
-    return fact;
-}
-
-float Sphericity(vector<TLorentzVector> parts )
-{
-    if(parts.size()>0)
-    {
-        double spTensor[3*3] = {0.,0.,0.,0.,0.,0.,0.,0.,0.};
-        int counter = 0;
-        float tensorNorm = 0, y1 = 0, y2 = 0, y3 = 0;
-
-        for(int tenx = 0; tenx < 3; tenx++)
-        {
-            for(int teny = 0; teny < 3; teny++)
-            {
-                for(int selpart = 0; selpart < parts.size(); selpart++)
-                {
-
-                    spTensor[counter] += ((parts[selpart][tenx])*(parts[selpart][teny]));
-//                    if((tenx == 0 && teny == 2) || (tenx == 2 && teny == 1))
-//                    {
-//                    cout << "nan debug term " << counter+1 << ": " << (parts[selpart][tenx])*(parts[selpart][teny]) << endl;
-//                    cout << "Tensor Building Term " << counter+1 << ": " << spTensor[counter] << endl;
-//                    }
-                    if(tenx ==0 && teny == 0)
-                    {
-                        tensorNorm += parts[selpart].Vect().Mag2();
-                    }
-                }
-                if((tenx == 0 && teny == 2) || (tenx == 2 && teny == 1))
-                {
-//                    cout << "Tensor term pre-norm " << counter+1 << ": " << spTensor[counter] << endl;
-                }
-                spTensor[counter] /= tensorNorm;
-//                cout << "Tensor Term " << counter+1 << ": " << spTensor[counter] << endl;
-                counter++;
-            }
-        }
-        TMatrixDSym m(3, spTensor);
-        //m.Print();
-        TMatrixDSymEigen me(m);
-        TVectorD eigenval = me.GetEigenValues();
-        vector<float> eigenVals;
-        eigenVals.push_back(eigenval[0]);
-        eigenVals.push_back(eigenval[1]);
-        eigenVals.push_back(eigenval[2]);
-        sort(eigenVals.begin(), eigenVals.end());
-        //cout << "EigenVals: "<< eigenVals[0] << ", " << eigenVals[1] << ", " << eigenVals[2] << ", " << endl;
-        float sp = 3.0*(eigenVals[0] + eigenVals[1])/2.0;
-        //cout << "Sphericity: " << sp << endl;
-        return sp;
-    }
-    else
-    {
-        return 0;
-    }
-}
-float Centrality(vector<TLorentzVector> parts)
-{
-    float E = 0, ET = 0;
-    for(int selpart = 0; selpart < parts.size(); selpart++)
-    {
-        E += parts[selpart].E();
-        ET += parts[selpart].Et();
-    }
-    return ET/E;
 }
 
 float ElectronRelIso(TRootElectron* el, float rho)
