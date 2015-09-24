@@ -631,6 +631,7 @@ int main (int argc, char *argv[])
 
         cout <<"Number of events in total dataset = "<<  ending  <<endl;
 
+
         int event_start = startEvent;
         if (verbose > 1) cout << " - Loop over events " << endl;
 
@@ -642,7 +643,7 @@ int main (int argc, char *argv[])
         else
             end_d = endEvent;
 
-	end_d = 10000; //artifical ending for debug
+	//	end_d = 10000; //artifical ending for debug
         int nEvents = end_d - event_start;
         cout <<"Will run over "<<  (end_d - event_start) << " events..."<<endl;
         cout <<"Starting event = = = = "<< event_start  << endl;
@@ -651,6 +652,7 @@ int main (int argc, char *argv[])
             cout << "Starting event larger than number of events.  Exiting." << endl;
             return 1;
         }
+
 
         //define object containers
         vector<TRootElectron*> selectedElectrons;
@@ -667,7 +669,7 @@ int main (int argc, char *argv[])
         //////////////////////////////////////
         // Begin Event Loop
         //////////////////////////////////////
-
+	
         for (unsigned int ievt = event_start; ievt < end_d; ievt++)
         {
 	  // Set default value for evertything that goes in the Tree
@@ -677,7 +679,7 @@ int main (int argc, char *argv[])
 	  
 	  
             double ievt_d = ievt;
-            currentfrac = ievt_d/end_d;
+	    currentfrac = ievt_d/end_d;
             if (debug)cout <<"event loop 1"<<endl;
 
             if(ievt%1000 == 0)
@@ -840,7 +842,7 @@ int main (int argc, char *argv[])
             if (!isGoodPV) continue; // Check that there is a good Primary Vertex
 ////            if (!(selectedJets.size() >= 6)) continue; //Selection of a minimum of 6 Jets in Event
 //
-//          cout <<"Number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  "<< nMu <<"  "  <<nEl<<" "<< selectedJets.size()   <<"  " <<  nLtags   <<"  "<<JetCut  <<"  "<<Muon<<" "<<Electron<<endl;
+	    if (debug) cout <<"Number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  "<< init_muons.size() <<"  "  <<init_electrons.size()<<" "<< selectedJets.size()   <<"  "   <<"  "<<JetCut  <<"  "<<Muon<<" "<<Electron<<endl;
 
 
             if (debug)	cout <<" applying baseline event selection..."<<endl;
@@ -877,13 +879,17 @@ int main (int argc, char *argv[])
 	      photonIso_muon[nMuons]=selectedMuons[selmu]->photonIso(4);
 	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0);
 	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
+	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
 	      nMuons++;
+
 
 	    }
 
             //////////////////////////
             // Electron Based Plots //
             //////////////////////////
+	    if (debug) cout << "before electrons loop" << endl;
+
 	    
 	    nElectrons=0;
             for (Int_t selel =0; selel < selectedElectrons.size() && selel < 10; selel++ )
@@ -898,9 +904,10 @@ int main (int argc, char *argv[])
 	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);
 	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);
 	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();
-	      if (selectedElectrons[selel]->Pt() >= 35 ) {
-                sf_electron[nElectrons]=ElectronSF.getElectronSF(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),"Nominal");
-              }
+	      //	      if (selectedElectrons[selel]->Pt() >= 35 ) {
+	      //                sf_electron[nElectrons]=ElectronSF.getElectronSF(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),"Nominal");
+	      //              }
+	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron[nElectrons] << endl;
 	      nElectrons++;
             }
 
@@ -908,6 +915,7 @@ int main (int argc, char *argv[])
             //////////////////////
             // Jets Based Plots //
             //////////////////////
+	    if (debug) cout << "before jets loop" << endl;
 
             for (Int_t seljet1 =0; seljet1 < selectedJets.size(); seljet1++ )
             {
@@ -948,10 +956,12 @@ int main (int argc, char *argv[])
             //Filling Tree//
             //////////////////
 	    //	    /*
+	    if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
 	    if (nElectrons + nMuons >= 2){
 	      passed++;
 	      myTree->Fill();
 	    }
+	    if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
 	    //	    */
 	    
 	    /*
