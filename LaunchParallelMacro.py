@@ -6,7 +6,8 @@ import glob
 
 #tree = ET.ElementTree(file='config/Run2DiLepton_TOPTREES.xml')
 #tree = ET.ElementTree(file='config/TestFaco.xml')
-tree = ET.ElementTree(file='config/FullMcBkgdSamples.xml')
+#tree = ET.ElementTree(file='config/FullMcBkgdSamples.xml')
+tree = ET.ElementTree(file='config/FullMcBkgdSamplesV6.xml')
 
 root = tree.getroot()
 datasets = root.find('datasets')
