@@ -902,36 +902,40 @@ int main (int argc, char *argv[])
             //////////////////
 	    //	    /*
 	    if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
-	    if (nElectrons + nMuons >= 2){
+	    if (nElectrons == 1 && nMuons == 1){
 	      passed++;
-	      myTree->Fill();
+	      //	      myTree->Fill();
 	    }
 	    if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
 	    //	    */
 	    
-	    /*
+	    //	    /*
 	    for(int iele=0; iele<selectedElectrons.size(); iele++){
-              if (abs(selectedElectrons[iele]->Pt()) > 25){
+              if (abs(selectedElectrons[iele]->Pt()) > 40){
                 passedPtEl = true;
                 if (abs(selectedElectrons[iele]->Eta()) < 2.5){
                   passedEtaEl = true;
                   for(int imuo=0; imuo<selectedMuons.size(); imuo++){
-                    if (abs(selectedMuons[imuo]->Pt()) > 25){
+                    if (abs(selectedMuons[imuo]->Pt()) > 40){
                       passedPtMu=true;
                       if (abs(selectedMuons[imuo]->Eta()) < 2.5){
                         passedEtaMu=true;
-			myTree->Fill();
+		
+			/*
                         if(postCut_electronsTLV.size() == 1) {
                           passedExtraElVeto=true;
                           if(postCut_muonsTLV.size() == 1){
                             passedExtraMuVeto=true;
-                            if(selected_electrons[iele]->charge() * selected_muons[imuo]->charge() == -1){ // to do! make a new el/muon collection                      
+			*/
+                            if(selectedElectrons[iele]->charge() * selectedMuons[imuo]->charge() == -1){ // to do! make a new el/muon collection                      
                               passedElMuOS=true;
+			      myTree->Fill();
+			      /*
                               if(postCut_electronsTLV[iele].DeltaR(postCut_muonsTLV[imuo]) > 0.5){
                                 passedElMuNotOverlaping=true;
                               }
                             }
-                          }
+			  } */
                         }
                       }
                     }
@@ -939,7 +943,7 @@ int main (int argc, char *argv[])
                 }
               }
             }
-*/
+
 
 	    //cout << "ievt is " << ievt << " and end_d is " << end_d << endl;
 
