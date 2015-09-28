@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<datasets>
+
+<d name="NP_overlay_Data"  title="Fake Data"   add="0"   color="1"  ls="1"  lw="2" normf="1"  EqLumi="1" xsection="1"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/crab_TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_TOPTREE_v4/141205_074006/0000/TOPTREE_*.root"/>
+
+<d name="testFaco" title="NLO SM tttt"  add="1"   color="40" ls="1"  lw="2" normf="1"  EqLumi="4925535.5" xsection=".008823" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/CRAB_PrivateMC/FOURTOP_NLO_13TeV_aMCatNLO_LHE_pythia8_miniAOD_CRAB3_v3/141201_105227/0000/TOPTREE_*.root"  CombineName="tttt__nominal"/>
+
+<d name="ttttLO" title="LO SM tttt"  add="0"   color="50" ls="0"  lw="2" normf="1"  EqLumi="4925535.53" xsection=".008995" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/TopTrees/72x/FOURTOP_LO_TOPTREE.root"  CombineName="tttt__nominal"/>
+
+<d name="TToLeptons"  title="Single t"   add="0"   color="633"  ls="0"  lw="2" normf="1"  EqLumi="223000.0" xsection="103.04"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/crab_TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_TOPTREE_v4/141205_074006/0000/TOPTREE_*.root"  CombineName="tt__nominal"/>
+
+<d name="TbarToLeptons"  title="Single tbar"   add="0"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="223000.0" xsection="103.04"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/TBarToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola/crab_TbarToLeptons_TOPTREE_v1/141125_144851/0000/TOPTREE_*.root" CombineName="tt__nominal"/>
+
+<d name="T_tW"  title="t tW"  add="0"   color="633"  ls="0"  lw="2" normf="1"  EqLumi="27699.43" xsection="35.6"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/crab_T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_PHYS14_TOPTREE_v1/150122_085329/0000/TOPTREE_*.root" CombineName="Ttw__nominal"/>
+
+<d name="Tbar_tW"  title="tbar tW"  add="0"   color="633"  ls="0"  lw="2" normf="1"  EqLumi="27297.75" xsection="35.6"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/crab_Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_PHYS14_TOPTREE_v1/150122_092929/0000/*.root"  CombineName="Ttw__nominal"/>
+
+<d name="SingleTop_tW"  title="SingleTop tW"  add="0"   color="7"  ls="0"  lw="2" normf="1"  EqLumi="27498.59" xsection="35.6"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/crab_Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_PHYS14_TOPTREE_v1/150122_092929/0000/*.root"  CombineName="Ttw__nominal"/>
+
+<d name="TbarToLeptons-tchannel"  title="tbar-tchannel"   add="0"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="32464.3" xsection="61.6"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola/crab_TbarToLeptons_t-channel_TOPTREE_v1/141204_092219/0000/TOPTREE_*.root"  CombineName="tt__nominal"/>
+
+<d name="TToLeptons-tchannel"  title="t-tchannel"   add="0"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="38597.7" xsection="103.4"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/TToLeptons_t-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola/crab_TToLeptons_t-channel_TOPTREE_v1/141204_114613/0000/TOPTREE_*.root"  CombineName="tt__nominal"/>
+
+<d name="DYJets"  title="DY+jets"   add="0"   color="214"  ls="1"  lw="2" normf="1"  EqLumi="1408.6656" xsection="2008.4"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/DYJetsToLL_M-50_13TeV-madgraph-pythia8/crab_DYJetsToLL_M-50_13TeV-madgraph-pythia8_PHYS14_TOPTREE_v4/150126_091210/0000/TOPTREE_*.root"  CombineName="DY__nominal"/>
+
+<d name="WJets"  title="WJets"   add="0"   color="413"  ls="1"  lw="2" normf="1"  EqLumi="1408.6656" xsection="2008.4"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/lbeck/WJetsToLNu_13TeV-madgraph-pythia8-tauola/crab_WJetsToLNu_13TeV-madgraph-pythia8_PHYS14_TOPTREE_v4/150130_151546/0000/TOPTREE_*.root"  CombineName="W__nominal"/>
+
+<d name="TTJets"  title="t\bar{t}+jets MadGraph PHYS14"   add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="30594.15" xsection="831.76"   PreselEff="0.0"   filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/crab_TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_TOPTREE_v4/141205_074006/0000/TOPTREE_*.root"  CombineName="tt__nominal"/>
+
+</datasets>
+
+
+<analysis>
+<a type="Collections" PVCollection="PrimaryVertex" JetType="2" JetCollection="PFJets_slimmedJets" METType="2" METCollection="PFMET_slimmedMETs" MuonCollection="Muons_slimmedMuons" ElectronCollection="Electrons_slimmedElectrons" loadGenJetCollection="0" GenJetCollection="GenJets_slimmedGenJets" loadGenEventCollection="0" GenEventCollection="GenEvent" loadNPGenEventCollection="0" NPGenEventCollection="NPGenEvent" loadMCParticles="1" MCParticlesCollection="MCParticles" TrackMETCollection="" loadTrackMET="0"/>
+</analysis>
