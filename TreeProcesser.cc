@@ -31,16 +31,18 @@ map<string,TNtuple*> nTuple;
 map<string,TTree*> ttree;
 map<string,MultiSamplePlot*> MSPlot;
 
+
+// functions prototype
 std::string intToStr (int number);
-
-void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string CraneenPath);
-
+void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath);
+void MSPCreator ();
 
 
 
 int main()
 {
     int NumberOfBins = 3;	//fixed width nBins
+
 
     //------- Set Channel --------//
     bool DileptonMuEl = false;
@@ -80,7 +82,6 @@ int main()
     {
 
         xmlFileName = "config/Run2SingleLepton_samples.xml";
-        xmlFileNameSys = "config/Run2SingleLepton_samples_Sys.xml";
 	//	CraneenPath = "/user/lbeck/ThirteenTeV/CMSSW_7_2_1_patch1/src/TopBrussels/FourTop/Craneens_Mu/Craneens24_3_2015_merge/Craneen_";// faco here we set the craneen path
 	CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
     }
@@ -93,133 +94,147 @@ int main()
 
 
 
-    cout << "HERE!!!!" << endl;
-    //        SystematicsAnalyser(NumberOfBins, lBound, uBound, leptoAbbr, false, shapefile, errorfile, channel, VoI, xmlFileNameSys, CraneenPath);
+
     cout << "CraneenPath is " << CraneenPath << endl;
     cout << "xmlFileName is " << xmlFileName << endl;
-    //    DatasetPlotter(NumberOfBins, lBound, uBound, leptoAbbr, shapefile, errorfile, channel, VoI, xmlFileName, CraneenPath);
-    //DatasetPlotter(10, 0, 10, "nElectrons", "config/Run2SingleLepton_samples.xml","/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/");//xmlFileName, CraneenPath);
-    DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", "config/Run2SingleLepton_samples.xml","/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/");//xmlFileName, CraneenPath);
-    DatasetPlotter(100, 0, 1000, "pt_muon[nMuons]", "config/Run2SingleLepton_samples.xml","/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/");//xmlFileName, CraneenPath);
-    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", "config/Run2SingleLepton_samples.xml","/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/");//xmlFileName, CraneenPath);
+
+    DatasetPlotter(10, 0, 10, "nElectrons", xmlFileName,CraneenPath);
+    DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", xmlFileName,CraneenPath);
+    DatasetPlotter(100, 0, 1000, "pt_muon[nMuons]", xmlFileName,CraneenPath);
+    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
+
+    MSPCreator ();
+
 
 
 }
 
 
-void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string CraneenPath)
+void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath)
 {
-    cout<<""<<endl;
-    cout<<"RUNNING NOMINAL DATASETS"<<endl;
-    cout<<""<<endl;
+  Bool_t debug = false;
+  cout<<""<<endl;
+  cout<<"RUNNING NOMINAL DATASETS"<<endl;
+  cout<<""<<endl;
 
-
-    const char *xmlfile = xmlNom.c_str();
-    cout << "used config file: " << xmlfile << endl;
-
-    string pathPNG = "myOutput";
-    pathPNG += "_MSPlots/";
-    mkdir(pathPNG.c_str(),0777);
-    cout <<"Making directory :"<< pathPNG  <<endl;		//make directory
-
-    ///////////////////////////////////////////////////////////// Load Datasets //////////////////////////////////////////////////////////////////////cout<<"loading...."<<endl;
-    TTreeLoader treeLoader;
-    vector < Dataset* > datasets; 					//cout<<"vector filled"<<endl;
-    treeLoader.LoadDatasets (datasets, xmlfile);	//cout<<"datasets loaded"<<endl;
-
+  // vector with size equals to the number of time we call the DatasetPlotter function
+  vector<string> vect_of_plot(4);
+  vect_of_plot = {"nElectrons", "pt_electron[nElectrons]", "pt_muon[nMuons]", "d0_muon[nMuons]"};  
+  
+  const char *xmlfile = xmlNom.c_str();
+  cout << "used config file: " << xmlfile << endl;
+  
+  string pathPNG = "myOutput";
+  pathPNG += "_MSPlots/";
+  mkdir(pathPNG.c_str(),0777);
+  cout <<"Making directory :"<< pathPNG  <<endl;		//make directory
+  
+  ///////////////////////////////////////////////////////////// Load Datasets //////////////////////////////////////////////////////////////////////cout<<"loading...."<<endl;
+  TTreeLoader treeLoader;
+  vector < Dataset* > datasets; 					//cout<<"vector filled"<<endl;
+  treeLoader.LoadDatasets (datasets, xmlfile);	//cout<<"datasets loaded"<<endl;
+  
     //***************************************************CREATING PLOTS****************************************************
-    TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
-    outfile->cd();
-    string plotname = sVarofinterest;   ///// Non Jet Split plot
-    MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, sVarofinterest.c_str());
+  TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
+  outfile->cd();
+  string plotname = sVarofinterest;   ///// Non Jet Split plot
+  // make for loop here!!!
+    MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, sVarofinterest.c_str()); 
 
-    //***********************************************OPEN FILES & GET NTUPLES**********************************************
-    string dataSetName, filepath;
-    int nEntries;
-    float ScaleFactor, NormFactor, Luminosity;
-    int varofInterest;
-    double varofInterest_double [20];
-
-    string varofinterest_iterator;
-    string varofinterest_fixed;
-
-
-
-    //    string sdelim = " []";
-    //    char* delim =  " []";
+  
+  //***********************************************OPEN FILES & GET NTUPLES**********************************************
+  string dataSetName, filepath;
+  int nEntries;
+  float ScaleFactor, NormFactor, Luminosity;
+  int varofInterest;
+  double varofInterest_double [20];
+  
+  string varofinterest_iterator;
+  string varofinterest_fixed;
     
-    vector<string> v;
-      // to avoid modifying original string
-      // first duplicate the original string and return a char pointer then free the memory
+  
+  
+  //    string sdelim = " []";
+  //    char* delim =  " []";
+  
+  vector<string> v;
+  // to avoid modifying original string
+  // first duplicate the original string and return a char pointer then free the memory
+  
+  char delim[] = " []";
+  char * dup = strdup(sVarofinterest.c_str());
+  char * token = strtok(dup, delim);
+  while(token != NULL){
+    v.push_back(string(token));
+    // the call is treated as a subsequent calls to strtok:
+    // the function continues from where it left in previous invocation
+    token = strtok(NULL, delim);
+  }
+  free(dup);
 
-    char delim[] = " []";
-    char * dup = strdup(sVarofinterest.c_str());
-    char * token = strtok(dup, delim);
-    while(token != NULL){
-      v.push_back(string(token));
-      // the call is treated as a subsequent calls to strtok:
-      // the function continues from where it left in previous invocation
-      token = strtok(NULL, delim);
-    }
-    free(dup);
+  cout << v[0] << "  " << v[1] << endl;
+  
 
-    cout << v[0] << "  " << v[1] << endl;
-
-
+  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
 
     //    cout << varofinterest_fixed << " " << varofinterest_iterator << endl;
-
-    for (int d = 0; d < datasets.size(); d++)  //Loop through datasets
+  
+  for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
     {
-        dataSetName = datasets[d]->Name();
-        cout<<"Dataset:  :"<<dataSetName<<endl;
-
-	//        filepath = CraneenPath+dataSetName + "_Run2_TopTree_Study.root";
-        filepath = CraneenPath+dataSetName + ".root";
-        //cout<<"filepath: "<<filepath<<endl;
-
-        FileObj[dataSetName.c_str()] = new TFile((filepath).c_str(),"READ"); //create TFile for each dataset
-
-	//        string nTuplename = "Craneen__"+ leptoAbbr;
-	//        nTuple[dataSetName.c_str()] = (TNtuple*)FileObj[dataSetName.c_str()]->Get(nTuplename.c_str()); //get ntuple for each dataset
-	//        nEntries = (int)nTuple[dataSetName.c_str()]->GetEntries();
-
-	string TTreename = "tree";	
-        ttree[dataSetName.c_str()] = (TTree*)FileObj[dataSetName.c_str()]->Get(TTreename.c_str()); //get ttre for each dataset
-	nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
-        cout<<"                 nEntries: "<<nEntries<<endl;
-
+      dataSetName = datasets[d]->Name();
+      cout<<"Dataset:  :"<<dataSetName<<endl;
+      
+      //        filepath = CraneenPath+dataSetName + "_Run2_TopTree_Study.root";
+      filepath = CraneenPath+dataSetName + ".root";
+      //      filepath = dataSetName + ".root";//faco in
+      //cout<<"filepath: "<<filepath<<endl;
 	
+      FileObj[dataSetName.c_str()] = new TFile((filepath).c_str(),"READ"); //create TFile for each dataset
+      
+      //        string nTuplename = "Craneen__"+ leptoAbbr;
+      //        nTuple[dataSetName.c_str()] = (TNtuple*)FileObj[dataSetName.c_str()]->Get(nTuplename.c_str()); //get ntuple for each dataset
+      //        nEntries = (int)nTuple[dataSetName.c_str()]->GetEntries();
+      
+      string TTreename = "tree";	
+      ttree[dataSetName.c_str()] = (TTree*)FileObj[dataSetName.c_str()]->Get(TTreename.c_str()); //get ttre for each dataset
+      nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
+      cout<<"                 nEntries: "<<nEntries<<endl;
+      
+      
+      if (v.size() == 2){
+	ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&varofInterest); 
+	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),varofInterest_double);
+      }
 
-	//        ttree[dataSetName.c_str()]->SetBranchAddress(sVarofinterest.c_str(),&varofInterest);
-	//        ttree[dataSetName.c_str()]->SetBranchAddress("ScaleFactor",&ScaleFactor);
-	//        ttree[dataSetName.c_str()]->SetBranchAddress("NormFactor",&NormFactor);
-	//        ttree[dataSetName.c_str()]->SetBranchAddress("Luminosity",&Luminosity);
+      else if (v.size() == 1){
+	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest);
+      }
+      else {
+	cout << "Vector of string does not have the good size!!!" << endl;
+	}
+	     
+      //        ttree[dataSetName.c_str()]->SetBranchAddress(sVarofinterest_double.c_str(),&varofInterest_double);
+      //	ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons",&nElectrons);
+      
+      bool isData= false;
+      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
+      
 
-	//        ttree[dataSetName.c_str()]->SetBranchAddress(sVarofinterest.c_str(),&varofInterest);
-        ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&varofInterest); 
-        ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),varofInterest_double);
-	//        ttree[dataSetName.c_str()]->SetBranchAddress(sVarofinterest_double.c_str(),&varofInterest_double);
-	//	ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons",&nElectrons);
-
-	bool isData= false;
-	if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
-	  
-
-	ScaleFactor = 1;
-	Luminosity =1;
-	
-        //for fixed bin width
-        histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
-        /////*****loop through entries and fill plots*****
-        for (int j = 0; j<nEntries; j++)
+      ScaleFactor = 1;
+      Luminosity =1;
+      
+      //for fixed bin width
+      histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
+      /////*****loop through entries and fill plots*****
+      for (int j = 0; j<nEntries; j++)
         {
-            ttree[dataSetName.c_str()]->GetEntry(j);
-            //artificial Lumi
-	    //	    cout << "Var of interest is " << varofInterest << endl;
-	    
-	    for (int i_object =0 ; i_object < varofInterest ;i_object ++ )
-	      {
+	  ttree[dataSetName.c_str()]->GetEntry(j);
+	  //artificial Lumi
+	  //	    cout << "Var of interest is " << varofInterest << endl;
+	  
+	  for (int i_object =0 ; i_object < varofInterest ;i_object ++ )
+	    {
+	      if (debug) cout << "varofInterest is " << varofInterest << endl;
 	      if (isData)
 		{
 		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, NormFactor*ScaleFactor*Luminosity);
@@ -231,50 +246,71 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, ScaleFactor*Luminosity);
 		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],NormFactor*ScaleFactor*Luminosity);
 		}
-	      }
+	      
+	    }
 
-        }
-
+	}
+      
  
-        TCanvas *canv = new TCanvas(("canv"+v[0]).c_str(),("canv"+v[0]).c_str());
-
-
-        histo1D[dataSetName.c_str()]->Draw();
-        string writename = "";
-        if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos)
+      TCanvas *canv = new TCanvas(("canv"+v[0]).c_str(),("canv"+v[0]).c_str());
+      
+      
+      histo1D[dataSetName.c_str()]->Draw();
+      string writename = "";
+      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos)
         {
-            writename = "data_nominal";
+	  writename = "data_nominal";
         }
-        else
+      else
         {
-            writename = dataSetName +"__nominal";
+	  writename = dataSetName +"__nominal";
         }
-        //cout<<"writename  :"<<writename<<endl;
-        histo1D[dataSetName.c_str()]->Write((writename).c_str());
-
-        canv->SaveAs((pathPNG+dataSetName+".pdf").c_str());
-        canv->SaveAs((pathPNG+dataSetName+".C").c_str());
+      //cout<<"writename  :"<<writename<<endl;
+      histo1D[dataSetName.c_str()]->Write((writename).c_str());
+      
+      canv->SaveAs((pathPNG+dataSetName+".pdf").c_str());
+      canv->SaveAs((pathPNG+dataSetName+".C").c_str());
     }
 
 
-    treeLoader.UnLoadDataset();
+  treeLoader.UnLoadDataset();
+  
 
-
-    for(map<string,MultiSamplePlot*>::const_iterator it = MSPlot.begin(); it != MSPlot.end(); it++)
-    {
-        string name = it->first;
-        MultiSamplePlot *temp = it->second;
-        temp->Draw(sVarofinterest.c_str(), 0, false, false, false, 100);
-	temp->Write(outfile, "MyMSP"+v[0], false,"myOutput_MSPlots" , "png");
-    }
-    outfile->Write("kOverwrite");
 };
+
+
+// function that writes all the MSPlots created in a root file
+void MSPCreator (){
+  Bool_t debug = false;
+
+  string pathPNG = "myOutput";
+  pathPNG += "_MSPlots/";
+  mkdir(pathPNG.c_str(),0777);
+  cout <<"Making directory :"<< pathPNG  <<endl;		//make directory
+  
+  TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
+  outfile->cd();
+
+  // Loop over all the MSPlots
+  for(map<string,MultiSamplePlot*>::const_iterator it = MSPlot.begin(); it != MSPlot.end(); it++)
+    {
+      string name = it->first;
+      MultiSamplePlot *temp = it->second;
+      if (debug){
+	cout << "Saving the MSP" << endl;
+	cout << " and it->first is " << it->first << endl;
+      }
+      temp->Draw("MyMSP_"+it->first, 0, false, false, false, 100);
+      temp->Write(outfile, "MyMSP", false,"myOutput_MSPlots" , "png");
+    }
+  outfile->Write("kOverwrite");
+}
 
 
 
 std::string intToStr (int number){
-    std::ostringstream buff;
-    buff<<number;
-    return buff.str();
+  std::ostringstream buff;
+  buff<<number;
+  return buff.str();
 }
 
