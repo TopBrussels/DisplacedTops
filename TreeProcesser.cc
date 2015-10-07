@@ -62,29 +62,28 @@ int main()
 
     if(1)
     {
-      //xmlFileName = "config/Run2SingleLepton_samples.xml";
       xmlFileName = "config/FullMcBkgdSamplesV6TreeProc.xml";
+     
+
       //      CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
 
-      CraneenPath="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
+      //      CraneenPath="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
     }
 
-    std::string slumiScale = intToStr(lumiScale);
-
-
-    cout << "CraneenPath is " << CraneenPath << endl;
+    //    cout << "CraneenPath is " << CraneenPath << endl;
     cout << "xmlFileName is " << xmlFileName << endl;
 
 
 
     // calling datasetPlotter to create MSPplots
+
     // electron plots
-    DatasetPlotter(10, 0, 10, "nElectrons", xmlFileName,CraneenPath);
+    DatasetPlotter(11, -0.5, 10.5, "nElectrons", xmlFileName,CraneenPath);
     DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", xmlFileName,CraneenPath);
     DatasetPlotter(100, -0.1, 0.1, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
 
     // muon plots
-    DatasetPlotter(10, 0, 10, "nMuons", xmlFileName,CraneenPath);
+    DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
     DatasetPlotter(100, 0, 1000, "pt_muon[nMuons]", xmlFileName,CraneenPath);
     DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
 
@@ -182,7 +181,9 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       }
 
       else if (v.size() == 1){
+	//	if (debug)	cout << "v.size is to 1" << " and v[0] is " << v[0] << endl ;
 	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest);
+	
       }
       else {
 	cout << "Vector of string does not have the good size!!!" << endl;
@@ -195,7 +196,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
       
       ScaleFactor = 1;
-      Luminosity =1;
+      Luminosity =0.116;
       
       histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
 
@@ -227,7 +228,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	}
       
  
-      TCanvas *canv = new TCanvas(("canv"+v[0]).c_str(),("canv"+v[0]).c_str());
+      TCanvas *canv = new TCanvas(("canv_"+v[0]+dataSetName).c_str(),("canv_"+v[0]+dataSetName).c_str());
       
       
       histo1D[dataSetName.c_str()]->Draw();
@@ -241,17 +242,36 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	  writename = dataSetName +"__nominal";
         }
       //cout<<"writename  :"<<writename<<endl;
-      histo1D[dataSetName.c_str()]->Write((writename).c_str());
+      //      histo1D[dataSetName.c_str()]->Write((writename).c_str());
      
-      canv->SaveAs((pathPNG+dataSetName+".pdf").c_str());
-      canv->SaveAs((pathPNG+dataSetName+".C").c_str());
+      //      canv->SaveAs((pathPNG+dataSetName+".pdf").c_str());
+      //      canv->SaveAs((pathPNG+dataSetName+".C").c_str());
     }
 
 
   treeLoader.UnLoadDataset();
   
+  if (debug){
+    cout << "before cleaning" << endl;
+    if (v.size() == 2){
+      cout << " v[0] is " << v[0] << " and v[1] is " << v[1] << endl;
+    }
+    
+    else if (v.size() == 1){
+      cout << " v[0] is " << v[0] << endl;
+      
+    }
+  }
+  
+
   // clearing vector
   v.clear();
+  if (debug){
+    cout << "after cleaning" << endl ;
+    cout << "v.size() is " << v.size() << endl;
+  }
+  
+
 
 };
 
