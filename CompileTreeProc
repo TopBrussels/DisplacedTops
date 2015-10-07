@@ -1,3 +1,0 @@
-#! /bin/bash
-
-g++ -g -std=c++11 -L ~/lib -I ../ -l TopTreeAnaContent76 -l TopTreeAna76 -l MLP -l TreePlayer -l TMVA -l XMLIO -I `root-config --incdir` `root-config --libs` TreeProcesser.cc -o TreeProc
