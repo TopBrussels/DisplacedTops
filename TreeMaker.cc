@@ -40,7 +40,6 @@
 #include "TopTreeAnalysisBase/Selection/interface/SelectionTable.h"
 #include "TopTreeAnalysisBase/Selection/interface/Run2Selection.h"
 //#include "TopTreeAnalysisBase/Selection/interface/FourTopSelectionTable.h"
-
 #include "TopTreeAnalysisBase/Content/interface/AnalysisEnvironment.h"
 #include "TopTreeAnalysisBase/Content/interface/Dataset.h"
 #include "TopTreeAnalysisBase/Tools/interface/JetTools.h"
@@ -301,7 +300,7 @@ int main (int argc, char *argv[])
     //Output ROOT file
     string outputDirectory("MACRO_Output"+channelpostfix);
     mkdir(outputDirectory.c_str(),0777);
-    string rootFileName (outputDirectory+"/FourTop"+postfix+channelpostfix+".root");
+    string rootFileName (outputDirectory+channelpostfix+".root");
     TFile *fout = new TFile (rootFileName.c_str(), "RECREATE");
 
     //vector of objects
@@ -728,12 +727,18 @@ int main (int argc, char *argv[])
 
 	    if (debug)cout<<"Getting Jets"<<endl;
 	    selectedJets                                        = selection.GetSelectedJets(); // Relying solely on cuts defined in setPFJetCuts()
-	    if (debug)cout<<"Getting Loose Muons"<<endl;
-	    //	    selectedMuons                                       = selection.GetSelectedDisplacedMuons();
-	    selectedMuons = init_muons;
-	    if (debug)cout<<"Getting Loose Electrons"<<endl;
+
+	    // make a new collections of muons
+	    if (debug)cout<<"Getting Muons"<<endl;
+	    //selectedMuons                                       = selection.GetSelectedDisplacedMuons();
+	    selectedMuons = selection.GetSelectedMuons();
+	    //selectedMuons = init_muons;
+
+	    // make a new collections of electrons
+	    if (debug)cout<<"Getting Electrons"<<endl;
+	    selectedElectrons                                   = selection.GetSelectedElectrons();
 	    //	    selectedElectrons                                   = selection.GetSelectedDisplacedElectrons(); // VBTF ID
-	    selectedElectrons = init_electrons;
+	    //selectedElectrons = init_electrons;
 
 
 	    vector<TRootJet*>      selectedLightJets;
@@ -903,13 +908,21 @@ int main (int argc, char *argv[])
 	    //	    /*
 	    if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
 	    if (nElectrons == 1 && nMuons == 1){
-	      passed++;
-	      //	      myTree->Fill();
+	      if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
+
+		myTree->Fill(); 
+		passed++;
+		
+	      }
+	      
+		
 	    }
+
+	      //	      myTree->Fill();
 	    if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
-	    //	    */
+
 	    
-	    //	    /*
+	    /*
 	    for(int iele=0; iele<selectedElectrons.size(); iele++){
               if (abs(selectedElectrons[iele]->Pt()) > 40){
                 passedPtEl = true;
@@ -926,16 +939,17 @@ int main (int argc, char *argv[])
                           passedExtraElVeto=true;
                           if(postCut_muonsTLV.size() == 1){
                             passedExtraMuVeto=true;
-			*/
+
                             if(selectedElectrons[iele]->charge() * selectedMuons[imuo]->charge() == -1){ // to do! make a new el/muon collection                      
                               passedElMuOS=true;
 			      myTree->Fill();
+			      passed++;
 			      /*
                               if(postCut_electronsTLV[iele].DeltaR(postCut_muonsTLV[imuo]) > 0.5){
                                 passedElMuNotOverlaping=true;
                               }
                             }
-			  } */
+			  } 
                         }
                       }
                     }
@@ -943,7 +957,7 @@ int main (int argc, char *argv[])
                 }
               }
             }
-
+	    */
 
 	    //cout << "ievt is " << ievt << " and end_d is " << end_d << endl;
 
