@@ -53,7 +53,7 @@ int main()
     bool SingleEl = false;
     float lBound = 0;   //-1->0.2 topness
     float uBound = 3;
-    int lumiScale = 50;  //Amount of luminosity to scale to in fb^-1
+    int lumiScale = 0.116;  //Amount of luminosity to scale to in fb^-1
     string xmlFileName;
     string xmlFileNameSys;
     string CraneenPath;
@@ -62,8 +62,11 @@ int main()
 
     if(1)
     {
-        xmlFileName = "config/Run2SingleLepton_samples.xml";
-	CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
+      //xmlFileName = "config/Run2SingleLepton_samples.xml";
+      xmlFileName = "config/FullMcBkgdSamplesV6TreeProc.xml";
+      //      CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
+
+      CraneenPath="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
     }
 
     std::string slumiScale = intToStr(lumiScale);
@@ -75,8 +78,13 @@ int main()
 
 
     // calling datasetPlotter to create MSPplots
+    // electron plots
     DatasetPlotter(10, 0, 10, "nElectrons", xmlFileName,CraneenPath);
     DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", xmlFileName,CraneenPath);
+    DatasetPlotter(100, -0.1, 0.1, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
+
+    // muon plots
+    DatasetPlotter(10, 0, 10, "nMuons", xmlFileName,CraneenPath);
     DatasetPlotter(100, 0, 1000, "pt_muon[nMuons]", xmlFileName,CraneenPath);
     DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
 
@@ -145,17 +153,18 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   free(dup);
 
 
-  cout << v[0] << "  " << v[1] << endl;
+  //cout << v[0] << "  " << v[1] << endl;
   
 
-  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
+  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
 
   
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
     {
       dataSetName = datasets[d]->Name();
       cout<<"Dataset:  :"<<dataSetName<<endl;
-      filepath = CraneenPath+dataSetName + ".root";
+      filepath = CraneenPath+"FourTop_Run2_TopTree_Study_"+dataSetName +"_MuEl"+ ".root";
+      //filepath = CraneenPath+dataSetName+ ".root";
       if (debug) cout<<"filepath: "<<filepath<<endl;
 	
 
@@ -233,7 +242,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
         }
       //cout<<"writename  :"<<writename<<endl;
       histo1D[dataSetName.c_str()]->Write((writename).c_str());
-      
+     
       canv->SaveAs((pathPNG+dataSetName+".pdf").c_str());
       canv->SaveAs((pathPNG+dataSetName+".C").c_str());
     }
@@ -241,6 +250,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
   treeLoader.UnLoadDataset();
   
+  // clearing vector
+  v.clear();
 
 };
 
