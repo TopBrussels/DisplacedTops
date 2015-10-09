@@ -275,7 +275,7 @@ int main (int argc, char *argv[])
     double el_SfValue;
     //    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch4/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/";
 
-    //    double el_SfValue = ElectronSF.getElectronSF(1.2,30.0,"Nominal");
+    // el_SfValue = ElectronSF.getElectronSF(1.2,30.0,"Nominal");
 
 
 
@@ -300,7 +300,7 @@ int main (int argc, char *argv[])
     //Output ROOT file
     string outputDirectory("MACRO_Output"+channelpostfix);
     mkdir(outputDirectory.c_str(),0777);
-    string rootFileName (outputDirectory+channelpostfix+".root");
+    string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+".root");
     TFile *fout = new TFile (rootFileName.c_str(), "RECREATE");
 
     //vector of objects
@@ -854,9 +854,9 @@ int main (int argc, char *argv[])
 	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);
 	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);
 	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();
-	      //	      if (selectedElectrons[selel]->Pt() >= 35 ) {
-	      //                sf_electron[nElectrons]=ElectronSF.getElectronSF(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),"Nominal");
-	      //              }
+	      //	      if (selectedElectrons[selel]->Pt() >= 35 && selectedElectrons[selel]->Pt() < 200 ) {
+	      //		sf_electron[nElectrons]=ElectronSF.getElectronSF(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),"Nominal");
+	      //	      }
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron[nElectrons] << endl;
 	      nElectrons++;
             }
