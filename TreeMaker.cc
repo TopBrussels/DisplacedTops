@@ -266,18 +266,19 @@ int main (int argc, char *argv[])
 
     string dataSetName;
 
-    // declare Scale factor related objects                                                                               
-    LeptonTools ElectronSF = new LeptonTools(true); // true-> will enable some cout
-    LeptonTools MuonsSF = new LeptonTools(true);  // true-> will enable some cout
-
-    // load Sf
-    ElectronSF.readElectronSF();
-    double el_SfValue;
-    //    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch4/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/";
-
-    // el_SfValue = ElectronSF.getElectronSF(1.2,30.0,"Nominal");
 
 
+    ////////////////////////////////
+    //  Lepton Scale Factor
+    ////////////////////////////////
+
+    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/";
+
+    string muonFile= "Muon_SF_TopEA.root";
+    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+muonFile,"SF_totErr", false);
+
+    string electronFile= "Elec_SF_TopEA.root";
+    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", false);
 
     /////////////////////////////////
     //  Loop over Datasets
@@ -463,6 +464,7 @@ int main (int argc, char *argv[])
         TFile * tupfile = new TFile(Ntupname.c_str(),"RECREATE");
 
 
+	// variables for electrons
 	Int_t nElectronsPostCut;
         Int_t nElectrons;
         Double_t pt_electron[10];
@@ -474,9 +476,20 @@ int main (int argc, char *argv[])
         Double_t neutralHadronIso_electron[10];
         Double_t photonIso_electron[10];
         Double_t pfIso_electron[10];
-	Double_t sf_electron[10];
         Int_t charge_electron[10];
 
+	//bo id related variables
+	Double_t sigmaIEtaIEta_electron[10];
+	Double_t deltaEtaIn_electron[10];
+	Double_t deltaPhiIn_electron[10];
+	Double_t hadronicOverEm_electron[10];
+	Int_t missingHits_electron[10];
+	Bool_t passConversion_electron[10];
+	// eo id realted variables
+
+	Double_t sf_electron[10];	
+
+	// variables for muons
         Int_t nMuonsPostCut;
         Int_t nMuons;
         Double_t pt_muon[10];
@@ -488,6 +501,7 @@ int main (int argc, char *argv[])
         Double_t neutralHadronIso_muon[10];
         Double_t photonIso_muon[10];
         Double_t pfIso_muon[10];
+	Double_t sf_muon[10];
         Int_t charge_muon[10];
 
 
@@ -497,32 +511,42 @@ int main (int argc, char *argv[])
         TTree* myTree = new TTree("tree","tree");
 
 	// electrons
+	//	myTree->Branch("templatevar",templatevar,"templatevar[nElectrons]/D");
         myTree->Branch("nElectrons",&nElectrons, "nElectrons/I");//                                                            
         myTree->Branch("pt_electron",pt_electron,"pt_electron[nElectrons]/D");
         myTree->Branch("phi_electron",phi_electron,"phi_electron[nElectrons]/D");
         myTree->Branch("eta_electron",eta_electron,"eta_electron[nElectrons]/D");
         myTree->Branch("E_electron",E_electron,"E_electron[nElectrons]/D");
-        myTree->Branch("chargedHadronIsoelectron",chargedHadronIso_electron,"chargedHadronIso_electron[nElectrons]/D");
-        myTree->Branch("neutralHadronIsoelectron",neutralHadronIso_electron,"neutralHadronIso_electron[nElectrons]/D");
-        myTree->Branch("photonIsoelectron",photonIso_electron,"photonIso_electron[nElectrons]/D");
-        myTree->Branch("pfIsoelectron",pfIso_electron,"pfIso_electron[nElectrons]/D");
+        myTree->Branch("chargedHadronIso_electron",chargedHadronIso_electron,"chargedHadronIso_electron[nElectrons]/D");
+        myTree->Branch("neutralHadronIso_electron",neutralHadronIso_electron,"neutralHadronIso_electron[nElectrons]/D");
+        myTree->Branch("photonIso_electron",photonIso_electron,"photonIso_electron[nElectrons]/D");
+        myTree->Branch("pfIso_electron",pfIso_electron,"pfIso_electron[nElectrons]/D");
         myTree->Branch("charge_electron",charge_electron,"charge_electron[nElectrons]/I");
         myTree->Branch("d0_electron",d0_electron,"d0_electron[nElectrons]/D");
+	myTree->Branch("sigmaIEtaIEta_electron",sigmaIEtaIEta_electron,"sigmaIEtaIEta_electron[nElectrons]/D");
+	myTree->Branch("deltaEtaIn_electron",deltaEtaIn_electron,"deltaEtaIn_electron[nElectrons]/D");
+	myTree->Branch("deltaPhiIn_electron",deltaPhiIn_electron,"deltaPhiIn_electron[nElectrons]/D");
+	myTree->Branch("hadronicOverEm_electron",hadronicOverEm_electron,"hadronicOverEm_electron[nElectrons]/D");
+	myTree->Branch("missingHits_electron",missingHits_electron,"missingHits_electron[nElectrons]/I");
+	myTree->Branch("passConversion_electron",passConversion_electron,"passConversion_electron[nElectrons]/O)");
+
 	myTree->Branch("sf_electron",sf_electron,"sf_electron[nElectrons]/D");
 	
 
 	// muons
+	//        myTree->Branch("templatevar",templatevar,"templatevar[nMuons]/D");
         myTree->Branch("nMuons",&nMuons, "nMuons/I");
         myTree->Branch("pt_muon",pt_muon,"pt_muon[nMuons]/D");
         myTree->Branch("phi_muon",phi_muon,"phi_muon[nMuons]/D");
         myTree->Branch("eta_muon",eta_muon,"eta_muon[nMuons]/D");
         myTree->Branch("E_muon",E_muon,"E_muon[nMuons]/D");
-        myTree->Branch("chargedHadronIsomuon",chargedHadronIso_muon,"chargedHadronIso_muon[nMuons]/D");
-        myTree->Branch("neutralHadronIsomuon",neutralHadronIso_muon,"neutralHadronIso_muon[nMuons]/D");
-        myTree->Branch("photonIsomuon",photonIso_muon,"photonIso_muon[nMuons]/D");
+        myTree->Branch("chargedHadronIso_muon",chargedHadronIso_muon,"chargedHadronIso_muon[nMuons]/D");
+        myTree->Branch("neutralHadronIso_muon",neutralHadronIso_muon,"neutralHadronIso_muon[nMuons]/D");
+        myTree->Branch("photonIso_muon",photonIso_muon,"photonIso_muon[nMuons]/D");
         myTree->Branch("pfIso_muon",pfIso_muon,"pfIso_muon[nMuons]/D");
         myTree->Branch("charge_muon",charge_muon,"charge_muon[nMuons]/I");
         myTree->Branch("d0_muon",d0_muon,"d0_muon[nMuons]/D");
+	myTree->Branch("sf_muon",sf_muon,"sf_muon[nMuons]/D");
 
 
 	/*
@@ -560,8 +584,6 @@ int main (int argc, char *argv[])
 
 
 
-
-	
         //////////////////////////////////////////////////
         // Loop on events
         /////////////////////////////////////////////////
@@ -812,29 +834,6 @@ int main (int argc, char *argv[])
 
 
 
-            //////////////////////
-            // Muon Based Plots //
-            //////////////////////
-	    
-	    nMuons=0;
-            for (Int_t selmu =0; selmu < selectedMuons.size() && selmu < 10; selmu++ )
-            {
-	      pt_muon[nMuons]=selectedMuons[selmu]->Pt();
-	      phi_muon[nMuons]=selectedMuons[selmu]->Phi();
-	      eta_muon[nMuons]=selectedMuons[selmu]->Eta();
-	      E_muon[nMuons]=selectedMuons[selmu]->E();
-	      d0_muon[nMuons]=selectedMuons[selmu]->d0();
-	      chargedHadronIso_muon[nMuons]=selectedMuons[selmu]->chargedHadronIso(4);
-	      neutralHadronIso_muon[nMuons]=selectedMuons[selmu]->neutralHadronIso(4);
-	      photonIso_muon[nMuons]=selectedMuons[selmu]->photonIso(4);
-	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0);
-	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
-	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
-	      nMuons++;
-
-
-	    }
-
             //////////////////////////
             // Electron Based Plots //
             //////////////////////////
@@ -854,13 +853,43 @@ int main (int argc, char *argv[])
 	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);
 	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);
 	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();
-	      //	      if (selectedElectrons[selel]->Pt() >= 35 && selectedElectrons[selel]->Pt() < 200 ) {
-	      //		sf_electron[nElectrons]=ElectronSF.getElectronSF(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),"Nominal");
-	      //	      }
+	      sigmaIEtaIEta_electron[nElectrons]=selectedElectrons[selel]->sigmaIEtaIEta();
+	      deltaEtaIn_electron[nElectrons]=selectedElectrons[selel]->deltaEtaIn();
+	      deltaPhiIn_electron[nElectrons]=selectedElectrons[selel]->deltaPhiIn();
+	      hadronicOverEm_electron[nElectrons]=selectedElectrons[selel]->hadronicOverEm();
+	      missingHits_electron[nElectrons]=selectedElectrons[selel]->missingHits();
+	      passConversion_electron[nElectrons]=selectedElectrons[selel]->passConversion();
+
+
+	      sf_electron[nElectrons]=electronSFWeight_->at(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron[nElectrons] << endl;
 	      nElectrons++;
             }
 
+
+            //////////////////////
+            // Muon Based Plots //
+            //////////////////////
+	    
+	    nMuons=0;
+            for (Int_t selmu =0; selmu < selectedMuons.size() && selmu < 10; selmu++ )
+            {
+	      pt_muon[nMuons]=selectedMuons[selmu]->Pt();
+	      phi_muon[nMuons]=selectedMuons[selmu]->Phi();
+	      eta_muon[nMuons]=selectedMuons[selmu]->Eta();
+	      E_muon[nMuons]=selectedMuons[selmu]->E();
+	      d0_muon[nMuons]=selectedMuons[selmu]->d0();
+	      chargedHadronIso_muon[nMuons]=selectedMuons[selmu]->chargedHadronIso(4);
+	      neutralHadronIso_muon[nMuons]=selectedMuons[selmu]->neutralHadronIso(4);
+	      photonIso_muon[nMuons]=selectedMuons[selmu]->photonIso(4);
+	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0);
+	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
+	      sf_muon[nMuons]=muonSFWeight_->at(selectedMuons[selmu]->Eta(),selectedMuons[selmu]->Pt(),0);
+	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
+	      nMuons++;
+
+
+	    }
 
             //////////////////////
             // Jets Based Plots //
