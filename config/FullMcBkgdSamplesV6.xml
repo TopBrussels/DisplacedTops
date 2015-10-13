@@ -10,9 +10,10 @@
 
 <data>
 <datasets>
+
+<d name="Data"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="40.214" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/MuonEG/crab_MuonEG-Run2015D-PromptReco-v3-CMSSW_74X_v6-74X_dataRun2_Prompt_v2/151006_070350/0000/TOPTREE_*.root"/>
+
 <!--ALL the MC -->
-
-
 
 <!-- W-> l+nu -->
 <d name="WJetsToLNu" title="W\rightarrow l+\nu" add="1" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="27900" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v6-MCRUN2_74_V9/150923_113025/0000/*.root"/>
