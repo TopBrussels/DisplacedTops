@@ -269,14 +269,20 @@ int main (int argc, char *argv[])
     // declare Scale factor related objects                                                                               
     // load Sf
 
-    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/Muon_SF_TopEA.root";
-    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir,"SF_totErr", true );
+    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/";
+    
+    string muonFile= "Muon_SF_TopEA.root";
+    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+muonFile,"SF_totErr", false);
 
+    string electronFile= "Elec_SF_TopEA.root";
+    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", true);
+
+    /*
     const double pt_hist = 30.0;
     const double eta_hist = 2.0;
     const int Shift = 1;
     muonSFWeight_->at(pt_hist,eta_hist,Shift);
-
+    */
 
 
 
@@ -525,7 +531,7 @@ int main (int argc, char *argv[])
         myTree->Branch("pfIso_muon",pfIso_muon,"pfIso_muon[nMuons]/D");
         myTree->Branch("charge_muon",charge_muon,"charge_muon[nMuons]/I");
         myTree->Branch("d0_muon",d0_muon,"d0_muon[nMuons]/D");
-	myTree->Branch("sf_muon",sf_muon,"sf_muon[nmuons]/D");
+	myTree->Branch("sf_muon",sf_muon,"sf_muon[nMuons]/D");
 
 	/*
 	// define a second tree that will be filled after the selection
@@ -831,7 +837,7 @@ int main (int argc, char *argv[])
 	      photonIso_muon[nMuons]=selectedMuons[selmu]->photonIso(4);
 	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0);
 	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
-	      sf_muon[nMuons]=muonSFWeight_->at(selectedMuons[selmu]->Pt(),selectedMuons[selmu]->Eta(),0);
+	      sf_muon[nMuons]=muonSFWeight_->at(selectedMuons[selmu]->Eta(),selectedMuons[selmu]->Pt(),0);
 	      cout << "sf_muon[nMuons] is " << sf_muon[nMuons] << endl;
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
 	      nMuons++;
@@ -858,9 +864,8 @@ int main (int argc, char *argv[])
 	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);
 	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);
 	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();
-	      //	      if (selectedElectrons[selel]->Pt() >= 35 && selectedElectrons[selel]->Pt() < 200 ) {
-	      //		sf_electron[nElectrons]=ElectronSF.getElectronSF(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),"Nominal");
-	      //	      }
+	      sf_electron[nElectrons]=electronSFWeight_->at(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),0);
+	      cout << "sf_electron[nElectrons] is " << sf_electron[nElectrons] << endl;
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron[nElectrons] << endl;
 	      nElectrons++;
             }
