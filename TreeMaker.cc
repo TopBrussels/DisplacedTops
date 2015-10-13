@@ -350,25 +350,27 @@ int main (int argc, char *argv[])
     //pathPNG = pathPNG +"/";
     mkdir(pathPNG.c_str(),0777);
 
+
+
+    double lumiWeight = 1 ;// check
     cout <<"Making directory :"<< pathPNG  <<endl;
-    vector<string> CutsselecTable;
-    if(Muon && Electron)
-      {
-	CutsselecTable.push_back(string("initial"));
-	CutsselecTable.push_back(string("Event cleaning and Trigger"));
-	CutsselecTable.push_back(string("Exactly 2 Loose Electron"));
-	CutsselecTable.push_back(string("Z Mass Veto"));
-	CutsselecTable.push_back(string("At least 4 Jets"));
-	CutsselecTable.push_back(string("At least 1 CSVM Jet"));
-	CutsselecTable.push_back(string("At least 2 CSVM Jets"));
-	CutsselecTable.push_back(string("At Least 500 GeV HT"));
-      }
+    vector<string> CutFlow;
+    
+    CutFlow.push_back(string("initial"));
+    CutFlow.push_back(string("at least one good electron (id, iso, pt, eta)"));
+    CutFlow.push_back(string("at least one good muon (id, iso, pt, eta)"));
+    CutFlow.push_back(string("extra electron veto"));
+    CutFlow.push_back(string("extra muon veto"));
+    CutFlow.push_back(string("electron blinding d0"));
+    CutFlow.push_back(string("muon blinding d0"));
+    CutFlow.push_back(string("OS letpons"));
+    CutFlow.push_back(string("Non overlaping letpons"));
     
 
 
-    SelectionTable selecTable(CutsselecTable, datasets);
-    selecTable.SetLuminosity(Luminosity);
-    selecTable.SetPrecision(1);
+    SelectionTable CutFlowTable(CutFlow, datasets);
+    CutFlowTable.SetLuminosity(Luminosity);
+    CutFlowTable.SetPrecision(1);
 
     /////////////////////////////////
     // Loop on datasets
@@ -688,31 +690,40 @@ int main (int argc, char *argv[])
             //////////////////
 
 	    // Synch cut 1: pt, eta, veto, DR                                                                                                                           
-            // Declare one bool per cut                                                                                                                                 
-            ///----                                                                                                                                                     
+            // Declare one bool per cut
+	    /// ---
 
-            // cut on electrons                                                                                                                                         
+            // cut on electrons
+	    Bool_t passedGoodEl =false;
+	    Bool_t passedBlindingEl =false;
+	    /*
             Bool_t passedPtEl = false;
             Bool_t passedEtaEl = false;
             Bool_t passedIdEl = false;
             Bool_t passedIsoEl = false;
+	    */
 
-            //cut on muons                                                                                                                                              
+            //cut on muons
+	    Bool_t passedGoodMu = false;
+	    Bool_t passedBlindingMu =false;
+	    /*
             Bool_t passedPtMu = false;
             Bool_t passedEtaMu = false;
             Bool_t passedIdMu = false;
             Bool_t passedIsoMu = false;
+	    */
 
-            // vetos                                                                                                                                                    
+            // vetos
             Bool_t passedExtraElVeto =false;
             Bool_t passedExtraMuVeto =false;
 
-            // opposite signed leptons                                                                                                                                  
+            // opposite signed leptons
             Bool_t passedElMuOS = false;
 
-            // non overlapping leptons                                                                                                                                  
+            // non overlapping leptons
             Bool_t passedElMuNotOverlaping = false;
 
+	    /// ---
 	    
 	    
 
@@ -752,14 +763,14 @@ int main (int argc, char *argv[])
 
 	    // make a new collections of muons
 	    if (debug)cout<<"Getting Muons"<<endl;
-	    //selectedMuons                                       = selection.GetSelectedDisplacedMuons();
-	    selectedMuons = selection.GetSelectedMuons();
+	    selectedMuons = selection.GetSelectedDisplacedMuons();
+	    //selectedMuons = selection.GetSelectedMuons();
 	    //selectedMuons = init_muons;
 
 	    // make a new collections of electrons
 	    if (debug)cout<<"Getting Electrons"<<endl;
-	    selectedElectrons                                   = selection.GetSelectedElectrons();
-	    //	    selectedElectrons                                   = selection.GetSelectedDisplacedElectrons(); // VBTF ID
+	    selectedElectrons = selection.GetSelectedDisplacedElectrons();
+	    //selectedElectrons = selection.GetSelectedElectrons();
 	    //selectedElectrons = init_electrons;
 
 
@@ -786,7 +797,7 @@ int main (int argc, char *argv[])
             if (debug)	cout <<" applying baseline event selection for cut table..."<<endl;
             // Apply primary vertex selection
             bool isGoodPV = selection.isPVSelected(vertex, 4, 24., 2);
-	    //            selecTable.Fill(d,0,scaleFactor);
+	    //            CutFlowTable.Fill(d,0,scaleFactor);
 
 
 
@@ -938,9 +949,8 @@ int main (int argc, char *argv[])
 	    if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
 	    if (nElectrons == 1 && nMuons == 1){
 	      if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
-
-		myTree->Fill(); 
-		passed++;
+		//		myTree->Fill(); 
+		//		passed++;
 		
 	      }
 	      
@@ -950,8 +960,51 @@ int main (int argc, char *argv[])
 	      //	      myTree->Fill();
 	    if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
 
+
+	    // filling the cutflow
+	    
+	    CutFlowTable.Fill(d,0,scaleFactor*lumiWeight);
+	    if (selectedElectrons.size() >= 1 ){
+	      passedGoodEl=true;
+	      CutFlowTable.Fill(d,1,scaleFactor*lumiWeight);
+	      if (selectedMuons.size() >= 1 ){
+		passedGoodMu=true;
+		CutFlowTable.Fill(d,2,scaleFactor*lumiWeight);
+		if (selectedElectrons.size() == 1 ){
+		  passedExtraElVeto = true;
+		  CutFlowTable.Fill(d,3,scaleFactor*lumiWeight);
+		  if (selectedMuons.size() == 1 ){
+		    passedExtraMuVeto = true;
+		    CutFlowTable.Fill(d,4,scaleFactor*lumiWeight);
+		    if(abs(selectedElectrons[0]->d0BeamSpot()) < 0.01){
+		      passedBlindingEl = true;
+		      CutFlowTable.Fill(d,5,scaleFactor*lumiWeight);
+		      if (abs(selectedMuons[0]->d0BeamSpot()) < 0.01){
+			passedBlindingMu=true;
+			CutFlowTable.Fill(d,6,scaleFactor*lumiWeight);
+			if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
+			  passedElMuOS=true;
+			  CutFlowTable.Fill(d,7,scaleFactor*lumiWeight);
+			  Double_t DeltaR = sqrt (2);// to be done
+			  if (1){
+			    //			  if(selectedElectrons[0]->DeltaR(selectedMuons[0]) > 0.5){
+			    passedElMuNotOverlaping=true;
+			    CutFlowTable.Fill(d,8,scaleFactor*lumiWeight);
+			    passed++;
+			    myTree->Fill(); 
+			  }
+			}
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
 	    
 	    /*
+
+
+	      
 	    for(int iele=0; iele<selectedElectrons.size(); iele++){
               if (abs(selectedElectrons[iele]->Pt()) > 40){
                 passedPtEl = true;
@@ -1016,10 +1069,10 @@ int main (int argc, char *argv[])
     //////////////////////
 
     //(bool mergeTT, bool mergeQCD, bool mergeW, bool mergeZ, bool mergeST)
-    selecTable.TableCalculator(  true, true, true, true, true);
+    CutFlowTable.TableCalculator(  true, true, true, true, true);
 
     //Options : WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false)
-    selecTable.Write(  outputDirectory+"/FourTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+    CutFlowTable.Write(  outputDirectory+"/FourTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
 
     fout->cd();
     cout <<" after cd .."<<endl;
