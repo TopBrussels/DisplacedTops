@@ -275,10 +275,10 @@ int main (int argc, char *argv[])
     string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/";
 
     string muonFile= "Muon_SF_TopEA.root";
-    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+muonFile,"SF_totErr", false);
+    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+muonFile,"SF_totErr", false, true);
 
     string electronFile= "Elec_SF_TopEA.root";
-    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", false);
+    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", false, true);
 
     /////////////////////////////////
     //  Loop over Datasets
@@ -763,13 +763,13 @@ int main (int argc, char *argv[])
 
 	    // make a new collections of muons
 	    if (debug)cout<<"Getting Muons"<<endl;
-	    selectedMuons = selection.GetSelectedDisplacedMuons();
+	    selectedMuons = selection.GetSelectedDisplacedMuons(40.0, 2.4, 0.12); // pt, eta, iso
 	    //selectedMuons = selection.GetSelectedMuons();
 	    //selectedMuons = init_muons;
 
 	    // make a new collections of electrons
 	    if (debug)cout<<"Getting Electrons"<<endl;
-	    selectedElectrons = selection.GetSelectedDisplacedElectrons();
+	    selectedElectrons = selection.GetSelectedDisplacedElectrons(42.0, 2.4);// pt, eta
 	    //selectedElectrons = selection.GetSelectedElectrons();
 	    //selectedElectrons = init_electrons;
 
