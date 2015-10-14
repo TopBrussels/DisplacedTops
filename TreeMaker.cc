@@ -364,7 +364,8 @@ int main (int argc, char *argv[])
     CutFlow.push_back(string("electron blinding d0"));
     CutFlow.push_back(string("muon blinding d0"));
     CutFlow.push_back(string("OS letpons"));
-    CutFlow.push_back(string("Non overlaping letpons"));
+    //    CutFlow.push_back(string("Non overlaping letpons"));
+    CutFlow.push_back(string(" "));
     
 
 
@@ -474,6 +475,7 @@ int main (int argc, char *argv[])
         Double_t eta_electron[10];
         Double_t E_electron[10];
         Double_t d0_electron[10];
+        Double_t d0BeamSpot_electron[10];
         Double_t chargedHadronIso_electron[10];
         Double_t neutralHadronIso_electron[10];
         Double_t photonIso_electron[10];
@@ -499,6 +501,7 @@ int main (int argc, char *argv[])
         Double_t eta_muon[10];
         Double_t E_muon[10];
         Double_t d0_muon[10];
+        Double_t d0BeamSpot_muon[10];
         Double_t chargedHadronIso_muon[10];
         Double_t neutralHadronIso_muon[10];
         Double_t photonIso_muon[10];
@@ -525,6 +528,7 @@ int main (int argc, char *argv[])
         myTree->Branch("pfIso_electron",pfIso_electron,"pfIso_electron[nElectrons]/D");
         myTree->Branch("charge_electron",charge_electron,"charge_electron[nElectrons]/I");
         myTree->Branch("d0_electron",d0_electron,"d0_electron[nElectrons]/D");
+	myTree->Branch("d0BeamSpot_electron",d0BeamSpot_electron,"d0BeamSpot_electron[nElectrons]/D");
 	myTree->Branch("sigmaIEtaIEta_electron",sigmaIEtaIEta_electron,"sigmaIEtaIEta_electron[nElectrons]/D");
 	myTree->Branch("deltaEtaIn_electron",deltaEtaIn_electron,"deltaEtaIn_electron[nElectrons]/D");
 	myTree->Branch("deltaPhiIn_electron",deltaPhiIn_electron,"deltaPhiIn_electron[nElectrons]/D");
@@ -548,6 +552,7 @@ int main (int argc, char *argv[])
         myTree->Branch("pfIso_muon",pfIso_muon,"pfIso_muon[nMuons]/D");
         myTree->Branch("charge_muon",charge_muon,"charge_muon[nMuons]/I");
         myTree->Branch("d0_muon",d0_muon,"d0_muon[nMuons]/D");
+	myTree->Branch("d0BeamSpot_muon",d0BeamSpot_muon,"d0BeamSpot_muon[nMuons]/D");
 	myTree->Branch("sf_muon",sf_muon,"sf_muon[nMuons]/D");
 
 
@@ -859,6 +864,7 @@ int main (int argc, char *argv[])
 	      eta_electron[nElectrons]=selectedElectrons[selel]->Eta();
 	      E_electron[nElectrons]=selectedElectrons[selel]->E();
 	      d0_electron[nElectrons]=selectedElectrons[selel]->d0();
+	      d0BeamSpot_electron[nElectrons]=selectedElectrons[selel]->d0BeamSpot();
 	      chargedHadronIso_electron[nElectrons]=selectedElectrons[selel]->chargedHadronIso(3);
 	      neutralHadronIso_electron[nElectrons]=selectedElectrons[selel]->neutralHadronIso(3);
 	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);
@@ -890,6 +896,7 @@ int main (int argc, char *argv[])
 	      eta_muon[nMuons]=selectedMuons[selmu]->Eta();
 	      E_muon[nMuons]=selectedMuons[selmu]->E();
 	      d0_muon[nMuons]=selectedMuons[selmu]->d0();
+	      d0BeamSpot_muon[nMuons]=selectedMuons[selmu]->d0BeamSpot();
 	      chargedHadronIso_muon[nMuons]=selectedMuons[selmu]->chargedHadronIso(4);
 	      neutralHadronIso_muon[nMuons]=selectedMuons[selmu]->neutralHadronIso(4);
 	      photonIso_muon[nMuons]=selectedMuons[selmu]->photonIso(4);
