@@ -53,7 +53,9 @@ int main()
     bool SingleEl = false;
     float lBound = 0;   //-1->0.2 topness
     float uBound = 3;
-    int lumiScale = 0.116;  //Amount of luminosity to scale to in fb^-1
+    float lumiScale = -1;
+    //    int lumiScale = 0.10651;  //Amount of luminosity to scale to in fb^-1
+    //    int lumiScale = 0.10651;  //Amount of luminosity to scale to in fb^-1
     string xmlFileName;
     string xmlFileNameSys;
     string CraneenPath;
@@ -81,11 +83,13 @@ int main()
     DatasetPlotter(11, -0.5, 10.5, "nElectrons", xmlFileName,CraneenPath);
     DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", xmlFileName,CraneenPath);
     DatasetPlotter(100, -0.1, 0.1, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
+    //    DatasetPlotter(100, -0.1, 0.1, "d0BeamSpot_electron[nElectrons]", xmlFileName,CraneenPath);
 
     // muon plots
     DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
     DatasetPlotter(100, 0, 1000, "pt_muon[nMuons]", xmlFileName,CraneenPath);
     DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
+    //    DatasetPlotter(100, -0.1, 0.1, "d0BeamSpot_muon[nMuons]", xmlFileName,CraneenPath);
 
     // calling the function that writtes all the MSPlots in a root file
     MSPCreator ();
@@ -155,14 +159,15 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //cout << v[0] << "  " << v[1] << endl;
   
 
-  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
+  //  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens13_10_2015";
 
   
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
     {
       dataSetName = datasets[d]->Name();
       cout<<"Dataset:  :"<<dataSetName<<endl;
-      filepath = CraneenPath+"FourTop_Run2_TopTree_Study_"+dataSetName +"_MuEl"+ ".root";
+      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName +"_MuEl"+ ".root";
       //filepath = CraneenPath+dataSetName+ ".root";
       if (debug) cout<<"filepath: "<<filepath<<endl;
 	
@@ -182,7 +187,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
       else if (v.size() == 1){
 	//	if (debug)	cout << "v.size is to 1" << " and v[0] is " << v[0] << endl ;
-	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest);
+	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest);//&varofInterest
 	
       }
       else {
@@ -194,9 +199,23 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
       bool isData= false;
       if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
-      
+      bool isTTJets =false;
+      if(dataSetName.find("TTJets")!=string::npos) isTTJets = true  ;      
+
+
       ScaleFactor = 1;
-      Luminosity =0.116;
+      //      Luminosity = 106.51;
+      Luminosity = 2.;
+      NormFactor = 2.;
+      
+      
+      //      if(dataSetName.find("TTJets")!=string::npos)  NormFactor= 831./11244677. ;
+
+      /*
+      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
+      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
+      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
+      */
       
       histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
 
@@ -211,15 +230,18 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	  for (int i_object =0 ; i_object < varofInterest ;i_object ++ )
 	    {
 	      if (debug) cout << "varofInterest is " << varofInterest << endl;
-	      if (isData)
+	      if (isData || isTTJets) // test with TTJets faco
 		{
-		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, NormFactor*ScaleFactor*Luminosity);
-		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],NormFactor*ScaleFactor*Luminosity);
+		  //		  cout << "NormFactor is " << NormFactor << endl;
+		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, 1);
+		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],1);
 		}
 	      else
 		{
-		  
-		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, ScaleFactor*Luminosity);
+		  cout << "NormFactor is " << NormFactor << endl;
+		  cout << "ScaleFactor is " << ScaleFactor << endl;
+		  cout << "Luminosity is " << Luminosity << endl;
+		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, NormFactor*ScaleFactor*Luminosity);
 		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],NormFactor*ScaleFactor*Luminosity);
 		}
 	      
@@ -287,7 +309,8 @@ void MSPCreator (){
   
   TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
   outfile->cd();
-
+  
+  
   // Loop over all the MSPlots
   for(map<string,MultiSamplePlot*>::const_iterator it = MSPlot.begin(); it != MSPlot.end(); it++)
     {
@@ -299,7 +322,13 @@ void MSPCreator (){
       }
       temp->Draw("MyMSP_"+it->first, 0, false, false, false, 100);
       temp->Write(outfile, "MyMSP", false,"myOutput_MSPlots" , "png");
+      //      vector<string> temp_histo = it->GetTH1FNames();
+      //      for (int i_hist=0; i_hist < temp_histo.size();i_hist++  ){
+      //	cout << "hist is" << temp_histo[i_hist] << endl;
+      //	cout << "integral is " << it->GetTH1F(temp_histo[i_hist].GetSum()) << endl;
+      //      }
     }
+  
   outfile->Write("kOverwrite");
 }
 
