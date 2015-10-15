@@ -275,7 +275,7 @@ int main (int argc, char *argv[])
     MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+muonFile,"SF_totErr", false);
 
     string electronFile= "Elec_SF_TopEA.root";
-    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", true);
+    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", true, false);
 
     /*
     const double pt_hist = 30.0;
