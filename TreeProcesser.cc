@@ -199,25 +199,12 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
       bool isData= false;
       if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
-      bool isTTJets =false;
-      if(dataSetName.find("TTJets")!=string::npos) isTTJets = true  ;      
-
-
-      ScaleFactor = 1;
-      //      Luminosity = 106.51;
-      Luminosity = 2.;
-      NormFactor = 2.;
       
+      ScaleFactor = 1.; // event scale factor
+      Luminosity = 106.51; // pb-1
+      TString slumi = "106.51";
       
-      //      if(dataSetName.find("TTJets")!=string::npos)  NormFactor= 831./11244677. ;
-
-      /*
-      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
-      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
-      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
-      */
-      
-      histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
+      //      histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
 
       // bo of loop through entries and fill plots
       for (int j = 0; j<nEntries; j++)
@@ -230,19 +217,15 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	  for (int i_object =0 ; i_object < varofInterest ;i_object ++ )
 	    {
 	      if (debug) cout << "varofInterest is " << varofInterest << endl;
-	      if (isData || isTTJets) // test with TTJets faco
-		{
-		  //		  cout << "NormFactor is " << NormFactor << endl;
-		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, 1);
-		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],1);
+	      if (isData) 
+		{// for data, fill once per event, weighted with the event scale factor
+		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, ScaleFactor);
+		  //		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],1);
 		}
 	      else
-		{
-		  cout << "NormFactor is " << NormFactor << endl;
-		  cout << "ScaleFactor is " << ScaleFactor << endl;
-		  cout << "Luminosity is " << Luminosity << endl;
-		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, NormFactor*ScaleFactor*Luminosity);
-		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],NormFactor*ScaleFactor*Luminosity);
+		{// for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
+		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, ScaleFactor*Luminosity);
+		  //		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],NormFactor*ScaleFactor*Luminosity);
 		}
 	      
 	    }
@@ -253,7 +236,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       TCanvas *canv = new TCanvas(("canv_"+v[0]+dataSetName).c_str(),("canv_"+v[0]+dataSetName).c_str());
       
       
-      histo1D[dataSetName.c_str()]->Draw();
+      //      histo1D[dataSetName.c_str()]->Draw();
       string writename = "";
       if(isData)
         {
