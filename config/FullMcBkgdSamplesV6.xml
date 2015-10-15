@@ -11,12 +11,16 @@
 <data>
 <datasets>
 
-<d name="Data"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="40.214" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/MuonEG/crab_MuonEG-Run2015D-PromptReco-v3-CMSSW_74X_v6-74X_dataRun2_Prompt_v2/151006_070350/0000/TOPTREE_*.root"/>
+
+<d name="Data"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/MuonEG/crab_MuonEG-Run2015D-PromptReco-v3-CMSSW_74X_v6-74X_dataRun2_Prompt_v2/150926_040334/0000/TOPTREE_*.root"/>
+
+
 
 <!--ALL the MC -->
 
+
 <!-- W-> l+nu -->
-<d name="WJetsToLNu" title="W\rightarrow l+\nu" add="1" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="27900" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v6-MCRUN2_74_V9/150923_113025/0000/*.root"/>
+<d name="WJetsToLNu" title="W\rightarrow l+\nu" add="1" color="858"  ls="1"  lw="2" normf="1" EqLumi="386.84" xsection="61526.7" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v6-MCRUN2_74_V9/150923_113025/0000/*.root"/>
 
 <d name="W1JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="6662.8" PreselEff="0.0"   filenames=""/>
 <d name="W2JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="2159.2" PreselEff="0.0"   filenames=""/>
@@ -42,20 +46,20 @@
 
 
 <!-- t tbar -->
-<d name="TTJets_Madgrap" title="TTJets_Madgraph" add="1" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="831." PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2-CMSSW_74X_v6-MCRUN2_74_V9/150923_112819/0000/*.root"/>
+<d name="TTJets_Madgrap" title="TTJets_Madgraph" add="1" color="40"  ls="1"  lw="2" normf="1" EqLumi="13520.60" xsection="831.76" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2-CMSSW_74X_v6-MCRUN2_74_V9/150923_112819/0000/*.root"/>
 
 <d name="TTJets_amcatnlo" title="TTJets_amcatnlo" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="25.8" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v5/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1-CMSSW_74X_v5-MCRUN2_74_V9A-All/150909_155735/0000/*.root"/>
 
 
 <!-- Z->ll -->
-<d name="DYJetsToLL_M-50toInf" title="Z/\gamma^{*}\rightarrow_lowM" add="1" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1966.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v6-MCRUN2_74_V9/150923_111634/0000/*.root"/>
+<d name="DYJetsToLL_M-50toInf" title="Z/\gamma^{*}\rightarrow ll" add="1" color="90"  ls="1"  lw="2" normf="1" EqLumi="1491.67" xsection="6025.2" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v6-MCRUN2_74_V9/150923_111634/0000/*.root"/>
 <d name="DYJetsToLL_M-200to400" title="Z/\gamma^{*}\rightarrow_HighM" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1966.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v5/DYJetsToLL_M-200to400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-200to400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1-CMSSW_74X_v5-MCRUN2_74_V9A-All/150909_155516/0000/*.root"/>
 
 
 
 <!-- Signal Sample example -->
 
-<d name="ctau100_m800"  title="ctau1000_m900"  add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="1" xsection="1"   PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/DisplacedSUSY_StopToBL_M-800_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_DisplacedSUSY_StopToBL_M-800_CTau-100_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v6-MCRUN2_74_V9/150923_111040/0000/*.root"/>
+<d name="ctau100_m800"  title="ctau1000_m900"  add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="800" xsection="1"   PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v6/DisplacedSUSY_StopToBL_M-800_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_DisplacedSUSY_StopToBL_M-800_CTau-100_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v6-MCRUN2_74_V9/150923_111040/0000/*.root"/>
 
 
 
@@ -64,6 +68,7 @@
 
 
 </datasets>
+
 
 <!-- All parameters needed for the selection and the bkg estimation methods -->
 <analysis>
