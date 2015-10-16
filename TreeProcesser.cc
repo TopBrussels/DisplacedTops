@@ -303,8 +303,8 @@ void MSPCreator (){
 	cout << "Saving the MSP" << endl;
 	cout << " and it->first is " << it->first << endl;
       }
-      temp->Draw("MyMSP_"+it->first, 0, false, false, false, 100);
-      temp->Write(outfile, "MyMSP", false,"myOutput_MSPlots" , "png");
+      temp->Draw("MyMSP", 0, false, false, false, 100);
+      temp->Write(outfile, "MyMSP"+it->first, true,"myOutput_MSPlots" , "png");
       //      vector<string> temp_histo = it->GetTH1FNames();
       //      for (int i_hist=0; i_hist < temp_histo.size();i_hist++  ){
       //	cout << "hist is" << temp_histo[i_hist] << endl;
