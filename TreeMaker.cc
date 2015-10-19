@@ -73,7 +73,7 @@ using namespace reweight;
 
 
 bool debug = false;
-
+Bool_t testTree = false;
 
 
 int nMatchedEvents=0;
@@ -143,7 +143,14 @@ int main (int argc, char *argv[])
     cout << "Dataset File Name: " << vecfileNames[0] << endl;
     cout << "Beginning Event: " << startEvent << endl;
     cout << "Ending Event: " << endEvent << endl;
+    bool isData= false;
+    if(dName.find("Data")!=string::npos || dName.find("data")!=string::npos || dName.find("DATA")!=string::npos){
+      isData = true;
+      cout << "running on data !!!!" << endl;
+    }
+     
     cout << "----------------------------------------" << endl;
+   
 //    cin.get();
 
 
@@ -261,7 +268,10 @@ int main (int argc, char *argv[])
     Dataset* theDataset = new Dataset(dName, dTitle, true, color, ls, lw, normf, xSect, vecfileNames);
     theDataset->SetEquivalentLuminosity(EqLumi*normf);
     datasets.push_back(theDataset);
-    float Luminosity = 5.59; //pb^-1??
+
+
+    // The luminosity has to be adapted in function of the data!!
+    float Luminosity =106.51; //pb^-1 
 
 
     string dataSetName;
@@ -275,10 +285,10 @@ int main (int argc, char *argv[])
     string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/";
 
     string muonFile= "Muon_SF_TopEA.root";
-    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+muonFile,"SF_totErr", false, true);
+    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+muonFile,"SF_totErr", false, false); // (... , ... , debug, print warning)
 
     string electronFile= "Elec_SF_TopEA.root";
-    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", false, true);
+    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", false, false); // (... , ... , debug, print warning)
 
     /////////////////////////////////
     //  Loop over Datasets
@@ -319,7 +329,7 @@ int main (int argc, char *argv[])
     ////////////////////////////////////////////////////////////////////
     ////////////////// MultiSample plots  //////////////////////////////
     ////////////////////////////////////////////////////////////////////
-
+    /*
     MSPlot["NbOfVertices"]                                  = new MultiSamplePlot(datasets, "NbOfVertices", 60, 0, 60, "Nb. of vertices");
     //Muons
     MSPlot["MuonPt"]                                        = new MultiSamplePlot(datasets, "MuonPt", 30, 0, 300, "PT_{#mu}");
@@ -334,7 +344,8 @@ int main (int argc, char *argv[])
 
     //Init Electron Plots
     MSPlot["InitElectronPt"]                                = new MultiSamplePlot(datasets, "InitElectronPt", 30, 0, 300, "PT_{e}");
-    
+    */
+
     ///////////////////
     // 1D histograms //
     ///////////////////
@@ -342,7 +353,7 @@ int main (int argc, char *argv[])
     ///////////////////
     // 2D histograms //
     ///////////////////
-    histo2D["HTLepSep"] = new TH2F("HTLepSep","dR_{ll}:HT",50,0,1000, 20, 0,4);
+    //    histo2D["HTLepSep"] = new TH2F("HTLepSep","dR_{ll}:HT",50,0,1000, 20, 0,4);
 
     //Plots
     string pathPNG = "MSPlots_FourTop"+postfix+channelpostfix;
@@ -352,7 +363,7 @@ int main (int argc, char *argv[])
 
 
 
-    double lumiWeight = 1 ;// check
+// check
     cout <<"Making directory :"<< pathPNG  <<endl;
     vector<string> CutFlow;
     
@@ -381,8 +392,19 @@ int main (int argc, char *argv[])
 
     for (unsigned int d = 0; d < datasets.size(); d++)
     {
-        cout<<"Load Dataset"<<endl;
+
+        cout << "Load Dataset" << endl;
         treeLoader.LoadDataset (datasets[d], anaEnv);  //open files and load dataset
+	cout <<"found sample with equivalent lumi "<<  theDataset->EquivalentLumi() <<endl;
+	
+	double lumiWeight = -99. ;
+	if (isData) lumiWeight = 1. ;
+	else {
+	  lumiWeight = Luminosity*xSect/datasets[d]->NofEvtsToRunOver();
+	  cout << "dataset has equilumi = " << datasets[d]->EquivalentLumi() << endl;
+	  cout << "the weight to apply for each event of this data set is " << "Lumi * (xs/NSample) -->  " << Luminosity << " * (" << xSect << "/" << datasets[d]->NofEvtsToRunOver() << ") = " << Luminosity*xSect/datasets[d]->NofEvtsToRunOver()  <<  endl;
+	}
+	
         string previousFilename = "";
         int iFile = -1;
         bool nlo = false;
@@ -510,10 +532,80 @@ int main (int argc, char *argv[])
         Int_t charge_muon[10];
 
 
+	// bo MytreePreCut
+
+	// variables for electrons
+        Int_t nElectrons_pc;
+        Double_t pt_electron_pc[10];
+        Double_t phi_electron_pc[10];
+        Double_t eta_electron_pc[10];
+        Double_t E_electron_pc[10];
+        Double_t d0_electron_pc[10];
+        Double_t d0BeamSpot_electron_pc[10];
+        Double_t chargedHadronIso_electron_pc[10];
+        Double_t neutralHadronIso_electron_pc[10];
+        Double_t photonIso_electron_pc[10];
+        Double_t pfIso_electron_pc[10];
+        Int_t charge_electron_pc[10];
+
+	//bo id related variables
+	Double_t sigmaIEtaIEta_electron_pc[10];
+	Double_t deltaEtaIn_electron_pc[10];
+	Double_t deltaPhiIn_electron_pc[10];
+	Double_t hadronicOverEm_electron_pc[10];
+	Int_t missingHits_electron_pc[10];
+	Bool_t passConversion_electron_pc[10];
+	// eo id realted variables
+
+	Double_t sf_electron_pc[10];	
+
+	// variables for muons
+        Int_t nMuons_pc;
+        Double_t pt_muon_pc[10];
+        Double_t phi_muon_pc[10];
+        Double_t eta_muon_pc[10];
+        Double_t E_muon_pc[10];
+        Double_t d0_muon_pc[10];
+        Double_t d0BeamSpot_muon_pc[10];
+        Double_t chargedHadronIso_muon_pc[10];
+        Double_t neutralHadronIso_muon_pc[10];
+        Double_t photonIso_muon_pc[10];
+        Double_t pfIso_muon_pc[10];
+	Double_t sf_muon_pc[10];
+        Int_t charge_muon_pc[10];
+
+
+	// eo MytreePreCut
+
+
+
+
+	// event related variables
+	/*
+        Int_t run_num;
+        Int_t evt_num;
+        Int_t lumi_num;
+        Int_t nvtx;
+        Int_t npu;
+	*/
+
+	Int_t NEvent = datasets[d]->NofEvtsToRunOver();
+	//	Double_t xs [1];
+       
+
+
+
+	// Define the bookkeeping tree
+	/*
+	TTree *bookkeeping = new TTree("startevents","startevents");
+	//	bookkeeping->Branch("xs",xs,"xs/D");
+	bookkeeping->Branch("NEvent",NEvent,"NEvent/I");
+	*/
 
 	// define the output tree                                                                                         
 	fout->cd();
         TTree* myTree = new TTree("tree","tree");
+	
 
 	// electrons
 	//	myTree->Branch("templatevar",templatevar,"templatevar[nElectrons]/D");
@@ -535,7 +627,6 @@ int main (int argc, char *argv[])
 	myTree->Branch("hadronicOverEm_electron",hadronicOverEm_electron,"hadronicOverEm_electron[nElectrons]/D");
 	myTree->Branch("missingHits_electron",missingHits_electron,"missingHits_electron[nElectrons]/I");
 	myTree->Branch("passConversion_electron",passConversion_electron,"passConversion_electron[nElectrons]/O)");
-
 	myTree->Branch("sf_electron",sf_electron,"sf_electron[nElectrons]/D");
 	
 
@@ -555,39 +646,54 @@ int main (int argc, char *argv[])
 	myTree->Branch("d0BeamSpot_muon",d0BeamSpot_muon,"d0BeamSpot_muon[nMuons]/D");
 	myTree->Branch("sf_muon",sf_muon,"sf_muon[nMuons]/D");
 
+	
 
-	/*
-	// define a second tree that will be filled after the selection
-        TTree* postCutTree = new TTree("tree","tree");
+	
+	// Define a secondary tree that is filled before the whole list of cut
+	TTree* myPreCutTree = new TTree("preCutTree","preCutTree");
+
 
 	// electrons
-        postCutTree->Branch("nElectrons",&nElectrons, "nElectrons/I");
-        postCutTree->Branch("pt_electron",pt_electron,"pt_electron[nElectrons]/D");
-        postCutTree->Branch("phi_electron",phi_electron,"phi_electron[nElectrons]/D");
-        postCutTree->Branch("eta_electron",eta_electron,"eta_electron[nElectrons]/D");
-        postCutTree->Branch("E_electron",E_electron,"E_electron[nElectrons]/D");
-        postCutTree->Branch("chargedHadronIsoelectron",chargedHadronIso_electron,"chargedHadronIso_electron[nElectrons]/D");
-        postCutTree->Branch("neutralHadronIsoelectron",neutralHadronIso_electron,"neutralHadronIso_electron[nElectrons]/D");
-        postCutTree->Branch("photonIsoelectron",photonIso_electron,"photonIso_electron[nElectrons]/D");
-        postCutTree->Branch("pfIsoelectron",pfIso_electron,"pfIso_electron[nElectrons]/D");
-        postCutTree->Branch("charge_electron",charge_electron,"charge_electron[nElectrons]/I");
-        postCutTree->Branch("d0_electron",d0_electron,"d0_electron[nElectrons]/D");
+	//	myPreCutTree->Branch("templatevar",templatevar,"templatevar[nElectrons_pc]/D");
+        myPreCutTree->Branch("nElectrons_pc",&nElectrons_pc, "nElectrons_pc/I");//                                                            
+        myPreCutTree->Branch("pt_electron_pc",pt_electron_pc,"pt_electron_pc[nElectrons_pc]/D");
+        myPreCutTree->Branch("phi_electron_pc",phi_electron_pc,"phi_electron_pc[nElectrons_pc]/D");
+        myPreCutTree->Branch("eta_electron_pc",eta_electron_pc,"eta_electron_pc[nElectrons_pc]/D");
+        myPreCutTree->Branch("E_electron_pc",E_electron_pc,"E_electron_pc[nElectrons_pc]/D");
+        myPreCutTree->Branch("chargedHadronIso_electron_pc",chargedHadronIso_electron_pc,"chargedHadronIso_electron_pc[nElectrons_pc]/D");
+        myPreCutTree->Branch("neutralHadronIso_electron_pc",neutralHadronIso_electron_pc,"neutralHadronIso_electron_pc[nElectrons_pc]/D");
+        myPreCutTree->Branch("photonIso_electron_pc",photonIso_electron_pc,"photonIso_electron_pc[nElectrons_pc]/D");
+        myPreCutTree->Branch("pfIso_electron_pc",pfIso_electron_pc,"pfIso_electron_pc[nElectrons_pc]/D");
+        myPreCutTree->Branch("charge_electron_pc",charge_electron_pc,"charge_electron_pc[nElectrons_pc]/I");
+        myPreCutTree->Branch("d0_electron_pc",d0_electron_pc,"d0_electron_pc[nElectrons_pc]/D");
+	myPreCutTree->Branch("d0BeamSpot_electron_pc",d0BeamSpot_electron_pc,"d0BeamSpot_electron_pc[nElectrons_pc]/D");
+	myPreCutTree->Branch("sigmaIEtaIEta_electron_pc",sigmaIEtaIEta_electron_pc,"sigmaIEtaIEta_electron_pc[nElectrons_pc]/D");
+	myPreCutTree->Branch("deltaEtaIn_electron_pc",deltaEtaIn_electron_pc,"deltaEtaIn_electron_pc[nElectrons_pc]/D");
+	myPreCutTree->Branch("deltaPhiIn_electron_pc",deltaPhiIn_electron_pc,"deltaPhiIn_electron_pc[nElectrons_pc]/D");
+	myPreCutTree->Branch("hadronicOverEm_electron_pc",hadronicOverEm_electron_pc,"hadronicOverEm_electron_pc[nElectrons_pc]/D");
+	myPreCutTree->Branch("missingHits_electron_pc",missingHits_electron_pc,"missingHits_electron_pc[nElectrons_pc]/I");
+	myPreCutTree->Branch("passConversion_electron_pc",passConversion_electron_pc,"passConversion_electron_pc[nElectrons_pc]/O)");
+	myPreCutTree->Branch("sf_electron_pc",sf_electron_pc,"sf_electron_pc[nElectrons_pc]/D");
 	
 
 	// muons
-        postCutTree->Branch("nMuons",&nMuons, "nMuons/I");
-        postCutTree->Branch("pt_muon",pt_muon,"pt_muon[nMuons]/D");
-        postCutTree->Branch("phi_muon",phi_muon,"phi_muon[nMuons]/D");
-        postCutTree->Branch("eta_muon",eta_muon,"eta_muon[nMuons]/D");
-        postCutTree->Branch("E_muon",E_muon,"E_muon[nMuons]/D");
-        postCutTree->Branch("chargedHadronIsomuon",chargedHadronIso_muon,"chargedHadronIso_muon[nMuons]/D");
-        postCutTree->Branch("neutralHadronIsomuon",neutralHadronIso_muon,"neutralHadronIso_muon[nMuons]/D");
-        postCutTree->Branch("photonIsomuon",photonIso_muon,"photonIso_muon[nMuons]/D");
-        postCutTree->Branch("pfIso_muon",pfIso_muon,"pfIso_muon[nMuons]/D");
-        postCutTree->Branch("charge_muon",charge_muon,"charge_muon[nMuons]/I");
-        postCutTree->Branch("d0_muon",d0_muon,"d0_muon[nMuons]/D");
+	//        myPreCutTree->Branch("templatevar",templatevar,"templatevar[nMuons_pc]/D");
+        myPreCutTree->Branch("nMuons_pc",&nMuons_pc, "nMuons_pc/I");
+        myPreCutTree->Branch("pt_muon_pc",pt_muon_pc,"pt_muon_pc[nMuons_pc]/D");
+        myPreCutTree->Branch("phi_muon_pc",phi_muon_pc,"phi_muon_pc[nMuons_pc]/D");
+        myPreCutTree->Branch("eta_muon_pc",eta_muon_pc,"eta_muon_pc[nMuons_pc]/D");
+        myPreCutTree->Branch("E_muon_pc",E_muon_pc,"E_muon_pc[nMuons_pc]/D");
+        myPreCutTree->Branch("chargedHadronIso_muon_pc",chargedHadronIso_muon_pc,"chargedHadronIso_muon_pc[nMuons_pc]/D");
+        myPreCutTree->Branch("neutralHadronIso_muon_pc",neutralHadronIso_muon_pc,"neutralHadronIso_muon_pc[nMuons_pc]/D");
+        myPreCutTree->Branch("photonIso_muon_pc",photonIso_muon_pc,"photonIso_muon_pc[nMuons_pc]/D");
+        myPreCutTree->Branch("pfIso_muon_pc",pfIso_muon_pc,"pfIso_muon_pc[nMuons_pc]/D");
+        myPreCutTree->Branch("charge_muon_pc",charge_muon_pc,"charge_muon_pc[nMuons_pc]/I");
+        myPreCutTree->Branch("d0_muon_pc",d0_muon_pc,"d0_muon_pc[nMuons_pc]/D");
+	myPreCutTree->Branch("d0BeamSpot_muon_pc",d0BeamSpot_muon_pc,"d0BeamSpot_muon_pc[nMuons_pc]/D");
+	myPreCutTree->Branch("sf_muon_pc",sf_muon_pc,"sf_muon_pc[nMuons_pc]/D");
 
-	*/
+
+
 
 
 
@@ -672,20 +778,10 @@ int main (int argc, char *argv[])
             {
                 float initreliso = ElectronRelIso(init_electrons[initel], rho);
 		
-                MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+		//                MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
 
             }
 
-            float weight_0 = event->weight0();
-            if (debug)cout <<"Weight0: " << weight_0 <<endl;
-            if(nlo)
-            {
-                if(weight_0 < 0.0)
-                {
-                    scaleFactor = -1.0;  //Taking into account negative weights in NLO Monte Carlo
-                    negWeights++;
-                }
-            }
 
 
             string graphName;
@@ -909,6 +1005,70 @@ int main (int argc, char *argv[])
 
 	    }
 
+
+
+	    // Precut Tree
+	    
+            //////////////////////////
+            // Electron Based Plots //
+            //////////////////////////
+	    if (debug) cout << "before electrons loop" << endl;
+
+	    
+	    nElectrons_pc=0;
+            for (Int_t initel =0; initel < init_electrons.size() && initel < 10; initel++ )
+	    {
+	      pt_electron_pc[nElectrons_pc]=init_electrons[initel]->Pt();
+	      phi_electron_pc[nElectrons_pc]=init_electrons[initel]->Phi();
+	      eta_electron_pc[nElectrons_pc]=init_electrons[initel]->Eta();
+	      E_electron_pc[nElectrons_pc]=init_electrons[initel]->E();
+	      d0_electron_pc[nElectrons_pc]=init_electrons[initel]->d0();
+	      d0BeamSpot_electron_pc[nElectrons_pc]=init_electrons[initel]->d0BeamSpot();
+	      chargedHadronIso_electron_pc[nElectrons_pc]=init_electrons[initel]->chargedHadronIso(3);
+	      neutralHadronIso_electron_pc[nElectrons_pc]=init_electrons[initel]->neutralHadronIso(3);
+	      photonIso_electron_pc[nElectrons_pc]=init_electrons[initel]->photonIso(3);
+	      pfIso_electron_pc[nElectrons_pc]=init_electrons[initel]->relPfIso(3,0);
+	      charge_electron_pc[nElectrons_pc]=init_electrons[initel]->charge();
+	      sigmaIEtaIEta_electron_pc[nElectrons_pc]=init_electrons[initel]->sigmaIEtaIEta();
+	      deltaEtaIn_electron_pc[nElectrons_pc]=init_electrons[initel]->deltaEtaIn();
+	      deltaPhiIn_electron_pc[nElectrons_pc]=init_electrons[initel]->deltaPhiIn();
+	      hadronicOverEm_electron_pc[nElectrons_pc]=init_electrons[initel]->hadronicOverEm();
+	      missingHits_electron_pc[nElectrons_pc]=init_electrons[initel]->missingHits();
+	      passConversion_electron_pc[nElectrons_pc]=init_electrons[initel]->passConversion();
+
+
+	      sf_electron_pc[nElectrons_pc]=electronSFWeight_->at(init_electrons[initel]->Eta(),init_electrons[initel]->Pt(),0);
+	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron_pc[nElectrons_pc] << endl;
+	      nElectrons_pc++;
+            }
+
+
+            //////////////////////
+            // Muon Based Plots //
+            //////////////////////
+	    
+	    nMuons_pc=0;
+            for (Int_t initmu =0; initmu < init_muons.size() && initmu < 10; initmu++ )
+            {
+	      pt_muon_pc[nMuons_pc]=init_muons[initmu]->Pt();
+	      phi_muon_pc[nMuons_pc]=init_muons[initmu]->Phi();
+	      eta_muon_pc[nMuons_pc]=init_muons[initmu]->Eta();
+	      E_muon_pc[nMuons_pc]=init_muons[initmu]->E();
+	      d0_muon_pc[nMuons_pc]=init_muons[initmu]->d0();
+	      d0BeamSpot_muon_pc[nMuons_pc]=init_muons[initmu]->d0BeamSpot();
+	      chargedHadronIso_muon_pc[nMuons_pc]=init_muons[initmu]->chargedHadronIso(4);
+	      neutralHadronIso_muon_pc[nMuons_pc]=init_muons[initmu]->neutralHadronIso(4);
+	      photonIso_muon_pc[nMuons_pc]=init_muons[initmu]->photonIso(4);
+	      pfIso_muon_pc[nMuons_pc]=init_muons[initmu]->relPfIso(4,0);
+	      charge_muon_pc[nMuons_pc]=init_muons[initmu]->charge();
+	      sf_muon_pc[nMuons_pc]=muonSFWeight_->at(init_muons[initmu]->Eta(),init_muons[initmu]->Pt(),0);
+	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon_pc[nMuons_pc] << endl;
+	      nMuons_pc++;
+
+
+	    }
+
+
             //////////////////////
             // Jets Based Plots //
             //////////////////////
@@ -954,17 +1114,16 @@ int main (int argc, char *argv[])
             //////////////////
 	    //	    /*
 	    if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
-	    if (nElectrons == 1 && nMuons == 1){
-	      if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
-		//		myTree->Fill(); 
-		//		passed++;
-		
-	      }
-	      
-		
+	    if (init_electrons.size() >= 1 && init_muons.size() >= 1){
+		myPreCutTree->Fill(); 
+		passed++;
 	    }
 
-	      //	      myTree->Fill();
+	    if (testTree && (nElectrons >= 1 || nMuons >= 1 )){
+	      myTree->Fill();
+	      passed++;
+	    }
+	    
 	    if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
 
 
@@ -1048,10 +1207,20 @@ int main (int argc, char *argv[])
             }
 	    */
 
-	    //cout << "ievt is " << ievt << " and end_d is " << end_d << endl;
+	    //cout << "ievt is " << ievt << " and end_d is " << end_d << endl;            
+	    //            if( run_num > 10000){//data
+	    //	      isdata=1;
+	    //            }
+            
+
+	    
 
         } //End Loop on Events
 
+	//	bookkeeping->Fill();	    
+	//	bookkeeping->Write();
+	
+	myPreCutTree->Write();
 	myTree->Write();
 	if (debug) cout << "Done writing the Tree" << endl;
         tupfile->Close();
@@ -1099,18 +1268,8 @@ int main (int argc, char *argv[])
     }
 
 
-    TDirectory* th2dir = fout->mkdir("Histos2D");
-    th2dir->cd();
 
 
-    for(map<std::string,TH2F*>::const_iterator it = histo2D.begin(); it != histo2D.end(); it++)
-    {
-
-        TH2F *temp = it->second;
-        temp->Write();
-        //TCanvas* tempCanvas = TCanvasCreator(temp, it->first);
-        //tempCanvas->SaveAs( (pathPNG+it->first+".png").c_str() );
-    }
     delete fout;
     cout << "It took us " << ((double)clock() - start) / CLOCKS_PER_SEC << " to run the program" << endl;
     cout << "********************************************" << endl;
