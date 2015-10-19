@@ -92,7 +92,7 @@ map<string,MultiSamplePlot*> MultiPadPlot;
 bool match;
 
 //To cout the Px, Py, Pz, E and Pt of objects
-float ElectronRelIso(TRootElectron* el, float rho);
+//float ElectronRelIso(TRootElectron* el, float rho);
 
 int main (int argc, char *argv[])
 {
@@ -394,17 +394,7 @@ int main (int argc, char *argv[])
     {
 
         cout << "Load Dataset" << endl;
-        treeLoader.LoadDataset (datasets[d], anaEnv);  //open files and load dataset
-	cout <<"found sample with equivalent lumi "<<  theDataset->EquivalentLumi() <<endl;
-	
-	double lumiWeight = -99. ;
-	if (isData) lumiWeight = 1. ;
-	else {
-	  lumiWeight = Luminosity*xSect/datasets[d]->NofEvtsToRunOver();
-	  cout << "dataset has equilumi = " << datasets[d]->EquivalentLumi() << endl;
-	  cout << "the weight to apply for each event of this data set is " << "Lumi * (xs/NSample) -->  " << Luminosity << " * (" << xSect << "/" << datasets[d]->NofEvtsToRunOver() << ") = " << Luminosity*xSect/datasets[d]->NofEvtsToRunOver()  <<  endl;
-	}
-	
+        treeLoader.LoadDataset (datasets[d], anaEnv);  //open files and load dataset	
         string previousFilename = "";
         int iFile = -1;
         bool nlo = false;
@@ -419,6 +409,17 @@ int main (int argc, char *argv[])
         else cout << "Dataset with 50ns Bunch Spacing!" <<endl;
         if(nlo) cout << "NLO Dataset!" <<endl;
         else cout << "LO Dataset!" << endl;
+
+	cout <<"found sample with equivalent lumi "<<  theDataset->EquivalentLumi() <<endl;
+	
+	double lumiWeight = -99. ;
+	if (isData) lumiWeight = 1. ;
+	else {
+	  lumiWeight = Luminosity*xSect/datasets[d]->NofEvtsToRunOver();
+	  cout << "dataset has equilumi = " << datasets[d]->EquivalentLumi() << endl;
+	  cout << "the weight to apply for each event of this data set is " << "Lumi * (xs/NSample) -->  " << Luminosity << " * (" << xSect << "/" << datasets[d]->NofEvtsToRunOver() << ") = " << Luminosity*xSect/datasets[d]->NofEvtsToRunOver()  <<  endl;
+	}
+
 
 
         //////////////////////////////////////////////
@@ -776,8 +777,7 @@ int main (int argc, char *argv[])
 	    //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*scaleFactor );
             for (Int_t initel =0; initel < init_electrons.size(); initel++ )
             {
-                float initreliso = ElectronRelIso(init_electrons[initel], rho);
-		
+	      //                float initreliso = ElectronRelIso(init_electrons[initel], rho);
 		//                MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
 
             }
@@ -827,21 +827,31 @@ int main (int argc, char *argv[])
 	    /// ---
 	    
 	    
+	    string currentFilename = datasets[d]->eventTree()->GetFile()->GetName();
+	    if(previousFilename != currentFilename)
+	      {
+                previousFilename = currentFilename;
+                iFile++;
+                cout<<"File changed!!! => "<<currentFilename<<endl;
+	      }	    
 
+	    ///////////////////////////////////////////
+            //  Trigger
+            ///////////////////////////////////////////
+	    bool trigged = false;
             std::string filterName = "";
             int currentRun = event->runId();
-            if(previousRun != currentRun)
-            {
-                cout <<"What run? "<< currentRun<<endl;
-                previousRun = currentRun;
+            if(previousRun != currentRun){
 
-
-                if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos)
-                {
-                    if (debug)cout <<"event loop 6a"<<endl;
-
-                    // cout << " RUN " << event->runId() << endl;
-                }
+	      cout << "Changing run number. Run is  "<< currentRun<<endl;
+	      previousRun = currentRun;
+	      
+	      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos){
+		if (debug)cout <<"applying trigger for data!"<<endl;
+		itrigger = treeLoader.iTrigger (string ("HLT_Mu38NoFiltersNoVtx_Photon38_CaloIdL_v2"), currentRun, iFile);
+		
+		cout << " RUN " << event->runId() << endl;
+	      }
 
             } //end previousRun != currentRun
 
@@ -853,6 +863,15 @@ int main (int argc, char *argv[])
             // Event selection
             ///////////////////////////////////////////////////////////
 
+
+
+
+	    // Apply trigger selection
+            trigged = treeLoader.EventTrigged (itrigger);
+            //trigged = true;  // Disabling the HLT requirement
+            if (trigged) cout << " trigged is true!!" <<endl;
+
+            if(itrigger == 9999 ) cout << "Lumi Block: " << event->lumiBlockId() << " Event: " << event->eventId() << endl;
 
             // Declare selection instance
             Run2Selection selection(init_jets, init_fatjets, init_muons, init_electrons, mets);
@@ -926,7 +945,7 @@ int main (int argc, char *argv[])
             if (!isGoodPV) continue; // Check that there is a good Primary Vertex
 ////            if (!(selectedJets.size() >= 6)) continue; //Selection of a minimum of 6 Jets in Event
 //
-	    if (debug) cout <<"Number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  "<< init_muons.size() <<"  "  <<init_electrons.size()<<" "<< selectedJets.size()   <<"  "   <<"  "<<JetCut  <<"  "<<Muon<<" "<<Electron<<endl;
+	    if (debug) cout <<"Number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  " << endl << init_muons.size() <<" "  <<init_electrons.size()<<" "<< selectedJets.size()   <<" "   <<" "<<JetCut  <<" "<<Muon<<" "<<Electron<<endl;
 
 
             if (debug)	cout <<" applying baseline event selection..."<<endl;
@@ -1038,7 +1057,7 @@ int main (int argc, char *argv[])
 
 
 	      sf_electron_pc[nElectrons_pc]=electronSFWeight_->at(init_electrons[initel]->Eta(),init_electrons[initel]->Pt(),0);
-	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron_pc[nElectrons_pc] << endl;
+	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons_pc << " and pt equals to " << pt_electron_pc[nElectrons_pc] << endl;
 	      nElectrons_pc++;
             }
 
@@ -1062,7 +1081,7 @@ int main (int argc, char *argv[])
 	      pfIso_muon_pc[nMuons_pc]=init_muons[initmu]->relPfIso(4,0);
 	      charge_muon_pc[nMuons_pc]=init_muons[initmu]->charge();
 	      sf_muon_pc[nMuons_pc]=muonSFWeight_->at(init_muons[initmu]->Eta(),init_muons[initmu]->Pt(),0);
-	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon_pc[nMuons_pc] << endl;
+	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons_pc << " and pt equals to " << pt_muon_pc[nMuons_pc] << endl;
 	      nMuons_pc++;
 
 
@@ -1114,7 +1133,7 @@ int main (int argc, char *argv[])
             //////////////////
 	    //	    /*
 	    if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
-	    if (init_electrons.size() >= 1 && init_muons.size() >= 1){
+	    if (nElectrons_pc >= 1 && nMuons_pc >= 1){
 		myPreCutTree->Fill(); 
 		passed++;
 	    }
@@ -1225,7 +1244,6 @@ int main (int argc, char *argv[])
 	if (debug) cout << "Done writing the Tree" << endl;
         tupfile->Close();
         cout <<"n events passed  =  "<<passed <<endl;
-        cout <<"n events with negative weights = "<<negWeights << endl;
         cout << "Event Count: " << eventCount << endl;
         cout << "Weight Count: " << weightCount << endl;
         //important: free memory
@@ -1279,6 +1297,8 @@ int main (int argc, char *argv[])
     return 0;
 }
 
+
+/*
 float ElectronRelIso(TRootElectron* el, float rho)
 {
     double EffectiveArea = 0.;
@@ -1296,3 +1316,4 @@ float ElectronRelIso(TRootElectron* el, float rho)
 
     return isolation;
 }
+*/
