@@ -64,7 +64,7 @@ int main()
 
     if(1)
     {
-      xmlFileName = "config/FullMcBkgdSamplesV6TreeProc.xml";
+      xmlFileName = "config/FullSamplesV7TreeProc.xml";
      
 
       //      CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
@@ -160,7 +160,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   
 
   //  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens13_10_2015";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens22_10_2015";
 
   
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
@@ -201,8 +201,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
       
       ScaleFactor = 1.; // event scale factor
-      Luminosity = 106.51; // pb-1
-      TString slumi = "106.51";
+      Luminosity = 711.213; // pb-1
+      TString slumi = "711.213";
       
       //      histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
 
