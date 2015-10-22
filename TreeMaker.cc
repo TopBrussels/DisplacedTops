@@ -271,7 +271,7 @@ int main (int argc, char *argv[])
 
 
     // The luminosity has to be adapted in function of the data!!
-    float Luminosity =106.51; //pb^-1 
+    float Luminosity =16.344; //pb^-1 
 
 
     string dataSetName;
@@ -838,6 +838,7 @@ int main (int argc, char *argv[])
 	    ///////////////////////////////////////////
             //  Trigger
             ///////////////////////////////////////////
+	    /*
 	    bool trigged = false;
             std::string filterName = "";
             int currentRun = event->runId();
@@ -854,6 +855,9 @@ int main (int argc, char *argv[])
 	      }
 
             } //end previousRun != currentRun
+	    */
+
+
 
             ///////////////////////
             // JER smearing
@@ -867,11 +871,13 @@ int main (int argc, char *argv[])
 
 
 	    // Apply trigger selection
+	    /*
             trigged = treeLoader.EventTrigged (itrigger);
             //trigged = true;  // Disabling the HLT requirement
             if (trigged) cout << " trigged is true!!" <<endl;
 
             if(itrigger == 9999 ) cout << "Lumi Block: " << event->lumiBlockId() << " Event: " << event->eventId() << endl;
+	    */
 
             // Declare selection instance
             Run2Selection selection(init_jets, init_fatjets, init_muons, init_electrons, mets);
