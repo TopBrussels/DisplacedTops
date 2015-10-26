@@ -1,0 +1,32 @@
+#!/bin/bash " > submit.sh
+
+
+
+# getting the right queu
+if [[ -n  ]]
+then
+    var=1
+    echo argument found!
+    if [[  == test ]]
+    then
+	echo launching with q express
+	echo #PBS -q express >> submit.sh
+	var=2
+    else
+	echo argument should be test. Exiting... 
+	exit
+    fi
+else
+    echo no argument found. = = localgrid
+    var=3
+    echo #PBS -q localgrid >> submit.sh
+    echo #PBS -l walltime=02:00:00 >> submit.sh
+
+fi
+
+echo var is
+echo 
+
+# setting up your code and your env
+echo cd /user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops >> submit.sh
+echo eval export PATH="/user_mnt/user/qpython/TopBrussels7X/CMSSW_7_4_14/bin/slc6_amd64_gcc491:/user_mnt/user/qpython/TopBrussels7X/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/bin/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/llvm/3.6/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/gcc/4.9.1-cms/bin:/cvmfs/cms.cern.ch/common:/cvmfs/cms.cern.ch/bin:/usr/lib64/qt-3.3/bin:/usr/bin:/usr/externals/bin:/usr/sbin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/java/latest/bin:/user/qpython/bin:/bin";
