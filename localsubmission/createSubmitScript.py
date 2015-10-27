@@ -42,6 +42,6 @@ for d in datasets:
             shutil.copyfile("submitSkeleton.sh", filename)
             # append to command to be run at the end of the skeleton
             outfile = open (filename, 'a')
-            print >> outfile, commandString, topTrees[f], " 0" , " 2000000"
+            print >> outfile, commandString, topTrees[f], " 0" , " 2000000" , " " , str(N_file)
             N_file=N_file+1
             
