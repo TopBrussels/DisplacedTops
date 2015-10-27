@@ -2,22 +2,46 @@
 <!-- add="1" means run on the sample -->
 <!-- add="0" means do not run on the sample -->
 <!-- ex with eqlumi <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
-<!-- ex with NofEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
-<!-- ex with PreselEff NofPSEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofPSEvts="218404"/> -->
-
-
-<!--NOT SURE HOW I SHOULD USE THE DIFFERENT OPTION -->
-
 
 <datasets>
 
 <!-- Data -->
+<!-- *** -->
+<!-- *** -->
+
+
+<!-- V8 -->
+<!-- *** -->
+
 <!-- Data RunD -->
 <!-- Lumi = 711.213 pb-1 -->
-<d name="Data"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/MuonEG/crab_MuonEG-Run2015D-PromptReco-v4-CMSSW_74X_v8-74X_dataRun2_Prompt_v2/151020_153819/0000/*.root"/>
+<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/MuonEG/crab_MuonEG-Run2015D-PromptReco-v4-CMSSW_74X_v8-74X_dataRun2_Prompt_v2/151020_153819/0000/*.root"/>
 
 <!-- Data RunC -->
-<d name="Data"     title="Data"    add="0"   Color-="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames=""/>
+<!-- Lumi = 10.364 pb-1 why lumi < than V7??? -->
+<d name="DataRunC"     title="Data"    add="0"   Color-="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/MuonEG/crab_MuonEG-Run2015C-23Sep2015-v1-CMSSW_74X_v8-74X_dataRun2_Prompt_v1/151020_153731/0000/*.root"/>
+
+<!-- *****  -->
+<!-- eo V8 -->
+
+
+<!-- V7 -->
+<!-- *** -->
+
+<!-- Data RunD -->
+<!-- Lumi = 552.672 pb-1 -->
+<d name="DataRunD"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_V7/MuonEG/crab_MuonEG-Run2015D-PromptReco-v3-CMSSW_74X_V7-74X_dataRun2_Prompt_v2/151015_181926/0000/*.root"/>
+
+<!-- Data RunC -->
+<!-- Lumi = 16.344 pb-1 -->
+<d name="DataRunC"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_V7/MuonEG/crab_MuonEG-Run2015C-PromptReco-v1-CMSSW_74X_V7-74X_dataRun2_Prompt_v2/151015_181913/0000/*.root"/>
+
+<!-- *** -->
+<!-- eo V7 -->
+
+<!-- ******* -->
+<!-- ******* -->
+<!-- eo Data -->
 
 
 
