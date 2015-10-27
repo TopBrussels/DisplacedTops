@@ -8,6 +8,7 @@ import glob
 #tree = ET.ElementTree(file='config/TestFaco.xml')
 #tree = ET.ElementTree(file='config/FullMcBkgdSamples.xml')
 #tree = ET.ElementTree(file='config/FullMcBkgdSamplesV7.xml')
+#tree = ET.ElementTree(file='config/FullMcBkgdSamplesV8.xml')
 tree = ET.ElementTree(file='config/DataSamples.xml')
 #tree = ET.ElementTree(file='config/QCDSamplesV6.xml')
 
@@ -80,6 +81,7 @@ for i, row in enumerate(execCommands):
     print 'File {} opened'.format(fileNames[i])
     outfiles.append(outfile)
     row.insert(0, "nohup")
+
     popen = subprocess.Popen(row, stdout=outfiles[i])
     # faco get name
 #    print "row is ", row

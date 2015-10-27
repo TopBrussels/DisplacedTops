@@ -4,7 +4,7 @@ import xml.etree.cElementTree as ET
 import os
 
 # get filenames from the xml!!!
-tree = ET.ElementTree(file='config/FullMcBkgdSamplesV8.xml')
+tree = ET.ElementTree(file='config/FullMcBkgdSamplesV7.xml')
 
 root = tree.getroot()
 datasets = root.find('datasets')

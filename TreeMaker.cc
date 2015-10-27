@@ -1245,8 +1245,9 @@ int main (int argc, char *argv[])
 	//	bookkeeping->Fill();	    
 	//	bookkeeping->Write();
 	
-	myPreCutTree->Write();
+
 	myTree->Write();
+	myPreCutTree->Write();
 	if (debug) cout << "Done writing the Tree" << endl;
         tupfile->Close();
         cout <<"n events passed  =  "<<passed <<endl;

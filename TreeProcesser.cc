@@ -80,16 +80,26 @@ int main()
     // calling datasetPlotter to create MSPplots
 
     // electron plots
-    DatasetPlotter(11, -0.5, 10.5, "nElectrons", xmlFileName,CraneenPath);
+    //    DatasetPlotter(11, -0.5, 10.5, "nElectrons", xmlFileName,CraneenPath);
     DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", xmlFileName,CraneenPath);
-    DatasetPlotter(100, -0.1, 0.1, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
-    //    DatasetPlotter(100, -0.1, 0.1, "d0BeamSpot_electron[nElectrons]", xmlFileName,CraneenPath);
-
+    DatasetPlotter(50, -3.15, 3.15, "eta_electron[nElectrons]", xmlFileName,CraneenPath);
+    DatasetPlotter(30, -3.15, 3.15, "phi_electron[nElectrons]", xmlFileName,CraneenPath);
+    //    DatasetPlotter(100, -0.1, 0.1, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
+    DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron[nElectrons]", xmlFileName,CraneenPath);
+    DatasetPlotter(100, 0.0, 0.2, "pfIso_electron[nElectrons]", xmlFileName,CraneenPath);
+    
+ 
     // muon plots
-    DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
+    //    DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
     DatasetPlotter(100, 0, 1000, "pt_muon[nMuons]", xmlFileName,CraneenPath);
-    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
-    //    DatasetPlotter(100, -0.1, 0.1, "d0BeamSpot_muon[nMuons]", xmlFileName,CraneenPath);
+    DatasetPlotter(50, -3.15, 3.15, "eta_muon[nMuons]", xmlFileName,CraneenPath);
+    DatasetPlotter(30, -3.15, 3.15, "phi_muon[nMuons]", xmlFileName,CraneenPath);
+    //    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
+    DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon[nMuons]", xmlFileName,CraneenPath);
+    DatasetPlotter(100, 0.0, 0.2, "pfIso_muon[nMuons]", xmlFileName,CraneenPath);
+
+
+    // electron-muon plots
 
     // calling the function that writtes all the MSPlots in a root file
     MSPCreator ();
