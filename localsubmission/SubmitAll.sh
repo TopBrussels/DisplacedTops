@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-for f in SumbitScripts/*.sh
+for f in SubmitScripts/*.sh
 do
     qsub $f
 done
