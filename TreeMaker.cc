@@ -98,7 +98,7 @@ int main (int argc, char *argv[])
 {
 
     //Checking Passed Arguments to ensure proper execution of MACRO
-    if(argc < 14)
+  if(argc < 15)
     {
         std::cerr << "TOO FEW INPUTs FROM XMLFILE.  CHECK XML INPUT FROM SCRIPT.  " << argc << " ARGUMENTS HAVE BEEN PASSED." << std::endl;
 	for (int n_arg=1; n_arg<argc; n_arg++)
@@ -110,6 +110,7 @@ int main (int argc, char *argv[])
 
     //Placing arguments in properly typed variables for Dataset creation
 
+
     const string dName              = argv[1];
     const string dTitle             = argv[2];
     const int color                 = strtol(argv[4], NULL, 10);
@@ -120,10 +121,14 @@ int main (int argc, char *argv[])
     const float xSect               = strtod(argv[9], NULL);
     const float PreselEff           = strtod(argv[10], NULL);
     string fileName                 = argv[11];
-    const int startEvent            = strtol(argv[argc-2], NULL, 10);
-    const int endEvent              = strtol(argv[argc-1], NULL, 10);
+    const int startEvent            = strtol(argv[argc-3], NULL, 10);
+    const int endEvent              = strtol(argv[argc-2], NULL, 10);
+    const int JobNum                = strtol(argv[argc-1], NULL, 10);
+
+
+    
     vector<string> vecfileNames;
-    for(int args = 11; args < argc-2; args++)
+    for(int args = 11; args < argc-3; args++)
     {
         vecfileNames.push_back(argv[args]);
     }
@@ -143,6 +148,7 @@ int main (int argc, char *argv[])
     cout << "Dataset File Name: " << vecfileNames[0] << endl;
     cout << "Beginning Event: " << startEvent << endl;
     cout << "Ending Event: " << endEvent << endl;
+    cout << "JobNum: " << JobNum << endl;
     bool isData= false;
     if(dName.find("Data")!=string::npos || dName.find("data")!=string::npos || dName.find("DATA")!=string::npos){
       isData = true;
@@ -311,7 +317,15 @@ int main (int argc, char *argv[])
     //Output ROOT file
     string outputDirectory("MACRO_Output"+channelpostfix);
     mkdir(outputDirectory.c_str(),0777);
-    string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+".root");
+
+    // add jobs number at the end of file if 
+    stringstream ss;
+    ss << JobNum;
+    string strJobNum = ss.str();
+
+    string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+"_"+strJobNum+".root");
+    
+
     TFile *fout = new TFile (rootFileName.c_str(), "RECREATE");
 
     //vector of objects
@@ -1273,7 +1287,7 @@ int main (int argc, char *argv[])
     CutFlowTable.TableCalculator(  true, true, true, true, true);
 
     //Options : WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false)
-    CutFlowTable.Write(  outputDirectory+"/FourTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+    CutFlowTable.Write(  outputDirectory+"/FourTop"+postfix+"_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
 
     fout->cd();
     cout <<" after cd .."<<endl;
