@@ -14,8 +14,8 @@
 <!-- *** -->
 
 <!-- Data RunD -->
-<!-- Lumi = 711.213 pb-1 -->
-<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/MuonEG/crab_MuonEG-Run2015D-PromptReco-v4-CMSSW_74X_v8-74X_dataRun2_Prompt_v2/151020_153819/0000/*.root"/>
+<!-- Lumi = 552.672  pb-1 -->
+<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/MuonEG/crab_MuonEG-Run2015D-05Oct2015-v2-CMSSW_74X_v8-74X_dataRun2_Prompt_v2/151020_173157/0000/*.root"/>
 
 <!-- Data RunC -->
 <!-- Lumi = 10.364 pb-1 why lumi < than V7??? -->
@@ -34,7 +34,7 @@
 
 <!-- Data RunC -->
 <!-- Lumi = 16.344 pb-1 -->
-<d name="DataRunC"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_V7/MuonEG/crab_MuonEG-Run2015C-PromptReco-v1-CMSSW_74X_V7-74X_dataRun2_Prompt_v2/151015_181913/0000/*.root"/>
+<d name="DataRunC"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_V7/MuonEG/crab_MuonEG-Run2015C-PromptReco-v1-CMSSW_74X_V7-74X_dataRun2_Prompt_v2/151015_181913/0000/*.root"/>
 
 <!-- *** -->
 <!-- eo V7 -->
@@ -65,14 +65,13 @@
 <d name="WGToLNuG" title="WG/rightarrow \nu G" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="461.66" PreselEff="0.0"   filenames=""/>
 
 
-<!-- Single t -->
 <!-- here after the cross section are got from the ohio website (http://cmshead.mps.ohio-state.edu/) -->
-<d name="SingletTop_s_channel" title="SingletTop_s_channel" add="0" color="905"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="3.3623" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/TopTree/CMSSW_74X_v7/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v7-MCRUN2_74_V9/151015_223540/0000/*.root"/>
-<d name="SingletTop_t_channel" title="SingletTop_t_channel" add="0" color="907"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="70.695" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/TopTree/CMSSW_74X_v7/ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v7-MCRUN2_74_V9/151015_223549/0000/*.root"/>
-<d name="SingletTop_tW" title="SingletTop_tW" add="0" color="909"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="71.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/TopTree/CMSSW_74X_v7/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v7-MCRUN2_74_V9/151015_223848/0000/*.root"/>
-<d name="SingletTop_tbarW" title="SingletTop_tbarW" add="0" color="910
-
-"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="71.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/TopTree/CMSSW_74X_v7/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v7-MCRUN2_74_V9/151015_223743/0000/*.root"/>
+<d name="SingletTop_s_channel" title="SingletTop_s_channel" add="1" color="905"  ls="1"  lw="2" normf="1" EqLumi="292775.778485" xsection="3.3623" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_160304/0000/*.root"/>
+<d name="SingletTop_t_channel" title="SingletTop_t_channel" add="1" color="907"  ls="1"  lw="2" normf="1" EqLumi="0" xsection="70.695" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_160315/0000"/>
+<!-- using skim -->
+<d name="SingletTop_tW" title="SingletTop_tW" add="1" color="909"  ls="1"  lw="2" normf="1" EqLumi="13885.6344" xsection="71.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/Skimmed-TopTrees/CMSSW_74X_v8/MuonEG/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns/23102015_213520/*.root"/>
+<!-- using skim -->
+<d name="SingletTop_tbarW" title="SingletTop_tbarW" add="1" color="910"  ls="1"  lw="2" normf="1" EqLumi="13947.00142" xsection="71.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/Skimmed-TopTrees/CMSSW_74X_v8/MuonEG/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns/23102015_221529/*.root"/>
 
 
 
