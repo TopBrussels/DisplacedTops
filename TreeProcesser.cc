@@ -24,7 +24,7 @@
 using namespace std;
 using namespace TopTree;
 
-/// Normal Plots (TH1F* and TH2F*)
+// Normal Plots (TH1F* and TH2F*)
 map<string,TH1F*> histo1D;
 map<string,TH2F*> histo2D;
 map<string,TFile*> FileObj;
@@ -170,7 +170,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   
 
   //  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens22_10_2015";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens27_10_2015";
 
   
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
@@ -211,8 +211,12 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
       
       ScaleFactor = 1.; // event scale factor
-      Luminosity = 711.213; // pb-1
-      TString slumi = "711.213";
+      //      Luminosity = 711.213; // pb-1
+      //      TString slumi = "711.213";
+
+      Luminosity = 552.672; // pb-1
+      TString slumi = "552.672";
+
       
       //      histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
 
