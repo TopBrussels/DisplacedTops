@@ -9,8 +9,9 @@ import shutil
 
 
 # getting the appropriate xml file
-tree = ET.ElementTree(file='../config/FullMcBkgdSamplesV8.xml')
+#tree = ET.ElementTree(file='../config/FullMcBkgdSamplesV8.xml')
 #tree = ET.ElementTree(file='../config/DataSamples.xml')
+tree = ET.ElementTree(file='../config/DisplacedTopsSignal.xml')
 
 
 root = tree.getroot()
@@ -37,11 +38,11 @@ for d in datasets:
         N_file = 1
         # loop over all the root files and make one job per root file
         for f in range(0,len(topTrees)):
-            filename="SubmitScripts/submit_"+str(d.attrib['name'])+str(N_file)+".sh"
+            filename="SubmitScripts/submit_"+str(d.attrib['name'])+"_"+str(N_file)+".sh"
             # copy a skeleton file that set up the code environment, the wall time and the queue
             shutil.copyfile("submitSkeleton.sh", filename)
             # append to command to be run at the end of the skeleton
             outfile = open (filename, 'a')
-            print >> outfile, commandString, topTrees[f], " 0" , " 2000000" , " " , str(N_file)
+            print >> outfile, commandString, topTrees[f], " " , str(N_file) , " 0" , " 2000000" 
             N_file=N_file+1
             

@@ -72,7 +72,7 @@ using namespace TopTree;
 using namespace reweight;
 
 
-bool debug = false;
+Bool_t debug = true;
 Bool_t testTree = false;
 
 
@@ -98,7 +98,19 @@ int main (int argc, char *argv[])
 {
 
     //Checking Passed Arguments to ensure proper execution of MACRO
-  if(argc < 15)
+
+  if (debug)
+    {
+      cout << "list of arguments are ..." << endl;
+      for (int n_arg=1; n_arg<argc; n_arg++)
+	{
+	  std:: cerr << "arg number " << n_arg << " is " << argv[n_arg] << std::endl;
+	}
+    }
+    
+
+
+  if(argc < 14 )
     {
         std::cerr << "TOO FEW INPUTs FROM XMLFILE.  CHECK XML INPUT FROM SCRIPT.  " << argc << " ARGUMENTS HAVE BEEN PASSED." << std::endl;
 	for (int n_arg=1; n_arg<argc; n_arg++)
@@ -121,16 +133,25 @@ int main (int argc, char *argv[])
     const float xSect               = strtod(argv[9], NULL);
     const float PreselEff           = strtod(argv[10], NULL);
     string fileName                 = argv[11];
-    const int startEvent            = strtol(argv[argc-3], NULL, 10);
-    const int endEvent              = strtol(argv[argc-2], NULL, 10);
-    const int JobNum                = strtol(argv[argc-1], NULL, 10);
+    // if there only two arguments after the fileName, the jobNum will be set to 0 by default as an integer is expected and it will get a string (lastfile of the list) 
+    const int JobNum                = strtol(argv[argc-3], NULL, 10);
+    const int startEvent            = strtol(argv[argc-2], NULL, 10);
+    const int endEvent              = strtol(argv[argc-1], NULL, 10);
 
 
-    
+    // all the files are stored from arg 11 to argc-2
     vector<string> vecfileNames;
-    for(int args = 11; args < argc-3; args++)
-    {
-        vecfileNames.push_back(argv[args]);
+    for(int args = 11; args < argc-2; args++)
+      {
+	vecfileNames.push_back(argv[args]);
+      }
+    
+    if (debug){
+      cout << "The list of file to run over will be printed..." << endl;
+      for ( int nfiles = 0; nfiles < vecfileNames.size(); nfiles++)
+	{
+	  cout << "file number " << nfiles << " is " << vecfileNames[nfiles] << endl;
+	}
     }
 
 
@@ -323,7 +344,14 @@ int main (int argc, char *argv[])
     ss << JobNum;
     string strJobNum = ss.str();
 
-    string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+"_"+strJobNum+".root");
+    string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+".root");
+    if (strJobNum != "0")
+      {
+	cout << "strJobNum is " << strJobNum << endl;
+        rootFileName = outputDirectory+"/DisplacedTop"+postfix+channelpostfix+"_"+strJobNum+".root";
+      }
+    
+    
     
 
     TFile *fout = new TFile (rootFileName.c_str(), "RECREATE");
@@ -1287,7 +1315,14 @@ int main (int argc, char *argv[])
     CutFlowTable.TableCalculator(  true, true, true, true, true);
 
     //Options : WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false)
-    CutFlowTable.Write(  outputDirectory+"/FourTop"+postfix+"_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+    if (strJobNum != "0")
+      {
+	CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+      }
+    else 
+      {
+	CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+      }
 
     fout->cd();
     cout <<" after cd .."<<endl;
