@@ -9,8 +9,9 @@ import glob
 #tree = ET.ElementTree(file='config/FullMcBkgdSamples.xml')
 #tree = ET.ElementTree(file='config/FullMcBkgdSamplesV7.xml')
 #tree = ET.ElementTree(file='config/FullMcBkgdSamplesV8.xml')
-tree = ET.ElementTree(file='config/DataSamples.xml')
+#tree = ET.ElementTree(file='config/DataSamples.xml')
 #tree = ET.ElementTree(file='config/QCDSamplesV6.xml')
+tree = ET.ElementTree(file='config/DisplacedTopsSignal.xml')
 
 root = tree.getroot()
 datasets = root.find('datasets')

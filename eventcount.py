@@ -6,8 +6,9 @@ import os
 # get filenames from the xml!!!
 #tree = ET.ElementTree(file='config/FullMcBkgdSamplesV7.xml')
 #tree = ET.ElementTree(file='config/FullMcBkgdSamplesV8.xml')
+tree = ET.ElementTree(file='config/DisplacedTopsSignal.xml')
 #tree = ET.ElementTree(file='config/DataSamples.xml')
-tree = ET.ElementTree(file='/user/ivanpari/CMSSW_7_4_15/src/TopBrussels/FCNCAnalysis/config/Run2TriLepton_samples.xml')
+
 
 root = tree.getroot()
 datasets = root.find('datasets')
