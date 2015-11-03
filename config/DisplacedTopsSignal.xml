@@ -1,53 +1,29 @@
 <?xml version="1.0"?>
-<!-- add="1" means run on the sample -->
-<!-- add="0" means do not run on the sample -->
-<!-- ex with eqlumi <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
-<!-- ex with NofEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
-<!-- ex with PreselEff NofPSEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofPSEvts="218404"/> -->
 
+<!--
+All the xsect can be found on the following twiki:
+https://twiki.cern.ch/twiki/bin/view/LHCPhysics/SUSYCrossSections13TeVstopsbottom
+-->
+
+<data>
 <datasets>
-    
-
 
 <!--Signal -->
 
-
-<!-- M 500 ctau 1000 -->
-<!--   -->
-<d name="stopTobl_m500_Ctau1000" title="stopTobl_m500_Ctau1000" add="1" color="433" ls="1" lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/fblekman/TopTree/TopTree74v1/DisplacedSUSY_StopToBL_M-500_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_TOPTREE-DisplacedSUSY_StopToBL_M-500_CTau-1000_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-MINIAODSIM--TopTree74v1--MCRUN2_74_V9-All/150610_095316/0000/TOPTREE_1.root"/>
-
-<d name="stopTobl_m500_Ctau1000" title="stopTobl_m500_Ctau1000" add="1" color="433" ls="1" lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/fblekman/TopTree/TopTree74v1/DisplacedSUSY_StopToBL_M-500_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_TOPTREE-DisplacedSUSY_StopToBL_M-500_CTau-1000_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-MINIAODSIM--TopTree74v1--MCRUN2_74_V9-All/150610_095316/0000/TOPTREE_2.root"/>
-<!--   -->
+<!-- M 500 ctau 10 -->
+<d name="stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="173584.323407" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_154732/0000/*.root"/>
 
 <!-- M 500 ctau 100 -->
-<!--   -->
-<d name="stopTobl_m500_Ctau100" title="stopTobl_m500_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/fblekman/TopTree/TopTree74v1/DisplacedSUSY_StopToBL_M-500_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_TOPTREE-DisplacedSUSY_StopToBL_M-500_CTau-100_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2-MINIAODSIM--TopTree74v1--MCRUN2_74_V9-All/150610_095323/0000/TOPTREE_1.root"/>
+<d name="stopTobl_m500_Ctau100" title="stopTobl_m500_Ctau100" add="0" color="500" ls="1" lw="2" normf="1" xsection="0.51848" EqLumi="1" PreselEff="0.0" filenames=""/>
 
-<d name="stopTobl_m500_Ctau100" title="stopTobl_m500_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/fblekman/TopTree/TopTree74v1/DisplacedSUSY_StopToBL_M-500_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_TOPTREE-DisplacedSUSY_StopToBL_M-500_CTau-100_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2-MINIAODSIM--TopTree74v1--MCRUN2_74_V9-All/150610_095323/0000/TOPTREE_2.root"/>
-<!--   -->
-
-
-<!-- M 500 ctau 10 -->
-<!--   -->
-<d name="stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="600" ls="1" lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/fblekman/TopTree/TopTree74v1/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_TOPTREE-DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-MINIAODSIM--TopTree74v1--MCRUN2_74_V9-All/150610_095329/0000/TOPTREE_1.root"/>
-
-<d name="stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="600" ls="1" lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/fblekman/TopTree/TopTree74v1/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_TOPTREE-DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-MINIAODSIM--TopTree74v1--MCRUN2_74_V9-All/150610_095329/0000/TOPTREE_2.root"/>
-
-<d name="stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="600" ls="1" lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0" filenames="dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/fblekman/TopTree/TopTree74v1/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_TOPTREE-DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-MINIAODSIM--TopTree74v1--MCRUN2_74_V9-All/150610_095329/0000/TOPTREE_3.root"/>
-<!--   -->
-
-
-
-
+<!-- M 500 ctau 1000 -->
+<d name="stopTobl_m500_Ctau1000" title="stopTobl_m500_Ctau1000" add="1" color="600" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="171975.775343" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/DisplacedSUSY_StopToBL_M-500_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_DisplacedSUSY_StopToBL_M-500_CTau-1000_TuneCUETP8M1_13TeV_pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_154724/0000/*.root"/>
 
 
 </datasets>
 
 <!-- All parameters needed for the selection and the bkg estimation methods -->
 <analysis>
-<!--<!-- JetType: 0=TRootJet - 1=TRootCaloJet - 2=TRootPFJet -->
-<!--<a type="Collections" PVCollection="PrimaryVertex" JetType="2" JetCollection="PFJets_selectedPatJetsPF2PAT" METType="2" METCollection="PFMET_patType1CorrectedPFMetPF2PAT" MuonCollection="Muons_selectedPatMuonsPF2PAT" ElectronCollection="Electrons_selectedPatElectronsPF2PAT" loadGenJetCollection="1" GenJetCollection="GenJets_ak5GenJetsNoNu" loadGenEventCollection="1" GenEventCollection="GenEvent" loadNPGenEventCollection="0" NPGenEventCollection="NPGenEvent" loadMCParticles="1" MCParticlesCollection="MCParticles" TrackMETCollection="" loadTrackMET="0"/>-->
-
 
 <a type="Collections" PVCollection="PrimaryVertex" JetType="2" JetCollection="PFJets_slimmedJets" METType="2" METCollection="PFMET_slimmedMETs" MuonCollection="Muons_slimmedMuons" ElectronCollection="Electrons_slimmedElectrons" loadGenJetCollection="0" GenJetCollection="GenJets_slimmedGenJets" loadGenEventCollection="0" GenEventCollection="GenEvent" loadNPGenEventCollection="0" NPGenEventCollection="NPGenEvent" loadMCParticles="1" MCParticlesCollection="MCParticles" TrackMETCollection="" loadTrackMET="0"/>
 
@@ -58,4 +34,4 @@
 <!-- LuminosityError has to be relative [0-1], ex: 0.1 means 10% uncertainty on luminosity -->
 <!-- other errors should be absolute -->
 </analysis>
-
+</data>
