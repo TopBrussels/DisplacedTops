@@ -72,7 +72,7 @@ using namespace TopTree;
 using namespace reweight;
 
 
-Bool_t debug = true;
+Bool_t debug = false;
 Bool_t testTree = false;
 
 
