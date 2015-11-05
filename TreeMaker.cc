@@ -185,7 +185,9 @@ int main (int argc, char *argv[])
     ofstream eventlist;
     eventlist.open ("interesting_events_mu.txt");
 
+
     int passed = 0;
+    int passed_pc = 0;
     int ndefs =0;
     int negWeights = 0;
     float weightCount = 0.0;
@@ -942,7 +944,7 @@ int main (int argc, char *argv[])
 	    //selectedElectrons = init_electrons;
 
 
-	    vector<TRootJet*>      selectedLightJets;
+	    //	    vector<TRootJet*>      selectedLightJets;
 
             int JetCut =0;
             int nMu, nEl, nLooseIsoMu;
@@ -1183,7 +1185,7 @@ int main (int argc, char *argv[])
 	    if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
 	    if (nElectrons_pc >= 1 && nMuons_pc >= 1){
 		myPreCutTree->Fill(); 
-		passed++;
+		passed_pc++;
 	    }
 
 	    if (testTree && (nElectrons >= 1 || nMuons >= 1 )){
@@ -1224,6 +1226,7 @@ int main (int argc, char *argv[])
 			    passedElMuNotOverlaping=true;
 			    CutFlowTable.Fill(d,8,scaleFactor*lumiWeight);
 			    passed++;
+			    if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
 			    myTree->Fill(); 
 			  }
 			}
@@ -1292,7 +1295,8 @@ int main (int argc, char *argv[])
 	myPreCutTree->Write();
 	if (debug) cout << "Done writing the Tree" << endl;
         tupfile->Close();
-        cout <<"n events passed  =  "<<passed <<endl;
+        cout <<"n events before all the cuts is  =  "<< passed_pc <<endl;
+        cout <<"n events after all the cuts is  =  "<< passed <<endl;
         cout << "Event Count: " << eventCount << endl;
         cout << "Weight Count: " << weightCount << endl;
         //important: free memory
