@@ -406,14 +406,42 @@ int main (int argc, char *argv[])
     mkdir(pathPNG.c_str(),0777);
 
 
+    // define cuts here
 
-// check
+    // electron
+    float el_pt_cut = 42.;
+    float el_eta_cut = 2.4;
+
+
+    // muon
+    float mu_pt_cut = 40.;
+    float mu_eta_cut = 2.4;
+    float mu_iso_cut = 0.12;
+
+    // convert into string
+
+    std::ostringstream el_pt_cut_strs, el_eta_cut_strs, mu_pt_cut_strs, mu_eta_cut_strs, mu_iso_cut_strs;
+    std::string el_pt_cut_str, el_eta_cut_str, mu_pt_cut_str, mu_eta_cut_str, mu_iso_cut_str;
+    el_pt_cut_strs << el_pt_cut;
+    el_eta_cut_strs << el_eta_cut;
+    mu_pt_cut_strs << mu_pt_cut;
+    mu_eta_cut_strs << mu_eta_cut;
+    mu_iso_cut_strs << mu_iso_cut;
+
+    el_pt_cut_str = el_pt_cut_strs.str();
+    el_eta_cut_str = el_eta_cut_strs.str();
+    mu_pt_cut_str = mu_pt_cut_strs.str();
+    mu_eta_cut_str = mu_eta_cut_strs.str();
+    mu_iso_cut_str = mu_iso_cut_strs.str();
+
+    
+    // check
     cout <<"Making directory :"<< pathPNG  <<endl;
     vector<string> CutFlow;
     
     CutFlow.push_back(string("initial"));
-    CutFlow.push_back(string("at least one good electron (id, iso, pt, eta)"));
-    CutFlow.push_back(string("at least one good muon (id, iso, pt, eta)"));
+    CutFlow.push_back(string("at least one good electron: pt $<$ "+el_pt_cut_str+", eta $<$ "+el_eta_cut_str));
+    CutFlow.push_back(string("at least one good muon: pt $<$ "+mu_pt_cut_str+", eta $<$ "+mu_eta_cut_str+", iso $<$ "+mu_iso_cut_str));
     CutFlow.push_back(string("extra electron veto"));
     CutFlow.push_back(string("extra muon veto"));
     CutFlow.push_back(string("electron blinding d0"));
@@ -933,13 +961,13 @@ int main (int argc, char *argv[])
 
 	    // make a new collections of muons
 	    if (debug)cout<<"Getting Muons"<<endl;
-	    selectedMuons = selection.GetSelectedDisplacedMuons(40.0, 2.4, 0.12); // pt, eta, iso
+	    selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut); // pt, eta, iso
 	    //selectedMuons = selection.GetSelectedMuons();
 	    //selectedMuons = init_muons;
 
 	    // make a new collections of electrons
 	    if (debug)cout<<"Getting Electrons"<<endl;
-	    selectedElectrons = selection.GetSelectedDisplacedElectrons(42.0, 2.4);// pt, eta
+	    selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut);// pt, eta
 	    //selectedElectrons = selection.GetSelectedElectrons();
 	    //selectedElectrons = init_electrons;
 
