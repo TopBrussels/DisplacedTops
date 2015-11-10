@@ -456,6 +456,34 @@ int main (int argc, char *argv[])
     CutFlowTable.SetLuminosity(Luminosity);
     CutFlowTable.SetPrecision(1);
 
+
+    // cutflow for one good electron
+    
+    vector<string> CutFlow_oneEl;
+    
+    CutFlow_oneEl.push_back(string("initial"));
+    CutFlow_oneEl.push_back(string(""));
+    CutFlow_oneEl.push_back(string("at least one good electron: pt $<$ "+el_pt_cut_str+", eta $<$ "+el_eta_cut_str));
+
+    SelectionTable CutFlow_oneElTable(CutFlow_oneEl, datasets);
+    CutFlow_oneElTable.SetLuminosity(Luminosity);
+    CutFlow_oneElTable.SetPrecision(1);
+    
+
+    // cutflow for one good muon
+    
+    vector<string> CutFlow_oneMu;
+    
+    CutFlow_oneMu.push_back(string("initial"));
+    CutFlow_oneMu.push_back(string("at least one good muon: pt $<$ "+mu_pt_cut_str+", eta $<$ "+mu_eta_cut_str+", iso $<$ "+mu_iso_cut_str));
+
+    SelectionTable CutFlow_oneMuTable(CutFlow_oneMu, datasets);
+    CutFlow_oneMuTable.SetLuminosity(Luminosity);
+    CutFlow_oneMuTable.SetPrecision(1);
+    
+
+
+
     /////////////////////////////////
     // Loop on datasets
     /////////////////////////////////
