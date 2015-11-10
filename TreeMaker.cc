@@ -605,6 +605,7 @@ int main (int argc, char *argv[])
         Double_t pfIso_electron[10];
         Int_t charge_electron[10];
 
+
 	//bo id related variables
 	Double_t sigmaIEtaIEta_electron[10];
 	Double_t deltaEtaIn_electron[10];
@@ -614,6 +615,7 @@ int main (int argc, char *argv[])
 	Bool_t passConversion_electron[10];
 	// eo id realted variables
 
+	Bool_t isEBEEGap [10];
 	Double_t sf_electron[10];	
 
 	// variables for muons
@@ -649,6 +651,7 @@ int main (int argc, char *argv[])
         Double_t pfIso_electron_pc[10];
         Int_t charge_electron_pc[10];
 
+
 	//bo id related variables
 	Double_t sigmaIEtaIEta_electron_pc[10];
 	Double_t deltaEtaIn_electron_pc[10];
@@ -658,6 +661,7 @@ int main (int argc, char *argv[])
 	Bool_t passConversion_electron_pc[10];
 	// eo id realted variables
 
+	Bool_t isEBEEGap_pc [10];
 	Double_t sf_electron_pc[10];	
 
 	// variables for muons
@@ -728,6 +732,7 @@ int main (int argc, char *argv[])
 	myTree->Branch("hadronicOverEm_electron",hadronicOverEm_electron,"hadronicOverEm_electron[nElectrons]/D");
 	myTree->Branch("missingHits_electron",missingHits_electron,"missingHits_electron[nElectrons]/I");
 	myTree->Branch("passConversion_electron",passConversion_electron,"passConversion_electron[nElectrons]/O)");
+	myTree->Branch("isEBEEGap",isEBEEGap,"isEBEEGap[nElectrons]/O)");
 	myTree->Branch("sf_electron",sf_electron,"sf_electron[nElectrons]/D");
 	
 
@@ -774,6 +779,7 @@ int main (int argc, char *argv[])
 	myPreCutTree->Branch("hadronicOverEm_electron_pc",hadronicOverEm_electron_pc,"hadronicOverEm_electron_pc[nElectrons_pc]/D");
 	myPreCutTree->Branch("missingHits_electron_pc",missingHits_electron_pc,"missingHits_electron_pc[nElectrons_pc]/I");
 	myPreCutTree->Branch("passConversion_electron_pc",passConversion_electron_pc,"passConversion_electron_pc[nElectrons_pc]/O)");
+	myPreCutTree->Branch("isEBEEGap_pc",isEBEEGap_pc,"isEBEEGap_pc[nElectrons]/O)");
 	myPreCutTree->Branch("sf_electron_pc",sf_electron_pc,"sf_electron_pc[nElectrons_pc]/D");
 	
 
@@ -1097,7 +1103,10 @@ int main (int argc, char *argv[])
 	      hadronicOverEm_electron[nElectrons]=selectedElectrons[selel]->hadronicOverEm();
 	      missingHits_electron[nElectrons]=selectedElectrons[selel]->missingHits();
 	      passConversion_electron[nElectrons]=selectedElectrons[selel]->passConversion();
-
+	      isEBEEGap = false;
+	      double eta = photon->superCluster()->position().eta();// faco
+	      double feta = fabs(eta);
+	      if (fabs(feta-1.479)<.1) isEBEEGap = true ;
 
 	      sf_electron[nElectrons]=electronSFWeight_->at(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron[nElectrons] << endl;
@@ -1253,37 +1262,40 @@ int main (int argc, char *argv[])
 
 
 	    // filling the cutflow
-	    
 	    CutFlowTable.Fill(d,0,scaleFactor*lumiWeight);
-	    if (selectedElectrons.size() >= 1 ){
-	      passedGoodEl=true;
-	      CutFlowTable.Fill(d,1,scaleFactor*lumiWeight);
-	      if (selectedMuons.size() >= 1 ){
-		passedGoodMu=true;
-		CutFlowTable.Fill(d,2,scaleFactor*lumiWeight);
-		if (selectedElectrons.size() == 1 ){
-		  passedExtraElVeto = true;
-		  CutFlowTable.Fill(d,3,scaleFactor*lumiWeight);
-		  if (selectedMuons.size() == 1 ){
-		    passedExtraMuVeto = true;
-		    CutFlowTable.Fill(d,4,scaleFactor*lumiWeight);
-		    if(abs(selectedElectrons[0]->d0BeamSpot()) < 0.01){
-		      passedBlindingEl = true;
-		      CutFlowTable.Fill(d,5,scaleFactor*lumiWeight);
-		      if (abs(selectedMuons[0]->d0BeamSpot()) < 0.01){
-			passedBlindingMu=true;
-			CutFlowTable.Fill(d,6,scaleFactor*lumiWeight);
-			if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
-			  passedElMuOS=true;
-			  CutFlowTable.Fill(d,7,scaleFactor*lumiWeight);
-			  Double_t DeltaR = sqrt (2);// to be done
-			  if (1){
-			    //			  if(selectedElectrons[0]->DeltaR(selectedMuons[0]) > 0.5){
-			    passedElMuNotOverlaping=true;
-			    CutFlowTable.Fill(d,8,scaleFactor*lumiWeight);
-			    passed++;
-			    if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
-			    myTree->Fill(); 
+	    if(!isEBEEGap){
+	      passedEcalCrackVeto = true;
+	      CutFlowTable.Fill(d,0,scaleFactor*lumiWeight);
+	      if (selectedElectrons.size() >= 1 ){
+		passedGoodEl=true;
+		CutFlowTable.Fill(d,1,scaleFactor*lumiWeight);
+		if (selectedMuons.size() >= 1 ){
+		  passedGoodMu=true;
+		  CutFlowTable.Fill(d,2,scaleFactor*lumiWeight);
+		  if (selectedElectrons.size() == 1 ){
+		    passedExtraElVeto = true;
+		    CutFlowTable.Fill(d,3,scaleFactor*lumiWeight);
+		    if (selectedMuons.size() == 1 ){
+		      passedExtraMuVeto = true;
+		      CutFlowTable.Fill(d,4,scaleFactor*lumiWeight);
+		      if(abs(selectedElectrons[0]->d0BeamSpot()) < 0.01){
+			passedBlindingEl = true;
+			CutFlowTable.Fill(d,5,scaleFactor*lumiWeight);
+			if (abs(selectedMuons[0]->d0BeamSpot()) < 0.01){
+			  passedBlindingMu=true;
+			  CutFlowTable.Fill(d,6,scaleFactor*lumiWeight);
+			  if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
+			    passedElMuOS=true;
+			    CutFlowTable.Fill(d,7,scaleFactor*lumiWeight);
+			    Double_t DeltaR = sqrt (2);// to be done
+			    if (1){
+			      //			  if(selectedElectrons[0]->DeltaR(selectedMuons[0]) > 0.5){
+			      passedElMuNotOverlaping=true;
+			      CutFlowTable.Fill(d,8,scaleFactor*lumiWeight);
+			      passed++;
+			      if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
+			      myTree->Fill(); 
+			    }
 			  }
 			}
 		      }
