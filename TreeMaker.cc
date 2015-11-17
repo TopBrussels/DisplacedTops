@@ -1418,15 +1418,15 @@ int main (int argc, char *argv[])
     //Options : WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false)
     if (strJobNum != "0")
       {
-	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
       }
     else 
       {
-	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
       }
 
     fout->cd();
