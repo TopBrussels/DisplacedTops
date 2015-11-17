@@ -440,14 +440,15 @@ int main (int argc, char *argv[])
     vector<string> CutFlowPresel;
     
     CutFlowPresel.push_back(string("initial"));
+    CutFlowPresel.push_back(string("ecal crack veto"));
     CutFlowPresel.push_back(string("at least one good electron: pt $<$ "+el_pt_cut_str+", eta $<$ "+el_eta_cut_str));
     CutFlowPresel.push_back(string("at least one good muon: pt $<$ "+mu_pt_cut_str+", eta $<$ "+mu_eta_cut_str+", iso $<$ "+mu_iso_cut_str));
     CutFlowPresel.push_back(string("extra electron veto"));
     CutFlowPresel.push_back(string("extra muon veto"));
     CutFlowPresel.push_back(string("electron blinding d0"));
     CutFlowPresel.push_back(string("muon blinding d0"));
-    CutFlowPresel.push_back(string("OS letpons"));
-    //    CutFlowPresel.push_back(string("Non overlaping letpons"));
+    CutFlowPresel.push_back(string("OS leptons"));
+    //    CutFlowPresel.push_back(string("Non overlaping leptons"));
     CutFlowPresel.push_back(string(" "));
     
 
@@ -462,7 +463,7 @@ int main (int argc, char *argv[])
     vector<string> CutFlow_oneEl;
     
     CutFlow_oneEl.push_back(string("initial"));
-    CutFlow_oneEl.push_back(string(""));
+    CutFlow_oneEl.push_back(string("electron crack veto"));
     CutFlow_oneEl.push_back(string("at least one good electron: pt $<$ "+el_pt_cut_str+", eta $<$ "+el_eta_cut_str));
 
     SelectionTable CutFlow_oneElTable(CutFlow_oneEl, datasets);
@@ -616,7 +617,6 @@ int main (int argc, char *argv[])
 	// eo id realted variables
 
 	Bool_t isEBEEGap;
-	//	Bool_t isEBEEGap [10];
 	Double_t sf_electron[10];	
 
 	// variables for muons
@@ -1270,33 +1270,33 @@ int main (int argc, char *argv[])
 	    CutFlowPreselTable.Fill(d,0,scaleFactor*lumiWeight);
 	    if(!isEBEEGap){
 	      passedEcalCrackVeto = true;
-	      CutFlowPreselTable.Fill(d,0,scaleFactor*lumiWeight);
+	      CutFlowPreselTable.Fill(d,1,scaleFactor*lumiWeight);
 	      if (selectedElectrons.size() >= 1 ){
 		passedGoodEl=true;
-		CutFlowPreselTable.Fill(d,1,scaleFactor*lumiWeight);
+		CutFlowPreselTable.Fill(d,2,scaleFactor*lumiWeight);
 		if (selectedMuons.size() >= 1 ){
 		  passedGoodMu=true;
-		  CutFlowPreselTable.Fill(d,2,scaleFactor*lumiWeight);
+		  CutFlowPreselTable.Fill(d,3,scaleFactor*lumiWeight);
 		  if (selectedElectrons.size() == 1 ){
 		    passedExtraElVeto = true;
-		    CutFlowPreselTable.Fill(d,3,scaleFactor*lumiWeight);
+		    CutFlowPreselTable.Fill(d,4,scaleFactor*lumiWeight);
 		    if (selectedMuons.size() == 1 ){
 		      passedExtraMuVeto = true;
-		      CutFlowPreselTable.Fill(d,4,scaleFactor*lumiWeight);
+		      CutFlowPreselTable.Fill(d,5,scaleFactor*lumiWeight);
 		      if(abs(selectedElectrons[0]->d0BeamSpot()) < 0.01){
 			passedBlindingEl = true;
-			CutFlowPreselTable.Fill(d,5,scaleFactor*lumiWeight);
+			CutFlowPreselTable.Fill(d,6,scaleFactor*lumiWeight);
 			if (abs(selectedMuons[0]->d0BeamSpot()) < 0.01){
 			  passedBlindingMu=true;
-			  CutFlowPreselTable.Fill(d,6,scaleFactor*lumiWeight);
+			  CutFlowPreselTable.Fill(d,7,scaleFactor*lumiWeight);
 			  if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
 			    passedElMuOS=true;
-			    CutFlowPreselTable.Fill(d,7,scaleFactor*lumiWeight);
+			    CutFlowPreselTable.Fill(d,8,scaleFactor*lumiWeight);
 			    Double_t DeltaR = sqrt (2);// to be done
 			    if (1){
 			      //			  if(selectedElectrons[0]->DeltaR(selectedMuons[0]) > 0.5){
 			      passedElMuNotOverlaping=true;
-			      CutFlowPreselTable.Fill(d,8,scaleFactor*lumiWeight);
+			      CutFlowPreselTable.Fill(d,9,scaleFactor*lumiWeight);
 			      passed++;
 			      if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
 			      myTree->Fill(); 
@@ -1315,10 +1315,10 @@ int main (int argc, char *argv[])
 	    CutFlow_oneElTable.Fill(d,0,scaleFactor*lumiWeight);
 	    if(!isEBEEGap){
 	      passedEcalCrackVeto = true;
-	      CutFlow_oneElTable.Fill(d,0,scaleFactor*lumiWeight);
+	      CutFlow_oneElTable.Fill(d,1,scaleFactor*lumiWeight);
 	      if (selectedElectrons.size() >= 1 ){
 		passedGoodEl=true;
-		CutFlow_oneElTable.Fill(d,1,scaleFactor*lumiWeight);
+		CutFlow_oneElTable.Fill(d,2,scaleFactor*lumiWeight);
 	      }
 	    }
 
