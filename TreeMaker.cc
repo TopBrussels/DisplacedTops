@@ -882,12 +882,16 @@ int main (int argc, char *argv[])
 
             if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
 	    //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*scaleFactor );
-            for (Int_t initel =0; initel < init_electrons.size(); initel++ )
+
+
+	    /*
+	    for (Int_t initel =0; initel < init_electrons.size(); initel++ )
             {
-	      //                float initreliso = ElectronRelIso(init_electrons[initel], rho);
-		//                MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+	      float initreliso = ElectronRelIso(init_electrons[initel], rho);
+	      MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
 
             }
+	    */
 
 
 
@@ -1056,7 +1060,7 @@ int main (int argc, char *argv[])
 
             //Filling Histogram of the number of vertices before Event Selection
 
-            if (!isGoodPV) continue; // Check that there is a good Primary Vertex
+	    //            if (!isGoodPV) continue; // Check that there is a good Primary Vertex
 ////            if (!(selectedJets.size() >= 6)) continue; //Selection of a minimum of 6 Jets in Event
 //
 	    if (debug) cout <<"Number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  " << endl << init_muons.size() <<" "  <<init_electrons.size()<<" "<< selectedJets.size()   <<" "   <<" "<<JetCut  <<" "<<Muon<<" "<<Electron<<endl;
