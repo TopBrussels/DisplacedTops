@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!-- add="1" means run on the sample -->
+<!-- add="0" means do not run on the sample -->
+<!-- ex with eqlumi <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
+<!-- ex with NofEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
+<!-- ex with PreselEff NofPSEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofPSEvts="218404"/> -->
+
+
+<!--NOT SURE HOW I SHOULD USE THE DIFFERENT OPTION -->
+
+<data>
+<datasets>
+
+<!--ALL the MC -->
+
+
+
+<!-- W-> l+nu -->
+<d name="WJetsToLNu" title="W\rightarrow l+\Nu" add="0" color="852"  ls="1"  lw="2" normf="1" EqLumi="392.5331604" xsection="61526.7" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/heilman/TopTree/CMSSW_74X_v7/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v7-MCRUN2_74_V9/151015_224736/0000/*.root"/>
+
+<d name="W1JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W2JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W3JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W4JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+
+
+<!-- Diboson -->
+<!-- ****** -->
+<d name="WW" title="WWToLNuQQ" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="41297.4650368" xsection="47.693" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/*.root"/>
+<d name="WW" title="WWTo2L2Nu" add="1" color="290"  ls="1"  lw="2" normf="1" EqLumi="167476.570635" xsection="11.524" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWTo2L2Nu_13TeV-powheg/crab_WWTo2L2Nu_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_161306/0000/*.root"/>
+
+<d name="WZ" title="WZ" add="1" color="858"  ls="1"  lw="2" normf="1" EqLumi="43436.9851008" xsection="22.82" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WZ_TuneCUETP8M1_13TeV-pythia8/crab_WZ_TuneCUETP8M1_13TeV-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_161604/0000/*.root"/>
+
+<d name="ZZ" title="ZZ" add="1" color="858"  ls="1"  lw="2" normf="1" EqLumi="96025.5813953" xsection="10.32" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v5/ZZ_TuneCUETP8M1_13TeV-pythia8/crab_ZZ_TuneCUETP8M1_13TeV-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3-CMSSW_74X_v5-MCRUN2_74_V9-All/150909_114424/0000/*.root"/>
+
+<d name="ZG" title="ZG" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="123.9" PreselEff="0.0"   filenames=""/>
+<d name="WGToLNuG" title="WG/rightarrow \nu G" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="461.66" PreselEff="0.0"   filenames=""/>
+<!-- ********** -->
+<!-- eo Diboson -->
+
+
+<!-- Single t -->
+<!-- ********* -->
+<!-- here after the cross section are got from the ohio website (http://cmshead.mps.ohio-state.edu/) -->
+<d name="SingleTop" title="SingletTop_s_channel" add="0" color="905"  ls="1"  lw="2" normf="1" EqLumi="292775.778485" xsection="3.3623" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_160304/0000/*.root"/>
+<d name="SingleTop" title="SingletTop_t_channel" add="0" color="907"  ls="1"  lw="2" normf="1" EqLumi="0" xsection="70.695" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_160315/0000"/>
+<!-- using skim -->
+<d name="SingleTop" title="SingletTop_tW" add="1" color="909"  ls="1"  lw="2" normf="2135.13249651" EqLumi="1" xsection="71.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/Skimmed-TopTrees/CMSSW_74X_v8/MuonEG/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns/23102015_213520/*.root"/>
+<!-- using skim -->
+<d name="SingleTop" title="SingletTop_tbarW" add="1" color="910"  ls="1"  lw="2" normf="1" EqLumi="2145.24407252" xsection="71.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/Skimmed-TopTrees/CMSSW_74X_v8/MuonEG/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns/23102015_221529/*.root"/>
+
+<!-- *********** -->
+<!-- eo Single t -->
+
+
+<!-- t tbar -->
+<!-- ****** -->
+
+<!-- hadronic -->
+<d name="TTJets_Madgrap" title="TTJets_Madgraph" add="1" color="872"  ls="1"  lw="2" normf="1" EqLumi="13632.8171588" xsection="831.76" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2-CMSSW_74X_v8-MCRUN2_74_V9/151020_160750/0000/*.root"/>
+
+<!-- leptonic V7!!!!! -->
+<d name="TTJets_Dilept" title="TTJets_Dilept" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="67106.5830011" xsection="88.288" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/TopTree/CMSSW_74X_v7/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2-CMSSW_74X_v7-MCRUN2_74_V9/151015_223947/0000/*.root"/>
+<d name="TTJets_SingleLeptFromT" title="TTJets_SingleLeptFromT" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="31001.3820471" xsection="365.4" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/TopTree/CMSSW_74X_v7/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v7-MCRUN2_74_V9/151015_224123/0000/*.root"/>
+<d name="TTJets_SingleLeptFromTbar" title="TTJets_SingleLeptFromTbar" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="32000.3721949" xsection="365.4" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/TopTree/CMSSW_74X_v7/TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2-CMSSW_74X_v7-MCRUN2_74_V9/151015_224132/0000/*.root"/>
+
+<!-- ********* -->
+<!-- eo t tbar -->
+
+
+
+<!-- Z->ll -->
+<d name="DYJetsToLL_M-50toInf" title="Z/\gamma^{*}\rightarrow ll" add="1" color="410"  ls="1"  lw="2" normf="1" EqLumi="4784.09546571" xsection="6025.2" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_154341/0000/*.root"/>
+
+<d name="DYJetsTo" title="Z/\gamma^{*}\rightarrow ll" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+
+
+
+
+</datasets>
+
+<!-- All parameters needed for the selection and the bkg estimation methods -->
+<analysis>
+<!-- JetType: 0=TRootJet - 1=TRootCaloJet - 2=TRootPFJet -->
+<a type="Collections" PVCollection="PrimaryVertex" JetType="2" JetCollection="PFJets_slimmedJets" METType="2" METCollection="PFMET_slimmedMETs" MuonCollection="Muons_slimmedMuons" ElectronCollection="Electrons_slimmedElectrons" loadGenJetCollection="0" GenJetCollection="GenJets_slimmedGenJets" loadGenEventCollection="0" GenEventCollection="GenEvent" loadNPGenEventCollection="0" NPGenEventCollection="NPGenEvent" loadMCParticles="1" MCParticlesCollection="MCParticles" TrackMETCollection="" loadTrackMET="0"/>
+<!-- LuminosityError has to be relative [0-1], ex: 0.1 means 10% uncertainty on luminosity -->
+<!-- other errors should be absolute -->
+</analysis>
+</data>
