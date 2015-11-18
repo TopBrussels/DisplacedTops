@@ -307,6 +307,7 @@ int main (int argc, char *argv[])
 
 
 
+
     ////////////////////////////////
     //  Lepton Scale Factor
     ////////////////////////////////
@@ -597,6 +598,7 @@ int main (int argc, char *argv[])
         Double_t pt_electron[10];
         Double_t phi_electron[10];
         Double_t eta_electron[10];
+        Double_t eta_superCluster_electron[10];
         Double_t E_electron[10];
         Double_t d0_electron[10];
         Double_t d0BeamSpot_electron[10];
@@ -643,6 +645,7 @@ int main (int argc, char *argv[])
         Double_t pt_electron_pc[10];
         Double_t phi_electron_pc[10];
         Double_t eta_electron_pc[10];
+        Double_t eta_superCluster_electron_pc[10];
         Double_t E_electron_pc[10];
         Double_t d0_electron_pc[10];
         Double_t d0BeamSpot_electron_pc[10];
@@ -662,7 +665,7 @@ int main (int argc, char *argv[])
 	Bool_t passConversion_electron_pc[10];
 	// eo id realted variables
 
-	Bool_t isEBEEGap_pc [10];
+	Bool_t isEBEEGap_pc;
 	Double_t sf_electron_pc[10];	
 
 	// variables for muons
@@ -719,6 +722,7 @@ int main (int argc, char *argv[])
         myTree->Branch("pt_electron",pt_electron,"pt_electron[nElectrons]/D");
         myTree->Branch("phi_electron",phi_electron,"phi_electron[nElectrons]/D");
         myTree->Branch("eta_electron",eta_electron,"eta_electron[nElectrons]/D");
+        myTree->Branch("eta_superCluster_electron",eta_superCluster_electron,"eta_superCluster_electron[nElectrons]/D");
         myTree->Branch("E_electron",E_electron,"E_electron[nElectrons]/D");
         myTree->Branch("chargedHadronIso_electron",chargedHadronIso_electron,"chargedHadronIso_electron[nElectrons]/D");
         myTree->Branch("neutralHadronIso_electron",neutralHadronIso_electron,"neutralHadronIso_electron[nElectrons]/D");
@@ -766,6 +770,7 @@ int main (int argc, char *argv[])
         myPreCutTree->Branch("pt_electron_pc",pt_electron_pc,"pt_electron_pc[nElectrons_pc]/D");
         myPreCutTree->Branch("phi_electron_pc",phi_electron_pc,"phi_electron_pc[nElectrons_pc]/D");
         myPreCutTree->Branch("eta_electron_pc",eta_electron_pc,"eta_electron_pc[nElectrons_pc]/D");
+        myPreCutTree->Branch("eta_superCluster_electron_pc",eta_superCluster_electron_pc,"eta_superCluster_electron_pc[nElectrons_pc]/D");
         myPreCutTree->Branch("E_electron_pc",E_electron_pc,"E_electron_pc[nElectrons_pc]/D");
         myPreCutTree->Branch("chargedHadronIso_electron_pc",chargedHadronIso_electron_pc,"chargedHadronIso_electron_pc[nElectrons_pc]/D");
         myPreCutTree->Branch("neutralHadronIso_electron_pc",neutralHadronIso_electron_pc,"neutralHadronIso_electron_pc[nElectrons_pc]/D");
@@ -1095,6 +1100,7 @@ int main (int argc, char *argv[])
 	      pt_electron[nElectrons]=selectedElectrons[selel]->Pt();
 	      phi_electron[nElectrons]=selectedElectrons[selel]->Phi();
 	      eta_electron[nElectrons]=selectedElectrons[selel]->Eta();
+	      eta_superCluster_electron[nElectrons]=selectedElectrons[selel]->superClusterEta();
 	      E_electron[nElectrons]=selectedElectrons[selel]->E();
 	      d0_electron[nElectrons]=selectedElectrons[selel]->d0();
 	      d0BeamSpot_electron[nElectrons]=selectedElectrons[selel]->d0BeamSpot();
@@ -1110,8 +1116,7 @@ int main (int argc, char *argv[])
 	      missingHits_electron[nElectrons]=selectedElectrons[selel]->missingHits();
 	      passConversion_electron[nElectrons]=selectedElectrons[selel]->passConversion();
 	      isEBEEGap = false;
-	      double eta =  selectedElectrons[selel]->Eta(); // super cluster has to be used!!!
-	      //	      double eta =  selectedElectrons[selel]->superCluster()->position().eta();// faco
+	      double eta =  eta_superCluster_electron;
 	      double feta = fabs(eta);
 	      if (fabs(feta-1.479)<.1) isEBEEGap = true ;
 
@@ -1162,6 +1167,7 @@ int main (int argc, char *argv[])
 	      pt_electron_pc[nElectrons_pc]=init_electrons[initel]->Pt();
 	      phi_electron_pc[nElectrons_pc]=init_electrons[initel]->Phi();
 	      eta_electron_pc[nElectrons_pc]=init_electrons[initel]->Eta();
+	      eta_superCluster_electron_pc[nElectrons_pc]=init_electrons[initel]->superClusterEta();
 	      E_electron_pc[nElectrons_pc]=init_electrons[initel]->E();
 	      d0_electron_pc[nElectrons_pc]=init_electrons[initel]->d0();
 	      d0BeamSpot_electron_pc[nElectrons_pc]=init_electrons[initel]->d0BeamSpot();
