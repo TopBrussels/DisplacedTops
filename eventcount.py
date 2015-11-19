@@ -5,9 +5,10 @@ import os
 
 # get filenames from the xml!!!
 #tree = ET.ElementTree(file='config/FullMcBkgdSamplesV7.xml')
-#tree = ET.ElementTree(file='config/FullMcBkgdSamplesV8.xml')
-tree = ET.ElementTree(file='config/DisplacedTopsSignal.xml')
+tree = ET.ElementTree(file='config/FullMcBkgdSamplesV8.xml')
+#tree = ET.ElementTree(file='config/DisplacedTopsSignal.xml')
 #tree = ET.ElementTree(file='config/DataSamples.xml')
+#tree = ET.ElementTree(file='config/FullMcBkgdSamples.xml')
 
 
 root = tree.getroot()

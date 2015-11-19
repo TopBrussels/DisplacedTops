@@ -64,7 +64,7 @@ int main()
 
     if(1)
     {
-      xmlFileName = "config/FullSamplesV7TreeProc.xml";
+      xmlFileName = "config/FullSamplesV8TreeProc.xml";
      
 
       //      CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
@@ -170,7 +170,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   
 
   //  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens27_10_2015";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/";
 
   
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
@@ -317,7 +317,7 @@ void MSPCreator (){
 	cout << "Saving the MSP" << endl;
 	cout << " and it->first is " << it->first << endl;
       }
-      temp->Draw("MyMSP", 0, false, false, false, 100);
+      temp->Draw("MyMSP", 1, false, false, false, 100);
       temp->Write(outfile, "MyMSP"+it->first, true,"myOutput_MSPlots" , "png");
       //      vector<string> temp_histo = it->GetTH1FNames();
       //      for (int i_hist=0; i_hist < temp_histo.size();i_hist++  ){
