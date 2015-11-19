@@ -300,7 +300,8 @@ int main (int argc, char *argv[])
 
 
     // The luminosity has to be adapted in function of the data!!
-    float Luminosity =16.344; //pb^-1 
+    //    float Luminosity =16.344; //pb^-1 
+    float Luminosity =1000.0; //pb^-1 
 
 
     string dataSetName;
@@ -517,7 +518,8 @@ int main (int argc, char *argv[])
 	double lumiWeight = -99. ;
 	if (isData) lumiWeight = 1. ;
 	else {
-	  lumiWeight = Luminosity*xSect/datasets[d]->NofEvtsToRunOver();
+	  //	  lumiWeight = Luminosity*xSect/datasets[d]->NofEvtsToRunOver();
+	  lumiWeight = 1.;
 	  cout << "dataset has equilumi = " << datasets[d]->EquivalentLumi() << endl;
 	  cout << "the weight to apply for each event of this data set is " << "Lumi * (xs/NSample) -->  " << Luminosity << " * (" << xSect << "/" << datasets[d]->NofEvtsToRunOver() << ") = " << Luminosity*xSect/datasets[d]->NofEvtsToRunOver()  <<  endl;
 	}
@@ -1115,9 +1117,10 @@ int main (int argc, char *argv[])
 	      hadronicOverEm_electron[nElectrons]=selectedElectrons[selel]->hadronicOverEm();
 	      missingHits_electron[nElectrons]=selectedElectrons[selel]->missingHits();
 	      passConversion_electron[nElectrons]=selectedElectrons[selel]->passConversion();
+	      // following code found in http://cmslxr.fnal.gov/source/RecoEgamma/PhotonIdentification/src/PhotonIsolationCalculator.cc#0520
 	      isEBEEGap = false;
-	      double eta =  eta_superCluster_electron;
-	      double feta = fabs(eta);
+	      Double_t eta =  eta_superCluster_electron[nElectrons];
+	      Double_t feta = fabs(eta);
 	      if (fabs(feta-1.479)<.1) isEBEEGap = true ;
 
 	      sf_electron[nElectrons]=electronSFWeight_->at(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),0);
