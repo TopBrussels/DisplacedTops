@@ -660,7 +660,7 @@ int main (int argc, char *argv[])
 	Int_t lumi_num;
 	Int_t nvtx;
 	Int_t npu;
-	Double_t pu_weight;
+	Double_t puScaleFactor;
 
 
 	// bo MytreePreCut
@@ -789,7 +789,7 @@ int main (int argc, char *argv[])
 	myTree->Branch("lumi_num",&lumi_num,"lumi_num/I");
 	myTree->Branch("nvtx",&nvtx,"nvtx/I");
 	myTree->Branch("npu",&npu,"npu/I");
-	myTree->Branch("pu_weight",&pu_weight,"pu_weight/D");
+	myTree->Branch("puScaleFactor",&puScaleFactor,"puScaleFactor/D");
 
 	
 	// Define a secondary tree that is filled before the whole list of cut
@@ -911,21 +911,20 @@ int main (int argc, char *argv[])
                 std::cout<<"Processing the "<<ievt<<"th event, time = "<< ((double)clock() - start) / CLOCKS_PER_SEC << " ("<<100*(ievt-start)/(ending-start)<<"%)"<<flush<<"\r"<<endl;
             }
 
-            float scaleFactor = 1.;  // scale factor for the event
             event = treeLoader.LoadEvent (ievt, vertex, init_muons, init_electrons, init_jets, init_fatjets,  mets, debug);  //load event
 
             float rho = event->fixedGridRhoFastjetAll();
             if (debug)cout <<"Rho: " << rho <<endl;
 
             if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
-	    //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*scaleFactor );
+	    //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*globalScaleFactor );
 
 
 	    /*
 	    for (Int_t initel =0; initel < init_electrons.size(); initel++ )
             {
 	      float initreliso = ElectronRelIso(init_electrons[initel], rho);
-	      MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+	      MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*globalScaleFactor);
 
             }
 	    */
@@ -984,6 +983,11 @@ int main (int argc, char *argv[])
                 cout<<"File changed!!! => "<<currentFilename<<endl;
 	      }	    
 
+	    run_num=event->runId();
+	    evt_num=event->eventId();
+	    lumi_num=event->lumiBlockId();
+	    nvtx=vertex.size();
+	    npu=(int)event->nTruePU();
 
 
 
@@ -1009,28 +1013,40 @@ int main (int argc, char *argv[])
             } //end previousRun != currentRun
 	    */
 
-	    run_num=event->runId();
-	    evt_num=event->eventId();
-	    lumi_num=event->lumiBlockId();
-	    nvtx=vertex.size();
-	    npu=(int)event->nTruePU();
+
+
 
 	    ///////////////////////////////////////////
             //  Event Scale Factor
             ///////////////////////////////////////////
 
+	    //applying all appropriate scale factors for individual objects
 
-	    Bool_t applyPuReweighting = true;
+	    Double_t globalScaleFactor, muonScaleFactor, electronScaleFactor, puScaleFactor;
+	    globalScaleFactor = muonScaleFactor = electronScaleFactor = puScaleFactor = 1.0;
+
+	    Bool_t applyMuonSF , applyElectronSF, applyPUSF, applyGlobalSF; 
+	    applyMuonSF = true;
+	    applyElectronSF = true;
+	    applyPUSF = true;
+	    applyGlobalSF = true;
 	    
 
 	    // Pu scale factor
-	    double lumiWeight = LumiWeights.ITweight( nvtx ); // simplest reweighting, just use reconstructed number of PV. faco
-	    if(dataSetName.find("Data") == 0 || dataSetName.find("data") == 0 || dataSetName.find("DATA") == 0)
-	      lumiWeight=1;
-
-	    pu_weight=lumiWeight;
-	    //	    pu_weight=1.2;
 	    
+	    if (applyPUSF && !isData ){
+	      double lumiWeight = LumiWeights.ITweight( nvtx ); // simplest reweighting, just use reconstructed number of PV. faco
+	      puScaleFactor=lumiWeight;
+	      if (debug) cout << "puScaleFactor is " << puScaleFactor << endl;
+	    }
+	    
+
+
+
+	    // 
+	    globalScaleFactor *= muonScaleFactor;
+	    globalScaleFactor *= electronScaleFactor;
+	    globalScaleFactor *= puScaleFactor;
 
 
 
@@ -1098,7 +1114,7 @@ int main (int argc, char *argv[])
             if (debug)	cout <<" applying baseline event selection for cut table..."<<endl;
             // Apply primary vertex selection
             bool isGoodPV = selection.isPVSelected(vertex, 4, 24., 2);
-	    //            CutFlowTable.Fill(d,0,scaleFactor);
+	    //            CutFlowTable.Fill(d,0,globalScaleFactor);
 
 
 
@@ -1109,7 +1125,7 @@ int main (int argc, char *argv[])
             }
 	    */
 
-            weightCount += scaleFactor;
+	    //            weightCount += globalScaleFactor;
             eventCount++;
 
             //////////////
@@ -1141,7 +1157,7 @@ int main (int argc, char *argv[])
             // Filling histograms / plotting //
             ///////////////////////////////////
 
-	    //            MSPlot["NbOfVertices"]->Fill(vertex.size(), datasets[d], true, Luminosity*scaleFactor);
+	    //            MSPlot["NbOfVertices"]->Fill(vertex.size(), datasets[d], true, Luminosity*globalScaleFactor);
 
 
 
@@ -1293,7 +1309,7 @@ int main (int argc, char *argv[])
             //MET Based Plots//
             ///////////////////
 
-	    //            MSPlot["MET"]->Fill(mets[0]->Et(), datasets[d], true, Luminosity*scaleFactor);
+	    //            MSPlot["MET"]->Fill(mets[0]->Et(), datasets[d], true, Luminosity*globalScaleFactor);
 
 	    /*
 
@@ -1336,39 +1352,39 @@ int main (int argc, char *argv[])
 	    // filling the cutflow
 
 	    // preselection cut
-	    CutFlowPreselTable.Fill(d,0,scaleFactor*lumiWeight);
+	    CutFlowPreselTable.Fill(d,0,globalScaleFactor*lumiScale);
 	    if(!isEBEEGap){
 	      passedEcalCrackVeto = true;
-	      CutFlowPreselTable.Fill(d,1,scaleFactor*lumiWeight);
+	      CutFlowPreselTable.Fill(d,1,globalScaleFactor*lumiScale);
 	      if (selectedElectrons.size() >= 1 ){
 		passedGoodEl=true;
-		CutFlowPreselTable.Fill(d,2,scaleFactor*lumiWeight);
+		CutFlowPreselTable.Fill(d,2,globalScaleFactor*lumiScale);
 		if (selectedMuons.size() >= 1 ){
 		  passedGoodMu=true;
-		  CutFlowPreselTable.Fill(d,3,scaleFactor*lumiWeight);
+		  CutFlowPreselTable.Fill(d,3,globalScaleFactor*lumiScale);
 		  if (selectedElectrons.size() == 1 ){
 		    passedExtraElVeto = true;
-		    CutFlowPreselTable.Fill(d,4,scaleFactor*lumiWeight);
+		    CutFlowPreselTable.Fill(d,4,globalScaleFactor*lumiScale);
 		    if (selectedMuons.size() == 1 ){
 		      passedExtraMuVeto = true;
-		      CutFlowPreselTable.Fill(d,5,scaleFactor*lumiWeight);
+		      CutFlowPreselTable.Fill(d,5,globalScaleFactor*lumiScale);
 		      if(abs(selectedElectrons[0]->d0BeamSpot()) < 0.01){
 			passedBlindingEl = true;
-			CutFlowPreselTable.Fill(d,6,scaleFactor*lumiWeight);
+			CutFlowPreselTable.Fill(d,6,globalScaleFactor*lumiScale);
 			if (abs(selectedMuons[0]->d0BeamSpot()) < 0.01){
 			  passedBlindingMu=true;
-			  CutFlowPreselTable.Fill(d,7,scaleFactor*lumiWeight);
+			  CutFlowPreselTable.Fill(d,7,globalScaleFactor*lumiScale);
 			  if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
 			    passedElMuOS=true;
-			    CutFlowPreselTable.Fill(d,8,scaleFactor*lumiWeight);
+			    CutFlowPreselTable.Fill(d,8,globalScaleFactor*lumiScale);
 			    Double_t DeltaR = sqrt (2);// to be done
 			    if (1){
 			      //			  if(selectedElectrons[0]->DeltaR(selectedMuons[0]) > 0.5){
 			      passedElMuNotOverlaping=true;
-			      CutFlowPreselTable.Fill(d,9,scaleFactor*lumiWeight);
+			      CutFlowPreselTable.Fill(d,9,globalScaleFactor*lumiScale);
 			      passed++;
 			      if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
-			      //			      myTree->Fill(); 
+			      myTree->Fill(); 
 			    }
 			  }
 			}
@@ -1381,22 +1397,22 @@ int main (int argc, char *argv[])
 
 
 	    // single el 
-	    CutFlow_oneElTable.Fill(d,0,scaleFactor*lumiWeight);
+	    CutFlow_oneElTable.Fill(d,0,globalScaleFactor*lumiScale);
 	    if(!isEBEEGap){
 	      passedEcalCrackVeto = true;
-	      CutFlow_oneElTable.Fill(d,1,scaleFactor*lumiWeight);
+	      CutFlow_oneElTable.Fill(d,1,globalScaleFactor*lumiScale);
 	      if (selectedElectrons.size() >= 1 ){
 		passedGoodEl=true;
-		CutFlow_oneElTable.Fill(d,2,scaleFactor*lumiWeight);
+		CutFlow_oneElTable.Fill(d,2,globalScaleFactor*lumiScale);
 	      }
 	    }
 
 
 	    // single el 
-	    CutFlow_oneMuTable.Fill(d,0,scaleFactor*lumiWeight);
+	    CutFlow_oneMuTable.Fill(d,0,globalScaleFactor*lumiScale);
 	    if (selectedMuons.size() >= 1 ){
 	      passedGoodMu=true;
-	      CutFlow_oneMuTable.Fill(d,1,scaleFactor*lumiWeight);
+	      CutFlow_oneMuTable.Fill(d,1,globalScaleFactor*lumiScale);
 	    }
 
 
