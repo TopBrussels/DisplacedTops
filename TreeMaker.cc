@@ -310,16 +310,22 @@ int main (int argc, char *argv[])
 
 
     ////////////////////////////////
-    //  Lepton Scale Factor
+    //  Event Scale Factor
     ////////////////////////////////
 
-    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/";
+    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/TopTreeAnalysisBase/Calibrations/";
 
+
+    // Muon SF
     string muonFile= "Muon_SF_TopEA.root";
-    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+muonFile,"SF_totErr", false, false); // (... , ... , debug, print warning)
+    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+"LeptonSF/"+muonFile,"SF_totErr", false, false); // (... , ... , debug, print warning)
 
+    // Electron SF
     string electronFile= "Elec_SF_TopEA.root";
-    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", false, false); // (... , ... , debug, print warning)
+    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+electronFile,"GlobalSF", false, false); // (... , ... , debug, print warning)
+
+    // PU SF
+    LumiReWeighting LumiWeights(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIISpring15DR74-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data74X_25ns-Run254231-258750Cert/nominal.root","pileup","pileup");
 
     /////////////////////////////////
     //  Loop over Datasets
@@ -515,15 +521,23 @@ int main (int argc, char *argv[])
 
 	cout <<"found sample with equivalent lumi "<<  theDataset->EquivalentLumi() <<endl;
 	
-	double lumiWeight = -99. ;
-	if (isData) lumiWeight = 1. ;
-	else {
-	  //	  lumiWeight = Luminosity*xSect/datasets[d]->NofEvtsToRunOver();
-	  lumiWeight = 1.;
-	  cout << "dataset has equilumi = " << datasets[d]->EquivalentLumi() << endl;
-	  cout << "the weight to apply for each event of this data set is " << "Lumi * (xs/NSample) -->  " << Luminosity << " * (" << xSect << "/" << datasets[d]->NofEvtsToRunOver() << ") = " << Luminosity*xSect/datasets[d]->NofEvtsToRunOver()  <<  endl;
-	}
 
+	// 
+	Bool_t applyLumiScale = true;
+	
+	double lumiScale = -99.;
+
+	if (applyLumiScale)
+	  {
+	    if (isData) lumiScale = 1. ;
+	    else {
+	      lumiScale = Luminosity*xSect/datasets[d]->NofEvtsToRunOver();
+	      cout << "dataset has equilumi = " << datasets[d]->EquivalentLumi() << endl;
+	      cout << "the weight to apply for each event of this data set is " << "Lumi * (xs/NSample) -->  " << Luminosity << " * (" << xSect << "/" << datasets[d]->NofEvtsToRunOver() << ") = " << Luminosity*xSect/datasets[d]->NofEvtsToRunOver()  <<  endl;
+	    }
+	  }
+	else
+	  lumiScale = 1. ;
 
 
         //////////////////////////////////////////////
@@ -638,6 +652,15 @@ int main (int argc, char *argv[])
         Double_t pfIso_muon[10];
 	Double_t sf_muon[10];
         Int_t charge_muon[10];
+
+
+	// event related variables
+	Int_t run_num;
+	Int_t evt_num;
+	Int_t lumi_num;
+	Int_t nvtx;
+	Int_t npu;
+	Double_t pu_weight;
 
 
 	// bo MytreePreCut
@@ -759,7 +782,14 @@ int main (int argc, char *argv[])
 	myTree->Branch("d0BeamSpot_muon",d0BeamSpot_muon,"d0BeamSpot_muon[nMuons]/D");
 	myTree->Branch("sf_muon",sf_muon,"sf_muon[nMuons]/D");
 
-	
+
+	// event related variables
+	myTree->Branch("run_num",&run_num,"run_num/I");
+	myTree->Branch("evt_num",&evt_num,"evt_num/I");
+	myTree->Branch("lumi_num",&lumi_num,"lumi_num/I");
+	myTree->Branch("nvtx",&nvtx,"nvtx/I");
+	myTree->Branch("npu",&npu,"npu/I");
+	myTree->Branch("pu_weight",&pu_weight,"pu_weight/D");
 
 	
 	// Define a secondary tree that is filled before the whole list of cut
@@ -954,6 +984,9 @@ int main (int argc, char *argv[])
                 cout<<"File changed!!! => "<<currentFilename<<endl;
 	      }	    
 
+
+
+
 	    ///////////////////////////////////////////
             //  Trigger
             ///////////////////////////////////////////
@@ -975,6 +1008,29 @@ int main (int argc, char *argv[])
 
             } //end previousRun != currentRun
 	    */
+
+	    run_num=event->runId();
+	    evt_num=event->eventId();
+	    lumi_num=event->lumiBlockId();
+	    nvtx=vertex.size();
+	    npu=(int)event->nTruePU();
+
+	    ///////////////////////////////////////////
+            //  Event Scale Factor
+            ///////////////////////////////////////////
+
+
+	    Bool_t applyPuReweighting = true;
+	    
+
+	    // Pu scale factor
+	    double lumiWeight = LumiWeights.ITweight( nvtx ); // simplest reweighting, just use reconstructed number of PV. faco
+	    if(dataSetName.find("Data") == 0 || dataSetName.find("data") == 0 || dataSetName.find("DATA") == 0)
+	      lumiWeight=1;
+
+	    pu_weight=lumiWeight;
+	    //	    pu_weight=1.2;
+	    
 
 
 
@@ -1312,7 +1368,7 @@ int main (int argc, char *argv[])
 			      CutFlowPreselTable.Fill(d,9,scaleFactor*lumiWeight);
 			      passed++;
 			      if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
-			      myTree->Fill(); 
+			      //			      myTree->Fill(); 
 			    }
 			  }
 			}
