@@ -79,6 +79,14 @@ int main()
 
     // calling datasetPlotter to create MSPplots
 
+    // event plots
+    //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
+    //    DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
+    //    DatasetPlotter(100, 0, 5, "puScaleFactor", xmlFileName,CraneenPath);
+
+
+    /*
+
     // electron plots
     //    DatasetPlotter(11, -0.5, 10.5, "nElectrons", xmlFileName,CraneenPath);
     DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", xmlFileName,CraneenPath);
@@ -96,10 +104,16 @@ int main()
     DatasetPlotter(30, -3.15, 3.15, "phi_muon[nMuons]", xmlFileName,CraneenPath);
     //    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
     DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon[nMuons]", xmlFileName,CraneenPath);
+    */
     DatasetPlotter(100, 0.0, 0.2, "pfIso_muon[nMuons]", xmlFileName,CraneenPath);
 
 
     // electron-muon plots
+    //    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
+
+
+
+
 
     // calling the function that writtes all the MSPlots in a root file
     MSPCreator ();
@@ -170,6 +184,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   
 
   //  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/19_11_2015/";
   TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/";
 
   
@@ -232,8 +247,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    {
 	      if (debug) cout << "varofInterest is " << varofInterest << endl;
 	      if (isData) 
-		{// for data, fill once per event, weighted with the event scale factor
-		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, ScaleFactor);
+		{// for data, fill once per event, weighted with the event scale factor only
+		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], false, ScaleFactor); 
 		  //		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],1);
 		}
 	      else
@@ -268,7 +283,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
     }
 
 
-  treeLoader.UnLoadDataset();
+  //  treeLoader.UnLoadDataset();
   
   if (debug){
     cout << "before cleaning" << endl;
