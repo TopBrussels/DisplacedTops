@@ -7,11 +7,6 @@
 //semi-lep ->679 *.45 = 305.55
 //di-lep-> 679* .09 = 61.11
 
-//ttbar @ NNLO 8 TeV:
-//all-had -> 245.8 * .46 = 113.068
-//semi-lep-> 245.8 * .45 = 110.61
-//di-lep ->  245.8 * .09 = 22.122
-
 #define _USE_MATH_DEFINES
 #include "TStyle.h"
 #include "TPaveText.h"
@@ -194,7 +189,7 @@ int main (int argc, char *argv[])
     int eventCount = 0;
 
 
-    bool bx25 = false;
+    bool bx25 = false; // faco
 
     clock_t start = clock();
 
@@ -417,12 +412,12 @@ int main (int argc, char *argv[])
     // define cuts here
 
     // electron
-    float el_pt_cut = 42.;
+    float el_pt_cut =30.; // 42
     float el_eta_cut = 2.4;
 
 
     // muon
-    float mu_pt_cut = 40.;
+    float mu_pt_cut = 30.;
     float mu_eta_cut = 2.4;
     float mu_iso_cut = 0.12;
 
@@ -455,7 +450,8 @@ int main (int argc, char *argv[])
     CutFlowPresel.push_back(string("extra muon veto"));
     CutFlowPresel.push_back(string("electron blinding d0"));
     CutFlowPresel.push_back(string("muon blinding d0"));
-    CutFlowPresel.push_back(string("OS leptons"));
+    //    CutFlowPresel.push_back(string("OS leptons"));
+    CutFlowPresel.push_back(string(""));
     //    CutFlowPresel.push_back(string("Non overlaping leptons"));
     CutFlowPresel.push_back(string(" "));
     
@@ -522,22 +518,24 @@ int main (int argc, char *argv[])
 	cout <<"found sample with equivalent lumi "<<  theDataset->EquivalentLumi() <<endl;
 	
 
-	// 
-	Bool_t applyLumiScale = true;
-	
+	// Lumi scale
+	Bool_t applyLumiScale = false;
 	double lumiScale = -99.;
 
-	if (applyLumiScale)
-	  {
-	    if (isData) lumiScale = 1. ;
-	    else {
-	      lumiScale = Luminosity*xSect/datasets[d]->NofEvtsToRunOver();
-	      cout << "dataset has equilumi = " << datasets[d]->EquivalentLumi() << endl;
-	      cout << "the weight to apply for each event of this data set is " << "Lumi * (xs/NSample) -->  " << Luminosity << " * (" << xSect << "/" << datasets[d]->NofEvtsToRunOver() << ") = " << Luminosity*xSect/datasets[d]->NofEvtsToRunOver()  <<  endl;
-	    }
+	if (isData || !applyLumiScale) { 
+	  cout << "Lumi scale is not applied!! " << endl << endl;
+	  if (debug){
+	    cout << "isData is " << isData << endl;
+	    cout << "applyLumiScale is " << !applyLumiScale << endl;
 	  }
-	else
 	  lumiScale = 1. ;
+	}
+	else {
+	  lumiScale = Luminosity*xSect/datasets[d]->NofEvtsToRunOver();
+	  cout << "dataset has equilumi = " << datasets[d]->EquivalentLumi() << endl;
+	  cout << "the weight to apply for each event of this data set is " << "Lumi * (xs/NSample) -->  " << Luminosity << " * (" << xSect << "/" << datasets[d]->NofEvtsToRunOver() << ") = " << Luminosity*xSect/datasets[d]->NofEvtsToRunOver()  <<  endl;
+	}
+
 
 
         //////////////////////////////////////////////
@@ -660,7 +658,7 @@ int main (int argc, char *argv[])
 	Int_t lumi_num;
 	Int_t nvtx;
 	Int_t npu;
-	Double_t puScaleFactor;
+	Double_t puSF;
 
 
 	// bo MytreePreCut
@@ -739,7 +737,8 @@ int main (int argc, char *argv[])
 	// define the output tree                                                                                         
 	fout->cd();
         TTree* myTree = new TTree("tree","tree");
-	
+
+
 
 	// electrons
 	//	myTree->Branch("templatevar",templatevar,"templatevar[nElectrons]/D");
@@ -789,7 +788,8 @@ int main (int argc, char *argv[])
 	myTree->Branch("lumi_num",&lumi_num,"lumi_num/I");
 	myTree->Branch("nvtx",&nvtx,"nvtx/I");
 	myTree->Branch("npu",&npu,"npu/I");
-	myTree->Branch("puScaleFactor",&puScaleFactor,"puScaleFactor/D");
+	myTree->Branch("puSF",&puSF,"puSF/D");	
+
 
 	
 	// Define a secondary tree that is filled before the whole list of cut
@@ -1022,9 +1022,6 @@ int main (int argc, char *argv[])
 
 	    //applying all appropriate scale factors for individual objects
 
-	    Double_t globalScaleFactor, muonScaleFactor, electronScaleFactor, puScaleFactor;
-	    globalScaleFactor = muonScaleFactor = electronScaleFactor = puScaleFactor = 1.0;
-
 	    Bool_t applyMuonSF , applyElectronSF, applyPUSF, applyGlobalSF; 
 	    applyMuonSF = true;
 	    applyElectronSF = true;
@@ -1032,21 +1029,16 @@ int main (int argc, char *argv[])
 	    applyGlobalSF = true;
 	    
 
-	    // Pu scale factor
-	    
-	    if (applyPUSF && !isData ){
 	      double lumiWeight = LumiWeights.ITweight( nvtx ); // simplest reweighting, just use reconstructed number of PV. faco
-	      puScaleFactor=lumiWeight;
-	      if (debug) cout << "puScaleFactor is " << puScaleFactor << endl;
-	    }
-	    
+	      puSF=lumiWeight;
+	      //	      if (debug) cout << "puScaleFactor is " << puScaleFactor << endl;
+	      //	      if (1) cout << "puScaleFactor is " << puScaleFactor << endl;
+	      //	    }
+	      if (isData) puSF =1;
 
-
-
-	    // 
-	    globalScaleFactor *= muonScaleFactor;
-	    globalScaleFactor *= electronScaleFactor;
-	    globalScaleFactor *= puScaleFactor;
+	      double_t globalScaleFactor =1.0;
+	      
+	      // 
 
 
 
@@ -1190,6 +1182,7 @@ int main (int argc, char *argv[])
 	      missingHits_electron[nElectrons]=selectedElectrons[selel]->missingHits();
 	      passConversion_electron[nElectrons]=selectedElectrons[selel]->passConversion();
 	      // following code found in http://cmslxr.fnal.gov/source/RecoEgamma/PhotonIdentification/src/PhotonIsolationCalculator.cc#0520
+	      //	      isEBEEGap_pc = false;
 	      isEBEEGap = false;
 	      Double_t eta =  eta_superCluster_electron[nElectrons];
 	      Double_t feta = fabs(eta);
@@ -1374,7 +1367,8 @@ int main (int argc, char *argv[])
 			if (abs(selectedMuons[0]->d0BeamSpot()) < 0.01){
 			  passedBlindingMu=true;
 			  CutFlowPreselTable.Fill(d,7,globalScaleFactor*lumiScale);
-			  if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
+			  //			  if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
+			  if (1){
 			    passedElMuOS=true;
 			    CutFlowPreselTable.Fill(d,8,globalScaleFactor*lumiScale);
 			    Double_t DeltaR = sqrt (2);// to be done
@@ -1385,6 +1379,8 @@ int main (int argc, char *argv[])
 			      passed++;
 			      if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
 			      myTree->Fill(); 
+			      //			      cout << "Filling Tree!!!" << endl;
+			      if (debug) cout << "puSF is " << puSF << endl;
 			    }
 			  }
 			}
@@ -1497,21 +1493,21 @@ int main (int argc, char *argv[])
 
     //(bool mergeTT, bool mergeQCD, bool mergeW, bool mergeZ, bool mergeST)
     CutFlowPreselTable.TableCalculator(  true, true, true, true, true);
-    CutFlow_oneElTable.TableCalculator(  true, true, true, true, true);
-    CutFlow_oneMuTable.TableCalculator(  true, true, true, true, true);
+    //    CutFlow_oneElTable.TableCalculator(  true, true, true, true, true);
+    //    CutFlow_oneMuTable.TableCalculator(  true, true, true, true, true);
 
     //Options : WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false)
     if (strJobNum != "0")
       {
 	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+	//	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+	//	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
       }
     else 
       {
 	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+	//	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+	//	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
       }
 
     fout->cd();
