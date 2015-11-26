@@ -81,11 +81,11 @@ int main()
 
     // event plots
     //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
-    //    DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
-    //    DatasetPlotter(100, 0, 5, "puScaleFactor", xmlFileName,CraneenPath);
+    DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
+    DatasetPlotter(100, 0, 5, "puSF", xmlFileName,CraneenPath);
 
 
-    /*
+    
 
     // electron plots
     //    DatasetPlotter(11, -0.5, 10.5, "nElectrons", xmlFileName,CraneenPath);
@@ -104,12 +104,12 @@ int main()
     DatasetPlotter(30, -3.15, 3.15, "phi_muon[nMuons]", xmlFileName,CraneenPath);
     //    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
     DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon[nMuons]", xmlFileName,CraneenPath);
-    */
     DatasetPlotter(100, 0.0, 0.2, "pfIso_muon[nMuons]", xmlFileName,CraneenPath);
 
 
     // electron-muon plots
     //    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
+
 
 
 
@@ -180,12 +180,17 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   free(dup);
 
 
+
+  // declaring list of variables that contains the SF info
+  double_t sf_muon, sf_electron, PUSF;
+
+
   //cout << v[0] << "  " << v[1] << endl;
   
 
   //  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/19_11_2015/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/25_11_2015/";
 
   
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
@@ -235,18 +240,28 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       
       // bo of event SF
       // -----------
-      
-      //applying all appropriate scale factors for individual objects
-      
+
+      //applying all appropriate scale factors for individual objects if the bool is set to true
       Bool_t applyElectronSF, applyMuonSF , applyPUSF, applyGlobalSF;
       applyElectronSF = true;
       applyMuonSF = true;
       applyPUSF = true;
       applyGlobalSF = true;
       
+      if (applyGlobalSF && !isData){
+	cout << "Applying Scale factor " << endl;
+      }
+
+      // get the SF from the corresponding branch
+      Double_t sf_electron, sf_muon, puSF, globalScaleFactor;
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon",&sf_muon);
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron",&sf_electron);
+      ttree[dataSetName.c_str()]->SetBranchAddress("puSF",&puSF); // change to sf_pu
+
       // -----------
       // eo of event SF
-	  
+      // Declare the SF
+
 
 
       Luminosity = 552.672; // pb-1
@@ -258,42 +273,50 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       // bo of loop through entries and fill plots
       for (int j = 0; j<nEntries; j++)
         {
-	  ttree[dataSetName.c_str()]->GetEntry(j);
+	  ttree[(dataSetName).c_str()]->GetEntry(j);
 
-	  // Declare the SF
-	  Double_t electronScaleFactor, muonScaleFactor, puScaleFactor, globalScaleFactor;
-	  electronScaleFactor = muonScaleFactor = puScaleFactor = globalScaleFactor = 1.0;
+	  // bo of event SF
+	  // -----------
 	  
-	  // get the SF from the corresponding branch
-	  
-	  // electron SF
-	  if (applyElectronSF && !isData ){
-	    electronScaleFactor = j*1.3;
-	  }
-	  
-	  
-	  // muon SF
-	  if (applyMuonSF && !isData ){
-	    muonScaleFactor = 1.2;
-	  }
-	  
-	  // PU SF
-	  if (applyPUSF && !isData ){
-	    puScaleFactor = 1.1;
-	  }
-	  
-	  
-	  // make the product of all SF
-	  globalScaleFactor *= muonScaleFactor;
-	  globalScaleFactor *= electronScaleFactor;
-	  globalScaleFactor *= puScaleFactor;
-	  
-	  if (1) cout << "the globalScaleFactor is " << globalScaleFactor << endl;
-	  //	  if (debug) cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	  globalScaleFactor = 1.0;
 
+	  // only apply individual SF if applyGlobalSF is true and sample is not data
+	  if (applyGlobalSF && !isData){
+	  
+	    // electron SF
+	    if (applyElectronSF){
+	      globalScaleFactor *= sf_electron;
+	      if (debug){
+		cout << "sf_electron is " << sf_electron << endl;
+		cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	      }
+	    }
+	    
+	    // muon SF
+	    if (applyMuonSF){
+
+	      globalScaleFactor *= sf_muon;
+	      if (debug){
+		cout << "sf_muon is " << sf_muon << endl;
+		cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	      }
+	    }	
+	    
+	    // PU SF
+	    if (applyPUSF){
+	      globalScaleFactor *= puSF;
+	      if (debug){
+		cout << "puSF is " << puSF << endl;
+		cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	      }
+
+	    }
+	    
+	  }
 
 	  // -----------
 	  // eo of event SF
+
 
 
 	  //	    cout << "Var of interest is " << varofInterest << endl;
@@ -303,14 +326,14 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    {
 	      if (debug) cout << "varofInterest is " << varofInterest << endl;
 	      if (isData) 
-		{// for data, fill once per event, weighted with the event scale factor only
-		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], false, globalScaleFactor); 
-		  //		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],1);
+		{
+		  // for data, fill once per event, weighted with the event scale factor only
+		  MSPlot[plotname.c_str()]->Fill(varofInterest/*_double[i_object]*/, datasets[d], false, globalScaleFactor); 
 		}
 	      else
-		{// for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
-		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, globalScaleFactor*Luminosity);
-		  //		  histo1D[dataSetName.c_str()]->Fill(varofInterest_double[i_object],NormFactor*globalScaleFactor*Luminosity);
+		{
+		  // for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
+		  MSPlot[plotname.c_str()]->Fill(varofInterest/*_double[i_object]*/, datasets[d], true, globalScaleFactor*Luminosity);
 		}
 	      
 	    }
