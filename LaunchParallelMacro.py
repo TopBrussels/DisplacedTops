@@ -24,7 +24,8 @@ numCores = 8
 args = []
 execCommands = []
 topTrees = []
-jobSize = 2000000
+#jobSize = 2000000
+jobSize = 2000000000
 for d in datasets:
     if d.attrib['add'] == '1':
         print "found dataset to be added..." + str(d.attrib['name'])

@@ -21,7 +21,8 @@ if not os.path.exists(pathMerged):
 
 
 # get filenames from the xml!!!
-tree = ET.ElementTree(file='config/FullMcBkgdSamplesV8.xml')
+#tree = ET.ElementTree(file='config/FullMcBkgdSamplesV8.xml')
+tree = ET.ElementTree(file='config/DataSamples.xml')
 
 root = tree.getroot()
 datasets = root.find('datasets')
