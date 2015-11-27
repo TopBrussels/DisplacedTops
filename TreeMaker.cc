@@ -1015,33 +1015,6 @@ int main (int argc, char *argv[])
 
 
 
-
-	    ///////////////////////////////////////////
-            //  Event Scale Factor
-            ///////////////////////////////////////////
-
-	    //applying all appropriate scale factors for individual objects
-
-	    Bool_t applyMuonSF , applyElectronSF, applyPUSF, applyGlobalSF; 
-	    applyMuonSF = true;
-	    applyElectronSF = true;
-	    applyPUSF = true;
-	    applyGlobalSF = true;
-	    
-
-	      double lumiWeight = LumiWeights.ITweight( nvtx ); // simplest reweighting, just use reconstructed number of PV. faco
-	      puSF=lumiWeight;
-	      //	      if (debug) cout << "puScaleFactor is " << puScaleFactor << endl;
-	      //	      if (1) cout << "puScaleFactor is " << puScaleFactor << endl;
-	      //	    }
-	      if (isData) puSF =1;
-
-	      double_t globalScaleFactor =1.0;
-	      
-	      // 
-
-
-
             ///////////////////////
             // JER smearing
             //////////////////////
