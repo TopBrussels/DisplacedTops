@@ -82,9 +82,6 @@ int main()
     // event plots
     //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
     DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
-    DatasetPlotter(100, 0, 5, "puSF", xmlFileName,CraneenPath);
-
-
     
 
     // electron plots
@@ -217,7 +214,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
       else if (v.size() == 1){
 	//	if (debug)	cout << "v.size is to 1" << " and v[0] is " << v[0] << endl ;
-	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest);//&varofInterest
+	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest);//&varofInterest // faco To be fixed!
 	
       }
       else {
@@ -318,9 +315,24 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	  // eo of event SF
 
 
+ 	  // make MS plot for single value
+	  if (v.size() == 1){
+	    if (isData) 
+	      {
+		// for data, fill once per event, weighted with the event scale factor only
+		MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], false, globalScaleFactor); 	
+	      }
+	    else
+	      {
+		// for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
+		MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], true, globalScaleFactor*Luminosity);
+	      }
+	  }
 
-	  //	    cout << "Var of interest is " << varofInterest << endl;
 	  
+	  // make MS plot for vector
+	  if (v.size() == 2){
+
 	  // bo of loop over the number of object per entry
 	  for (int i_object =0 ; i_object < varofInterest ;i_object ++ )
 	    {
@@ -328,15 +340,20 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	      if (isData) 
 		{
 		  // for data, fill once per event, weighted with the event scale factor only
-		  MSPlot[plotname.c_str()]->Fill(varofInterest/*_double[i_object]*/, datasets[d], false, globalScaleFactor); 
+		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], false, globalScaleFactor); 	
 		}
 	      else
 		{
 		  // for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
-		  MSPlot[plotname.c_str()]->Fill(varofInterest/*_double[i_object]*/, datasets[d], true, globalScaleFactor*Luminosity);
+		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, globalScaleFactor*Luminosity);
+		  //		  MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], true, globalScaleFactor*Luminosity);
 		}
 	      
 	    }
+
+	  }
+
+	  //		  MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], false, globalScaleFactor); 
 
 	}
       
@@ -364,6 +381,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
   //  treeLoader.UnLoadDataset();
   
+  debug = true;
+
   if (debug){
     cout << "before cleaning" << endl;
     if (v.size() == 2){
@@ -384,6 +403,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
     cout << "v.size() is " << v.size() << endl;
   }
   
+  debug = false;
 
 
 };
