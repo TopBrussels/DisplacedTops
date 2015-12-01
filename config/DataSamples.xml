@@ -15,8 +15,13 @@
 <!-- *** -->
 
 <!-- Data RunD -->
+
+<!-- Lumi = 1541.058  pb-1 -->
+<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8-GOLD/MuonEG/crab_MuonEG-Run2015D-PromptReco-v4-CMSSW_74X_v8-GOLD-74X_dataRun2_Prompt_v2/151126_112323/000*/*.root"/>
+
+
 <!-- Lumi = 552.672  pb-1 -->
-<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/MuonEG/crab_MuonEG-Run2015D-05Oct2015-v2-CMSSW_74X_v8-74X_dataRun2_Prompt_v2/151020_173157/0000/*.root"/>
+<d name="DataRunD"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/MuonEG/crab_MuonEG-Run2015D-05Oct2015-v2-CMSSW_74X_v8-74X_dataRun2_Prompt_v2/151020_173157/0000/*.root"/>
 
 
 <!-- Lumi = 711.213 TO BE CHECKED!!! pb-1 -->
