@@ -1015,6 +1015,16 @@ int main (int argc, char *argv[])
 
 
 
+
+	    ///////////////////////////////////////////
+	    //  Pile up Scale Factor
+	    ///////////////////////////////////////////
+
+	    double lumiWeight = LumiWeights.ITweight( nvtx ); // simplest reweighting, just use reconstructed number of PV.
+	    puSF=lumiWeight;
+	    if (isData) puSF =1;
+
+
             ///////////////////////
             // JER smearing
             //////////////////////
@@ -1317,42 +1327,42 @@ int main (int argc, char *argv[])
 	    // filling the cutflow
 
 	    // preselection cut
-	    CutFlowPreselTable.Fill(d,0,globalScaleFactor*lumiScale);
+	    CutFlowPreselTable.Fill(d,0,lumiScale);
 	    if(!isEBEEGap){
 	      passedEcalCrackVeto = true;
-	      CutFlowPreselTable.Fill(d,1,globalScaleFactor*lumiScale);
+	      CutFlowPreselTable.Fill(d,1,lumiScale);
 	      if (selectedElectrons.size() >= 1 ){
 		passedGoodEl=true;
-		CutFlowPreselTable.Fill(d,2,globalScaleFactor*lumiScale);
+		CutFlowPreselTable.Fill(d,2,lumiScale);
 		if (selectedMuons.size() >= 1 ){
 		  passedGoodMu=true;
-		  CutFlowPreselTable.Fill(d,3,globalScaleFactor*lumiScale);
+		  CutFlowPreselTable.Fill(d,3,lumiScale);
 		  if (selectedElectrons.size() == 1 ){
 		    passedExtraElVeto = true;
-		    CutFlowPreselTable.Fill(d,4,globalScaleFactor*lumiScale);
+		    CutFlowPreselTable.Fill(d,4,lumiScale);
 		    if (selectedMuons.size() == 1 ){
 		      passedExtraMuVeto = true;
-		      CutFlowPreselTable.Fill(d,5,globalScaleFactor*lumiScale);
+		      CutFlowPreselTable.Fill(d,5,lumiScale);
 		      if(abs(selectedElectrons[0]->d0BeamSpot()) < 0.01){
 			passedBlindingEl = true;
-			CutFlowPreselTable.Fill(d,6,globalScaleFactor*lumiScale);
+			CutFlowPreselTable.Fill(d,6,lumiScale);
 			if (abs(selectedMuons[0]->d0BeamSpot()) < 0.01){
 			  passedBlindingMu=true;
-			  CutFlowPreselTable.Fill(d,7,globalScaleFactor*lumiScale);
+			  CutFlowPreselTable.Fill(d,7,lumiScale);
 			  //			  if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
 			  if (1){
 			    passedElMuOS=true;
-			    CutFlowPreselTable.Fill(d,8,globalScaleFactor*lumiScale);
+			    CutFlowPreselTable.Fill(d,8,lumiScale);
 			    Double_t DeltaR = sqrt (2);// to be done
 			    if (1){
 			      //			  if(selectedElectrons[0]->DeltaR(selectedMuons[0]) > 0.5){
 			      passedElMuNotOverlaping=true;
-			      CutFlowPreselTable.Fill(d,9,globalScaleFactor*lumiScale);
+			      CutFlowPreselTable.Fill(d,9,lumiScale);
 			      passed++;
 			      if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
 			      myTree->Fill(); 
 			      //			      cout << "Filling Tree!!!" << endl;
-			      if (debug) cout << "puSF is " << puSF << endl;
+			      if (1) cout << "puSF is " << puSF << endl;
 			    }
 			  }
 			}
@@ -1365,22 +1375,22 @@ int main (int argc, char *argv[])
 
 
 	    // single el 
-	    CutFlow_oneElTable.Fill(d,0,globalScaleFactor*lumiScale);
+	    CutFlow_oneElTable.Fill(d,0,lumiScale);
 	    if(!isEBEEGap){
 	      passedEcalCrackVeto = true;
-	      CutFlow_oneElTable.Fill(d,1,globalScaleFactor*lumiScale);
+	      CutFlow_oneElTable.Fill(d,1,lumiScale);
 	      if (selectedElectrons.size() >= 1 ){
 		passedGoodEl=true;
-		CutFlow_oneElTable.Fill(d,2,globalScaleFactor*lumiScale);
+		CutFlow_oneElTable.Fill(d,2,lumiScale);
 	      }
 	    }
 
 
 	    // single el 
-	    CutFlow_oneMuTable.Fill(d,0,globalScaleFactor*lumiScale);
+	    CutFlow_oneMuTable.Fill(d,0,lumiScale);
 	    if (selectedMuons.size() >= 1 ){
 	      passedGoodMu=true;
-	      CutFlow_oneMuTable.Fill(d,1,globalScaleFactor*lumiScale);
+	      CutFlow_oneMuTable.Fill(d,1,lumiScale);
 	    }
 
 
