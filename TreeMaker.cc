@@ -320,7 +320,7 @@ int main (int argc, char *argv[])
     ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+electronFile,"GlobalSF", false, false); // (... , ... , debug, print warning)
 
     // PU SF
-    LumiReWeighting LumiWeights(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIISpring15DR74-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data74X_25ns-Run254231-258750Cert/nominal.root","pileup","pileup");
+    LumiReWeighting LumiWeights(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIISpring15DR74-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data74X_25ns-Run246908-260627Cert.root","pileup","pileup");
 
     /////////////////////////////////
     //  Loop over Datasets
@@ -1155,7 +1155,6 @@ int main (int argc, char *argv[])
 	      missingHits_electron[nElectrons]=selectedElectrons[selel]->missingHits();
 	      passConversion_electron[nElectrons]=selectedElectrons[selel]->passConversion();
 	      // following code found in http://cmslxr.fnal.gov/source/RecoEgamma/PhotonIdentification/src/PhotonIsolationCalculator.cc#0520
-	      //	      isEBEEGap_pc = false;
 	      isEBEEGap = false;
 	      Double_t eta =  eta_superCluster_electron[nElectrons];
 	      Double_t feta = fabs(eta);
