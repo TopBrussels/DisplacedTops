@@ -60,8 +60,11 @@
 
 <d name="ZZ" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="96025.5813953" xsection="10.32" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v5/ZZ_TuneCUETP8M1_13TeV-pythia8/crab_ZZ_TuneCUETP8M1_13TeV-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3-CMSSW_74X_v5-MCRUN2_74_V9-All/150909_114424/0000/*.root"/>
 
-<d name="ZG" title="Diboson" add="0" color="390"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="123.9" PreselEff="0.0"   filenames=""/>
-<d name="WGToLNuG" title="WG/rightarrow \nu G" add="0" color="390"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="461.66" PreselEff="0.0"   filenames=""/>
+<d name="ZG" title="ZG" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="25184.826473" xsection="123.9" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN274V9v1CMSSW74Xv8/151207_224121/0000/*.root"/>
+
+<d name="WGToLNuG" title="WG/rightarrownuG" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="10564.4478621" xsection="461.66" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25nsMCRUN274V9v1CMSSW74Xv8/151207_224321/0000/*.root"/>
+
+
 <!-- ********** -->
 <!-- eo Diboson -->
 
@@ -97,9 +100,9 @@
 
 
 <!-- Z->ll -->
-<d name="DYJetsToLL_M-50toInf" title="Z/\gamma^{*}\rightarrow ll" add="1" color="410"  ls="1"  lw="2" normf="1" EqLumi="4784.09546571" xsection="6025.2" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_154341/0000/*.root"/>
+<d name="DYJetsToLL_M-50toInf" title="Z/\gamma^{*}\rightarrow ll" add="1" color="410"  ls="1"  lw="2" normf="1" EqLumi="1502.46813384" xsection="6025.2" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_154341/0000/*.root"/>
 
-<d name="DYJetsToll_M-10to50" title="Z/\gamma^{*}\rightarrow ll low M" add="1" color="410"  ls="1"  lw="2" normf="1" EqLumi="1349.03634136" xsection="22635.09" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_154300/0000/*.root"/>
+<d name="DYJetsToll_M-10to50" title="Z/\gamma^{*}\rightarrow ll M10to50" add="1" color="430"  ls="1"  lw="2" normf="1" EqLumi="1349.03634136" xsection="22635.09" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151020_154300/0000/*.root"/>
 
 
 
