@@ -69,6 +69,7 @@ using namespace reweight;
 
 Bool_t debug = false;
 Bool_t testTree = false;
+//if (debug) testTree=true;
 
 
 int nMatchedEvents=0;
@@ -222,6 +223,11 @@ int main (int argc, char *argv[])
     bool dilepton = true;
     bool Muon = true;
     bool Electron = true;
+    bool ee = false; 
+    bool emu = false; 
+    bool mumu = true; 
+    bool runHLT = false; 
+
 
     if(Muon && Electron && dilepton)
     {
@@ -290,34 +296,43 @@ int main (int argc, char *argv[])
     vector < Dataset* > datasets;
     cout << " - Creating Dataset ..." << endl;
     Dataset* theDataset = new Dataset(dName, dTitle, true, color, ls, lw, normf, xSect, vecfileNames);
-    theDataset->SetEquivalentLuminosity(EqLumi*normf);
+    //    theDataset->SetEquivalentLuminosity(EqLumi*normf);
     datasets.push_back(theDataset);
 
 
-    // The luminosity has to be adapted in function of the data!!
-    //    float Luminosity =16.344; //pb^-1 
-    float Luminosity =1000.0; //pb^-1 
-
-
     string dataSetName;
-
-
-
 
     ////////////////////////////////
     //  Event Scale Factor
     ////////////////////////////////
 
-    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/TopTreeAnalysisBase/Calibrations/";
+    string pathToCaliDir="../TopTreeAnalysisBase/Calibrations/";
 
+
+    /// Leptons
 
     // Muon SF
-    string muonFile= "Muon_SF_TopEA.root";
-    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+"LeptonSF/"+muonFile,"SF_totErr", false, false); // (... , ... , debug, print warning)
+    double muonSFID, muonSFIso;
+    MuonSFWeight *muonSFWeight_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"Muon_SF_TopEA.root","SF_totErr", false, false); // (... , ... , debug, print warning)
+    MuonSFWeight *muonSFWeightID_T = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
+    //    MuonSFWeight *muonSFWeightID_M = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
+    //  MuonSFWeight *muonSFWeightID_L = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
+  
+    MuonSFWeight *muonSFWeightIso_TT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Tight RelIso, Tight ID
+    //   MuonSFWeight *muonSFWeightIso_TM = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_TightRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Tight RelIso, Medium ID
+    //   MuonSFWeight *muonSFWeightIso_LT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_LooseRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Loose RelIso, Tight ID
+    //   MuonSFWeight *muonSFWeightIso_LM = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_LooseRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Loose RelIso, Medium ID
+    //   MuonSFWeight *muonSFWeightIso_LT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Loose RelIso, Loose ID
+
 
     // Electron SF
     string electronFile= "Elec_SF_TopEA.root";
     ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+electronFile,"GlobalSF", false, false); // (... , ... , debug, print warning)
+
+
+
+  
+
 
     // PU SF
     LumiReWeighting LumiWeights(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIISpring15DR74-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data74X_25ns-Run246908-260627Cert.root","pileup","pileup");
@@ -326,17 +341,10 @@ int main (int argc, char *argv[])
     //  Loop over Datasets
     /////////////////////////////////
 
-    cout <<"found sample with equivalent lumi "<<  theDataset->EquivalentLumi() <<endl;
     dataSetName = theDataset->Name();
-    if(dataSetName.find("Data")<=0 || dataSetName.find("data")<=0 || dataSetName.find("DATA")<=0)
-    {
-        Luminosity = theDataset->EquivalentLumi();
-        cout <<"found DATA sample with equivalent lumi "<<  theDataset->EquivalentLumi() <<endl;
-    }
-
-    cout << "Rescaling to an integrated luminosity of "<< Luminosity <<" pb^-1" << endl;
     int ndatasets = datasets.size() - 1 ;
 
+    
     double currentLumi;
     double newlumi;
 
@@ -397,6 +405,14 @@ int main (int argc, char *argv[])
     // 1D histograms //
     ///////////////////
 
+    map <string,TH1F*> histo1D;
+    
+    std::string  titlePlot = ""; 
+    titlePlot = "cutFlow"+channelpostfix; 
+    histo1D["h_cutFlow"] = new TH1F(titlePlot.c_str(), "cutflow", 13,-0.5,12.5);
+
+
+
     ///////////////////
     // 2D histograms //
     ///////////////////
@@ -412,14 +428,14 @@ int main (int argc, char *argv[])
     // define cuts here
 
     // electron
-    float el_pt_cut =30.; // 42
+    float el_pt_cut =42.; // 42
     float el_eta_cut = 2.4;
 
 
     // muon
-    float mu_pt_cut = 30.;
+    float mu_pt_cut = 40.; // 40
     float mu_eta_cut = 2.4;
-    float mu_iso_cut = 0.12;
+    float mu_iso_cut = 0.15;
 
     // convert into string
 
@@ -458,7 +474,7 @@ int main (int argc, char *argv[])
 
 
     SelectionTable CutFlowPreselTable(CutFlowPresel, datasets);
-    CutFlowPreselTable.SetLuminosity(Luminosity);
+    //    CutFlowPreselTable.SetLuminosity(Luminosity);
     CutFlowPreselTable.SetPrecision(1);
 
 
@@ -471,7 +487,7 @@ int main (int argc, char *argv[])
     CutFlow_oneEl.push_back(string("at least one good electron: pt $<$ "+el_pt_cut_str+", eta $<$ "+el_eta_cut_str));
 
     SelectionTable CutFlow_oneElTable(CutFlow_oneEl, datasets);
-    CutFlow_oneElTable.SetLuminosity(Luminosity);
+    //    CutFlow_oneElTable.SetLuminosity(Luminosity);
     CutFlow_oneElTable.SetPrecision(1);
     
 
@@ -483,7 +499,7 @@ int main (int argc, char *argv[])
     CutFlow_oneMu.push_back(string("at least one good muon: pt $<$ "+mu_pt_cut_str+", eta $<$ "+mu_eta_cut_str+", iso $<$ "+mu_iso_cut_str));
 
     SelectionTable CutFlow_oneMuTable(CutFlow_oneMu, datasets);
-    CutFlow_oneMuTable.SetLuminosity(Luminosity);
+    //    CutFlow_oneMuTable.SetLuminosity(Luminosity);
     CutFlow_oneMuTable.SetPrecision(1);
     
 
@@ -522,6 +538,8 @@ int main (int argc, char *argv[])
 	Bool_t applyLumiScale = false;
 	double lumiScale = -99.;
 
+
+	/*
 	if (isData || !applyLumiScale) { 
 	  cout << "Lumi scale is not applied!! " << endl << endl;
 	  if (debug){
@@ -535,6 +553,7 @@ int main (int argc, char *argv[])
 	  cout << "dataset has equilumi = " << datasets[d]->EquivalentLumi() << endl;
 	  cout << "the weight to apply for each event of this data set is " << "Lumi * (xs/NSample) -->  " << Luminosity << " * (" << xSect << "/" << datasets[d]->NofEvtsToRunOver() << ") = " << Luminosity*xSect/datasets[d]->NofEvtsToRunOver()  <<  endl;
 	}
+	*/
 
 
 
@@ -846,10 +865,11 @@ int main (int argc, char *argv[])
         // Loop on events
         /////////////////////////////////////////////////
 
+	int trigEMU, trigMUMU,trigEE; 
 	int itrigger = -1, previousRun = -1;
+	int currentRun; 
 
         int start = 0;
-        cout << "teh bugz!" << endl;
         unsigned int ending = datasets[d]->NofEvtsToRunOver();
 
         cout <<"Number of events in total dataset = "<<  ending  <<endl;
@@ -901,118 +921,174 @@ int main (int argc, char *argv[])
 	  //	  }
 	  nMuons = nElectrons = 0;
 	  
+	  currentRun = -99999;
 	  
-            double ievt_d = ievt;
-	    currentfrac = ievt_d/end_d;
-            if (debug)cout << endl << endl << "Starting a new event loop!"<<endl;
-
-            if(ievt%1000 == 0)
+	  
+	  double ievt_d = ievt;
+	  currentfrac = ievt_d/end_d;
+	  if (debug)cout << endl << endl << "Starting a new event loop!"<<endl;
+	  
+	  if(ievt%1000 == 0)
             {
-                std::cout<<"Processing the "<<ievt<<"th event, time = "<< ((double)clock() - start) / CLOCKS_PER_SEC << " ("<<100*(ievt-start)/(ending-start)<<"%)"<<flush<<"\r"<<endl;
+	      std::cout<<"Processing the "<<ievt<<"th event, time = "<< ((double)clock() - start) / CLOCKS_PER_SEC << " ("<<100*(ievt-start)/(ending-start)<<"%)"<<flush<<"\r"<<endl;
             }
-
-            event = treeLoader.LoadEvent (ievt, vertex, init_muons, init_electrons, init_jets, init_fatjets,  mets, debug);  //load event
-
-            float rho = event->fixedGridRhoFastjetAll();
-            if (debug)cout <<"Rho: " << rho <<endl;
-
-            if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
-	    //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*globalScaleFactor );
-
-
-	    /*
+	  
+	  event = treeLoader.LoadEvent (ievt, vertex, init_muons, init_electrons, init_jets, init_fatjets,  mets, debug);  //load event
+	  
+	  float rho = event->fixedGridRhoFastjetAll();
+	  if (debug)cout <<"Rho: " << rho <<endl;
+	  
+	  if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
+	  //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*globalScaleFactor );
+	  
+	  
+	  /*
 	    for (Int_t initel =0; initel < init_electrons.size(); initel++ )
             {
-	      float initreliso = ElectronRelIso(init_electrons[initel], rho);
-	      MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*globalScaleFactor);
+	    float initreliso = ElectronRelIso(init_electrons[initel], rho);
+	    MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*globalScaleFactor);
+	    
+	    }
+	  */
+	  
+	  
 
-            }
-	    */
-
-
-
-            string graphName;
-
-            //////////////////
-            //Loading Gen jets
-            //////////////////
-
-	    // Synch cut 1: pt, eta, veto, DR                                                                                                                           
-            // Declare one bool per cut
-	    /// ---
-
-            // cut on electrons
-	    Bool_t passedEcalCrackVeto = false;
-	    Bool_t passedGoodEl =false;
-	    Bool_t passedBlindingEl =false;
-	    /*
+	  string graphName;
+	  
+	  //////////////////
+	  //Loading Gen jets
+	  //////////////////
+	  
+	  // Synch cut 1: pt, eta, veto, DR                                                                                                                           
+	  // Declare one bool per cut
+	  /// ---
+	  
+	  // cut on electrons
+	  Bool_t passedEcalCrackVeto = false;
+	  Bool_t passedGoodEl =false;
+	  Bool_t passedBlindingEl =false;
+	  /*
             Bool_t passedPtEl = false;
             Bool_t passedEtaEl = false;
             Bool_t passedIdEl = false;
             Bool_t passedIsoEl = false;
-	    */
-
-            //cut on muons
-	    Bool_t passedGoodMu = false;
-	    Bool_t passedBlindingMu =false;
-	    /*
+	  */
+	  
+	  //cut on muons
+	  Bool_t passedGoodMu = false;
+	  Bool_t passedBlindingMu =false;
+	  /*
             Bool_t passedPtMu = false;
             Bool_t passedEtaMu = false;
             Bool_t passedIdMu = false;
             Bool_t passedIsoMu = false;
-	    */
+	  */
+	  
+	  // vetos
+	  Bool_t passedExtraElVeto =false;
+	  Bool_t passedExtraMuVeto =false;
+	  
+	  // opposite signed leptons
+	  Bool_t passedElMuOS = false;
+	  
+	  // non overlapping leptons
+	  Bool_t passedElMuNotOverlaping = false;
+	  
+	  /// ---
+	  
+	  
+	  string currentFilename = datasets[d]->eventTree()->GetFile()->GetName();
+	  if(previousFilename != currentFilename)
+	    {
+	      previousFilename = currentFilename;
+	      iFile++;
+	      cout<<"File changed!!! => "<<currentFilename<<endl;
+	    }	    
+	  
+	  run_num=event->runId();
+	  evt_num=event->eventId();
+	  lumi_num=event->lumiBlockId();
+	  nvtx=vertex.size();
+	  npu=(int)event->nTruePU();
+	  
+	  
 
-            // vetos
-            Bool_t passedExtraElVeto =false;
-            Bool_t passedExtraMuVeto =false;
-
-            // opposite signed leptons
-            Bool_t passedElMuOS = false;
-
-            // non overlapping leptons
-            Bool_t passedElMuNotOverlaping = false;
-
-	    /// ---
-	    
-	    
-	    string currentFilename = datasets[d]->eventTree()->GetFile()->GetName();
-	    if(previousFilename != currentFilename)
-	      {
-                previousFilename = currentFilename;
-                iFile++;
-                cout<<"File changed!!! => "<<currentFilename<<endl;
-	      }	    
-
-	    run_num=event->runId();
-	    evt_num=event->eventId();
-	    lumi_num=event->lumiBlockId();
-	    nvtx=vertex.size();
-	    npu=(int)event->nTruePU();
-
-
-
-	    ///////////////////////////////////////////
-            //  Trigger
-            ///////////////////////////////////////////
-	    /*
-	    bool trigged = false;
-            std::string filterName = "";
-            int currentRun = event->runId();
-            if(previousRun != currentRun){
-
-	      cout << "Changing run number. Run is  "<< currentRun<<endl;
-	      previousRun = currentRun;
+	  ///////////////////////////////////////////
+	  //  Trigger
+	  ///////////////////////////////////////////
+	  
+	  /*
+	  trigEMU = trigMUMU = trigEE = -1; 
+	  itrigger = -1; 
+	  
+	  //If the HLT is applied 
+	  if(runHLT && previousRun != currentRun){
+	    if (1) cout << "applying HLT!" << endl;
+	    //The HLT is only used for data
+	    if(isData == 1){
+	      cout << "DATA!" << endl;
+	      //The HLT path is dependent of the mode, these paths are the several steps or software modules. Each module performs a well defined task 
+	      // such as reconstruction of physics objects, making intermediate decisions, triggering more refined reconstructions in subsequent modules, 
+	      // or calculating the final decision for that trigger path.
+	      trigEMU = treeLoader.iTrigger (string ("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2"), currentRun, iFile);
+	      trigEE = treeLoader.iTrigger (string("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2"), currentRun, iFile);
+	      trigMUMU =treeLoader.iTrigger (string ("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2"), currentRun, iFile); 
+	      itrigger = trigEMU;
 	      
-	      if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos){
-		if (debug)cout <<"applying trigger for data!"<<endl;
-		itrigger = treeLoader.iTrigger (string ("HLT_Mu38NoFiltersNoVtx_Photon38_CaloIdL_v2"), currentRun, iFile);
+	      
+	      //		if(emu) itrigger = trigEMU;
+	      //		else if(mumu && !trigEMU) itrigger = trigMUMU;
+	      //		else if(ee && !trigEMU) itrigger = trigEE;
+	      
+	      if(itrigger == 9999) 
+		{
+		  cout << "ERROR: no valid trigger found for this event/data in run " << event->runId() << endl; 
+		}   
+	      
+	    } // closing the HLT for data loop
+	      //For the MC, there is no triggerpath
+	    else
+	      {
+		cout << "MC!" << endl;
+		trigEMU =  itrigger = treeLoader.iTrigger ("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1", currentRun, iFile);
+		trigMUMU =  itrigger = treeLoader.iTrigger (string ("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1"), currentRun, iFile);
+		trigEE = itrigger = treeLoader.iTrigger (string ("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1"), currentRun, iFile);
+		itrigger = trigEMU;
+
+//		  if(emu) itrigger = trigEMU;
+//		  else if(mumu && !trigEMU) itrigger = trigMUMU;
+//		  else if(ee && !trigEMU) itrigger = trigEE;
+
 		
-		cout << " RUN " << event->runId() << endl;
 	      }
+	  }
+	    
+	  */
+	    
 
-            } //end previousRun != currentRun
+
+
+
+
+	  /*
+	    bool trigged = false;
+	    std::string filterName = "";
+	    int currentRun = event->runId();
+	    if(previousRun != currentRun){
+	    
+	    cout << "Changing run number. Run is  "<< currentRun<<endl;
+	    previousRun = currentRun;
+	    
+	    if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos){
+	    if (debug)cout <<"applying trigger for data!"<<endl;
+	    itrigger = treeLoader.iTrigger (string ("HLT_Mu38NoFiltersNoVtx_Photon38_CaloIdL_v2"), currentRun, iFile);
+	    
+	    cout << " RUN " << event->runId() << endl;
+	    }
+	      
+	    } //end previousRun != currentRun
 	    */
-
+	  
 
 
 
@@ -1020,7 +1096,7 @@ int main (int argc, char *argv[])
 	    //  Pile up Scale Factor
 	    ///////////////////////////////////////////
 
-	    double lumiWeight = LumiWeights.ITweight( nvtx ); // simplest reweighting, just use reconstructed number of PV.
+	    double lumiWeight = LumiWeights.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
 	    puSF=lumiWeight;
 	    if (isData) puSF =1;
 
@@ -1055,13 +1131,17 @@ int main (int argc, char *argv[])
 
 	    // make a new collections of muons
 	    if (debug)cout<<"Getting Muons"<<endl;
-	    selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut); // pt, eta, iso
+
+
+
+	    selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // pt, eta, iso // run normally
+
 	    //selectedMuons = selection.GetSelectedMuons();
 	    //selectedMuons = init_muons;
 
 	    // make a new collections of electrons
 	    if (debug)cout<<"Getting Electrons"<<endl;
-	    selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut);// pt, eta
+	    selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, false, false);// pt, eta
 	    //selectedElectrons = selection.GetSelectedElectrons();
 	    //selectedElectrons = init_electrons;
 
@@ -1194,7 +1274,7 @@ int main (int argc, char *argv[])
 	      photonIso_muon[nMuons]=selectedMuons[selmu]->photonIso(4);
 	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0);
 	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
-	      sf_muon[nMuons]=muonSFWeight_->at(selectedMuons[selmu]->Eta(),selectedMuons[selmu]->Pt(),0);
+	      sf_muon[nMuons]=muonSFWeightIso_TT->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0)* muonSFWeightID_T->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
 	      nMuons++;
 
@@ -1258,7 +1338,9 @@ int main (int argc, char *argv[])
 	      photonIso_muon_pc[nMuons_pc]=init_muons[initmu]->photonIso(4);
 	      pfIso_muon_pc[nMuons_pc]=init_muons[initmu]->relPfIso(4,0);
 	      charge_muon_pc[nMuons_pc]=init_muons[initmu]->charge();
-	      sf_muon_pc[nMuons_pc]=muonSFWeight_->at(init_muons[initmu]->Eta(),init_muons[initmu]->Pt(),0);
+	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedMuons[initmu]->Eta(), selectedMuons[initmu]->Pt(), 0)* muonSFWeightIso_TT->at(selectedMuons[initmu]->Eta(), selectedMuons[initmu]->Pt(), 0);
+	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedMuons[initmu]->Eta(), selectedMuons[initmu]->Pt(), 0);//* muonSFWeightIso_TT->at(selectedMuons[initmu]->Eta(), selectedMuons[initmu]->Pt(), 0);
+	      
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons_pc << " and pt equals to " << pt_muon_pc[nMuons_pc] << endl;
 	      nMuons_pc++;
 
@@ -1317,6 +1399,8 @@ int main (int argc, char *argv[])
 	    }
 
 	    if (testTree && (nElectrons >= 1 || nMuons >= 1 )){
+	      //	      cout << "nElectrons is " << nElectrons << endl;
+	      //	      cout << "nMuons is " << nMuons <<endl;
 	      myTree->Fill();
 	      passed++;
 	    }
@@ -1324,45 +1408,59 @@ int main (int argc, char *argv[])
 	    if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
 
 
-	    // filling the cutflow
+	    // filling the cutflow and the histo 1 D
 
 	    // preselection cut
+	    histo1D["h_cutFlow"]->Fill(0., 1);
 	    CutFlowPreselTable.Fill(d,0,lumiScale);
 	    if(!isEBEEGap){
 	      passedEcalCrackVeto = true;
+	      histo1D["h_cutFlow"]->Fill(1., 1);
 	      CutFlowPreselTable.Fill(d,1,lumiScale);
 	      if (selectedElectrons.size() >= 1 ){
 		passedGoodEl=true;
+		histo1D["h_cutFlow"]->Fill(2., 1);
 		CutFlowPreselTable.Fill(d,2,lumiScale);
 		if (selectedMuons.size() >= 1 ){
 		  passedGoodMu=true;
+		  histo1D["h_cutFlow"]->Fill(3., 1);
 		  CutFlowPreselTable.Fill(d,3,lumiScale);
 		  if (selectedElectrons.size() == 1 ){
 		    passedExtraElVeto = true;
+		    histo1D["h_cutFlow"]->Fill(4., 1);
 		    CutFlowPreselTable.Fill(d,4,lumiScale);
 		    if (selectedMuons.size() == 1 ){
 		      passedExtraMuVeto = true;
+		      histo1D["h_cutFlow"]->Fill(5., 1);
 		      CutFlowPreselTable.Fill(d,5,lumiScale);
 		      if(abs(selectedElectrons[0]->d0BeamSpot()) < 0.01){
 			passedBlindingEl = true;
+			histo1D["h_cutFlow"]->Fill(6., 1);
 			CutFlowPreselTable.Fill(d,6,lumiScale);
 			if (abs(selectedMuons[0]->d0BeamSpot()) < 0.01){
 			  passedBlindingMu=true;
+			  histo1D["h_cutFlow"]->Fill(7., 1);
 			  CutFlowPreselTable.Fill(d,7,lumiScale);
 			  //			  if(selectedElectrons[0]->charge() * selectedMuons[0]->charge() == -1){
 			  if (1){
 			    passedElMuOS=true;
+			    histo1D["h_cutFlow"]->Fill(8., 1);
 			    CutFlowPreselTable.Fill(d,8,lumiScale);
 			    Double_t DeltaR = sqrt (2);// to be done
 			    if (1){
 			      //			  if(selectedElectrons[0]->DeltaR(selectedMuons[0]) > 0.5){
 			      passedElMuNotOverlaping=true;
+			      histo1D["h_cutFlow"]->Fill(9., 1);
 			      CutFlowPreselTable.Fill(d,9,lumiScale);
 			      passed++;
 			      if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
 			      myTree->Fill(); 
 			      //			      cout << "Filling Tree!!!" << endl;
-			      if (1) cout << "puSF is " << puSF << endl;
+			      if (debug) {
+				cout << "npu vtx " << nvtx << endl;
+				cout << "npu is " << npu << endl;
+				cout << "puSF is" << puSF << endl;
+			      }
 			    }
 			  }
 			}
@@ -1445,15 +1543,26 @@ int main (int argc, char *argv[])
 
         } //End Loop on Events
 
-	//	bookkeeping->Fill();	    
-	//	bookkeeping->Write();
+	fout->cd();
+	///Write histogram
+	for (map<string,TH1F*>::const_iterator it = histo1D.begin(); it != histo1D.end(); it++)
+	  {
+	    cout << "1D Plot: " << it->first << endl;
+	    // TCanvas ctemp = 
+	    
+	    TH1F *temp = it->second;
+	    string name = it->first;
+	    cout << name << endl; 
+	    temp->Draw();  // string label, unsigned int RatioType, bool addRatioErrorBand, bool addErrorBand, bool ErrorBandAroundTotalInput, int scaleNPSignal
+	    //c1->SaveAs(pathPNG+"1DPlot/"+name modeString[mode] + "_" + cutLabel + ".png");
+	    //	    temp->Write(fout, name, true, pathPNG+"1DPlot/", "png");  // TFile* fout, string label, bool savePNG, string pathPNG, string ext
+	  }
 	
-
-	myTree->Write();
-	myPreCutTree->Write();
 	if (debug) cout << "Done writing the Tree" << endl;
+	fout->Write();   
+	fout->Close();
         tupfile->Close();
-        cout <<"n events before all the cuts is  =  "<< passed_pc <<endl;
+        cout <<"n events having at least two leptons is  =  "<< passed_pc <<endl;
         cout <<"n events after all the cuts is  =  "<< passed <<endl;
         cout << "Event Count: " << eventCount << endl;
         cout << "Weight Count: " << weightCount << endl;
@@ -1492,7 +1601,7 @@ int main (int argc, char *argv[])
 	//	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
       }
 
-    fout->cd();
+
     cout <<" after cd .."<<endl;
 
     string pathPNGJetCombi = pathPNG + "JetCombination/";
