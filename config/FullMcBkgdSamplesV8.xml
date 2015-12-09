@@ -33,9 +33,9 @@
 
 <d name="ZZ" title="ZZ" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="96025.5813953" xsection="10.32" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v5/ZZ_TuneCUETP8M1_13TeV-pythia8/crab_ZZ_TuneCUETP8M1_13TeV-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3-CMSSW_74X_v5-MCRUN2_74_V9-All/150909_114424/0000/*.root"/>
 
-<d name="ZG" title="ZG" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="25184.826473" xsection="123.9" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN274V9v1CMSSW74Xv8/151207_224121/0000/*.root"/>
+<d name="ZG" title="ZG" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="35688.8297014" xsection="123.9" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN274V9v1CMSSW74Xv8/151207_224121/0000/*.root"/>
 
-<d name="WGToLNuG" title="WG/rightarrownuG" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="10564.4478621" xsection="461.66" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25nsMCRUN274V9v1CMSSW74Xv8/151207_224321/0000/*.root"/>
+<d name="WGToLNuG" title="WG/rightarrownuG" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="13197.5176537" xsection="461.66" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25nsMCRUN274V9v1CMSSW74Xv8/151207_224321/0000/*.root"/>
 <!-- ********** -->
 <!-- eo Diboson -->
 
