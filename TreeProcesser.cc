@@ -142,7 +142,9 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   ///////////////////////////////////////////////////////////// Load Datasets //////////////////////////////////////////////////////////////////////cout<<"loading...."<<endl;
   TTreeLoader treeLoader;
   vector < Dataset* > datasets; 					//cout<<"vector filled"<<endl;
+  if (debug) cout << "will start loading from xml file ..." << endl;
   treeLoader.LoadDatasets (datasets, xmlfile);	//cout<<"datasets loaded"<<endl;
+  if (debug) cout << "finished loading from xml file ..." << endl;
   
     //***************************************************CREATING PLOTS****************************************************
   //  TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
@@ -187,7 +189,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
   //  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/19_11_2015/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/25_11_2015/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/25_11_2015/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/9_12_2015/";
 
   
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
@@ -261,8 +264,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
 
 
-      Luminosity = 552.672; // pb-1
-      TString slumi = "552.672";
+      Luminosity = 1541.058; // pb-1
+      TString slumi = "1541.058";
 
       
       //      histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
@@ -381,8 +384,6 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
   //  treeLoader.UnLoadDataset();
   
-  debug = true;
-
   if (debug){
     cout << "before cleaning" << endl;
     if (v.size() == 2){
@@ -403,8 +404,6 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
     cout << "v.size() is " << v.size() << endl;
   }
   
-  debug = false;
-
 
 };
 
