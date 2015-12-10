@@ -23,7 +23,7 @@
 #include "../TopTreeAnalysisBase/Content/interface/Dataset.h"
 #include "../TopTreeAnalysisBase/MCInformation/interface/MCWeighter.h"
 #include "../TopTreeAnalysisBase/Selection/interface/ElectronPlotter.h"
-#include "../TopTreeAnalysisBase/Selection/interface/Selection.h"
+#include "../TopTreeAnalysisBase/Selection/interface/Run2Selection.h"
 #include "../TopTreeAnalysisBase/Selection/interface/MuonPlotter.h"
 #include "../TopTreeAnalysisBase/Selection/interface/JetPlotter.h"
 #include "../TopTreeAnalysisBase/Selection/interface/VertexPlotter.h"
@@ -343,6 +343,9 @@ int main (int argc, char *argv[])
         // some printout
         cout << "running over " << datasets[d]->NofEvtsToRunOver() << endl;
         
+	//define object containers                                                                            
+
+
         // start event loop
 	//	for (unsigned int ievt = 0; ievt < datasets[d]->NofEvtsToRunOver(); ievt++) // event loop
 	for (unsigned int ievt = 0; ievt < 25000; ievt++) // run on limited number of events for faster testing.
@@ -352,10 +355,14 @@ int main (int argc, char *argv[])
             vector < TRootVertex* > vertex;
             vector < TRootMuon* > init_muons;
             vector < TRootMuon* > postCut_muons;
+	    vector<TRootMuon*>     selectedMuons;
 	    vector < TRootElectron* > init_electrons;
+	    vector<TRootElectron*> selectedElectrons;
 	    vector < TRootElectron* > postCut_electrons;
             vector < TRootJet* > init_jets_corrected;
-            vector < TRootJet* > init_jets;
+	    vector < TRootJet* >      init_jets;
+	    vector < TRootJet* >      init_fatjets;
+	    vector<TRootPFJet*>    selectedJets;
             vector < TRootMET* > mets;
             vector < TRootGenJet* > genjets;
             
@@ -438,26 +445,29 @@ int main (int argc, char *argv[])
             /////////////////////
             
             //Declare selection instance
-            Selection selection(init_jets_corrected, init_muons, init_electrons, mets);
+	    Run2Selection selection(init_jets, init_fatjets, init_muons, init_electrons, mets);
 
-            // the default selection is fine for normal use - if you want a special selection you can use the functions here
-            //selection.setJetCuts(20,2.5,0.01,1.,0.98,0.3,0.1); //  void setJetCuts(float Pt, float Eta, float EMF, float n90Hits, float fHPD, float dRJetElectron, float dRJetMuon);
-	    //            selection.setMuonCuts(25,2.5,0.12,0.2,0.3,1,0.5,5,0); // void setMuonCuts(float Pt, float Eta, float RelIso, float d0, float DRJets, int NMatchedStations, float Dz, int NTrackerLayersWithMeas, int NValidPixelHits);
-	    selection.setLooseMuonCuts();
-	    //            selection.setElectronCuts(25,2.5,0.1,0.02,0.,0.3,0); // void setElectronCuts(float Pt, float Eta, float RelIso, float d0, float MVAId, float DRJets, int MaxMissingHits);
-	    selection.setLooseElectronCuts();
+	    // muons
+	    selectedMuons = selection.GetSelectedDisplacedMuons(); // pt, eta, iso
+
+	    // electrons
+	    selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta 
+
+
+	    // jets
+	    selectedJets = selection.GetSelectedJets();
 
 	    //            faco
-            bool isGoodPV = selection.isPVSelected(vertex, 4, 24, 2.);
+	    bool isGoodPV = selection.isPVSelected(vertex, 4, 24, 2.);
 	    //            if(!isGoodPV)
 	    //                continue;
             
             missingEt=mets[0]->Pt();
 
             // get the 'good' objects from the selection object
-            vector<TRootJet*> selectedJets= selection.GetSelectedJets(true);
-            vector<TRootMuon*> selectedMuons = selection.GetSelectedMuons(vertex[0],selectedJets);
-            vector<TRootElectron*> selectedElectrons = selection.GetSelectedElectrons(selectedJets);
+
+	    //            vector<TRootMuon*> selectedMuons = selection.GetSelectedMuons(vertex[0],selectedJets);
+	    //            vector<TRootElectron*> selectedElectrons = selection.GetSelectedElectrons(selectedJets);
             
             // bookkeeping
             eleeffaverage[0]+=init_electrons.size()*scaleFactor;
@@ -580,7 +590,8 @@ int main (int argc, char *argv[])
 		      passedPtMu=true;
 		      if (abs(init_muonsTLV[imuo].Eta()) < 2.5){
 			passedEtaMu=true;
-			if(postCut_electronsTLV.size() == 1 ){                                                                                passedExtraElVeto=true;   
+			if(postCut_electronsTLV.size() == 1 ){                                                                               
+			  passedExtraElVeto=true;   
 			  if(postCut_muonsTLV.size() == 1){
 			    passedExtraMuVeto=true;
 			    if(init_electrons[iele]->charge() * init_muons[imuo]->charge() == -1){ // to do! make a new el/muon collection

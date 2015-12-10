@@ -460,8 +460,8 @@ int main (int argc, char *argv[])
     
     CutFlowPresel.push_back(string("initial"));
     CutFlowPresel.push_back(string("ecal crack veto"));
-    CutFlowPresel.push_back(string("at least one good electron: pt $<$ "+el_pt_cut_str+", eta $<$ "+el_eta_cut_str));
-    CutFlowPresel.push_back(string("at least one good muon: pt $<$ "+mu_pt_cut_str+", eta $<$ "+mu_eta_cut_str+", iso $<$ "+mu_iso_cut_str));
+    CutFlowPresel.push_back(string("at least one good electron: pt $>$ "+el_pt_cut_str+", eta $<$ "+el_eta_cut_str));
+    CutFlowPresel.push_back(string("at least one good muon: pt $>$ "+mu_pt_cut_str+", eta $<$ "+mu_eta_cut_str+", iso $<$ "+mu_iso_cut_str));
     CutFlowPresel.push_back(string("extra electron veto"));
     CutFlowPresel.push_back(string("extra muon veto"));
     CutFlowPresel.push_back(string("electron blinding d0"));
@@ -477,31 +477,72 @@ int main (int argc, char *argv[])
     //    CutFlowPreselTable.SetLuminosity(Luminosity);
     CutFlowPreselTable.SetPrecision(1);
 
+    // ---------------------
+    // bo Synch cut flows --
+    // ---------------------
 
-    // cutflow for one good electron
-    
+
+
+    // start a new table (electrons only)
     vector<string> CutFlow_oneEl;
-    
     CutFlow_oneEl.push_back(string("initial"));
-    CutFlow_oneEl.push_back(string("electron crack veto"));
-    CutFlow_oneEl.push_back(string("at least one good electron: pt $<$ "+el_pt_cut_str+", eta $<$ "+el_eta_cut_str));
+    CutFlow_oneEl.push_back(string("At least one electron with: pt $>$ "+el_pt_cut_str));
+    CutFlow_oneEl.push_back(string("ecal crack veto")); // faco put after eta
+    CutFlow_oneEl.push_back(string("electron with abs eta $<$ "+el_eta_cut_str));
+    CutFlow_oneEl.push_back(string("electron Id"));
+    CutFlow_oneEl.push_back(string("delta rho isolation"));
+
 
     SelectionTable CutFlow_oneElTable(CutFlow_oneEl, datasets);
     //    CutFlow_oneElTable.SetLuminosity(Luminosity);
     CutFlow_oneElTable.SetPrecision(1);
     
 
-    // cutflow for one good muon
-    
+    // start a new table (muon only)
     vector<string> CutFlow_oneMu;
-    
     CutFlow_oneMu.push_back(string("initial"));
-    CutFlow_oneMu.push_back(string("at least one good muon: pt $<$ "+mu_pt_cut_str+", eta $<$ "+mu_eta_cut_str+", iso $<$ "+mu_iso_cut_str));
-
+    CutFlow_oneMu.push_back(string("at least one muon with pt $>$ "+mu_pt_cut_str));
+    CutFlow_oneMu.push_back(string("muon with abs eta  $<$ "+mu_eta_cut_str));
+    CutFlow_oneMu.push_back(string("muon id")); 
+    CutFlow_oneMu.push_back(string("delta beta iso $<$ "+mu_iso_cut_str));
+    
     SelectionTable CutFlow_oneMuTable(CutFlow_oneMu, datasets);
     //    CutFlow_oneMuTable.SetLuminosity(Luminosity);
     CutFlow_oneMuTable.SetPrecision(1);
+
+
+    // start a table (full synch)
+    vector<string> CutFlow;
+    CutFlow.push_back(string("initial"));
+    CutFlow.push_back(string("At least one electron with: pt $>$ "+el_pt_cut_str));
+    CutFlow.push_back(string("ecal crack veto"));
+
+    CutFlow.push_back(string("electron with abs eta $<$ "+el_eta_cut_str));
+    CutFlow.push_back(string("electron Id"));
+    CutFlow.push_back(string("delta rho isolation"));
+
+    CutFlow.push_back(string("at least one muon with pt $>$ "+mu_pt_cut_str));
+    CutFlow.push_back(string("muon with abs eta  $<$ "+mu_eta_cut_str));
+    CutFlow.push_back(string("muon Id"));
+
+    CutFlow.push_back(string("delta beta iso $<$ "+mu_iso_cut_str));
+    CutFlow.push_back(string("extra electron veto"));
+    CutFlow.push_back(string("extra muon veto"));
+
+    CutFlow.push_back(string("electron blinding d0"));
+    CutFlow.push_back(string("muon blinding d0"));
+    CutFlow.push_back(string("electron and muon with OS"));
+
+    CutFlow.push_back(string("electron-muon pair with deltaR $>$ 0.5"));
     
+    SelectionTable CutFlowTable(CutFlow, datasets);
+    //    CutFlow_oneMuTable.SetLuminosity(Luminosity);
+    CutFlowTable.SetPrecision(1);
+
+
+    // ---------------------
+    // eo Synch cut flows --
+    // ---------------------
 
 
 
@@ -868,42 +909,49 @@ int main (int argc, char *argv[])
 	int trigEMU, trigMUMU,trigEE; 
 	int itrigger = -1, previousRun = -1;
 	int currentRun; 
-
+	
         int start = 0;
         unsigned int ending = datasets[d]->NofEvtsToRunOver();
-
+	
         cout <<"Number of events in total dataset = "<<  ending  <<endl;
-
-
+	
+	
         int event_start = startEvent;
         if (verbose > 1) cout << " - Loop over events " << endl;
-
-
+	
+	
         double currentfrac =0.;
         double end_d;
         if(endEvent > ending)
-            end_d = ending;
+	  end_d = ending;
         else
-            end_d = endEvent;
-
+	  end_d = endEvent;
+	
 	//	end_d = 10000; //artifical ending for debug
         int nEvents = end_d - event_start;
         cout <<"Will run over "<<  (end_d - event_start) << " events..."<<endl;
         cout <<"Starting event = = = = "<< event_start  << endl;
         if(end_d < startEvent)
         {
-            cout << "Starting event larger than number of events.  Exiting." << endl;
-            return 1;
+	  cout << "Starting event larger than number of events.  Exiting." << endl;
+	  return 1;
         }
 
-
+	
         //define object containers
+        vector<TRootElectron*> KynElectrons;
+        vector<TRootElectron*> KynIdElectrons;
         vector<TRootElectron*> selectedElectrons;
+        vector<TRootElectron*> selectedExtraElectrons;
+
+        vector<TRootMuon*> KynMuons;
+	vector<TRootMuon*> KynIdMuons;
+        vector<TRootMuon*> selectedMuons;
+        vector<TRootMuon*> selectedExtraMuons;
+
         vector<TRootPFJet*>    selectedJets;
         vector<TRootSubstructureJet*>    selectedFatJets;
-        vector<TRootMuon*>     selectedMuons;
-        vector<TRootElectron*> selectedExtraElectrons;
-        vector<TRootMuon*>     selectedExtraMuons;
+
         selectedElectrons.reserve(10);
         selectedMuons.reserve(10);
 
@@ -914,87 +962,56 @@ int main (int argc, char *argv[])
         //////////////////////////////////////
 	
         for (unsigned int ievt = event_start; ievt < end_d; ievt++)
-        {
-	  if (debug) cout << "just entered the event loop!" << endl;
-	  // Set default value for evertything that goes in the Tree
-	  //	  for (imuons = 0){ 
-	  //	  }
-	  nMuons = nElectrons = 0;
-	  
-	  currentRun = -99999;
-	  
-	  
-	  double ievt_d = ievt;
-	  currentfrac = ievt_d/end_d;
-	  if (debug)cout << endl << endl << "Starting a new event loop!"<<endl;
-	  
-	  if(ievt%1000 == 0)
-            {
-	      std::cout<<"Processing the "<<ievt<<"th event, time = "<< ((double)clock() - start) / CLOCKS_PER_SEC << " ("<<100*(ievt-start)/(ending-start)<<"%)"<<flush<<"\r"<<endl;
-            }
-	  
-	  event = treeLoader.LoadEvent (ievt, vertex, init_muons, init_electrons, init_jets, init_fatjets,  mets, debug);  //load event
-	  
-	  float rho = event->fixedGridRhoFastjetAll();
-	  if (debug)cout <<"Rho: " << rho <<endl;
-	  
-	  if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
-	  //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*globalScaleFactor );
-	  
-	  
-	  /*
-	    for (Int_t initel =0; initel < init_electrons.size(); initel++ )
-            {
-	    float initreliso = ElectronRelIso(init_electrons[initel], rho);
-	    MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*globalScaleFactor);
+	  {
+	    if (debug) cout << "just entered the event loop!" << endl;
+	    // Set default value for evertything that goes in the Tree
+	    //	  for (imuons = 0){ 
+	    //	  }
+	    nMuons = nElectrons = 0;
 	    
+	    currentRun = -99999;
+	    
+	    
+	    double ievt_d = ievt;
+	    currentfrac = ievt_d/end_d;
+	    if (debug)cout << endl << endl << "Starting a new event loop!"<<endl;
+	    
+	    if(ievt%1000 == 0)
+	      {
+		std::cout<<"Processing the "<<ievt<<"th event, time = "<< ((double)clock() - start) / CLOCKS_PER_SEC << " ("<<100*(ievt-start)/(ending-start)<<"%)"<<flush<<"\r"<<endl;
+	      }
+	    
+	    event = treeLoader.LoadEvent (ievt, vertex, init_muons, init_electrons, init_jets, init_fatjets,  mets, debug);  //load event
+	    
+	    float rho = event->fixedGridRhoFastjetAll();
+	    if (debug)cout <<"Rho: " << rho <<endl;
+	    
+	    if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
+	    //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*globalScaleFactor );
+	  
+	    
+	    /*
+	      for (Int_t initel =0; initel < init_electrons.size(); initel++ )
+	      {
+	      float initreliso = ElectronRelIso(init_electrons[initel], rho);
+	      MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*globalScaleFactor);
+	      
 	    }
-	  */
-	  
-	  
+	    */
+	    
 
-	  string graphName;
+
+
+	  
+	    //	    /*	    
+	    // put the leptons collection in TLorenzt Vector to allow DR cuts
+
+	    string graphName;
 	  
 	  //////////////////
 	  //Loading Gen jets
 	  //////////////////
 	  
-	  // Synch cut 1: pt, eta, veto, DR                                                                                                                           
-	  // Declare one bool per cut
-	  /// ---
-	  
-	  // cut on electrons
-	  Bool_t passedEcalCrackVeto = false;
-	  Bool_t passedGoodEl =false;
-	  Bool_t passedBlindingEl =false;
-	  /*
-            Bool_t passedPtEl = false;
-            Bool_t passedEtaEl = false;
-            Bool_t passedIdEl = false;
-            Bool_t passedIsoEl = false;
-	  */
-	  
-	  //cut on muons
-	  Bool_t passedGoodMu = false;
-	  Bool_t passedBlindingMu =false;
-	  /*
-            Bool_t passedPtMu = false;
-            Bool_t passedEtaMu = false;
-            Bool_t passedIdMu = false;
-            Bool_t passedIsoMu = false;
-	  */
-	  
-	  // vetos
-	  Bool_t passedExtraElVeto =false;
-	  Bool_t passedExtraMuVeto =false;
-	  
-	  // opposite signed leptons
-	  Bool_t passedElMuOS = false;
-	  
-	  // non overlapping leptons
-	  Bool_t passedElMuNotOverlaping = false;
-	  
-	  /// ---
 	  
 	  
 	  string currentFilename = datasets[d]->eventTree()->GetFile()->GetName();
@@ -1127,21 +1144,30 @@ int main (int argc, char *argv[])
             // Define object selection cuts
 
 	    if (debug)cout<<"Getting Jets"<<endl;
-	    selectedJets                                        = selection.GetSelectedJets(); // Relying solely on cuts defined in setPFJetCuts()
+	    selectedJets = selection.GetSelectedJets(); // Relying solely on cuts defined in setPFJetCuts()
 
 	    // make a new collections of muons
 	    if (debug)cout<<"Getting Muons"<<endl;
 
+	    // make three collection of muons for the synch exercise
+	    KynMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, false); // pt, eta,
+	    KynIdMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, true); // pt, eta, id
+	    selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // pt, eta, id, iso
 
 
-	    selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // pt, eta, iso // run normally
+	    //selectedMuons = selection.GetSelectedDisplacedMuons(30., 2., 0.15, true, true); // pt, eta, iso // run normally
 
-	    //selectedMuons = selection.GetSelectedMuons();
+	    //	    selectedMuons = selection.GetSelectedMuons();
 	    //selectedMuons = init_muons;
 
 	    // make a new collections of electrons
 	    if (debug)cout<<"Getting Electrons"<<endl;
-	    selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, false, false);// pt, eta
+
+	    // make three collection of muons for the synch exercise
+	    KynElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, false, false);// pt, eta
+	    KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, false, true);// pt, eta, id
+	    selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, true, true);// pt, eta, id, iso
+	    //selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta
 	    //selectedElectrons = selection.GetSelectedElectrons();
 	    //selectedElectrons = init_electrons;
 
@@ -1197,7 +1223,13 @@ int main (int argc, char *argv[])
 	    //            if (!isGoodPV) continue; // Check that there is a good Primary Vertex
 ////            if (!(selectedJets.size() >= 6)) continue; //Selection of a minimum of 6 Jets in Event
 //
-	    if (debug) cout <<"Number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  " << endl << init_muons.size() <<" "  <<init_electrons.size()<<" "<< selectedJets.size()   <<" "   <<" "<<JetCut  <<" "<<Muon<<" "<<Electron<<endl;
+	    if (debug) cout <<"Initial number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  " << endl << init_muons.size() <<" "  <<init_electrons.size()<<" "<< selectedJets.size()   <<" "   <<" "<<JetCut  <<" "<<Muon<<" "<<Electron<<endl;
+
+
+	    if (debug){
+	      cout <<"Selected number of selected Electrons is " << selectedElectrons.size() << " and the number of selected muon is " << selectedMuons.size() << endl;
+	      if (selectedElectrons.size()+ selectedMuons.size() > 0) cout << "At least one selected Lepton!!!!" << endl;
+	    }
 
 
             if (debug)	cout <<" applying baseline event selection..."<<endl;
@@ -1288,7 +1320,7 @@ int main (int argc, char *argv[])
             //////////////////////////
             // Electron Based Plots //
             //////////////////////////
-	    if (debug) cout << "before electrons loop" << endl;
+	    if (debug) cout << "before electrons pc loop" << endl;
 
 	    
 	    nElectrons_pc=0;
@@ -1388,6 +1420,267 @@ int main (int argc, char *argv[])
             }
 	    */
 
+
+
+
+
+	    vector<TLorentzVector> init_electronsTLV;
+	    for(int iele=0; iele<init_electrons.size() && nElectrons<10; iele++)
+	      {
+		init_electronsTLV.push_back(*init_electrons[iele]);
+	      }
+	    
+	    vector<TLorentzVector> init_muonsTLV;
+	    for(int imuo=0; imuo<init_muons.size() && nMuons<10; imuo++)
+	      {
+		init_muonsTLV.push_back(*init_muons[imuo]);
+	      }
+    
+
+	    vector<TLorentzVector> postCut_electronsTLV;
+	    for(int iele=0; iele<selectedElectrons.size(); iele++)
+	      {
+		postCut_electronsTLV.push_back(*selectedElectrons[iele]);
+	      }
+	    
+	    // muons                                     
+	    vector<TLorentzVector> postCut_muonsTLV;
+	    for(int imuo=0; imuo<selectedMuons.size(); imuo++)
+	      {
+		postCut_muonsTLV.push_back(*selectedMuons[imuo]);//fill a new vector with the muons that passed the cuts
+	      }
+
+
+	    // -------------------------------
+	    // bo filling the cutflow table --
+	    // -------------------------------
+
+
+	    // electrons cutflow
+
+	    Bool_t elpt = false;
+	    
+	    for (Int_t initel =0; initel < init_electrons.size() && initel < 10; initel++ ){
+	      if (abs(init_electrons[initel]->Pt()) > 42){ // pt 
+                elpt = true;
+              }
+	    }
+
+
+	    // 
+
+	    /*
+	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
+	      if (abs(init_electronsTLV[iele].Pt()) > 42){ // pt
+		elpt = true;
+	      }
+	    }
+	    */
+
+
+	  // Synch cut 1: pt, eta, veto, DR                                                                                                                           
+	  // Declare one bool per cut
+	  /// ---
+	  
+	  // cut on electrons
+	  Bool_t passedEcalCrackVeto = false;
+	  Bool_t passedGoodEl =false;
+	  Bool_t passedBlindingEl =false;
+
+	  Bool_t passedPtEl = false;
+	  Bool_t passedEtaEl = false;
+	  Bool_t passedIdEl = false;
+	  Bool_t passedIsoEl = false;
+
+	  
+	  //cut on muons
+	  Bool_t passedGoodMu = false;
+	  Bool_t passedBlindingMu =false;
+
+	  Bool_t passedPtMu = false;
+	  Bool_t passedEtaMu = false;
+	  Bool_t passedIdMu = false;
+	  Bool_t passedIsoMu = false;
+
+	  
+	  // vetos
+	  Bool_t passedExtraElVeto =false;
+	  Bool_t passedExtraMuVeto =false;
+	  
+	  // opposite signed leptons
+	  Bool_t passedElMuOS = false;
+	  
+	  // non overlapping leptons
+	  Bool_t passedElMuNotOverlaping = false;
+	  
+	  /// ---
+
+
+
+	    CutFlow_oneElTable.Fill(d,0,1);
+	    if (elpt){ // pt
+	      CutFlow_oneElTable.Fill(d,1,1);
+	    }
+
+	    /*
+	    CutFlow_oneElTable.Fill(d,0,1);
+	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
+              if (elpt){ // pt
+		CutFlow_oneElTable.Fill(d,1,1); 
+		if (!isEBEEGap){//ecal
+		  CutFlow_oneElTable.Fill(d,2,1);
+		  if (abs(init_electronsTLV[iele].Eta()) < 2.5){ // eta
+		    CutFlow_oneElTable.Fill(d,3,1);	    
+		    if (KynIdElectrons.size()>=1){ // id
+		      CutFlow_oneElTable.Fill(d,4,1);
+		      if (selectedElectrons.size()>=1){ // iso
+			CutFlow_oneElTable.Fill(d,5,1);
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+	    */
+
+	    
+	    // muons cutflow
+
+	    CutFlow_oneMuTable.Fill(d,0,1);
+	    for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){ 
+	      if (abs(init_muonsTLV[imuo].Pt()) > 40){ // pt
+		CutFlow_oneMuTable.Fill(d,1,1);
+		if (abs(init_muonsTLV[imuo].Eta()) < 2.5){ // eta
+		  CutFlow_oneMuTable.Fill(d,2,1);
+		  if (KynIdMuons.size()>=1){ // id
+		    CutFlow_oneMuTable.Fill(d,3,1);
+		    if (selectedMuons.size()>=1){ // iso
+		      CutFlow_oneMuTable.Fill(d,4,1);
+		    }
+		  }
+		}
+	      }
+	    }
+
+	    // Full Synch cutflow
+	    
+
+	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
+              if (init_electronsTLV[iele].Pt() > 42){ // pt
+		passedPtEl=true;
+		if (!isEBEEGap){//ecal
+		  passedEcalCrackVeto=true;
+		  if (abs(init_electronsTLV[iele].Eta()) < 2.5){ // eta
+		    passedEtaEl=true;
+		    if (KynIdElectrons.size()>=1){ // id
+		      passedIdEl=true;
+		      if (selectedElectrons.size()>=1){ // iso
+			passedIsoEl=true;
+			for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){ 
+			  if (init_muonsTLV[imuo].Pt() > 40){ // pt
+			    passedPtMu=true;
+			    if (abs(init_muonsTLV[imuo].Eta()) < 2.5){ // eta
+			      passedEtaMu=true;
+			      if (KynIdMuons.size()>=1){ // id
+				passedIdMu=true;
+				if (selectedMuons.size()>=1){ // iso
+				  passedIsoMu=true;
+				  if(selectedElectrons.size() == 1 ){ // extra electron veto
+				    passedExtraElVeto=true;
+				    if(selectedMuons.size() == 1){ // exre muon veto
+				      passedExtraMuVeto=true;
+				      if(abs(selectedElectrons[0]->d0BeamSpot()) < 0.02){ // el d0 blinding 
+					passedBlindingEl=true;
+					//					cout << "imuo is " << imuo << endl;
+					if (abs(selectedMuons[0]->d0BeamSpot()) < 0.02){ // mu d0 blinding
+					  passedBlindingMu=true;
+					  if(init_electrons[iele]->charge() * init_muons[imuo]->charge() == -1){
+					    passedElMuOS=true;
+					    //					    if(postCut_electronsTLV[iele].DeltaR(postCut_muonsTLV[imuo]) > 0.5){
+					    if(1){
+					      passedElMuNotOverlaping=true;
+					    }
+					  }
+					}
+				      }
+				    }
+				  }
+				}
+			      }
+			    }
+			  }
+			}
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+	    //*/
+	    
+	    // Fill full synch cut flow
+
+	    CutFlowTable.Fill(d,0,1);	    
+	    if (passedPtEl){
+	      CutFlowTable.Fill(d,1,1);
+	      if (passedEcalCrackVeto){
+		CutFlowTable.Fill(d,2,1);
+		if (passedEtaEl){
+		  CutFlowTable.Fill(d,3,1);
+		  if (passedIdEl){
+		    CutFlowTable.Fill(d,4,1);
+		    if (passedIsoEl){
+		      CutFlowTable.Fill(d,5,1);
+		      if (passedPtMu){
+			CutFlowTable.Fill(d,6,1);
+			if (passedEtaMu){
+			  CutFlowTable.Fill(d,7,1);
+			  if (passedIdMu){
+			    CutFlowTable.Fill(d,8,1);
+			    if (passedIsoMu){
+			      CutFlowTable.Fill(d,9,1);
+			      if (passedExtraElVeto){
+				CutFlowTable.Fill(d,10,1);
+				if (passedExtraMuVeto){
+				  CutFlowTable.Fill(d,11,1);
+				  if (passedBlindingEl){
+				    CutFlowTable.Fill(d,12,1);
+				    if (passedBlindingMu){
+				      CutFlowTable.Fill(d,13,1);
+				      if (passedElMuOS){
+					CutFlowTable.Fill(d,14,1);
+					if (passedElMuNotOverlaping){
+					  CutFlowTable.Fill(d,15,1);
+					}
+				      }
+				    }
+				  }
+				}
+			      }
+			    }
+			  }
+			}
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+
+
+	    
+
+
+
+
+
+	    // -------------------------------
+	    // bo filling the cutflow table --
+	    // -------------------------------
+
+
+
+
             //////////////////
             //Filling Tree//
             //////////////////
@@ -1472,6 +1765,9 @@ int main (int argc, char *argv[])
 	    }
 
 
+
+
+	    /*
 	    // single el 
 	    CutFlow_oneElTable.Fill(d,0,lumiScale);
 	    if(!isEBEEGap){
@@ -1490,9 +1786,6 @@ int main (int argc, char *argv[])
 	      passedGoodMu=true;
 	      CutFlow_oneMuTable.Fill(d,1,lumiScale);
 	    }
-
-
-	    
 	    /*
 
 
@@ -1582,23 +1875,26 @@ int main (int argc, char *argv[])
     // Selection tables //
     //////////////////////
 
-    //(bool mergeTT, bool mergeQCD, bool mergeW, bool mergeZ, bool mergeST)
+    //(bool mergeTT, bool mergeQCD, bool mergeW, bool mergeZ, bool 
     CutFlowPreselTable.TableCalculator(  true, true, true, true, true);
-    //    CutFlow_oneElTable.TableCalculator(  true, true, true, true, true);
-    //    CutFlow_oneMuTable.TableCalculator(  true, true, true, true, true);
+    CutFlowTable.TableCalculator(  true, true, true, true, true);
+    CutFlow_oneElTable.TableCalculator(  true, true, true, true, true);
+    CutFlow_oneMuTable.TableCalculator(  true, true, true, true, true);
 
     //Options : WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false)
     if (strJobNum != "0")
       {
 	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
-	//	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
-	//	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+	CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
       }
     else 
       {
 	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
-	//	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
-	//	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+	CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
       }
 
 
