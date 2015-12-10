@@ -425,33 +425,48 @@ int main (int argc, char *argv[])
     mkdir(pathPNG.c_str(),0777);
 
 
-    // define cuts here
+
+    // -------------------------
+    // bo defining cuts value --
+    // -------------------------
+    // think to do it in a loop as it will be faster and much less error prompt
 
     // electron
-    float el_pt_cut =42.; // 42
-    float el_eta_cut = 2.4;
+    float el_pt_cut = 42.; // 42
+    float el_eta_cut = 2.4; // 2.4
+    float el_d0_cut = 0.02; // 0.02
 
 
     // muon
     float mu_pt_cut = 40.; // 40
-    float mu_eta_cut = 2.4;
-    float mu_iso_cut = 0.15;
+    float mu_eta_cut = 2.4; // 2.4
+    float mu_iso_cut = 0.15; // 0.15
+    float mu_d0_cut = 0.02; //0.02
 
     // convert into string
 
-    std::ostringstream el_pt_cut_strs, el_eta_cut_strs, mu_pt_cut_strs, mu_eta_cut_strs, mu_iso_cut_strs;
-    std::string el_pt_cut_str, el_eta_cut_str, mu_pt_cut_str, mu_eta_cut_str, mu_iso_cut_str;
+    std::ostringstream el_pt_cut_strs, el_eta_cut_strs, el_d0_cut_strs, mu_pt_cut_strs, mu_eta_cut_strs, mu_iso_cut_strs, mu_d0_cut_strs; 
+    std::string el_pt_cut_str, el_eta_cut_str, el_d0_cut_str, mu_pt_cut_str, mu_eta_cut_str, mu_iso_cut_str, mu_d0_cut_str; 
     el_pt_cut_strs << el_pt_cut;
     el_eta_cut_strs << el_eta_cut;
+    el_d0_cut_strs << el_d0_cut;
     mu_pt_cut_strs << mu_pt_cut;
     mu_eta_cut_strs << mu_eta_cut;
     mu_iso_cut_strs << mu_iso_cut;
-
+    mu_d0_cut_strs << mu_d0_cut;
+    
     el_pt_cut_str = el_pt_cut_strs.str();
     el_eta_cut_str = el_eta_cut_strs.str();
+    el_d0_cut_str = el_d0_cut_strs.str();
     mu_pt_cut_str = mu_pt_cut_strs.str();
     mu_eta_cut_str = mu_eta_cut_strs.str();
     mu_iso_cut_str = mu_iso_cut_strs.str();
+    mu_d0_cut_str = mu_d0_cut_strs.str();
+
+
+    // -------------------------
+    // eo defining cuts value --
+    // -------------------------
 
     
     // check
@@ -464,8 +479,8 @@ int main (int argc, char *argv[])
     CutFlowPresel.push_back(string("at least one good muon: pt $>$ "+mu_pt_cut_str+", eta $<$ "+mu_eta_cut_str+", iso $<$ "+mu_iso_cut_str));
     CutFlowPresel.push_back(string("extra electron veto"));
     CutFlowPresel.push_back(string("extra muon veto"));
-    CutFlowPresel.push_back(string("electron blinding d0"));
-    CutFlowPresel.push_back(string("muon blinding d0"));
+    CutFlowPresel.push_back(string("electron d0 $<$ "+el_d0_cut_str));
+    CutFlowPresel.push_back(string("muon d0 $<$ "+mu_d0_cut_str));
     //    CutFlowPresel.push_back(string("OS leptons"));
     CutFlowPresel.push_back(string(""));
     //    CutFlowPresel.push_back(string("Non overlaping leptons"));
@@ -529,8 +544,8 @@ int main (int argc, char *argv[])
     CutFlow.push_back(string("extra electron veto"));
     CutFlow.push_back(string("extra muon veto"));
 
-    CutFlow.push_back(string("electron blinding d0"));
-    CutFlow.push_back(string("muon blinding d0"));
+    CutFlow.push_back(string("electron d0 $<$ "+el_d0_cut_str));
+    CutFlow.push_back(string("muon d0 $<$ "+mu_d0_cut_str));
     CutFlow.push_back(string("electron and muon with OS"));
 
     CutFlow.push_back(string("electron-muon pair with deltaR $>$ 0.5"));
@@ -1375,25 +1390,25 @@ int main (int argc, char *argv[])
 	      
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons_pc << " and pt equals to " << pt_muon_pc[nMuons_pc] << endl;
 	      nMuons_pc++;
-
-
+	      
+	      
 	    }
-
-
+	    
+	    
             //////////////////////
             // Jets Based Plots //
             //////////////////////
 	    if (debug) cout << "before jets loop" << endl;
-
+	    
             for (Int_t seljet1 =0; seljet1 < selectedJets.size(); seljet1++ )
-            {
+	      {
             }
-
-
-
+	    
+	    
+	    
             float nvertices = vertex.size();
             float normfactor = datasets[d]->NormFactor();
-
+	    
             ///////////////////
             //MET Based Plots//
             ///////////////////
@@ -1454,28 +1469,7 @@ int main (int argc, char *argv[])
 	    // -------------------------------
 	    // bo filling the cutflow table --
 	    // -------------------------------
-
-
-	    // electrons cutflow
-
-	    Bool_t elpt = false;
-	    
-	    for (Int_t initel =0; initel < init_electrons.size() && initel < 10; initel++ ){
-	      if (abs(init_electrons[initel]->Pt()) > 42){ // pt 
-                elpt = true;
-              }
-	    }
-
-
-	    // 
-
-	    /*
-	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
-	      if (abs(init_electronsTLV[iele].Pt()) > 42){ // pt
-		elpt = true;
-	      }
-	    }
-	    */
+ 
 
 
 	  // Synch cut 1: pt, eta, veto, DR                                                                                                                           
@@ -1517,69 +1511,25 @@ int main (int argc, char *argv[])
 
 
 
-	    CutFlow_oneElTable.Fill(d,0,1);
-	    if (elpt){ // pt
-	      CutFlow_oneElTable.Fill(d,1,1);
-	    }
-
-	    /*
-	    CutFlow_oneElTable.Fill(d,0,1);
-	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
-              if (elpt){ // pt
-		CutFlow_oneElTable.Fill(d,1,1); 
-		if (!isEBEEGap){//ecal
-		  CutFlow_oneElTable.Fill(d,2,1);
-		  if (abs(init_electronsTLV[iele].Eta()) < 2.5){ // eta
-		    CutFlow_oneElTable.Fill(d,3,1);	    
-		    if (KynIdElectrons.size()>=1){ // id
-		      CutFlow_oneElTable.Fill(d,4,1);
-		      if (selectedElectrons.size()>=1){ // iso
-			CutFlow_oneElTable.Fill(d,5,1);
-		      }
-		    }
-		  }
-		}
-	      }
-	    }
-	    */
 
 	    
-	    // muons cutflow
-
-	    CutFlow_oneMuTable.Fill(d,0,1);
-	    for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){ 
-	      if (abs(init_muonsTLV[imuo].Pt()) > 40){ // pt
-		CutFlow_oneMuTable.Fill(d,1,1);
-		if (abs(init_muonsTLV[imuo].Eta()) < 2.5){ // eta
-		  CutFlow_oneMuTable.Fill(d,2,1);
-		  if (KynIdMuons.size()>=1){ // id
-		    CutFlow_oneMuTable.Fill(d,3,1);
-		    if (selectedMuons.size()>=1){ // iso
-		      CutFlow_oneMuTable.Fill(d,4,1);
-		    }
-		  }
-		}
-	      }
-	    }
-
-	    // Full Synch cutflow
+	    // logic for full Synch cutflow
 	    
-
 	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
-              if (init_electronsTLV[iele].Pt() > 42){ // pt
+              if (init_electronsTLV[iele].Pt() > el_pt_cut){ // pt
 		passedPtEl=true;
 		if (!isEBEEGap){//ecal
 		  passedEcalCrackVeto=true;
-		  if (abs(init_electronsTLV[iele].Eta()) < 2.5){ // eta
+		  if (abs(init_electronsTLV[iele].Eta()) < el_eta_cut){ // eta
 		    passedEtaEl=true;
 		    if (KynIdElectrons.size()>=1){ // id
 		      passedIdEl=true;
 		      if (selectedElectrons.size()>=1){ // iso
 			passedIsoEl=true;
 			for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){ 
-			  if (init_muonsTLV[imuo].Pt() > 40){ // pt
+			  if (init_muonsTLV[imuo].Pt() > mu_pt_cut){ // pt
 			    passedPtMu=true;
-			    if (abs(init_muonsTLV[imuo].Eta()) < 2.5){ // eta
+			    if (abs(init_muonsTLV[imuo].Eta()) < mu_eta_cut){ // eta
 			      passedEtaMu=true;
 			      if (KynIdMuons.size()>=1){ // id
 				passedIdMu=true;
@@ -1589,10 +1539,10 @@ int main (int argc, char *argv[])
 				    passedExtraElVeto=true;
 				    if(selectedMuons.size() == 1){ // exre muon veto
 				      passedExtraMuVeto=true;
-				      if(abs(selectedElectrons[0]->d0BeamSpot()) < 0.02){ // el d0 blinding 
+				      if(abs(selectedElectrons[0]->d0BeamSpot()) < el_d0_cut){ // el d0 blinding 
 					passedBlindingEl=true;
 					//					cout << "imuo is " << imuo << endl;
-					if (abs(selectedMuons[0]->d0BeamSpot()) < 0.02){ // mu d0 blinding
+					if (abs(selectedMuons[0]->d0BeamSpot()) < mu_d0_cut){ // mu d0 blinding
 					  passedBlindingMu=true;
 					  if(init_electrons[iele]->charge() * init_muons[imuo]->charge() == -1){
 					    passedElMuOS=true;
@@ -1669,13 +1619,63 @@ int main (int argc, char *argv[])
 
 
 	    
+	    // logic for muons cutflow
+
+	    // first reset all bool to false
+
+	    passedPtMu = false;
+	    passedEtaMu = false;
+	    passedIdMu = false;
+	    passedIsoMu = false;
+	    
+	    for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){ 
+	      if (abs(init_muonsTLV[imuo].Pt()) > 40){ // pt
+		passedPtMu=true;
+		if (abs(init_muonsTLV[imuo].Eta()) < 2.5){ // eta
+		  passedEtaMu=true;
+		  if (KynIdMuons.size()>=1){ // id
+		    passedIdMu=true;
+		    if (selectedMuons.size()>=1){ // iso
+		      passedIsoMu=true;
+		    }
+		  }
+		}
+	      }
+	    }
+	    
+	    // Fill muon cut flow 
+
+	    CutFlow_oneMuTable.Fill(d,0,1);
+	    if (passedPtMu){
+	      CutFlow_oneMuTable.Fill(d,1,1);
+	      if (passedEtaMu){
+		CutFlow_oneMuTable.Fill(d,2,1);
+		if (passedIdMu){
+		  CutFlow_oneMuTable.Fill(d,3,1);
+		  if (passedIsoMu){
+		    CutFlow_oneMuTable.Fill(d,4,1);
+		  }
+		}
+	      }
+	    }
 
 
-
-
+	    // Fill muon cut flow using continue 
+	    // probably does not work as all the statement after this will be skipped which definitely affect the pc_tree. Might consider to put this piece of code in a separate event loop or file 
+	    /*
+	    CutFlow_oneMuTable.Fill(d,0,1);
+	    if (!passedPtMu) continue;
+	    CutFlow_oneMuTable.Fill(d,1,1);
+	    if (!passedEtaMu) continue;
+	    CutFlow_oneMuTable.Fill(d,2,1);
+	    if (!passedIdMu) continue;
+	    CutFlow_oneMuTable.Fill(d,3,1);
+	    if (!passedIsoMu) continue;
+	    CutFlow_oneMuTable.Fill(d,4,1);
+	    */
 
 	    // -------------------------------
-	    // bo filling the cutflow table --
+	    // eo filling the cutflow table --
 	    // -------------------------------
 
 
@@ -1881,20 +1881,20 @@ int main (int argc, char *argv[])
     CutFlow_oneElTable.TableCalculator(  true, true, true, true, true);
     CutFlow_oneMuTable.TableCalculator(  true, true, true, true, true);
 
-    //Options : WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false)
+    //    CutFlowExample.Write( filename, WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false) )
     if (strJobNum != "0")
       {
-	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
-	CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,true);
+	//	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,false);
+	CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,false,false,false,false);
+	//	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,false,false,false,false);
+	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,false,false,false,false);
       }
     else 
       {
-	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
-	CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
-	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
+	//	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
+	CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
+	//	CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+".tex",    false,true,true,false,false,false,false;
+	CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
       }
 
 
