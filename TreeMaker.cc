@@ -313,8 +313,8 @@ int main (int argc, char *argv[])
 
     // Muon SF
     double muonSFID, muonSFIso;
-    MuonSFWeight *muonSFWeight_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"Muon_SF_TopEA.root","SF_totErr", false, false); // (... , ... , debug, print warning)
-    MuonSFWeight *muonSFWeightID_T = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
+    //    MuonSFWeight *muonSFWeight_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"Muon_SF_TopEA.root","SF_totErr", true, true); // (... , ... , debug, print warning)
+    MuonSFWeight *muonSFWeightID_T = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", true, true);
     //    MuonSFWeight *muonSFWeightID_M = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
     //  MuonSFWeight *muonSFWeightID_L = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
   
@@ -1647,9 +1647,9 @@ int main (int argc, char *argv[])
 	    passedIsoMu = false;
 	    
 	    for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){ 
-	      if (abs(init_muonsTLV[imuo].Pt()) > 40){ // pt
+	      if (init_muonsTLV[imuo].Pt() > mu_pt_cut){ // pt
 		passedPtMu=true;
-		if (abs(init_muonsTLV[imuo].Eta()) < 2.5){ // eta
+		if (init_muonsTLV[imuo].Pt() > mu_pt_cut && abs(init_muonsTLV[imuo].Eta()) < mu_eta_cut){ // eta
 		  passedEtaMu=true;
 		  if (KynIdMuons.size()>=1){ // id
 		    passedIdMu=true;
@@ -1680,7 +1680,11 @@ int main (int argc, char *argv[])
 
 	    // Fill muon cut flow using continue 
 	    // probably does not work as all the statement after this will be skipped which definitely affect the pc_tree. Might consider to put this piece of code in a separate event loop or file 
+	    
+
+	    
 	    /*
+	    cout << "started filling" << endl;
 	    CutFlow_oneMuTable.Fill(d,0,1);
 	    if (!passedPtMu) continue;
 	    CutFlow_oneMuTable.Fill(d,1,1);
@@ -1690,8 +1694,11 @@ int main (int argc, char *argv[])
 	    CutFlow_oneMuTable.Fill(d,3,1);
 	    if (!passedIsoMu) continue;
 	    CutFlow_oneMuTable.Fill(d,4,1);
+	    
+	    cout << "went through it!!" << endl;
 	    */
 
+		
 	    // -------------------------------
 	    // eo filling the cutflow table --
 	    // -------------------------------
