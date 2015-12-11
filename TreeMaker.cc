@@ -530,7 +530,7 @@ int main (int argc, char *argv[])
     vector<string> CutFlow;
     CutFlow.push_back(string("initial"));
     CutFlow.push_back(string("At least one electron with: pt $>$ "+el_pt_cut_str));
-    CutFlow.push_back(string("ecal crack veto"));
+    //    CutFlow.push_back(string("ecal crack veto"));
 
     CutFlow.push_back(string("electron with abs eta $<$ "+el_eta_cut_str));
     CutFlow.push_back(string("electron Id"));
@@ -1295,7 +1295,7 @@ int main (int argc, char *argv[])
 	      isEBEEGap = false;
 	      Double_t eta =  eta_superCluster_electron[nElectrons];
 	      Double_t feta = fabs(eta);
-	      if (fabs(feta-1.479)<.1) isEBEEGap = true ;
+	      if (fabs(feta-1.479)<0.1) isEBEEGap = true ;
 
 	      sf_electron[nElectrons]=electronSFWeight_->at(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron[nElectrons] << endl;
@@ -1518,7 +1518,8 @@ int main (int argc, char *argv[])
 	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
               if (init_electronsTLV[iele].Pt() > el_pt_cut){ // pt
 		passedPtEl=true;
-		if (!isEBEEGap){//ecal
+		if (1){
+		//		if (!isEBEEGap){//ecal crack veto
 		  passedEcalCrackVeto=true;
 		  if (abs(init_electronsTLV[iele].Eta()) < el_eta_cut){ // eta
 		    passedEtaEl=true;
@@ -1570,37 +1571,54 @@ int main (int argc, char *argv[])
 	    
 	    // Fill full synch cut flow
 
-	    CutFlowTable.Fill(d,0,1);	    
+	    Int_t i_CutFlowTable = 0;
+	    CutFlowTable.Fill(d,i_CutFlowTable,1);
+	    i_CutFlowTable++;
 	    if (passedPtEl){
-	      CutFlowTable.Fill(d,1,1);
-	      if (passedEcalCrackVeto){
-		CutFlowTable.Fill(d,2,1);
+	      CutFlowTable.Fill(d,i_CutFlowTable,1);
+	      i_CutFlowTable++;
+	      //if (passedEcalCrackVeto){
+	      //		CutFlowTable.Fill(d,i_CutFlowTable,1);
+	      //		i_CutFlowTable++;
 		if (passedEtaEl){
-		  CutFlowTable.Fill(d,3,1);
+		  CutFlowTable.Fill(d,i_CutFlowTable,1);
+		  i_CutFlowTable++;
 		  if (passedIdEl){
-		    CutFlowTable.Fill(d,4,1);
+		    CutFlowTable.Fill(d,i_CutFlowTable,1);
+		    i_CutFlowTable++;
 		    if (passedIsoEl){
-		      CutFlowTable.Fill(d,5,1);
+		      CutFlowTable.Fill(d,i_CutFlowTable,1);
+		      i_CutFlowTable++;
 		      if (passedPtMu){
-			CutFlowTable.Fill(d,6,1);
+			CutFlowTable.Fill(d,i_CutFlowTable,1);
+			i_CutFlowTable++;
 			if (passedEtaMu){
-			  CutFlowTable.Fill(d,7,1);
+			  CutFlowTable.Fill(d,i_CutFlowTable,1);
+			  i_CutFlowTable++;
 			  if (passedIdMu){
-			    CutFlowTable.Fill(d,8,1);
+			    CutFlowTable.Fill(d,i_CutFlowTable,1);
+			    i_CutFlowTable++;
 			    if (passedIsoMu){
-			      CutFlowTable.Fill(d,9,1);
+			      CutFlowTable.Fill(d,i_CutFlowTable,1);
+			      i_CutFlowTable++;
 			      if (passedExtraElVeto){
-				CutFlowTable.Fill(d,10,1);
+				CutFlowTable.Fill(d,i_CutFlowTable,1);
+				i_CutFlowTable++;
 				if (passedExtraMuVeto){
-				  CutFlowTable.Fill(d,11,1);
+				  CutFlowTable.Fill(d,i_CutFlowTable,1);
+				  i_CutFlowTable++;
 				  if (passedBlindingEl){
-				    CutFlowTable.Fill(d,12,1);
+				    CutFlowTable.Fill(d,i_CutFlowTable,1);
+				    i_CutFlowTable++;
 				    if (passedBlindingMu){
-				      CutFlowTable.Fill(d,13,1);
+				      CutFlowTable.Fill(d,i_CutFlowTable,1);
+				      i_CutFlowTable++;
 				      if (passedElMuOS){
-					CutFlowTable.Fill(d,14,1);
+					CutFlowTable.Fill(d,i_CutFlowTable,1);
+					i_CutFlowTable++;
 					if (passedElMuNotOverlaping){
-					  CutFlowTable.Fill(d,15,1);
+					  CutFlowTable.Fill(d,i_CutFlowTable,1);
+					  i_CutFlowTable++;
 					}
 				      }
 				    }
@@ -1612,7 +1630,7 @@ int main (int argc, char *argv[])
 			}
 		      }
 		    }
-		  }
+		    //  }
 		}
 	      }
 	    }
