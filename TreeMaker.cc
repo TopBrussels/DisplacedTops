@@ -532,7 +532,7 @@ int main (int argc, char *argv[])
     vector<string> CutFlow;
     CutFlow.push_back(string("initial"));
     CutFlow.push_back(string("At least one electron with: pt $>$ "+el_pt_cut_str));
-    CutFlow.push_back(string("ecal crack veto (!isEBEEGAP)"));
+    //    CutFlow.push_back(string("ecal crack veto (!isEBEEGAP)"));
 
     CutFlow.push_back(string("electron with abs eta $<$ "+el_eta_cut_str));
     CutFlow.push_back(string("electron Id"));
@@ -1578,7 +1578,7 @@ int main (int argc, char *argv[])
 	  */
 	  
 	  
-	  /*
+	  //	  /*
 	    for(int iele=0; iele<init_electrons.size(); iele++){
               if (init_electrons[iele]->Pt() > el_pt_cut) passedPtEl=true;
 	      if (!isEBEEGap_pc[iele]) passedEcalCrackVeto=true;
@@ -1629,7 +1629,7 @@ int main (int argc, char *argv[])
 	    if (passedBlindingMu)
 	      CutFlow_oneMuTable.Fill(d,5,1);
 	    
-	  */
+	    //	  */
 
 
 	    /*		      
@@ -1659,68 +1659,11 @@ int main (int argc, char *argv[])
 	      {
 		postCut_muonsTLV.push_back(*selectedMuons[imuo]);//fill a new vector with the muons that passed the cuts
 	      }
+	    */
 
 
 
 	    // logic for full Synch cutflow
-
-	    for(int iele=0; iele<init_electronsTLV.size(); iele++){
-              if (init_electronsTLV[iele].Pt() > el_pt_cut){ // pt
-		passedPtEl=true;
-		//		if (1){
-		//		if (!isEBEEGap[iele]){//ecal crack veto
-		if (1){
-		  passedEcalCrackVeto=true;
-		  if (abs(init_electronsTLV[iele].Eta()) < el_eta_cut){ // eta
-		    passedEtaEl=true;
-		    if (KynIdElectrons.size()>=1){ // id
-		      passedIdEl=true;
-		      if (selectedElectrons.size()>=1){ // iso
-			passedIsoEl=true;
-			for(int imuo=0; imuo<init_muonsTLV.size(); imuo++){ 
-			  if (init_muonsTLV[imuo].Pt() > mu_pt_cut){ // pt
-			    passedPtMu=true;
-			    if (abs(init_muonsTLV[imuo].Eta()) < mu_eta_cut){ // eta
-			      passedEtaMu=true;
-			      if (KynIdMuons.size()>=1){ // id
-				passedIdMu=true;
-				if (selectedMuons.size()>=1){ // iso
-				  passedIsoMu=true;
-				  //				  cout << "passed iso" << endl;
-				  if(selectedElectrons.size() == 1 ){ // extra electron veto
-				    passedExtraElVeto=true;
-				    if(selectedMuons.size() == 1){ // extra muon veto
-				      passedExtraMuVeto=true;
-				      //				      cout << "extra veto passed" << endl;
-				      if(abs(selectedElectrons[0]->d0BeamSpot()) < el_d0_cut){ // el d0 blinding 
-					passedBlindingEl=true;
-					//					cout << "imuo is " << imuo << endl;
-					if (abs(selectedMuons[0]->d0BeamSpot()) < mu_d0_cut){ // mu d0 blinding
-					  passedBlindingMu=true;
-					  if(init_electrons[iele]->charge() * init_muons[imuo]->charge() == -1){
-					    passedElMuOS=true;
-					    //					    if(postCut_electronsTLV[iele].DeltaR(postCut_muonsTLV[imuo]) > 0.5){
-					    if(1){
-					      passedElMuNotOverlaping=true;
-					    }
-					  }
-					}
-				      }
-				    }
-				  }
-				}
-			      }
-			    }
-			  }
-			}
-		      }
-		    }
-		  }
-		}
-	      }
-	    }
-	    */
-
 
 
 	    for(int iele=0; iele<init_electrons.size(); iele++){
@@ -1731,7 +1674,10 @@ int main (int argc, char *argv[])
 		  passedEcalCrackVeto=true;
 		  if (init_electrons[iele]->Pt() > el_pt_cut && abs(init_electrons[iele]->Eta()) < el_eta_cut){ // eta
 		    passedEtaEl=true;
+		    // try different why to, supposedly, exactly the same either by getting the value of the tree or by using the function of the collection
 		    if (init_electrons[iele]->Pt() > el_pt_cut && abs(init_electrons[iele]->Eta()) < el_eta_cut && isId_electron_pc[iele]){ // id
+		    //		    if (pt_electron_pc[iele] > el_pt_cut && abs(init_electrons[iele]->Eta()) < el_eta_cut && isId_electron_pc[iele]){ // id
+		    //		    if (init_electrons[iele]->Pt() > el_pt_cut && abs(eta_electron_pc[iele]) < el_eta_cut && isId_electron_pc[iele]){ // id
 		      passedIdEl=true;
 		      if (init_electrons[iele]->Pt() > el_pt_cut && abs(init_electrons[iele]->Eta()) < el_eta_cut && isId_electron_pc[iele] && isIso_electron_pc[iele]){ // iso
 			passedIsoEl=true;
@@ -1750,15 +1696,15 @@ int main (int argc, char *argv[])
 				    if(selectedMuons.size() == 1){ // extra muon veto
 				      passedExtraMuVeto=true;
 				      if (debug) cout << "extra veto passed" << endl;
-				      if(abs(d0BeamSpot_electron[iele]) < el_d0_cut){ // el d0 blinding  // faco change index
+				      if(abs(d0BeamSpot_electron[0]) < el_d0_cut){ // el d0 blinding  // faco change index
 					passedBlindingEl=true;
 					if (debug) cout << "imuo is " << imuo << endl;
-					if (abs(d0BeamSpot_muon[imuo]) < mu_d0_cut){ // mu d0 blinding // faco change index
+					if (abs(d0BeamSpot_muon[0]) < mu_d0_cut){ // mu d0 blinding // faco change index
 					  passedBlindingMu=true;
 					  if (debug) cout << "passed blinding cut" << endl;
-					  if(charge_electron[nElectrons] * charge_muon[nMuons] == -1){
+					  if(charge_electron[0] * charge_muon[0] == -1){ // to be changed
 					    passedElMuOS=true;
-					    if(selectedElectrons[iele]->DeltaR(*(selectedMuons[imuo])) > 0.5){
+					    if(selectedElectrons[0]->DeltaR(*(selectedMuons[0])) > 0.5){ // only one el and mu in selected vector
 					      passedElMuNotOverlaping=true;
 					      passed++;
 					      if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
@@ -1800,9 +1746,9 @@ int main (int argc, char *argv[])
 	    if (passedPtEl){
 	      CutFlowTable.Fill(d,i_CutFlowTable,1);
 	      i_CutFlowTable++;
-	      if (passedEcalCrackVeto){
-		CutFlowTable.Fill(d,i_CutFlowTable,1);
-		i_CutFlowTable++;
+	      //	      if (passedEcalCrackVeto){
+	      //		CutFlowTable.Fill(d,i_CutFlowTable,1);
+	      //		i_CutFlowTable++;
 		if (passedEtaEl){
 		  CutFlowTable.Fill(d,i_CutFlowTable,1);
 		  i_CutFlowTable++;
@@ -1850,7 +1796,7 @@ int main (int argc, char *argv[])
 			      }
 			    }
 			  }
-			}
+			  //	}
 		      }
 		    }
 		  }
