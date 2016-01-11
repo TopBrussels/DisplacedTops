@@ -137,7 +137,7 @@ int main (int argc, char *argv[])
 
     // all the files are stored from arg 11 to argc-2
     vector<string> vecfileNames;
-    for(int args = 11; args < argc-2; args++)
+    for(int args = 11; args < argc-2; args++) // put minus 3 ISIS
       {
 	vecfileNames.push_back(argv[args]);
       }
@@ -333,9 +333,8 @@ int main (int argc, char *argv[])
 
   
 
-
     // PU SF
-    LumiReWeighting LumiWeights(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIISpring15DR74-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data74X_25ns-Run246908-260627Cert.root","pileup","pileup");
+    //    LumiReWeighting LumiWeights(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIISpring15DR74-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data74X_25ns-Run246908-260627Cert.root","pileup","pileup");
 
     /////////////////////////////////
     //  Loop over Datasets
@@ -1146,9 +1145,9 @@ int main (int argc, char *argv[])
 	    //  Pile up Scale Factor
 	    ///////////////////////////////////////////
 
-	    double lumiWeight = LumiWeights.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
-	    puSF=lumiWeight;
-	    if (isData) puSF =1;
+	  //	    double lumiWeight = LumiWeights.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
+	  //	    puSF=lumiWeight;
+	  //	    if (isData) puSF =1;
 
 
             ///////////////////////
@@ -1393,8 +1392,8 @@ int main (int argc, char *argv[])
 
 	      // id
 	      isId_electron_pc[nElectrons_pc]=false;
-	      if( fabs(init_electrons[initel]->superClusterEta()) <= 1.479
-		  && init_electrons[initel]->sigmaIEtaIEta() < 0.0101
+	      if( fabs(init_electrons[initel]->superClusterEta()) <= 1.479){
+		if (init_electrons[initel]->sigmaIEtaIEta() < 0.0101
 		  && fabs(init_electrons[initel]->deltaEtaIn()) < 0.00926
 		  && fabs(init_electrons[initel]->deltaPhiIn()) < 0.0336
 		  && init_electrons[initel]->hadronicOverEm() < 0.0597
@@ -1402,16 +1401,18 @@ int main (int argc, char *argv[])
 		  && init_electrons[initel]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
 		  && init_electrons[initel]->passConversion()){
 		isId_electron_pc[nElectrons_pc]=true;
+		}
 	      }
-	      else if (fabs(init_electrons[initel]->superClusterEta()) < 2.5
-		       && init_electrons[initel]->sigmaIEtaIEta() < 0.0279
-		       && fabs(init_electrons[initel]->deltaEtaIn()) < 0.00724
-		       && fabs(init_electrons[initel]->deltaPhiIn()) < 0.0918
-		       && init_electrons[initel]->hadronicOverEm() < 0.0615
-		       && fabs(1/init_electrons[initel]->E() - 1/init_electrons[initel]->P()) < 0.00999
-		       && init_electrons[initel]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
-		       && init_electrons[initel]->passConversion()){
+	      else if (fabs(init_electrons[initel]->superClusterEta()) < 2.5){
+		if ( init_electrons[initel]->sigmaIEtaIEta() < 0.0279
+		     && fabs(init_electrons[initel]->deltaEtaIn()) < 0.00724
+		     && fabs(init_electrons[initel]->deltaPhiIn()) < 0.0918
+		     && init_electrons[initel]->hadronicOverEm() < 0.0615
+		     && fabs(1/init_electrons[initel]->E() - 1/init_electrons[initel]->P()) < 0.00999
+		     && init_electrons[initel]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
+		     && init_electrons[initel]->passConversion()){
 		isId_electron_pc[nElectrons_pc]=true;
+		}
 	      }
 	      // iso to be checked!!! Make sure what is this function getting! faco
 	      isIso_electron_pc[nElectrons_pc]=false;
@@ -1565,7 +1566,6 @@ int main (int argc, char *argv[])
 
 
 	  
-	  // logic for single efficiencies - electrons
 	  
 	  /*
 
@@ -1577,8 +1577,9 @@ int main (int argc, char *argv[])
 	  }
 	  */
 	  
-	  
-	  //	  /*
+	  // logic for single efficiencies - electrons
+
+
 	    for(int iele=0; iele<init_electrons.size(); iele++){
               if (init_electrons[iele]->Pt() > el_pt_cut) passedPtEl=true;
 	      if (!isEBEEGap_pc[iele]) passedEcalCrackVeto=true;
@@ -1587,6 +1588,31 @@ int main (int argc, char *argv[])
 	      if (isIso_electron_pc[iele]) passedIsoEl=true;
 	      if (init_electrons[iele]->d0BeamSpot() < el_d0_cut) passedBlindingEl=true;
 	    }
+
+
+	    /*	    
+	    // logic for cumulative efficiencies - electrons
+	    for(int iele=0; iele<init_electrons.size(); iele++){
+              if (init_electrons[iele]->Pt() > el_pt_cut) {
+		passedPtEl=true;
+		if (init_electrons[iele]->Pt() > el_pt_cut && !isEBEEGap_pc[iele]){
+		  passedEcalCrackVeto=true;
+		  if (init_electrons[iele]->Pt() > el_pt_cut && !isEBEEGap_pc[iele] && abs(init_electrons[iele]->Eta()) < el_eta_cut){
+		    passedEtaEl=true;		  
+		    if (init_electrons[iele]->Pt() > el_pt_cut && !isEBEEGap_pc[iele] && abs(init_electrons[iele]->Eta()) < el_eta_cut && isId_electron_pc[iele]) {
+		      passedIdEl=true;
+		      if (init_electrons[iele]->Pt() > el_pt_cut && !isEBEEGap_pc[iele] && abs(init_electrons[iele]->Eta()) < el_eta_cut && isId_electron_pc[iele] && isIso_electron_pc[iele]) {
+			passedIsoEl=true;
+			if (init_electrons[iele]->Pt() > el_pt_cut && !isEBEEGap_pc[iele] && abs(init_electrons[iele]->Eta()) < el_eta_cut && isId_electron_pc[iele] && isIso_electron_pc[iele] && init_electrons[iele]->d0BeamSpot() < el_d0_cut) {
+			  passedBlindingEl=true;
+			}
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+	    */
 	    
 	    // filling single efficiencies - electrons
 
@@ -1606,6 +1632,7 @@ int main (int argc, char *argv[])
 
 	    // logic for single efficiencies - muons
 	    
+	    //	    /*
 	    for(int imuo=0; imuo<init_muons.size(); imuo++){
 	      if (init_muons[imuo]->Pt() > mu_pt_cut) passedPtMu=true;
 	      if (abs(init_muons[imuo]->Eta()) < mu_eta_cut) passedEtaMu=true;
@@ -1613,7 +1640,30 @@ int main (int argc, char *argv[])
 	      if (isIso_muon_pc[imuo]) passedIsoMu=true;
 	      if (init_muons[imuo]->d0BeamSpot() < mu_d0_cut) passedBlindingMu=true;
 	    }
+	    //	    */
 
+
+	    /*
+	    // logic for cumulative efficiencies - muons
+	    
+	    for(int imuo=0; imuo<init_muons.size(); imuo++){
+	      if (init_muons[imuo]->Pt() > mu_pt_cut) {
+		passedPtMu=true;
+		if (init_muons[imuo]->Pt() > mu_pt_cut && abs(init_muons[imuo]->Eta()) < mu_eta_cut){
+		  passedEtaMu=true;
+		  if (init_muons[imuo]->Pt() > mu_pt_cut && abs(init_muons[imuo]->Eta()) < mu_eta_cut && isId_muon_pc[imuo]){
+		    passedIdMu=true;
+		    if (init_muons[imuo]->Pt() > mu_pt_cut && abs(init_muons[imuo]->Eta()) < mu_eta_cut && isId_muon_pc[imuo] && isIso_muon_pc[imuo]){
+		      passedIsoMu=true;
+		      if (init_muons[imuo]->Pt() > mu_pt_cut && abs(init_muons[imuo]->Eta()) < mu_eta_cut && isId_muon_pc[imuo] && isIso_muon_pc[imuo] && init_muons[imuo]->d0BeamSpot() < mu_d0_cut){
+			passedBlindingMu=true;
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+	    */
 
 	    // filling single efficiencies - muons
 
@@ -1696,7 +1746,7 @@ int main (int argc, char *argv[])
 				    if(selectedMuons.size() == 1){ // extra muon veto
 				      passedExtraMuVeto=true;
 				      if (debug) cout << "extra veto passed" << endl;
-				      if(abs(d0BeamSpot_electron[0]) < el_d0_cut){ // el d0 blinding  // faco change index
+				      if(abs(d0BeamSpot_electron[1]) < el_d0_cut){ // el d0 blinding  // faco change index
 					passedBlindingEl=true;
 					if (debug) cout << "imuo is " << imuo << endl;
 					if (abs(d0BeamSpot_muon[0]) < mu_d0_cut){ // mu d0 blinding // faco change index
