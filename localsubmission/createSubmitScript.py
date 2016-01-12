@@ -9,7 +9,7 @@ import shutil
 
 
 # getting the appropriate xml file
-tree = ET.ElementTree(file='../config/FullMcBkgdSamplesV8.xml')
+tree = ET.ElementTree(file='../config/FullMcBkgdSamplesV9.xml')
 #tree = ET.ElementTree(file='../config/DataSamples.xml')
 #tree = ET.ElementTree(file='../config/DisplacedTopsSignal.xml')
 
