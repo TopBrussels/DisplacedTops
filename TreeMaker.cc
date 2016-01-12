@@ -334,7 +334,7 @@ int main (int argc, char *argv[])
   
 
     // PU SF
-    //    LumiReWeighting LumiWeights(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIISpring15DR74-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data74X_25ns-Run246908-260627Cert.root","pileup","pileup");
+        LumiReWeighting LumiWeights(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIISpring15DR74-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data74X_25ns-Run246908-260627Cert.root","pileup60","pileup");
 
     /////////////////////////////////
     //  Loop over Datasets
@@ -1145,9 +1145,9 @@ int main (int argc, char *argv[])
 	    //  Pile up Scale Factor
 	    ///////////////////////////////////////////
 
-	  //	    double lumiWeight = LumiWeights.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
-	  //	    puSF=lumiWeight;
-	  //	    if (isData) puSF =1;
+	  double lumiWeight = LumiWeights.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
+	  puSF=lumiWeight;
+	  if (isData) puSF =1;
 
 
             ///////////////////////
@@ -1579,7 +1579,7 @@ int main (int argc, char *argv[])
 	  
 	  // logic for single efficiencies - electrons
 
-
+	  //	  /*
 	    for(int iele=0; iele<init_electrons.size(); iele++){
               if (init_electrons[iele]->Pt() > el_pt_cut) passedPtEl=true;
 	      if (!isEBEEGap_pc[iele]) passedEcalCrackVeto=true;
@@ -1588,9 +1588,9 @@ int main (int argc, char *argv[])
 	      if (isIso_electron_pc[iele]) passedIsoEl=true;
 	      if (init_electrons[iele]->d0BeamSpot() < el_d0_cut) passedBlindingEl=true;
 	    }
+//	  */
 
-
-	    /*	    
+	  /*
 	    // logic for cumulative efficiencies - electrons
 	    for(int iele=0; iele<init_electrons.size(); iele++){
               if (init_electrons[iele]->Pt() > el_pt_cut) {
@@ -1630,6 +1630,15 @@ int main (int argc, char *argv[])
 	    if (passedBlindingEl)
 	      CutFlow_oneElTable.Fill(d,6,1);
 
+	    // reset all bool to false 
+	    passedPtEl=false;
+	    passedEcalCrackVeto=false;
+	    passedEtaEl=false;
+	    passedIdEl=false;
+	    passedIsoEl=false;
+	    passedBlindingEl=false;
+	    
+
 	    // logic for single efficiencies - muons
 	    
 	    //	    /*
@@ -1640,7 +1649,7 @@ int main (int argc, char *argv[])
 	      if (isIso_muon_pc[imuo]) passedIsoMu=true;
 	      if (init_muons[imuo]->d0BeamSpot() < mu_d0_cut) passedBlindingMu=true;
 	    }
-	    //	    */
+//	    */
 
 
 	    /*
@@ -1678,8 +1687,13 @@ int main (int argc, char *argv[])
 	      CutFlow_oneMuTable.Fill(d,4,1);
 	    if (passedBlindingMu)
 	      CutFlow_oneMuTable.Fill(d,5,1);
-	    
-	    //	  */
+
+	    // reset all bool to false
+	    passedPtMu=false;
+	    passedEtaMu=false;
+	    passedIdMu=false;
+	    passedIsoMu=false;
+	    passedBlindingMu=false;
 
 
 	    /*		      
