@@ -11,13 +11,26 @@
 <data>
 <datasets>
 
-<!-- V8 -->
-<!-- *** -->
+<!-- bo V9 -->
+<!-- ***** -->
+
+<!-- Data RunD -->
+
+<!-- Lumi = 1'557.735  pb-1 -->
+<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9-SILVER/MuonEG/crab_MuonEG-Run2015D-PromptReco-v4-CMSSW_74X_v9-SILVER-74X_dataRun2_Prompt_v2/151215_164217/000*/*.root"/>
+
+<!-- *****  -->
+<!-- eo V9 -->
+
+
+
+<!-- bo V8 -->
+<!-- ***** -->
 
 <!-- Data RunD -->
 
 <!-- Lumi = 1541.058  pb-1 -->
-<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8-GOLD/MuonEG/crab_MuonEG-Run2015D-PromptReco-v4-CMSSW_74X_v8-GOLD-74X_dataRun2_Prompt_v2/151126_112323/000*/*.root"/>
+<d name="DataRunD"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8-GOLD/MuonEG/crab_MuonEG-Run2015D-PromptReco-v4-CMSSW_74X_v8-GOLD-74X_dataRun2_Prompt_v2/151126_112323/000*/*.root"/>
 
 
 <!-- Lumi = 552.672  pb-1 -->
