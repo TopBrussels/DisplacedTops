@@ -14,8 +14,15 @@
 <!-- bo V9 -->
 <!-- ***** -->
 
-<!-- Data RunD -->
+<!-- Data RunC -->
+<!-- Lumi = 16.344  pb-1 -->
+<d name="DataRunC"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9-SILVER/MuonEG/crab_MuonEG-Run2015C_25ns-05Oct2015-v1-CMSSW_74X_v9-SILVER-74X_dataRun2_Prompt_v2/151215_164159/0000/*.root"/>
 
+<!-- Data RunD -->
+<!-- Lumi = 887.308  pb-1 -->
+<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9-SILVER/MuonEG/crab_MuonEG-Run2015D-05Oct2015-v2-CMSSW_74X_v9-SILVER-74X_dataRun2_Prompt_v2/151215_164207/0000/*.root"/>
+
+<!-- Data RunD Prompt -->
 <!-- Lumi = 1'557.735  pb-1 -->
 <d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9-SILVER/MuonEG/crab_MuonEG-Run2015D-PromptReco-v4-CMSSW_74X_v9-SILVER-74X_dataRun2_Prompt_v2/151215_164217/000*/*.root"/>
 
