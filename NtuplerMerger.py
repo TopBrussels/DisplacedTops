@@ -36,9 +36,9 @@ datasetNames = []
 for d in datasets:
     if d.attrib['add'] == '1':
         print "found dataset to be added..." + str(d.attrib['name'])
-#        if "DYJetsToLL" in str(d.attrib['name']) :
-        datasetNames.append(str(d.attrib['name']))
-        print str(d.attrib['name'])
+        if "SingleTop_tW" in str(d.attrib['name']) :
+            datasetNames.append(str(d.attrib['name']))
+            print str(d.attrib['name'])
 
 
 

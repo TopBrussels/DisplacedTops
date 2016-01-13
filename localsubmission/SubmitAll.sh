@@ -1,6 +1,7 @@
 #!/bin/bash 
 
-for f in SubmitScripts/submit*.sh
+#for f in SubmitScripts/submit*.sh
+for f in SubmitScripts/submit_SingleTop*.sh
 #for f in SubmitScripts/submit_DataRunD*.sh
 #for f in SubmitScripts/submit_DYJetsToll_M-10to50*.sh
 #for f in SubmitScripts/submit_Data1.sh SubmitScripts/submit_Data2.sh
