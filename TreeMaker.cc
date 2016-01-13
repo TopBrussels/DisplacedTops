@@ -792,6 +792,14 @@ int main (int argc, char *argv[])
 	Bool_t isId_muon_pc[10];
 	Bool_t isIso_muon_pc[10];
 
+	// event related variables
+	Int_t run_num_pc;
+	Int_t evt_num_pc;
+	Int_t lumi_num_pc;
+	Int_t nvtx_pc;
+	Int_t npu_pc;
+	Double_t puSF_pc;
+
 
 	// eo MytreePreCut
 
@@ -805,6 +813,7 @@ int main (int argc, char *argv[])
         Double_t eta_electron_elel[10];
         Double_t eta_superCluster_electron_elel[10];
         Double_t E_electron_elel[10];
+        Double_t vz_electron_elel[10]; //faco
         Double_t d0_electron_elel[10];
         Double_t d0BeamSpot_electron_elel[10];
         Double_t chargedHadronIso_electron_elel[10];
@@ -812,7 +821,6 @@ int main (int argc, char *argv[])
         Double_t photonIso_electron_elel[10];
         Double_t pfIso_electron_elel[10];
         Int_t charge_electron_elel[10];
-
 
 	//bo id related variables
 	Double_t sigmaIEtaIEta_electron_elel[10];
@@ -826,6 +834,12 @@ int main (int argc, char *argv[])
 	Bool_t isIso_electron_elel[10];
 	Bool_t isEBEEGap_elel[10];
 	Double_t sf_electron_elel[10];	
+
+
+	// variables for electronPairs
+        Int_t nElectronPairs_elel; // if there is n electrons there is (n*n - n)/2 distinct pairs
+	Double_t deltaVz_elel[10]; // ->max 5 electrons
+
 
 	// variables for muons
         Int_t nMuons_elel;
@@ -843,6 +857,15 @@ int main (int argc, char *argv[])
         Int_t charge_muon_elel[10];
 	Bool_t isId_muon_elel[10];
 	Bool_t isIso_muon_elel[10];
+
+
+	// event related variables
+	Int_t run_num_elele;
+	Int_t evt_num_elele;
+	Int_t lumi_num_elele;
+	Int_t nvtx_elele;
+	Int_t npu_elele;
+	Double_t puSF_elele;
 
 
 	// eo MyDoubleElTree
@@ -896,6 +919,13 @@ int main (int argc, char *argv[])
 	Bool_t isId_muon_mumu[10];
 	Bool_t isIso_muon_mumu[10];
 
+	// event related variables
+	Int_t run_num_mumu;
+	Int_t evt_num_mumu;
+	Int_t lumi_num_mumu;
+	Int_t nvtx_mumu;
+	Int_t npu_mumu;
+	Double_t puSF_mumu;
 
 	// eo MyDoubleMuTree
 
@@ -993,7 +1023,7 @@ int main (int argc, char *argv[])
 
 
 	// electrons
-	//	myPreCutTree->Branch("templatevar",templatevar,"templatevar[nElectrons_pc]/D");
+	//	myPreCutTree->Branch("templatevar",templatevar,"templatevar[nElectrons_elel_pc]/D");
         myPreCutTree->Branch("nElectrons_pc",&nElectrons_pc, "nElectrons_pc/I");//                                                            
         myPreCutTree->Branch("pt_electron_pc",pt_electron_pc,"pt_electron_pc[nElectrons_pc]/D");
         myPreCutTree->Branch("phi_electron_pc",phi_electron_pc,"phi_electron_pc[nElectrons_pc]/D");
@@ -1053,6 +1083,7 @@ int main (int argc, char *argv[])
         myDoubleElTree->Branch("eta_electron_elel",eta_electron_elel,"eta_electron_elel[nElectrons_elel]/D");
         myDoubleElTree->Branch("eta_superCluster_electron_elel",eta_superCluster_electron_elel,"eta_superCluster_electron_elel[nElectrons_elel]/D");
         myDoubleElTree->Branch("E_electron_elel",E_electron_elel,"E_electron_elel[nElectrons_elel]/D");
+	myDoubleElTree->Branch("vz_electron_elel",vz_electron_elel,"vz_electron_elel[nElectrons_elel]/D");
         myDoubleElTree->Branch("chargedHadronIso_electron_elel",chargedHadronIso_electron_elel,"chargedHadronIso_electron_elel[nElectrons_elel]/D");
         myDoubleElTree->Branch("neutralHadronIso_electron_elel",neutralHadronIso_electron_elel,"neutralHadronIso_electron_elel[nElectrons_elel]/D");
         myDoubleElTree->Branch("photonIso_electron_elel",photonIso_electron_elel,"photonIso_electron_elel[nElectrons_elel]/D");
@@ -1071,6 +1102,11 @@ int main (int argc, char *argv[])
 	myDoubleElTree->Branch("isEBEEGap_elel",isEBEEGap_elel,"isEBEEGap_elel[nElectrons_elel]/O)");
 	myDoubleElTree->Branch("sf_electron_elel",sf_electron_elel,"sf_electron_elel[nElectrons_elel]/D");
 	
+	// electronPairs
+	//      myDoubleElTree->Branch("templatevar",templatevar,"templatevar[nElectronPairs_elel]/I"); 
+	myDoubleElTree->Branch("nElectronPairs_elel",&nElectronPairs_elel, "nElectronPairs_elel/I");
+	myDoubleElTree->Branch("deltaVz_elel",deltaVz_elel,"deltaVz_elel[nElectronPairs_elel]/D"); 
+
 
 	// muons
 	//        myDoubleElTree->Branch("templatevar",templatevar,"templatevar[nMuons_elel]/D");
@@ -1743,6 +1779,7 @@ int main (int argc, char *argv[])
 	      eta_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->Eta();
 	      eta_superCluster_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->superClusterEta();
 	      E_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->E();
+	      vz_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->vz();
 	      d0_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->d0();
 	      d0BeamSpot_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->d0BeamSpot();
 	      chargedHadronIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->chargedHadronIso(3);
@@ -1799,6 +1836,25 @@ int main (int argc, char *argv[])
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron_elel[nElectrons_elel] << endl;
 	      nElectrons_elel++;
             }
+
+            /////////////////////////
+            // ElectronPairs Plots //
+            /////////////////////////
+	    nElectronPairs_elel=0;
+            for (Int_t secondEl = nElectrons_elel-1; secondEl > 0; secondEl-- )
+	      {
+		cout << "secondEl is " << secondEl << endl;
+		for (Int_t firstEl = 0; firstEl < secondEl ; firstEl++ )
+		  {
+		    cout << "firstEl is " << firstEl << endl;
+		    cout << "vz_electron_elel[firstEl] is" << vz_electron_elel[firstEl] << endl;
+		    cout << "vz_electron_elel[secondEl] is" << vz_electron_elel[secondEl] << endl;
+		    cout << "abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl] is" << abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl]) << endl;
+		    deltaVz_elel[nElectronPairs_elel]=abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl]);
+		    nElectronPairs_elel++;
+		  }
+	      }
+
 
 
             //////////////////////
@@ -1957,7 +2013,7 @@ int main (int argc, char *argv[])
 	      //iso
 	      isIso_muon_mumu[nMuons_mumu]=false;
 	      if ( (selectedLooseMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedLooseMuons[selmu]->neutralHadronIso(4) + selectedLooseMuons[selmu]->photonIso(4) - 0.5*selectedLooseMuons[selmu]->puChargedHadronIso(4) ) ) / selectedLooseMuons[selmu]->Pt() < mu_iso_cut ) isIso_muon_mumu[nMuons_mumu]=true;
-	      pfIso_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->relPfIso(4,0);
+	      pfIso_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->relPfIso(4,0); // check wrt formula!!! faco
 	      charge_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->charge();
 	      sf_muon_mumu[nMuons_mumu]=muonSFWeightIso_TT->at(selectedLooseMuons[selmu]->Eta(), selectedLooseMuons[selmu]->Pt(), 0)* muonSFWeightID_T->at(selectedLooseMuons[selmu]->Eta(), selectedLooseMuons[selmu]->Pt(), 0);
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon_mumu[nMuons_mumu] << endl;
