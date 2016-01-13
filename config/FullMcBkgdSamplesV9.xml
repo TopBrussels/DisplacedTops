@@ -34,10 +34,8 @@
 
 <d name="ZZ" title="ZZ" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="96527.9069767" xsection="10.32" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9/ZZ_TuneCUETP8M1_13TeV-pythia8/crab_ZZTuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v3CMSSW74Xv9MCRUN274V9/151215_170930/0000/*.root"/>
 
-<!-- missing v9!!! --> 
 <d name="ZG" title="ZG" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="35688.8297014" xsection="123.9" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-RunIISpring15DR74-Asympt25ns_MCRUN274V9v1CMSSW74Xv8/151207_224121/0000/*.root"/>
 
-<!-- missing v9!!! --> 
 <d name="WGToLNuG" title="WG/rightarrownuG" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="13197.5176537" xsection="461.66" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-RunIISpring15DR74-Asympt25nsMCRUN274V9v1CMSSW74Xv8/151207_224321/0000/*.root"/>
 <!-- ********** -->
 <!-- eo Diboson -->
@@ -46,15 +44,18 @@
 <!-- Single t -->
 <!-- ********* -->
 <!-- here after the cross section are gotten from the ohio website (http://cmshead.mps.ohio-state.edu/) -->
-<d name="SingleTop_s_channel" title="SingletTop_s_channel" add="1" color="905"  ls="1"  lw="2" normf="1" EqLumi="292775.778485" xsection="3.3623" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_tonDecays13TeVamcatnlopythia8TuneCUETP8M1RunIISpring15DR74Asympt25nsMCRUN274V9v1CMSSW74Xv9MCRUN274V9/151215_170934/0000/*.root"/>
 
-<d name="SingleTop_t_channel" title="SingletTop_t_channel" add="1" color="907"  ls="1"  lw="2" normf="1" EqLumi="38322.3141665" xsection="70.695" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9/ST_t-channel_4f_mtop1755_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_tonDecays13TeVamcatnlopythia8TuneCUETP8M1RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv9MCRUN274V9/151215_170945/0000/*.root"/>
 
-<!-- No skim for V9 -->
-<!-- using skim -->
-<d name="SingleTop_tW" title="SingletTop_tW" add="0" color="909"  ls="1"  lw="2" normf="1" EqLumi="13885.6345" xsection="71.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/Skimmed-TopTrees/CMSSW_74X_v8/MuonEG/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns/23102015_213520/*.root"/>
-<!-- using skim -->
-<d name="SingleTop_tbarW" title="SingletTop_tbarW" add="0" color="910"  ls="1"  lw="2" normf="1" EqLumi="13947.0014" xsection="71.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/heilman/Skimmed-TopTrees/CMSSW_74X_v8/MuonEG/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-RunIISpring15DR74-Asympt25ns/23102015_221529/*.root"/>
+<d name="SingleTop_tW" title="SingletTop_tW" add="1" color="909"  ls="1"  lw="2" normf="1" EqLumi="11258.4269663" xsection="35.6" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9/ST_tW_top_5f_mtop1695_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_usiveDecays13TeVpowhegpythia8TuneCUETP8M1RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv9MCRUN274V9/151215_171026/0000/*.root"/>
+
+<d name="SingleTop_tbarW" title="SingletTop_tbarW" add="1" color="910"  ls="1"  lw="2" normf="1" EqLumi="14044.9438202" xsection="35.6" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9/ST_tW_antitop_5f_DS_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_usiveDecays13TeVpowhegpythia8TuneCUETP8M1RunIISpring15DR74Asympt25nsMCRUN274V9v1CMSSW74Xv9MCRUN274V9/151215_171005/0000/*.root"/>
+
+
+<!-- The followng two samples almost does not contribute -->
+<d name="SingleTop_s_channel" title="SingletTop_s_channel" add="0" color="905"  ls="1"  lw="2" normf="1" EqLumi="292775.778485" xsection="3.3623" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_tonDecays13TeVamcatnlopythia8TuneCUETP8M1RunIISpring15DR74Asympt25nsMCRUN274V9v1CMSSW74Xv9MCRUN274V9/151215_170934/0000/*.root"/>
+
+<d name="SingleTop_t_channel" title="SingletTop_t_channel" add="0" color="907"  ls="1"  lw="2" normf="1" EqLumi="38322.3141665" xsection="70.695" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v9/ST_t-channel_4f_mtop1755_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_tonDecays13TeVamcatnlopythia8TuneCUETP8M1RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv9MCRUN274V9/151215_170945/0000/*.root"/>
+
 
 <!-- *********** -->
 <!-- eo Single t -->
