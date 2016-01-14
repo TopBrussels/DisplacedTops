@@ -37,7 +37,7 @@ for d in datasets:
     if d.attrib['add'] == '1':
         print "found dataset to be added..." + str(d.attrib['name'])
         # select a subset of the existing root file
-        if "Dataasdfa" in str(d.attrib['name']) :
+        if "" in str(d.attrib['name']) :
             datasetNames.append(str(d.attrib['name']))
             print str(d.attrib['name'])
 
@@ -70,4 +70,10 @@ if (len(listOfZombie) > 0):
 
 
 
+# combining all the Data in one
+dataList=glob.glob(pathMerged+"*Data*.root")
 
+cmd = "hadd " + pathMerged + "DisplacedTop_Run2_TopTree_Study_Data"+"_MuEl" + ".root"
+for data in dataList:
+    cmd = cmd + " " + data
+os.system(cmd)
