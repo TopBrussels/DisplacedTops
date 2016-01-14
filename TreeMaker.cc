@@ -225,27 +225,27 @@ int main (int argc, char *argv[])
     bool dilepton = true;
     bool Muon = true;
     bool Electron = true;
-    bool ee = false; 
-    bool emu = false; 
-    bool mumu = true; 
+    bool elel = false; 
+    bool elmu = true; 
+    bool mumu = false; 
     bool runHLT = false; 
 
 
-    if(Muon && Electron && dilepton)
+    if(elmu)
     {
         cout << " --> Using the Muon-Electron channel..." << endl;
         channelpostfix = "_MuEl";
         xmlFileName = "config/Run2_Samples.xml";
     }
-    else if(Muon && !Electron && dilepton)
+    else if(mumu)
     {
-        cout << " --> Using the Muon-Electron channel..." << endl;
+        cout << " --> Using the Muon-Muon channel..." << endl;
         channelpostfix = "_MuMu";
         xmlFileName = "config/Run2_Samples.xml";
     }
-    else if(!Muon && Electron && dilepton)
+    else if(elel)
     {
-        cout << " --> Using the Muon-Electron channel..." << endl;
+        cout << " --> Using the Electron-Electron channel..." << endl;
         channelpostfix = "_ElEl";
         xmlFileName = "config/Run2_Samples.xml";
     }
@@ -838,7 +838,7 @@ int main (int argc, char *argv[])
 
 	// variables for electronPairs
         Int_t nElectronPairs_elel; // if there is n electrons there is (n*n - n)/2 distinct pairs
-	Double_t deltaVz_elel[10]; // ->max 5 electrons
+	Double_t deltaVz_elel[10]; // max 5 electrons -> max (25 -5)/2 = 10 electronPairs
 
 
 	// variables for muons
@@ -908,6 +908,7 @@ int main (int argc, char *argv[])
         Double_t phi_muon_mumu[10];
         Double_t eta_muon_mumu[10];
         Double_t E_muon_mumu[10];
+        Double_t vz_muon_mumu[10]; 
         Double_t d0_muon_mumu[10];
         Double_t d0BeamSpot_muon_mumu[10];
         Double_t chargedHadronIso_muon_mumu[10];
@@ -918,6 +919,10 @@ int main (int argc, char *argv[])
         Int_t charge_muon_mumu[10];
 	Bool_t isId_muon_mumu[10];
 	Bool_t isIso_muon_mumu[10];
+
+	// variables for electronPairs                                                                                                        
+        Int_t nMuonPairs_mumu; // if there is n muons there is (n*n - n)/2 distinct pairs
+        Double_t deltaVz_mumu[10]; // max 5 muons -> max (25 -5)/2 = 10 muonPairs
 
 	// event related variables
 	Int_t run_num_mumu;
@@ -1170,6 +1175,7 @@ int main (int argc, char *argv[])
         myDoubleMuTree->Branch("phi_muon_mumu",phi_muon_mumu,"phi_muon_mumu[nMuons_mumu]/D");
         myDoubleMuTree->Branch("eta_muon_mumu",eta_muon_mumu,"eta_muon_mumu[nMuons_mumu]/D");
         myDoubleMuTree->Branch("E_muon_mumu",E_muon_mumu,"E_muon_mumu[nMuons_mumu]/D");
+	myDoubleMuTree->Branch("vz_muon_mumu",vz_muon_mumu,"vz_muon_mumu[nMuons_mumu]/D");
         myDoubleMuTree->Branch("chargedHadronIso_muon_mumu",chargedHadronIso_muon_mumu,"chargedHadronIso_muon_mumu[nMuons_mumu]/D");
         myDoubleMuTree->Branch("neutralHadronIso_muon_mumu",neutralHadronIso_muon_mumu,"neutralHadronIso_muon_mumu[nMuons_mumu]/D");
         myDoubleMuTree->Branch("photonIso_muon_mumu",photonIso_muon_mumu,"photonIso_muon_mumu[nMuons_mumu]/D");
@@ -1182,6 +1188,12 @@ int main (int argc, char *argv[])
 	myDoubleMuTree->Branch("sf_muon_mumu",sf_muon_mumu,"sf_muon_mumu[nMuons_mumu]/D");
 
 
+	// muonPairs
+	//	myDoubleMuTree->Branch("templatevar",templatevar,"templatevar[nMuonPairs_mumu]/D"); 
+	myDoubleMuTree->Branch("nMuonPairs_mumu",&nMuonPairs_mumu,"nMuonPairs_mumu/I"); 
+	myDoubleMuTree->Branch("deltaVz_mumu",deltaVz_mumu,"deltaVz_mumu[nMuonPairs_mumu]/D"); 
+
+	
 	// eo a fourth tree that is filled if there is at least two muons (mu-mu)            
 
 
@@ -1825,13 +1837,6 @@ int main (int argc, char *argv[])
 	      }
 		
 	      isEBEEGap_elel[nElectrons_elel]=selectedLooseElectrons[selel]->isEBEEGap();
-	      // following code found in http://cmslxr.fnal.gov/source/RecoEgamma/PhotonIdentification/src/PhotonIsolationCalculator.cc#0520
-	      /*
-	      isEBEEGap_elel[nElectrons_elel] = false;
-	      Double_t eta =  eta_superCluster_electron_elel[nElectrons_elel];
-	      Double_t feta = fabs(eta);
-	      if (fabs(feta-1.479)<0.1) isEBEEGap_elel[nElectrons_elel] = true ;
-	      */
 	      sf_electron_elel[nElectrons_elel]=electronSFWeight_->at(selectedLooseElectrons[selel]->Eta(),selectedLooseElectrons[selel]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron_elel[nElectrons_elel] << endl;
 	      nElectrons_elel++;
@@ -1840,18 +1845,32 @@ int main (int argc, char *argv[])
             /////////////////////////
             // ElectronPairs Plots //
             /////////////////////////
+	    // to count distinguishable pairs of the same object we need the lowest pt to go from the last object to the second
+	    // then we compare the hight pt object from the first to the second-1
+	    // example with 5 object "e"
+	    //  (e0;e4) (e1;e4) (e2;e4) (e3;e4)
+	    //  (e0;e3) (e1;e3) (e2;e3)
+	    //  (e0;e2) (e1;e2) 
+	    //  (e0;e1)
+	    
+	    
 	    nElectronPairs_elel=0;
             for (Int_t secondEl = nElectrons_elel-1; secondEl > 0; secondEl-- )
 	      {
-		cout << "secondEl is " << secondEl << endl;
+		if (debug) cout << "secondEl is " << secondEl << endl;
 		for (Int_t firstEl = 0; firstEl < secondEl ; firstEl++ )
 		  {
-		    cout << "firstEl is " << firstEl << endl;
-		    cout << "vz_electron_elel[firstEl] is" << vz_electron_elel[firstEl] << endl;
-		    cout << "vz_electron_elel[secondEl] is" << vz_electron_elel[secondEl] << endl;
-		    cout << "abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl] is" << abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl]) << endl;
 		    deltaVz_elel[nElectronPairs_elel]=abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl]);
 		    nElectronPairs_elel++;
+		    
+		    // debug statement
+		    if (debug){
+		      cout << "firstEl is " << firstEl << endl;
+		      cout << "vz_electron_elel[firstEl] is" << vz_electron_elel[firstEl] << endl;
+		      cout << "vz_electron_elel[secondEl] is" << vz_electron_elel[secondEl] << endl;
+		      cout << "abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl] is" << abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl]) << endl;
+		    }
+		
 		  }
 	      }
 
@@ -1995,6 +2014,7 @@ int main (int argc, char *argv[])
 	      phi_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->Phi();
 	      eta_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->Eta();
 	      E_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->E();
+	      vz_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->vz();
 	      d0_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->d0();
 	      d0BeamSpot_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->d0BeamSpot();
 	      chargedHadronIso_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->chargedHadronIso(4);
@@ -2020,6 +2040,34 @@ int main (int argc, char *argv[])
 	      nMuons_mumu++;
 
 	    }
+
+
+            ///////////////////////////
+            // MuonPairs Based Plots //
+            ///////////////////////////
+
+	    nMuonPairs_mumu=0;
+            for (Int_t secondMu = nMuons_elel-1; secondMu > 0; secondMu-- )
+	      {
+		if (debug) cout << "secondMu is " << secondMu << endl;
+		for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++ )
+		  {
+		    deltaVz_elel[nMuonPairs_mumu]=abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu]);
+		    nMuonPairs_mumu++;
+		    
+		    // debug statement
+		    if (debug){
+		      cout << "firstMu is " << firstMu << endl;
+		      cout << "vz_muon_mumu[firstMu] is" << vz_muon_mumu[firstMu] << endl;
+		      cout << "vz_muon_mumu[secondMu] is" << vz_muon_mumu[secondMu] << endl;
+		      cout << "abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu] is" << abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu]) << endl;
+		    }
+		
+		  }
+	      }
+
+	    
+
 
 	    // eo assigning values to the elel tree
 
