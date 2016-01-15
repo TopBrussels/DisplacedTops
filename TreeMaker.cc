@@ -2047,7 +2047,7 @@ int main (int argc, char *argv[])
             ///////////////////////////
 
 	    nMuonPairs_mumu=0;
-            for (Int_t secondMu = nMuons_elel-1; secondMu > 0; secondMu-- )
+            for (Int_t secondMu = nMuons_mumu-1; secondMu > 0; secondMu-- )
 	      {
 		if (debug) cout << "secondMu is " << secondMu << endl;
 		for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++ )
