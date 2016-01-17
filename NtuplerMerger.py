@@ -13,6 +13,8 @@ mm = str(now.month)
 yyyy = str(now.year)
 # pick one of the two above
 date = dd+"_"+mm+"_"+yyyy
+
+
 #date = "1_12_2015"
 #channel = ["_MuEl","_MuMu","_ElEl"]
 channel = ["_MuMu"]
