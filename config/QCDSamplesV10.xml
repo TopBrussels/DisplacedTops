@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!-- add="1" means run on the sample -->
+<!-- add="0" means do not run on the sample -->
+<!-- ex with eqlumi <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
+<!-- ex with NofEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
+<!-- ex with PreselEff NofPSEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofPSEvts="218404"/> -->
+
+
+
+<data>
+<datasets>
+
+
+<!-- cross section are gotten from this page https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns#QCD
+The xs of the sample is calculated by multiplying the xs with the filter efficiency -->
+
+<!-- bo ALL the QCD -->
+<!-- ************** -->
+<!-- ************** -->
+
+
+<!-- bo QCD Mu enriched -->
+<!-- ****************** -->
+
+<d name="QCD_MuEnriched_15to20" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="3819570" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_o20MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v1CMSSW74Xv10MCRUN274V9/160118_193129/0000/*.root"/>
+
+<d name="QCD_MuEnriched_20to30" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="1.26482282604" xsection="2960198" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_o30MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv10MCRUN274V9/160118_193358/0000/*.root"/>
+
+<d name="QCD_MuEnriched_30to50" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="2.34773136715" xsection="1652471" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_o50MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v1CMSSW74Xv10MCRUN274V9/160118_193512/0000/*.root"/>
+
+<d name="QCD_MuEnriched_50to80" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="11.2477437354" xsection="437504.1" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_o80MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v1CMSSW74Xv10MCRUN274V9/160118_193709/0000/*.root"/>
+
+<d name="QCD_MuEnriched_80to120" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="36.6018728008" xsection="106033.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-80to120_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_120MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v1CMSSW74Xv10MCRUN274V9/160118_193844/0000/*.root"/>
+
+<d name="QCD_MuEnriched_120to170" title="QCD MuEnriched Pt 120-170" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="100.223179196" xsection="25190.52" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-120to170_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_170MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv10MCRUN274V9/160118_193041/0000/*.root"/>
+
+<d name="QCD_MuEnriched_170to300" title="QCD MuEnriched Pt 170-300" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="455.559903971" xsection="8654.493" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-170to300_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_300MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv10MCRUN274V9/160118_193303/0000/*.root"/>
+
+<d name="QCD_MuEnriched_300to470" title="QCD MuEnriched Pt 470-600" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="4630.36621059" xsection="797.3527" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-300to470_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_470MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv10MCRUN274V9/160118_193436/0000/*.root"/>
+
+<d name="QCD_MuEnriched_470to600" title="QCD MuEnriched Pt 470-600" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="18672.5709182" xsection="79.02554" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-470to600_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_600MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv10MCRUN274V9/160118_193554/0000/*.root"/>
+
+<d name="QCD_MuEnriched_600to800" title="QCD MuEnriched Pt 600-800" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="79034.0011142" xsection="25.09506" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-600to800_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_800MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv10MCRUN274V9/160118_193746/0000/*.root"/>
+
+<d name="QCD_MuEnriched_800to1000" title="QCD MuEnriched Pt 800-1000" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="332958.035148" xsection="4.707368" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-800to1000_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_000MuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv10MCRUN274V9/160118_193806/0000/*.root"/>
+
+<d name="QCD_MuEnriched_1000toInf" title="QCD MuEnriched Pt 1000-Inf" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="945931.60992" xsection="1.621317" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v10/QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_InfMuEnrichedPt5TuneCUETP8M113TeVpythia8RunIISpring15DR74Asympt25nsMCRUN274V9v2CMSSW74Xv10MCRUN274V9/160118_193003/0000/*.root"/>
+
+<!-- ****************** -->
+<!-- eo QCD Mu enriched -->
+
+
+
+
+<!--*************** -->
+<!--*************** -->
+<!-- eo ALL the QCD -->
+
+
+</datasets>
+
+
+<!-- All parameters needed for the selection and the bkg estimation methods -->
+<analysis>
+<!-- JetType: 0=TRootJet - 1=TRootCaloJet - 2=TRootPFJet -->
+<a type="Collections" PVCollection="PrimaryVertex" JetType="2" JetCollection="PFJets_slimmedJets" METType="2" METCollection="PFMET_slimmedMETs" MuonCollection="Muons_slimmedMuons" ElectronCollection="Electrons_slimmedElectrons" loadGenJetCollection="0" GenJetCollection="GenJets_slimmedGenJets" loadGenEventCollection="0" GenEventCollection="GenEvent" loadNPGenEventCollection="0" NPGenEventCollection="NPGenEvent" loadMCParticles="1" MCParticlesCollection="MCParticles" TrackMETCollection="" loadTrackMET="0"/>
+<!-- LuminosityError has to be relative [0-1], ex: 0.1 means 10% uncertainty on luminosity -->
+<!-- other errors should be absolute -->
+</analysis>
+</data>
