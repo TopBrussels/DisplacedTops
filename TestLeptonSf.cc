@@ -269,14 +269,33 @@ int main (int argc, char *argv[])
     // declare Scale factor related objects                                                                               
     // load Sf
 
-    string pathToCaliDir="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/TopTreeAnalysisBase/Calibrations/LeptonSF/";
-    
-    string muonFile= "Muon_SF_TopEA.root";
-    MuonSFWeight *muonSFWeight_ = new MuonSFWeight (pathToCaliDir+muonFile,"SF_totErr", false);
 
+
+    ////////////////////////////////                                                                                                                                          
+    //  Event Scale Factor                                                                                                                                                    
+    ////////////////////////////////                                                                                                                                          
+
+    string pathToCaliDir="../TopTreeAnalysisBase/Calibrations/";
+
+
+    /// Leptons                                                                                                                                                               
+
+    // Muon SF                                                                                                                                                                
+    double muonSFID, muonSFIso;
+    //    MuonSFWeight *muonSFWeight_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"Muon_SF_TopEA.root","SF_totErr", true, true); // (... , ... , debug, print warning)       
+    MuonSFWeight *muonSFWeightID_T = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio",false, false, false);
+    //    MuonSFWeight *muonSFWeightID_M = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);                                                                                                                                                
+    //  MuonSFWeight *muonSFWeightID_L = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);                                                                                                                                                   
+
+    MuonSFWeight *muonSFWeightIso_TT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio", true, true, true);  // Tight RelIso, Tight ID                                                                                                                       
+    //   MuonSFWeight *muonSFWeightIso_TM = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_TightRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Tight RelIso, Medium ID                                                                                                                
+    //   MuonSFWeight *muonSFWeightIso_LT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_LooseRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Loose RelIso, Tight ID                                                                                                                  
+    //   MuonSFWeight *muonSFWeightIso_LM = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_LooseRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Loose RelIso, Medium ID                                                                                                                
+    //   MuonSFWeight *muonSFWeightIso_LT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Loose RelIso, Loose ID                                                                                                                  
+
+    // Electron SF                                                                                                                                                            
     string electronFile= "Elec_SF_TopEA.root";
-    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+electronFile,"GlobalSF", true, false);
-
+    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+electronFile,"GlobalSF", false, true, true); // (... , ... , debug, print warning) 
     /*
     const double pt_hist = 30.0;
     const double eta_hist = 2.0;
@@ -655,17 +674,6 @@ int main (int argc, char *argv[])
 
             }
 
-            float weight_0 = event->weight0();
-            if (debug)cout <<"Weight0: " << weight_0 <<endl;
-            if(nlo)
-            {
-                if(weight_0 < 0.0)
-                {
-                    scaleFactor = -1.0;  //Taking into account negative weights in NLO Monte Carlo
-                    negWeights++;
-                }
-            }
-
 
             string graphName;
 
@@ -837,7 +845,8 @@ int main (int argc, char *argv[])
 	      photonIso_muon[nMuons]=selectedMuons[selmu]->photonIso(4);
 	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0);
 	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
-	      sf_muon[nMuons]=muonSFWeight_->at(selectedMuons[selmu]->Eta(),selectedMuons[selmu]->Pt(),0);
+	      sf_muon[nMuons]=muonSFWeightIso_TT->at(selectedMuons[selmu]->Eta(),selectedMuons[selmu]->Pt(),0);
+	      //	      sf_muon[nMuons]=muonSFWeightIso_TT->at(selectedMuons[selmu]->Eta(),selectedMuons[selmu]->Pt(),0);
 	      cout << "sf_muon[nMuons] is " << sf_muon[nMuons] << endl;
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
 	      nMuons++;
