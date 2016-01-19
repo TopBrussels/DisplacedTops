@@ -226,8 +226,9 @@ int main (int argc, char *argv[])
     bool Muon = true;
     bool Electron = true;
     bool elel = false; 
-    bool elmu = true; 
-    bool mumu = false; 
+    bool elmu = false; 
+    bool mumu = true; 
+
     bool runHLT = false; 
 
 
@@ -316,11 +317,11 @@ int main (int argc, char *argv[])
     // Muon SF
     double muonSFID, muonSFIso;
     //    MuonSFWeight *muonSFWeight_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"Muon_SF_TopEA.root","SF_totErr", true, true); // (... , ... , debug, print warning)
-    MuonSFWeight *muonSFWeightID_T = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
+    MuonSFWeight *muonSFWeightID_T = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);
     //    MuonSFWeight *muonSFWeightID_M = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
     //  MuonSFWeight *muonSFWeightID_L = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
   
-    MuonSFWeight *muonSFWeightIso_TT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Tight RelIso, Tight ID
+    MuonSFWeight *muonSFWeightIso_TT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);  // Tight RelIso, Tight ID
     //   MuonSFWeight *muonSFWeightIso_TM = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_TightRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Tight RelIso, Medium ID
     //   MuonSFWeight *muonSFWeightIso_LT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_LooseRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Loose RelIso, Tight ID
     //   MuonSFWeight *muonSFWeightIso_LM = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_LooseRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Loose RelIso, Medium ID
@@ -329,7 +330,7 @@ int main (int argc, char *argv[])
 
     // Electron SF
     string electronFile= "Elec_SF_TopEA.root";
-    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+electronFile,"GlobalSF", false, false); // (... , ... , debug, print warning)
+    ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+electronFile,"GlobalSF",true, false, false); // (... , ... , debug, print warning)
 
 
 
@@ -1556,7 +1557,7 @@ int main (int argc, char *argv[])
 		  && fabs(selectedElectrons[selel]->deltaEtaIn()) < 0.00926
 		  && fabs(selectedElectrons[selel]->deltaPhiIn()) < 0.0336
 		  && selectedElectrons[selel]->hadronicOverEm() < 0.0597
-		  && fabs(1/selectedElectrons[selel]->E() - 1/selectedElectrons[selel]->P()) < 0.012
+		  && fabs(1/selectedElectrons[selel]->E() - 1/selectedElectrons[selel]->P()) < 0.012 // to be fixed faco
 		  && selectedElectrons[selel]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
 		  && selectedElectrons[selel]->passConversion()){
 		isId_electron[nElectrons]=true;
@@ -1566,12 +1567,12 @@ int main (int argc, char *argv[])
 		       && fabs(selectedElectrons[selel]->deltaEtaIn()) < 0.00724
 		       && fabs(selectedElectrons[selel]->deltaPhiIn()) < 0.0918
 		       && selectedElectrons[selel]->hadronicOverEm() < 0.0615
-		       && fabs(1/selectedElectrons[selel]->E() - 1/selectedElectrons[selel]->P()) < 0.00999
+		       && fabs(1/selectedElectrons[selel]->E() - 1/selectedElectrons[selel]->P()) < 0.00999 // to be fixed faco
 		       && selectedElectrons[selel]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
 		       && selectedElectrons[selel]->passConversion()){
 		isId_electron[nElectrons]=true;
 	      }
-	      // iso to be checked!!! Make sure what is this function getting! faco
+	      // iso 
 	      isIso_electron[nElectrons]=false;
 	      if( fabs(selectedElectrons[selel]->superClusterEta()) <= 1.479){
 		if(selectedElectrons[selel]->relPfIso(3,0) < 0.0354) isIso_electron[nElectrons]=true;
@@ -1616,7 +1617,7 @@ int main (int argc, char *argv[])
 		  && selectedMuons[selmu]->chi2() < 10
 		  && selectedMuons[selmu]->nofTrackerLayersWithMeasurement() > 5
 		  &&  selectedMuons[selmu]->nofValidMuHits() > 0
-		  && selectedMuons[selmu]->nofValidPixelHits() > 0 //no more in the twiki (https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Tight_Muon)
+		  && selectedMuons[selmu]->nofValidPixelHits() > 0 
 		  && selectedMuons[selmu]->nofMatchedStations()> 1){
 		isId_muon[nMuons]=true;
 	      }
@@ -2052,7 +2053,7 @@ int main (int argc, char *argv[])
 		if (debug) cout << "secondMu is " << secondMu << endl;
 		for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++ )
 		  {
-		    deltaVz_elel[nMuonPairs_mumu]=abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu]);
+		    deltaVz_mumu[nMuonPairs_mumu]=abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu]);
 		    nMuonPairs_mumu++;
 		    
 		    // debug statement
