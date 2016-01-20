@@ -40,14 +40,59 @@ void MSPCreator ();
 
 
 // faco TO BE CHANGED
-bool DileptonElMu = false;
-bool DileptonMuMu = false;
-bool DileptonElEl = true;
 Bool_t debug = false;
 Bool_t debug_plot = false;
+bool DileptonElMu = false;
+bool DileptonMuMu = false;
+bool DileptonElEl = false;
+string channelpostfix = "";
 
-int main()
+int main(int argc, char* argv[])
 {
+  if (debug){
+    cout << "argc = " << argc << endl; 
+    for(int i = 0; i < argc; i++)
+      {
+	cout << "argv[" << i << "] = " << argv[i] << endl; 
+      }
+  }
+
+
+  //Placing arguments in properly typed variables
+  const string channel = argv[1];
+  string xmlFileName;
+
+  if(channel=="ElMu" || channel== "MuEl")
+    {
+      cout << " --> Using the Muon-Electron channel..." << endl;
+      channelpostfix = "_MuEl";
+      xmlFileName = "config/FullSamplesMuElV9TreeProc.xml";
+      DileptonElMu=true;
+    }
+  else if(channel=="MuMu")
+    {
+      cout << " --> Using the Muon-Muon channel..." << endl;
+      channelpostfix = "_MuMu";
+      xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
+      DileptonMuMu=true;
+      //      cout << "DileptonMuMu is " << DileptonMuMu << endl;
+    }
+  else if(channel=="ElEl")
+    {
+      cout << " --> Using the Electron-Electron channel..." << endl;
+      channelpostfix = "_ElEl";
+      xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
+      DileptonElEl=true;
+    }
+  else
+    {
+      cerr << "The channel '" << channel << "' is not in the list of authorised channels !!" << endl;
+      exit(1);
+    }
+  
+
+
+
     int NumberOfBins = 3;	//fixed width nBins
 
 
@@ -58,7 +103,6 @@ int main()
     float lumiScale = -1;
     //    int lumiScale = 0.10651;  //Amount of luminosity to scale to in fb^-1
     //    int lumiScale = 0.10651;  //Amount of luminosity to scale to in fb^-1
-    string xmlFileName;
     string xmlFileNameSys;
     string CraneenPath;
     string splitting;
@@ -68,7 +112,7 @@ int main()
     //    char Csx="";
 
     if (debug_plot){
-      xmlFileName = "config/FullSamplesV9TreeProc.xml";
+      xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
       // only few plots!
       if (DileptonMuMu) {
 	DatasetPlotter(5, -0.5, 4.5, "nMuons_mumu", xmlFileName,CraneenPath);
@@ -86,7 +130,7 @@ int main()
     
       if(1)
 	{
-	  xmlFileName = "config/FullSamplesV9TreeProc.xml";
+	  xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
      
 
 	  //      CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
@@ -243,7 +287,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   cout << "used config file: " << xmlfile << endl;
   
   string pathPNG = "myOutput";
-  pathPNG += "_MSPlots/";
+  pathPNG += "_MSPlots/"+channelpostfix+"/";
   mkdir(pathPNG.c_str(),0777);
   cout <<"Making directory :"<< pathPNG  <<endl;		//make directory
   
@@ -301,14 +345,15 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/9_12_2015/";
   // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/13_1_2016/";
   // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/15_1_2016/_MuMu/";
- TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/17_1_2016/_ElEl/";
+  // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/17_1_2016/_ElEl/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/20_1_2016/_MuMu/";
 
   
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
     {
       dataSetName = datasets[d]->Name();
       cout<<"Dataset:  :"<<dataSetName<<endl;
-      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName +"_ElEl"+ ".root";  // faco Make chan name varialbes!!
+      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";  // faco Make chan name varialbes!!
       //filepath = CraneenPath+dataSetName+ ".root";
       if (debug) cout<<"filepath: "<<filepath<<endl;
 	
@@ -532,9 +577,9 @@ void MSPCreator (){
   Bool_t debug = false;
 
   string pathPNG = "myOutput";
-  pathPNG += "_MSPlots/";
+  pathPNG += "_MSPlots/"+channelpostfix+"/";
   mkdir(pathPNG.c_str(),0777);
-  cout <<"Making directory :"<< pathPNG  <<endl;		//make directory
+  //  cout <<"Making directory :"<< pathPNG  <<endl;		//make directory
   
   TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
   outfile->cd();
@@ -549,8 +594,8 @@ void MSPCreator (){
 	cout << "Saving the MSP" << endl;
 	cout << " and it->first is " << it->first << endl;
       }
-      temp->Draw("MyMSP", 1, false, false, false, 100);
-      temp->Write(outfile, "MyMSP"+it->first, true,"myOutput_MSPlots" , "png");
+      temp->Draw("MyMSP", 1, false, false, false, 10);
+      temp->Write(outfile, "MyMSP"+it->first, true,"myOutput_MSPlots/"+channelpostfix+"/" , "png");
       //      vector<string> temp_histo = it->GetTH1FNames();
       //      for (int i_hist=0; i_hist < temp_histo.size();i_hist++  ){
       //	cout << "hist is" << temp_histo[i_hist] << endl;
