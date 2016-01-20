@@ -33,7 +33,7 @@ for chan in channels:
     elif "ElMu" in chan:
         tree = ET.ElementTree(file='../config/FullSamplesElMuV9.xml')
     else:
-        print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
+        print "Channel '", chan , "' is not a correct channel name. No tree has been loaded!"
         sys.exit()
     #tree = ET.ElementTree(file='../config/FullMcBkgdSamplesV9.xml')
     #tree = ET.ElementTree(file='../config/DataSamples.xml')
@@ -53,6 +53,12 @@ for chan in channels:
         
     if not os.path.exists("SubmitScripts/"+chan+"/"+date):
         os.makedirs("SubmitScripts/"+chan+"/"+date)
+    
+    # create a dir were the output of the jobs will
+#    if not os.path.exists("SubmitScripts/"+chan+"/"+date):
+#        os.makedirs("SubmitScripts/"+chan+"/"+date)
+
+
     
     
     # vector containing all the root file for a given dataset
@@ -76,6 +82,7 @@ for chan in channels:
                 outfile = open (filename, 'a')
     #            print  "dcap://maite.iihe.ac.be:"+topTrees[f]
                 print >> outfile, commandString, "dcap://maite.iihe.ac.be:"+topTrees[f], " ", chan , " " , str(N_file) , " 0" , " 2000000" 
+#                print >> outfile, commandString, topTrees[f], " ", chan , " " , str(N_file) , " 0" , " 2000000" 
                 N_file=N_file+1
                 
 # moving the newly created dir

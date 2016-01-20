@@ -12,12 +12,12 @@ dd = str(now.day)
 mm = str(now.month)
 yyyy = str(now.year)
 # pick one of the two above
-#date = dd+"_"+mm+"_"+yyyy
-date = "17_1_2016"
+date = dd+"_"+mm+"_"+yyyy
+#date = "17_1_2016"
 
 #channels = ["_MuMu","_ElEl"]
-channels = ["_ElEl"]
-#channels = ["_MuMu"]
+#channels = ["_ElEl"]
+channels = ["_MuMu"]
 
 for chan in channels:
     
