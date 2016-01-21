@@ -38,9 +38,11 @@ std::string intToStr (int number);
 void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath);
 void MSPCreator ();
 
+void TH2FPlotter (int nBinsx, )
+
 
 // faco TO BE CHANGED
-Bool_t debug = false;
+  Bool_t debug = false;
 Bool_t debug_plot = false;
 bool DileptonElMu = false;
 bool DileptonMuMu = false;
@@ -91,182 +93,156 @@ int main(int argc, char* argv[])
     }
   
 
-
-
-    int NumberOfBins = 3;	//fixed width nBins
-
-
-    //------- Set Channel --------//
-
-    float lBound = 0;   //-1->0.2 topness
-    float uBound = 3;
-    float lumiScale = -1;
-    //    int lumiScale = 0.10651;  //Amount of luminosity to scale to in fb^-1
-    //    int lumiScale = 0.10651;  //Amount of luminosity to scale to in fb^-1
-    string xmlFileNameSys;
-    string CraneenPath;
-    string splitting;
-
-
-    // Channel Suffix
-    //    char Csx="";
-
-    if (debug_plot){
-      xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
-      // only few plots!
-      if (DileptonMuMu) {
-	DatasetPlotter(5, -0.5, 4.5, "nMuons_mumu", xmlFileName,CraneenPath);
-	DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons]", xmlFileName,CraneenPath);
-      }
-      if (DileptonElEl){
-	DatasetPlotter(5, -0.5, 4.5, "nElectrons_elel", xmlFileName,CraneenPath);
-	DatasetPlotter(30, -3.15, 3.15, "phi_electron_elel[nElectrons]", xmlFileName,CraneenPath);
-      }
-
+  
+  if (debug_plot){
+    xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
+    // only few plots!
+    if (DileptonMuMu) {
+      DatasetPlotter(5, -0.5, 4.5, "nMuons_mumu", xmlFileName,CraneenPath);
+      DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons]", xmlFileName,CraneenPath);
+    }
+    if (DileptonElEl){
+      DatasetPlotter(5, -0.5, 4.5, "nElectrons_elel", xmlFileName,CraneenPath);
+      DatasetPlotter(30, -3.15, 3.15, "phi_electron_elel[nElectrons]", xmlFileName,CraneenPath);
     }
 
+  }
     
-    else{
     
-      if(1)
-	{
-	  xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
+  else{
+    
+    xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
      
 
-	  //      CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_5_3/src/TopBrussels/DisplacedTops/MACRO_Output_MuEl/";
-
-	  //      CraneenPath="/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
-	}
-
-      //    cout << "CraneenPath is " << CraneenPath << endl;
-      cout << "xmlFileName is " << xmlFileName << endl;
+    //    cout << "CraneenPath is " << CraneenPath << endl;
+    cout << "xmlFileName is " << xmlFileName << endl;
 
 
 
-      // calling datasetPlotter to create MSPplots
+    // calling datasetPlotter to create MSPplots
 
 
 
-      // bo selecting the right plots and/or variables depending on the final state
+    // bo selecting the right plots and/or variables depending on the final state
 
 
-      // E-MU FINAL STATE
-      if (DileptonElMu){
+    // E-MU FINAL STATE
+    if (DileptonElMu){
           
-	// event plots
-	//    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
-	DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
+      // event plots
+      //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
+      DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
     
 
-	// electron plots
-	//    DatasetPlotter(11, -0.5, 10.5, "nElectrons", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", xmlFileName,CraneenPath);
-	DatasetPlotter(50, -3.15, 3.15, "eta_electron[nElectrons]", xmlFileName,CraneenPath);
-	DatasetPlotter(30, -3.15, 3.15, "phi_electron[nElectrons]", xmlFileName,CraneenPath);
-	//    DatasetPlotter(100, -0.1, 0.1, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron[nElectrons]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0.0, 0.2, "pfIso_electron[nElectrons]", xmlFileName,CraneenPath);
+      // electron plots
+      //    DatasetPlotter(11, -0.5, 10.5, "nElectrons", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", xmlFileName,CraneenPath);
+      DatasetPlotter(50, -3.15, 3.15, "eta_electron[nElectrons]", xmlFileName,CraneenPath);
+      DatasetPlotter(30, -3.15, 3.15, "phi_electron[nElectrons]", xmlFileName,CraneenPath);
+      //    DatasetPlotter(100, -0.1, 0.1, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron[nElectrons]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 0.2, "pfIso_electron[nElectrons]", xmlFileName,CraneenPath);
 
  
-	// muon plots
-	//    DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0, 1000, "pt_muon[nMuons]", xmlFileName,CraneenPath);
-	DatasetPlotter(50, -3.15, 3.15, "eta_muon[nMuons]", xmlFileName,CraneenPath);
-	DatasetPlotter(30, -3.15, 3.15, "phi_muon[nMuons]", xmlFileName,CraneenPath);
-	//    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon[nMuons]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0.0, 0.2, "pfIso_muon[nMuons]", xmlFileName,CraneenPath);
+      // muon plots
+      //    DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0, 1000, "pt_muon[nMuons]", xmlFileName,CraneenPath);
+      DatasetPlotter(50, -3.15, 3.15, "eta_muon[nMuons]", xmlFileName,CraneenPath);
+      DatasetPlotter(30, -3.15, 3.15, "phi_muon[nMuons]", xmlFileName,CraneenPath);
+      //    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon[nMuons]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 0.2, "pfIso_muon[nMuons]", xmlFileName,CraneenPath);
 
 
-	// electron-muon plots
-	//    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
-      }
+      // electron-muon plots
+      //    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
+    }
 
 
-      // MU-MU FINAL STATE
-      if (DileptonMuMu){
+    // MU-MU FINAL STATE
+    if (DileptonMuMu){
           
-	// event plots
-	//    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
-	//    DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
+      // event plots
+      //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
+      //    DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
           
      
-	/*
-	// electron plots
-	//    DatasetPlotter(11, -0.5, 10.5, "nElectrons_mumu", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0, 1000, "pt_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
-	DatasetPlotter(50, -3.15, 3.15, "eta_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
-	DatasetPlotter(30, -3.15, 3.15, "phi_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
-	//    DatasetPlotter(100, -0.1, 0.1, "d0_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0.0, 0.2, "pfIso_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
-	*/
+      /*
+      // electron plots
+      //    DatasetPlotter(11, -0.5, 10.5, "nElectrons_mumu", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0, 1000, "pt_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(50, -3.15, 3.15, "eta_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(30, -3.15, 3.15, "phi_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
+      //    DatasetPlotter(100, -0.1, 0.1, "d0_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 0.2, "pfIso_electron_mumu[nElectrons_mumu]", xmlFileName,CraneenPath);
+      */
       
  
-	// muon plots
-	//    DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0, 1000, "pt_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-	//	DatasetPlotter(20, 10, 50, "pt_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-	DatasetPlotter(50, -3.15, 3.15, "eta_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-	DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-	//    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, -10, 10, "vz_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0.0, 0.2, "pfIso_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      // muon plots
+      //    DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0, 1000, "pt_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      //	DatasetPlotter(20, 10, 50, "pt_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(50, -3.15, 3.15, "eta_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      //    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -10, 10, "vz_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 0.2, "pfIso_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
 
-	// muonPairs plots
-	DatasetPlotter(100, 0.0, 0.1, "deltaVz_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
+      // muonPairs plots
+      DatasetPlotter(100, 0.0, 0.1, "deltaVz_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
 
 
-	// electron-muon plots
-	//    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
-      }
+      // electron-muon plots
+      //    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
+    }
 
-      // El-El FINAL STATE
-      if (DileptonElEl){
+    // El-El FINAL STATE
+    if (DileptonElEl){
           
-	// event plots
-	//    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
-	//    DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
+      // event plots
+      //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
+      //    DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
               
 
-	// electron plots
-	//    DatasetPlotter(11, -0.5, 10.5, "nElectrons_elel", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0, 1000, "pt_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-	//	DatasetPlotter(20, 10, 50, "pt_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-	DatasetPlotter(50, -3.15, 3.15, "eta_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-	DatasetPlotter(30, -3.15, 3.15, "phi_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-	//    DatasetPlotter(100, -0.1, 0.1, "d0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, -10, 10, "vz_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0.0, 0.2, "pfIso_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      // electron plots
+      //    DatasetPlotter(11, -0.5, 10.5, "nElectrons_elel", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0, 1000, "pt_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      //	DatasetPlotter(20, 10, 50, "pt_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(50, -3.15, 3.15, "eta_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(30, -3.15, 3.15, "phi_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      //    DatasetPlotter(100, -0.1, 0.1, "d0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -10, 10, "vz_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 0.2, "pfIso_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
 
       
-	// Dielectron plots
-	DatasetPlotter(100, 0.0, 0.1, "deltaVz_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
+      // Dielectron plots
+      DatasetPlotter(100, 0.0, 0.1, "deltaVz_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
       
-	/*
-	// muon plots
-	//    DatasetPlotter(11, -0.5, 10.5, "nMuons_elel", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0, 1000, "pt_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
-	DatasetPlotter(50, -3.15, 3.15, "eta_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
-	DatasetPlotter(30, -3.15, 3.15, "phi_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
-	//    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
-	DatasetPlotter(100, 0.0, 0.2, "pfIso_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
-	*/
+      /*
+      // muon plots
+      //    DatasetPlotter(11, -0.5, 10.5, "nMuons_elel", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0, 1000, "pt_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(50, -3.15, 3.15, "eta_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(30, -3.15, 3.15, "phi_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
+      //    DatasetPlotter(100, -0.1, 0.1, "d0_muon[nMuons]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 0.2, "pfIso_muon_elel[nMuons_elel]", xmlFileName,CraneenPath);
+      */
 
-	// electron-muon plots
-	//    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
+      // electron-muon plots
+      //    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
 
-      }
     }
+  }
 
-    // eo selecting the right plots and/or variables depending on the final state  
+  // eo selecting the right plots and/or variables depending on the final state  
 
 
-    // calling the function that writtes all the MSPlots in a root file
-    MSPCreator ();
+  // calling the function that writtes all the MSPlots in a root file
+  MSPCreator ();
 
 }
 
@@ -298,12 +274,12 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   treeLoader.LoadDatasets (datasets, xmlfile);	//cout<<"datasets loaded"<<endl;
   if (debug) cout << "finished loading from xml file ..." << endl;
   
-    //***************************************************CREATING PLOTS****************************************************
+  //***************************************************CREATING PLOTS****************************************************
   //  TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
   //  outfile->cd();
   string plotname = sVarofinterest;   ///// Non Jet Split plot
   // make for loop here!!!
-    MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, sVarofinterest.c_str()); 
+  MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, sVarofinterest.c_str()); 
 
   
   //***********************************************OPEN FILES & GET NTUPLES**********************************************
@@ -500,23 +476,23 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	  // make MS plot for vector
 	  if (v.size() == 2){
 
-	  // bo of loop over the number of object per entry
-	  for (int i_object =0 ; i_object < varofInterest ;i_object ++ )
-	    {
-	      if (debug) cout << "varofInterest is " << varofInterest << endl;
-	      if (isData) 
-		{
-		  // for data, fill once per event, weighted with the event scale factor 
-		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], false,globalScaleFactor* 1); 	
-		}
-	      else
-		{
-		  // for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
-		  MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, globalScaleFactor*Luminosity);
-		  //		  MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], true, globalScaleFactor*Luminosity);
-		}
+	    // bo of loop over the number of object per entry
+	    for (int i_object =0 ; i_object < varofInterest ;i_object ++ )
+	      {
+		if (debug) cout << "varofInterest is " << varofInterest << endl;
+		if (isData) 
+		  {
+		    // for data, fill once per event, weighted with the event scale factor 
+		    MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], false,globalScaleFactor* 1); 	
+		  }
+		else
+		  {
+		    // for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
+		    MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, globalScaleFactor*Luminosity);
+		    //		  MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], true, globalScaleFactor*Luminosity);
+		  }
 	      
-	    }
+	      }
 
 	  }
 
