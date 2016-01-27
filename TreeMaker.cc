@@ -221,7 +221,7 @@ int main (int argc, char *argv[])
   // Configuration
   ///////////////////////////////////////
 
-  bool printTriggers = true;
+  bool printTriggers = false;
   bool applyTriggers = true;
   string channelpostfix = "";
   string xmlFileName = "";
@@ -590,7 +590,6 @@ int main (int argc, char *argv[])
   }
   else cout << "Wrong chanel name" << endl;
   
-  //  Trigger* usedTrigger = 
   
 
 
