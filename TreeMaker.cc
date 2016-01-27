@@ -237,7 +237,6 @@ int main (int argc, char *argv[])
   //  bool elmu = false; 
   //  bool mumu = true; 
 
-  bool runHLT = false; 
 
 
   if(channel=="ElMu" || channel== "MuEl")
@@ -575,9 +574,24 @@ int main (int argc, char *argv[])
   ////////////////////////////
   ///  Initialise trigger  ///
   ////////////////////////////
-  
+
   //Trigger* trigger = new Trigger(hasMuon, hasElectron, trigSingleLep, trigDoubleLep);
-  Trigger* trigger = new Trigger(1, 0, 1, 0);
+
+  Trigger * trigger;
+  
+  if (channel=="ElMu"){
+    trigger = new Trigger(1, 1, 0, 1);
+  }
+  else if (channel=="MuMu"){
+    trigger = new Trigger(1, 0 , 0, 1);
+  }
+  else if (channel=="ElEl"){
+    trigger = new Trigger(0, 1 , 0, 1);
+  }
+  else cout << "Wrong chanel name" << endl;
+  
+  //  Trigger* usedTrigger = 
+  
 
 
   /////////////////////////////////
@@ -588,10 +602,6 @@ int main (int argc, char *argv[])
 
   for (unsigned int d = 0; d < datasets.size(); d++)
     {
-
-      //      /*
-
-//      */
 
       cout << "Load Dataset" << endl;
       treeLoader.LoadDataset (datasets[d], anaEnv);  //open files and load dataset	
@@ -1227,8 +1237,6 @@ int main (int argc, char *argv[])
       // Loop on events
       /////////////////////////////////////////////////
 
-      int itriggerSemiMu = -1,itriggerSemiEl = -1, previousRun = -1;
-
 	
       int start = 0;
       unsigned int ending = datasets[d]->NofEvtsToRunOver();
@@ -1377,86 +1385,15 @@ int main (int argc, char *argv[])
 	      trigger->checkAvail(currentRun, datasets, d, &treeLoader, event, printTriggers);
 	      trigged = trigger->checkIfFired();
         
-	      if (! trigged ) {
+	      if (trigged) {
+		cout << "event " << ievt << " was Trigged!!" << endl;
+	      }
+	      else {
 		if (1) cout << "event " << ievt << " was not trigged. Skiping event.." << endl;
 		continue;
 	      }
 	    }  
 
-
-	  
-	  /*
-	    trigEMU = trigMUMU = trigEE = -1; 
-	    itrigger = -1; 
-	  
-	    //If the HLT is applied 
-	    if(runHLT && previousRun != currentRun){
-	    if (1) cout << "applying HLT!" << endl;
-	    //The HLT is only used for data
-	    if(isData == 1){
-	    cout << "DATA!" << endl;
-	    //The HLT path is dependent of the mode, these paths are the several steps or software modules. Each module performs a well defined task 
-	    // such as reconstruction of physics objects, making intermediate decisions, triggering more refined reconstructions in subsequent modules, 
-	    // or calculating the final decision for that trigger path.
-	    trigEMU = treeLoader.iTrigger (string ("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2"), currentRun, iFile);
-	    trigEE = treeLoader.iTrigger (string("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2"), currentRun, iFile);
-	    trigMUMU =treeLoader.iTrigger (string ("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2"), currentRun, iFile); 
-	    itrigger = trigEMU;
-	      
-	      
-	    //		if(emu) itrigger = trigEMU;
-	    //		else if(mumu && !trigEMU) itrigger = trigMUMU;
-	    //		else if(ee && !trigEMU) itrigger = trigEE;
-	      
-	    if(itrigger == 9999) 
-	    {
-	    cout << "ERROR: no valid trigger found for this event/data in run " << event->runId() << endl; 
-	    }   
-	      
-	    } // closing the HLT for data loop
-	      //For the MC, there is no triggerpath
-	      else
-	      {
-	      cout << "MC!" << endl;
-	      trigEMU =  itrigger = treeLoader.iTrigger ("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1", currentRun, iFile);
-	      trigMUMU =  itrigger = treeLoader.iTrigger (string ("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1"), currentRun, iFile);
-	      trigEE = itrigger = treeLoader.iTrigger (string ("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1"), currentRun, iFile);
-	      itrigger = trigEMU;
-
-	      //		  if(emu) itrigger = trigEMU;
-	      //		  else if(mumu && !trigEMU) itrigger = trigMUMU;
-	      //		  else if(ee && !trigEMU) itrigger = trigEE;
-
-		
-	      }
-	      }
-	    
-	  */
-	    
-
-
-
-
-
-	  /*
-	    bool trigged = false;
-	    std::string filterName = "";
-	    int currentRun = event->runId();
-	    if(previousRun != currentRun){
-	    
-	    cout << "Changing run number. Run is  "<< currentRun<<endl;
-	    previousRun = currentRun;
-	    
-	    if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos){
-	    if (debug)cout <<"applying trigger for data!"<<endl;
-	    itrigger = treeLoader.iTrigger (string ("HLT_Mu38NoFiltersNoVtx_Photon38_CaloIdL_v2"), currentRun, iFile);
-	    
-	    cout << " RUN " << event->runId() << endl;
-	    }
-	      
-	    } //end previousRun != currentRun
-	  */
-	  
 
 
 
@@ -1477,15 +1414,6 @@ int main (int argc, char *argv[])
 	  // Event selection
 	  ///////////////////////////////////////////////////////////
 
-
-	  // Apply trigger selection
-	  /*
-            trigged = treeLoader.EventTrigged (itrigger);
-            //trigged = true;  // Disabling the HLT requirement
-            if (trigged) cout << " trigged is true!!" <<endl;
-
-            if(itrigger == 9999 ) cout << "Lumi Block: " << event->lumiBlockId() << " Event: " << event->eventId() << endl;
-	  */
 
 	  // Declare selection instance
 	  Run2Selection selection(init_jets, init_fatjets, init_muons, init_electrons, mets);
