@@ -57,6 +57,7 @@
 // as I hope to merge the functionality into BTagWeigtTools.h
 //#include "TopTreeAnalysisBase/Tools/interface/BTagSFUtil.h"
 #include "TopTreeAnalysisBase/Tools/interface/BTagWeightTools.h"
+#include "TopTreeAnalysisBase/Tools/interface/Trigger.h"
 
 
 #include "TopTreeAnalysisBase/Tools/interface/JetCombiner.h"
@@ -220,6 +221,8 @@ int main (int argc, char *argv[])
   // Configuration
   ///////////////////////////////////////
 
+  bool printTriggers = true;
+  bool applyTriggers = true;
   string channelpostfix = "";
   string xmlFileName = "";
 
@@ -569,6 +572,13 @@ int main (int argc, char *argv[])
   // ---------------------
 
 
+  ////////////////////////////
+  ///  Initialise trigger  ///
+  ////////////////////////////
+  
+  //Trigger* trigger = new Trigger(hasMuon, hasElectron, trigSingleLep, trigDoubleLep);
+  Trigger* trigger = new Trigger(1, 0, 1, 0);
+
 
   /////////////////////////////////
   // Loop on datasets
@@ -578,6 +588,10 @@ int main (int argc, char *argv[])
 
   for (unsigned int d = 0; d < datasets.size(); d++)
     {
+
+      //      /*
+
+//      */
 
       cout << "Load Dataset" << endl;
       treeLoader.LoadDataset (datasets[d], anaEnv);  //open files and load dataset	
@@ -599,6 +613,11 @@ int main (int argc, char *argv[])
       cout <<"found sample with equivalent lumi "<<  theDataset->EquivalentLumi() <<endl;
 	
 
+      /// book triggers
+      if (applyTriggers) {
+	trigger->bookTriggers(isData);
+      }
+      
       // Lumi scale
       Bool_t applyLumiScale = false;
       double lumiScale = -99.;
@@ -1208,9 +1227,8 @@ int main (int argc, char *argv[])
       // Loop on events
       /////////////////////////////////////////////////
 
-      int trigEMU, trigMUMU,trigEE; 
-      int itrigger = -1, previousRun = -1;
-      int currentRun; 
+      int itriggerSemiMu = -1,itriggerSemiEl = -1, previousRun = -1;
+
 	
       int start = 0;
       unsigned int ending = datasets[d]->NofEvtsToRunOver();
@@ -1267,17 +1285,16 @@ int main (int argc, char *argv[])
 	
       for (unsigned int ievt = event_start; ievt < end_d; ievt++)
 	{
+
+	  
+
 	  if (debug) cout << "just entered the event loop!" << endl;
+
 	  // Set default value for evertything that goes in the Tree
-	  //	  for (imuons = 0){ 
-	  //	  }
 	  nMuons = nElectrons = 0;
 	  nMuons_pc = nElectrons_pc = 0;
 	  nMuons_elel = nElectrons_elel = 0;
 	  nMuons_mumu = nElectrons_mumu = 0;
-	    
-	    
-	  currentRun = -99999;
 	    
 	    
 	  double ievt_d = ievt;
@@ -1289,7 +1306,13 @@ int main (int argc, char *argv[])
 	      std::cout<<"Processing the "<<ievt<<"th event, time = "<< ((double)clock() - start) / CLOCKS_PER_SEC << " ("<<100*(ievt-start)/(ending-start)<<"%)"<<flush<<"\r"<<endl;
 	    }
 	    
-	  event = treeLoader.LoadEvent (ievt, vertex, init_muons, init_electrons, init_jets, init_fatjets,  mets, debug);  //load event
+
+	  // loading event
+	  event = treeLoader.LoadEvent (ievt, vertex, init_muons, init_electrons, init_jets, init_fatjets,  mets, debug); 
+	  datasets[d]->eventTree()->LoadTree(ievt);
+	  string currentFilename = datasets[d]->eventTree()->GetFile()->GetName();
+	  int currentRun = event->runId();
+
 	    
 	  float rho = event->fixedGridRhoFastjetAll();
 	  if (debug)cout <<"Rho: " << rho <<endl;
@@ -1309,26 +1332,19 @@ int main (int argc, char *argv[])
 	    
 
 
-
-	  
-	  //	    /*	    
-	  // put the leptons collection in TLorenzt Vector to allow DR cuts
-
 	  string graphName;
 	  
 	  //////////////////
 	  //Loading Gen jets
 	  //////////////////
-	  
-	  
-	  
-	  string currentFilename = datasets[d]->eventTree()->GetFile()->GetName();
-	  if(previousFilename != currentFilename)
-	    {
-	      previousFilename = currentFilename;
-	      iFile++;
-	      cout<<"File changed!!! => "<<currentFilename<<endl;
-	    }	    
+	  //-----
+
+
+
+
+	  //-----
+
+
 	  
 	  run_num=event->runId();
 	  evt_num=event->eventId();
@@ -1341,6 +1357,33 @@ int main (int argc, char *argv[])
 	  ///////////////////////////////////////////
 	  //  Trigger
 	  ///////////////////////////////////////////
+
+	  bool trigged = false;
+	  bool fileChanged = false;
+	  bool runChanged = false;
+	  
+
+	  
+	  if ( ! applyTriggers && previousFilename != currentFilename )
+	    {
+	      fileChanged = true;
+	      previousFilename = currentFilename;
+	      iFile++;
+	      cout << "File changed!!! => iFile = " << iFile << endl;
+	    }
+      
+	  if (applyTriggers)
+	    {
+	      trigger->checkAvail(currentRun, datasets, d, &treeLoader, event, printTriggers);
+	      trigged = trigger->checkIfFired();
+        
+	      if (! trigged ) {
+		if (1) cout << "event " << ievt << " was not trigged. Skiping event.." << endl;
+		continue;
+	      }
+	    }  
+
+
 	  
 	  /*
 	    trigEMU = trigMUMU = trigEE = -1; 
