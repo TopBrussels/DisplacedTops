@@ -15,9 +15,9 @@ yyyy = str(now.year)
 date = dd+"_"+mm+"_"+yyyy
 #date = "17_1_2016"
 
-#channels = ["_MuMu","_ElEl"]
+channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
-channels = ["_MuMu"]
+#channels = ["_MuMu"]
 
 for chan in channels:
     
