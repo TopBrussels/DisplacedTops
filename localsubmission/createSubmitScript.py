@@ -3,6 +3,7 @@ import subprocess
 import time
 import os
 import glob
+from shutil import copyfile
 from datetime import datetime
 # libray to copy files
 import shutil 
@@ -20,8 +21,8 @@ mn= str(now.minute)
 #date = dd+"_"+mm+"_"+yyyy+"_"+hh+"h"+mn+"min"
 date = dd+"_"+mm+"_"+yyyy
 
-#channels = ["MuMu","ElEl"] 
-channels = ["MuMu"] 
+channels = ["MuMu","ElEl"] 
+#channels = ["MuMu"] 
 
 # loop over channels
 for chan in channels:
@@ -31,7 +32,7 @@ for chan in channels:
         tree = ET.ElementTree(file='../config/FullSamplesMuMuV9.xml')
 #        tree = ET.ElementTree(file='../config/test.xml')
     elif "ElEl" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElElV9.xml')
+        tree = ET.ElementTree(file='../config/FullSamplesElElV10.xml')
     elif "ElMu" in chan:
         tree = ET.ElementTree(file='../config/FullSamplesElMuV9.xml')
     else:
@@ -54,13 +55,14 @@ for chan in channels:
         os.makedirs("SubmitScripts/"+chan)
     if not os.path.exists("SubmitScripts/"+chan+"/"+date):
         os.makedirs("SubmitScripts/"+chan+"/"+date)
-    
-    # create a dir were the output of the jobs will
-#    if not os.path.exists("SubmitScripts/"+chan+"/"+date):
-#        os.makedirs("SubmitScripts/"+chan+"/"+date)
+    if not os.path.exists("SubmitScripts/"+chan+"/"+date+"/output"):
+        os.makedirs("SubmitScripts/"+chan+"/"+date+"/output")
+    if not os.path.exists("SubmitScripts/"+chan+"/"+date+"/test"):
+        os.makedirs("SubmitScripts/"+chan+"/"+date+"/test")
 
+    # copy the submitAll macro
+    copyfile("SubmitAll.sh","SubmitScripts/"+chan+"/"+date+"/SubmitAll.sh")
 
-    
     
     # list of variables 
     topTrees = []
@@ -83,6 +85,15 @@ for chan in channels:
                 FilePerJob=20
             else:
                 FilePerJob=3
+
+            # create a test job for each dataset
+            # create a file for this job                                                                                                                                        
+            filenameTest="SubmitScripts/"+chan+"/"+date+"/test"+"/submit_"+str(d.attrib['name'])+"_"+"Test"+".sh"
+            # copy a skeleton file that set up the code environment, the wall time and the queue                                                                                
+            shutil.copyfile("submitTestSkeleton.sh", filenameTest)
+            # append to the file the actual command                                                                                                                             
+            outfileTest = open (filenameTest, 'a')
+            print >> outfileTest, commandString, topTrees[0], " ", chan , " " , 1 , " 0" , " 1000"
                 
             N_job = 0
             N_file = 1
