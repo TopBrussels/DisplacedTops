@@ -38,7 +38,7 @@ std::string intToStr (int number);
 void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath);
 void MSPCreator ();
 
-void TH2FPlotter (int nBinsx, )
+void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX );
 
 
 // faco TO BE CHANGED
@@ -92,6 +92,7 @@ int main(int argc, char* argv[])
       exit(1);
     }
   
+  string CraneenPath;
 
   
   if (debug_plot){
@@ -394,7 +395,10 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
       // get the SF from the corresponding branch
       Double_t sf_electron, sf_muon, puSF, globalScaleFactor;
+      //Double_t sf_electron, sf_muon_mumu, puSF, globalScaleFactor;
+
       ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon",&sf_muon);
+      //ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu",&sf_muon_mumu);
       ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron",&sf_electron);
       ttree[dataSetName.c_str()]->SetBranchAddress("puSF",&puSF); // change to sf_pu
 

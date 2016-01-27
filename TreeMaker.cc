@@ -1385,10 +1385,10 @@ int main (int argc, char *argv[])
 	      trigged = trigger->checkIfFired();
         
 	      if (trigged) {
-		cout << "event " << ievt << " was Trigged!!" << endl;
+		if (debug)cout << "event " << ievt << " was Trigged!!" << endl;
 	      }
 	      else {
-		if (1) cout << "event " << ievt << " was not trigged. Skiping event.." << endl;
+		if (debug) cout << "event " << ievt << " was not trigged. Skiping event.." << endl;
 		continue;
 	      }
 	    }  
