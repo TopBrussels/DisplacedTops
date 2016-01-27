@@ -6,9 +6,9 @@ To set up the code follow the following recipe
 ## Firstly, set up CMSSW
 export SCRAM_ARCH=slc6_amd64_gcc491
 
-cmsrel CMSSW_7_4_2
+cmsrel CMSSW_7_4_14
 
-cd CMSSW_7_4_2/src
+cd CMSSW_7_4_14/src
 
 cmsenv
 
@@ -54,12 +54,20 @@ scram b -j8
 
 cd -
 
+# to compile all
 source compile.sh
 
-# Run
-./Ntupler testconfig.xml
+# to compile a single Macro
+source compile.sh Macro.cc
 
-# make plots
+# Make ntuple
+./TreeMaker WWToLNuQQ Diboson 1 390 1 2 1 41297.4650368 47.693 0.0  dcap://maite.iihe.ac.be:/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/TOPTREE_7.root dcap://maite.iihe.ac.be:/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/TOPTREE_6.root dcap://maite.iihe.ac.be:/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/TOPTREE_5.root   ElEl   3  0  2000000
+
+# make MSPlots
+./TreeProcesser ElEl
+
+
+# make plots --obselete--
 cd scripts
 
 python maked0plot.py
