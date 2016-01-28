@@ -323,7 +323,12 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/13_1_2016/";
   // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/15_1_2016/_MuMu/";
   // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/17_1_2016/_ElEl/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/20_1_2016/_MuMu/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/20_1_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/28_1_2016/_MuMu/";
+
+  
+  CraneenPath=CraneenPath+channelpostfix;
+  
 
   
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
