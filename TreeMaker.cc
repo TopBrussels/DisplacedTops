@@ -2778,7 +2778,7 @@ int main (int argc, char *argv[])
       cout <<"n events with at least two id and iso muons with pt > 20 GeV is  =  "<< passed_mumu <<endl;
       cout << "Event Count: " << eventCount << endl;
       cout << "Number of event skipped because they failled the trigger requirement is " << skippedEvent << endl;
-      cout << "The trigger efficiency is " << eventCount-skippedEvent << "/" << eventCount << " = "  << 1.0*(eventCount-skippedEvent)/eventCount << " % " << endl;
+      cout << "The trigger efficiency is " << eventCount-skippedEvent << "/" << eventCount << " = "  << 100.0*(eventCount-skippedEvent)/eventCount << " % " << endl;
       cout << "Weight Count: " << weightCount << endl;
       //important: free memory
       treeLoader.UnLoadDataset();
