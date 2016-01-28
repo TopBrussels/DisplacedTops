@@ -3,7 +3,7 @@ if [[ -n $1 ]] #check if variable is not empty
 then
     if [[ $1 == "test" ]]
     then
-	cd /test
+	cd test
 	for f in ./submit*.sh
 	do
 	    qsub $f
@@ -12,8 +12,8 @@ then
     fi
 
 else
-    cd /output
-    for f in ./submit*.sh
+    cd output
+    for f in ../submit*.sh
     do
 	qsub $f
     done
