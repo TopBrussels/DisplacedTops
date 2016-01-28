@@ -20,6 +20,7 @@ mn= str(now.minute)
 # make a data string. Pick one of the two above                                                      
 #date = dd+"_"+mm+"_"+yyyy+"_"+hh+"h"+mn+"min"
 date = dd+"_"+mm+"_"+yyyy
+#date = dd+"_"+mm+"_"+yyyy+"noTrig"
 
 channels = ["MuMu","ElEl"] 
 #channels = ["MuMu"] 
@@ -51,17 +52,17 @@ for chan in channels:
     print "found  "  + str(len(datasets)) + " datasets"
     
     # create new dirs if not already existing
-    if not os.path.exists("SubmitScripts/"+chan):
-        os.makedirs("SubmitScripts/"+chan)
-    if not os.path.exists("SubmitScripts/"+chan+"/"+date):
-        os.makedirs("SubmitScripts/"+chan+"/"+date)
-    if not os.path.exists("SubmitScripts/"+chan+"/"+date+"/output"):
-        os.makedirs("SubmitScripts/"+chan+"/"+date+"/output")
-    if not os.path.exists("SubmitScripts/"+chan+"/"+date+"/test"):
-        os.makedirs("SubmitScripts/"+chan+"/"+date+"/test")
+    if not os.path.exists("SubmitScripts/"+date):
+        os.makedirs("SubmitScripts/"+date)
+    if not os.path.exists("SubmitScripts/"+date+"/"+chan):
+        os.makedirs("SubmitScripts/"+date+"/"+chan)
+    if not os.path.exists("SubmitScripts/"+date+"/"+chan+"/output"):
+        os.makedirs("SubmitScripts/"+date+"/"+chan+"/output")
+    if not os.path.exists("SubmitScripts/"+date+"/"+chan+"/test"):
+        os.makedirs("SubmitScripts/"+date+"/"+chan+"/test")
 
     # copy the submitAll macro
-    copyfile("SubmitAll.sh","SubmitScripts/"+chan+"/"+date+"/SubmitAll.sh")
+    copyfile("SubmitAll.sh","SubmitScripts/"+date+"/"+chan+"/SubmitAll.sh")
 
     
     # list of variables 
@@ -84,16 +85,16 @@ for chan in channels:
             if "Data" in str(d.attrib['name']):
                 FilePerJob=20
             else:
-                FilePerJob=3
+                FilePerJob=2
 
             # create a test job for each dataset
             # create a file for this job                                                                                                                                        
-            filenameTest="SubmitScripts/"+chan+"/"+date+"/test"+"/submit_"+str(d.attrib['name'])+"_"+"Test"+".sh"
+            filenameTest="SubmitScripts/"+date+"/"+chan+"/test"+"/submit_"+str(d.attrib['name'])+"_"+"Test"+".sh"
             # copy a skeleton file that set up the code environment, the wall time and the queue                                                                                
             shutil.copyfile("submitTestSkeleton.sh", filenameTest)
             # append to the file the actual command                                                                                                                             
             outfileTest = open (filenameTest, 'a')
-            print >> outfileTest, commandString, topTrees[0], " ", chan , " " , 1 , " 0" , " 1000"
+            print >> outfileTest, commandString, topTrees[0], " ", chan , " " , 1 , " 0" , " 10000"
                 
             N_job = 0
             N_file = 1
@@ -126,7 +127,7 @@ for chan in channels:
 #                    print files_str
 
                     # create a file for this job
-                    filename="SubmitScripts/"+chan+"/"+date+"/submit_"+str(d.attrib['name'])+"_"+str(N_job*FilePerJob+1)+"to"+str(N_job*FilePerJob+len(listOfFiles))+".sh"
+                    filename="SubmitScripts/"+date+"/"+chan+"/submit_"+str(d.attrib['name'])+"_"+str(N_job*FilePerJob+1)+"to"+str(N_job*FilePerJob+len(listOfFiles))+".sh"
                     # copy a skeleton file that set up the code environment, the wall time and the queue
                     shutil.copyfile("submitSkeleton.sh", filename)
                     # append to the file the actual command
