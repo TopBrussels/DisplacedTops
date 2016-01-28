@@ -222,7 +222,7 @@ int main (int argc, char *argv[])
   ///////////////////////////////////////
 
   bool printTriggers = false;
-  bool applyTriggers = true;
+  bool applyTriggers = false;
   string channelpostfix = "";
   string xmlFileName = "";
 
@@ -2535,7 +2535,9 @@ int main (int argc, char *argv[])
 	  
 	  // el el final state
 	  if (nElectrons_elel >= 2){
+
 	    if (isData){
+
 	      if (debug) cout << "Trying to pass blinding condition for data" << endl;
 	      
 	      // Remove the events were the D0 is too big
@@ -2558,13 +2560,14 @@ int main (int argc, char *argv[])
 		passed_elel++;
 		if (debug) cout << "Blinding conditions passed!" << endl;
 	      }
-
-	      // if not Data fill it anyway
-	      else {
-		myDoubleElTree->Fill();
-		passed_elel++;
-	      }
+	      
 	    }
+	    // if not Data fill it anyway
+	    if (!isData) {
+	      myDoubleElTree->Fill();
+	      passed_elel++;
+	    }
+
 	  }
 	    
 
@@ -2596,11 +2599,12 @@ int main (int argc, char *argv[])
 		if (debug) cout << "Blinding conditions passed!" << endl;
 	      }
 
-	      // if not Data fill it anyway
-	      else {
-		myDoubleMuTree->Fill();
-		passed_mumu++;
-	      }
+	    }
+	      
+	    // if not Data fill it anyway
+	    if (!isData) {
+	      myDoubleMuTree->Fill();
+	      passed_mumu++;
 	    }
 	  }
 
