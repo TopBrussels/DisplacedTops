@@ -4,11 +4,11 @@ To set up the code follow the following recipe
 
 
 ## Firstly, set up CMSSW
-export SCRAM_ARCH=slc6_amd64_gcc491
+export SCRAM_ARCH=sslc6_amd64_gcc493
 
-cmsrel CMSSW_7_4_14
+cmsrel CMSSW_7_6_3
 
-cd CMSSW_7_4_14/src
+cd CMSSW_7_6_3/src
 
 cmsenv
 
@@ -19,7 +19,7 @@ git clone https://github.com/TopBrussels/TopTreeProducer TopBrussels/TopTreeProd
 
 cd TopBrussels/TopTreeProducer/
 
-git checkout CMSSW_74X
+git checkout CMSSW_76X
 
 cd src
 
@@ -32,7 +32,7 @@ git clone https://github.com/TopBrussels/TopTreeAnalysisBase TopBrussels/TopTree
 
 cd TopBrussels/TopTreeAnalysisBase/
 
-git checkout CMSSW_74X
+git checkout CMSSW_76X
 
 make
 
@@ -58,7 +58,7 @@ cd -
 source compile.sh
 
 # to compile a single Macro
-source compile.sh Macro.cc
+source compile.sh <Macro.cc>
 
 # Make ntuple
 ./TreeMaker WWToLNuQQ Diboson 1 390 1 2 1 41297.4650368 47.693 0.0  dcap://maite.iihe.ac.be:/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/TOPTREE_7.root dcap://maite.iihe.ac.be:/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/TOPTREE_6.root dcap://maite.iihe.ac.be:/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/TOPTREE_5.root   ElEl   3  0  2000000
