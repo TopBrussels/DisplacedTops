@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Electron-Electron channel..." << endl;
       channelpostfix = "_ElEl";
-      xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
+      xmlFileName = "config/FullSamplesElElV9TreeProc.xml";
       DileptonElEl=true;
     }
   else
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
     
   else{
     
-    xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
+    //    xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
      
 
     //    cout << "CraneenPath is " << CraneenPath << endl;
@@ -284,7 +284,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
   
   //***********************************************OPEN FILES & GET NTUPLES**********************************************
-  string dataSetName, filepath;
+  string dataSetName, filepath , slumi;
+  
   int nEntries;
   float ScaleFactor, NormFactor, Luminosity;
   int varofInterest;
@@ -323,8 +324,9 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/13_1_2016/";
   // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/15_1_2016/_MuMu/";
   // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/17_1_2016/_ElEl/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/20_1_2016/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/28_1_2016/_MuMu/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/20_1_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/28_1_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/29_1_2016/";
 
   
   CraneenPath=CraneenPath+channelpostfix;
@@ -376,6 +378,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       bool isData= false;
       if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
       
+      //      if (isData) slumi=datasets[d]->Eqlumi;
 
 
 
@@ -412,9 +415,9 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       // Declare the SF
 
 
-
+      
+      //      Luminosity = 1; // pb-1
       Luminosity = 2461.387; // pb-1
-      TString slumi = "2461.387";
 
       
       //      histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);

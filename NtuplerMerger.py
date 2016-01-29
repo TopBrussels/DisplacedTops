@@ -32,7 +32,7 @@ for chan in channels:
     if "MuMu" in chan:
         tree = ET.ElementTree(file='config/FullSamplesMuMuV9.xml')
     elif "ElEl" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesElElV9.xml')
+        tree = ET.ElementTree(file='config/FullSamplesElElV10.xml')
     elif "ElMu" in chan:
         tree = ET.ElementTree(file='config/FullSamplesElMuV9.xml')
     else:
