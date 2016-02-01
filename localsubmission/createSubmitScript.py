@@ -22,20 +22,21 @@ mn= str(now.minute)
 date = dd+"_"+mm+"_"+yyyy
 #date = dd+"_"+mm+"_"+yyyy+"noTrig"
 
-channels = ["MuMu","ElEl"] 
+#channels = ["MuMu","ElEl"] 
 #channels = ["MuMu"] 
+channels = ["ElEl"] 
 
 # loop over channels
 for chan in channels:
     print "\nSearching list of sample used for ", chan, " channel!"
     # getting the appropriate xml file
     if "MuMu" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesMuMuV9.xml')
+        tree = ET.ElementTree(file='../config/FullSamplesMuMuV1.xml')
 #        tree = ET.ElementTree(file='../config/test.xml')
     elif "ElEl" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElElV10.xml')
+        tree = ET.ElementTree(file='../config/FullSamplesElElV1.xml')
     elif "ElMu" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElMuV9.xml')
+        tree = ET.ElementTree(file='../config/FullSamplesElMuV1.xml')
     else:
         print "Channel '", chan , "' is not a correct channel name. No tree has been loaded!"
         sys.exit()

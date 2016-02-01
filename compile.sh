@@ -7,10 +7,8 @@ then
 
     ofile=`echo $ccfile |sed 's/\.cc$//g'`
     echo "compiling : " $ccfile ", executible name: " $ofile
-    g++ -g -std=c++11 -L ~/lib -L . -L .. -I ./ -I ../ -l TopTreeAnaContent74 -l TopTreeAna74 -l MLP -l TreePlayer -l TMVA -l XMLIO -I `root-config --incdir` `root-config --libs` $ccfile -o $ofile
-    cp ~/lib/libTopTreeAnaContent74.so /localgrid/qpython/lib/
-    cp ~/lib/libTopTreeAna74.so /localgrid/qpython/lib/
-    
+    g++ -g -std=c++11 -L ~/lib -L . -L .. -I ./ -I ../ -l TopTreeAnaContent76 -l TopTreeAna76 -l MLP -l TreePlayer -l TMVA -l XMLIO -I `root-config --incdir` `root-config --libs` $ccfile -o $ofile
+
 
 # if there is no arg compile all .cc
 else
@@ -18,7 +16,10 @@ else
     do
 	ofile=`echo $ccfile |sed 's/\.cc$//g'`
 	echo "compiling : " $ccfile ", executible name: " $ofile
-	g++ -g -std=c++11 -L ~/lib -L . -L .. -I ./ -I ../ -l TopTreeAnaContent74 -l TopTreeAna74 -l MLP -l TreePlayer -l TMVA -l XMLIO -I `root-config --incdir` `root-config --libs` $ccfile -o $ofile
+	g++ -g -std=c++11 -L ~/lib -L . -L .. -I ./ -I ../ -l TopTreeAnaContent76 -l TopTreeAna76 -l MLP -l TreePlayer -l TMVA -l XMLIO -I `root-config --incdir` `root-config --libs` $ccfile -o $ofile
 
     done
 fi
+
+cp ~/lib/libTopTreeAnaContent76.so /localgrid/qpython/lib/
+cp ~/lib/libTopTreeAna76.so /localgrid/qpython/lib/
