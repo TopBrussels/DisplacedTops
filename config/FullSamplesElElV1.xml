@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<!-- add="1" means run on the sample -->
+<!-- add="0" means do not run on the sample -->
+<!-- ex with eqlumi <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
+<!-- ex with NofEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
+<!-- ex with PreselEff NofPSEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofPSEvts="218404"/> -->
+
+
+<!--NOT SURE HOW I SHOULD USE THE DIFFERENT OPTION -->
+
+<data>
+<datasets>
+
+<!-- bo Signal -->
+<!-- ********* -->
+<!-- M 500 ctau 10 -->
+<d name="NP_overlay_stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="173584.323407" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_M500CTau1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160129_101647/0000/*.root"/>
+
+
+<!-- ********* -->
+<!-- eo Signal -->
+
+
+<!-- Data -->
+<!-- *** -->
+<!-- *** -->
+
+<!-- bo DoubleEG -->
+<!-- ********* -->
+
+<!-- Data RunC -->
+<!-- Lumi = ???  pb-1 -->
+<d name="DataRunC"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/DoubleMuon/crab_DoubleMuon-Run2015C_25ns-16Dec2015-v1-76X_dataRun2_v15/160129_111736/0000/*.root"/>
+
+<!-- Data RunD -->
+<!-- Lumi = ???  pb-1 -->
+<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/DoubleEG/crab_DoubleEG-Run2015D-16Dec2015-v2-76X_dataRun2_v15/160129_111729/000*/*.root"/>
+
+<!-- Data RunD Prompt -->
+<!-- Lumi = 1636.863  pb-1 -->
+<d name="DataRunDPrompt"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames=""/>
+
+<!-- ********* -->
+<!-- eo DoubleEG -->
+
+
+<!-- ******* -->
+<!-- ******* -->
+<!-- eo Data -->
+
+
+
+<!--ALL the MC -->
+
+
+
+<!-- W-> l+nu -->
+<d name="WJetsToLNu" title="W\rightarrow l+\Nu" add="0" color="852"  ls="1" lw="2" normf="1" EqLumi="392.5331604" xsection="61526.7" PreselEff="0.0" filenames=""/>
+
+<d name="W1JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W2JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W3JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W4JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+
+
+<!-- Diboson -->
+<!-- ****** -->
+<d name="WWToLNuQQ" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="41297.4650368" xsection="47.693" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ13TeVpowhegFall15PU25nsData2015v176XmcRun2asymptoticv12ext1v176XmcRun2asymptoticv12/160129_104208/0000/*.root"/>
+
+<d name="WWTo2l2Nu" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="167476.570635" xsection="11.524" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/WWTo2L2Nu_13TeV-powheg/crab_WWTo2L2Nu13TeVpowhegFall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160129_104129/0000/*.root"/>
+
+<d name="WZ" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="43436.9851008" xsection="22.82" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/WZ_TuneCUETP8M1_13TeV-pythia8/crab_WZ13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v1CMSSW76Xtest76XmcRun2asymptoticv12/160128_224447/0000/*.root"/>
+
+<d name="ZZ" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="96025.5813953" xsection="10.32" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/ZZ_TuneCUETP8M1_13TeV-pythia8/crab_ZZ__13TeV-pythia8-Fall15-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1-76X_mcRun2_asymptotic_v12/160129_104827/0000/*.root"/>
+
+<d name="ZG" title="Diboson" add="0" color="390"  ls="1"  lw="2" normf="1" EqLumi="35688.8297014" xsection="123.9" PreselEff="0.0"   filenames="failled"/>
+
+<d name="WGToLNuG" title="Diboson" add="0" color="390"  ls="1"  lw="2" normf="1" EqLumi="13197.5176537" xsection="461.66" PreselEff="0.0"   filenames="failled"/>
+
+
+<!-- ********** -->
+<!-- eo Diboson -->
+
+
+<!-- Single t -->
+<!-- ********* -->
+<!-- here after the cross section are got from the ohio website (http://cmshead.mps.ohio-state.edu/) -->
+<d name="SingleTop_tW" title="SingletTop_tW" add="0" color="909"  ls="1"  lw="2" normf="1" EqLumi="11258.4269663" xsection="35.6" PreselEff="0.0"   filenames="notprocessed"/>
+
+<d name="SingleTop_tbarW" title="SingletTop_tbarW" add="0" color="910"  ls="1"  lw="2" normf="1" EqLumi="14044.9438202" xsection="35.6" PreselEff="0.0"   filenames="notprocesse"/>
+
+<!-- The followng two samples almost does not contribute -->
+<d name="SingleTop_s_channel" title="SingleTop" add="0" color="905"  ls="1"  lw="2" normf="1" EqLumi="292775.778485" xsection="3.3623" PreselEff="0.0"   filenames=""/>
+
+<d name="SingleTop_t_channel" title="SingleTop" add="0" color="907"  ls="1"  lw="2" normf="1" EqLumi="0" xsection="70.695" PreselEff="0.0"   filenames=""/>
+
+<!-- *********** -->
+<!-- eo Single t -->
+
+
+<!-- t tbar -->
+<!-- ****** -->
+
+<!-- hadronic -->
+<d name="TTJets_Madgrap" title="TTJets_Madgraph" add="1" color="872"  ls="1"  lw="2" normf="1" EqLumi="13632.8171588" xsection="831.76" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_TTJets13TeVmadgraphMLMpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160129_103515/0000/*.root"/>
+
+<!-- leptonic V7!!!!! -->
+<d name="TTJets_Dilept" title="TTJets_Dilept" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="67106.5830011" xsection="88.288" PreselEff="0.0"   filenames=""/>
+
+<d name="TTJets_SingleLeptFromT" title="TTJets_SingleLeptFromT" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="31001.3820471" xsection="365.4" PreselEff="0.0"   filenames=""/>
+
+<d name="TTJets_SingleLeptFromTbar" title="TTJets_SingleLeptFromTbar" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="32000.3721949" xsection="365.4" PreselEff="0.0"   filenames=""/>
+
+<!-- ********* -->
+<!-- eo t tbar -->
+
+
+
+<!-- Z->ll -->
+<d name="DYJetsToLL_M-50toInf" title="Z/\gamma^{*}\rightarrow ll" add="1" color="410"  ls="1"  lw="2" normf="1" EqLumi="1502.46813384" xsection="6025.2" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_tsToLLM5013TeVmadgraphMLMpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160129_101110/0000/*.root"/>
+
+<d name="DYJetsToll_M-10to50" title="Z/\gamma^{*}\rightarrow ll M10to50" add="0" color="430"  ls="1"  lw="2" normf="1" EqLumi="1349.03634136" xsection="22635.09" PreselEff="0.0"   filenames=""/>
+
+
+
+
+</datasets>
+
+
+<!-- All parameters needed for the selection and the bkg estimation methods -->
+<analysis>
+<!-- JetType: 0=TRootJet - 1=TRootCaloJet - 2=TRootPFJet -->
+<a type="Collections" PVCollection="PrimaryVertex" JetType="2" JetCollection="PFJets_slimmedJets" METType="2" METCollection="PFMET_slimmedMETs" MuonCollection="Muons_slimmedMuons" ElectronCollection="Electrons_slimmedElectrons" loadGenJetCollection="0" GenJetCollection="GenJets_slimmedGenJets" loadGenEventCollection="0" GenEventCollection="GenEvent" loadNPGenEventCollection="0" NPGenEventCollection="NPGenEvent" loadMCParticles="1" MCParticlesCollection="MCParticles" TrackMETCollection="" loadTrackMET="0"/>
+<!-- LuminosityError has to be relative [0-1], ex: 0.1 means 10% uncertainty on luminosity -->
+<!-- other errors should be absolute -->
+</analysis>
+</data>
