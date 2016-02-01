@@ -4,12 +4,9 @@ import xml.etree.cElementTree as ET
 import os
 
 # get filenames from the xml!!!
-#tree = ET.ElementTree(file='config/FullMcBkgdSamplesV7.xml')
-#tree = ET.ElementTree(file='config/FullMcBkgdSamplesV9.xml')
-#tree = ET.ElementTree(file='config/DisplacedTopsSignal.xml')
-#tree = ET.ElementTree(file='config/DataSamples.xml')
-#tree = ET.ElementTree(file='config/FullMcBkgdSamples.xml')
-tree = ET.ElementTree(file='config/QCDSamplesV10.xml')
+tree = ET.ElementTree(file='config/FullSamplesElElV1.xml')
+#tree = ET.ElementTree(file='config/FullSamplesElMuV1.xml')
+#tree = ET.ElementTree(file='config/FullSamplesMuMuV1.xml')
 
 
 root = tree.getroot()
@@ -21,8 +18,9 @@ xsections = []
 # loop over the datasets to be added and fill the "topTrees" vector
 for d in datasets:
     if d.attrib['add'] == '1':
-        topTrees.append(d.attrib['filenames'])
-        xsections.append(float(d.attrib['xsection']))
+        if not "Data" in d.attrib['name']: # faco
+            topTrees.append(d.attrib['filenames'])
+            xsections.append(float(d.attrib['xsection']))
 
 
 
