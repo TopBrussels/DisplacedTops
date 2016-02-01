@@ -29,7 +29,7 @@
 
 <!-- Data RunC -->
 <!-- Lumi = ???  pb-1 -->
-<d name="DataRunC"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/DoubleMuon/crab_DoubleMuon-Run2015C_25ns-16Dec2015-v1-76X_dataRun2_v15/160129_111736/0000/*.root"/>
+<d name="DataRunC"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_test/DoubleEG/crab_DoubleEG-Run2015C_25ns-16Dec2015-v1-76X_dataRun2_v15/160129_111722/0000/*.root"/>
 
 <!-- Data RunD -->
 <!-- Lumi = ???  pb-1 -->
