@@ -4,10 +4,10 @@ import xml.etree.cElementTree as ET
 import os
 
 # get filenames from the xml!!!
-tree = ET.ElementTree(file='config/FullSamplesElElV1.xml')
+#tree = ET.ElementTree(file='config/FullSamplesElElV0.xml')
 #tree = ET.ElementTree(file='config/FullSamplesElMuV1.xml')
-#tree = ET.ElementTree(file='config/FullSamplesMuMuV1.xml')
-
+#tree = ET.ElementTree(file='config/FullSamplesMuMuV0.xml')
+tree = ET.ElementTree(file='/user/ivanpari/CMSSW_7_6_3/src/TopBrussels/FCNCAnalysis/config/Run2TriLepton_samples_mumumu.xml')
 
 root = tree.getroot()
 datasets = root.find('datasets')

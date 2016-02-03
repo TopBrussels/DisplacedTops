@@ -22,6 +22,9 @@ mn= str(now.minute)
 date = dd+"_"+mm+"_"+yyyy
 #date = dd+"_"+mm+"_"+yyyy+"noTrig"
 
+
+# pick one of the above
+# channel = ["test"]
 #channels = ["MuMu","ElEl"] 
 #channels = ["MuMu"] 
 channels = ["ElEl"] 
@@ -31,20 +34,16 @@ for chan in channels:
     print "\nSearching list of sample used for ", chan, " channel!"
     # getting the appropriate xml file
     if "MuMu" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesMuMuV1.xml')
-#        tree = ET.ElementTree(file='../config/test.xml')
+        tree = ET.ElementTree(file='../config/FullSamplesMuMuV0.xml')
     elif "ElEl" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElElV1.xml')
+        tree = ET.ElementTree(file='../config/FullSamplesElElV0.xml')
     elif "ElMu" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElMuV1.xml')
+        tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
+    elif "test" in chan:
+        tree = ET.ElementTree(file='../config/test.xml')
     else:
         print "Channel '", chan , "' is not a correct channel name. No tree has been loaded!"
         sys.exit()
-    #tree = ET.ElementTree(file='../config/FullMcBkgdSamplesV9.xml')
-    #tree = ET.ElementTree(file='../config/DataSamples.xml')
-    #tree = ET.ElementTree(file='../config/DisplacedTopsSignal.xml')
-    #tree = ET.ElementTree(file='../config/FullSamplesElElV9.xml')
-    #tree = ET.ElementTree(file='../config/FullSamplesMuMuV9.xml')
     
     root = tree.getroot()
     datasets = root.find('datasets')
@@ -95,7 +94,8 @@ for chan in channels:
             shutil.copyfile("submitTestSkeleton.sh", filenameTest)
             # append to the file the actual command                                                                                                                             
             outfileTest = open (filenameTest, 'a')
-            print >> outfileTest, commandString, topTrees[0], " ", chan , " " , 1 , " 0" , " 10000"
+            if not len(topTrees) == 0:
+                print >> outfileTest, commandString, topTrees[0], " ", chan , " " , 1 , " 0" , " 10000"
                 
             N_job = 0
             N_file = 1
