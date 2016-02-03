@@ -337,7 +337,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
     {
       dataSetName = datasets[d]->Name();
       cout<<"Dataset:  :"<<dataSetName<<endl;
-      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";  // faco Make chan name varialbes!!
+      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";  
       //filepath = CraneenPath+dataSetName+ ".root";
       if (debug) cout<<"filepath: "<<filepath<<endl;
 	
@@ -345,6 +345,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       string stree = "";
       if (DileptonMuMu) stree = "doubleMuTree";
       if (DileptonElEl) stree = "doubleElTree";
+      if (DileptonElMu) stree = "tree";
 		  
       FileObj[dataSetName.c_str()] = new TFile((filepath).c_str(),"READ"); //create TFile for each dataset      
       string TTreename = stree;	
