@@ -232,35 +232,29 @@ int main (int argc, char *argv[])
   string xmlFileName = "";
 
   //Setting Lepton Channels (Setting both flags true will select Muon-Electron Channel when dilepton is also true)
-  bool dilepton = true;
-  bool Muon = true;
-  bool Electron = true;
-  
-  
-  
-  //  bool elel = false; 
-  //  bool elmu = false; 
-  //  bool mumu = true; 
+  bool elel = false; 
+  bool elmu = false; 
+  bool mumu = false; 
 
 
 
   if(channel=="ElMu" || channel== "MuEl")
     {
       cout << " --> Using the Muon-Electron channel..." << endl;
+      elmu=true;
       channelpostfix = "_MuEl";
-      //      xmlFileName = "config/Run2_Samples.xml";
     }
   else if(channel=="MuMu")
     {
       cout << " --> Using the Muon-Muon channel..." << endl;
+      mumu=true;
       channelpostfix = "_MuMu";
-      //      xmlFileName = "config/Run2_Samples.xml";
     }
   else if(channel=="ElEl")
     {
       cout << " --> Using the Electron-Electron channel..." << endl;
+      elel=true;
       channelpostfix = "_ElEl";
-      //      xmlFileName = "config/Run2_Samples.xml";
     }
   else
     {
@@ -456,6 +450,24 @@ int main (int argc, char *argv[])
   float mu_eta_cut = 2.4; // 2.4
   float mu_iso_cut = 0.15; // 0.15
   float mu_d0_cut = 0.02; //0.02
+
+
+
+  // change value depending on the trigger
+  if (mumu){
+    mu_pt_cut=35;
+  }
+  else if (elel){
+    el_pt_cut=40;
+  }
+  else if (elmu){
+    mu_pt_cut=40;
+    el_pt_cut=40;
+  }
+  
+  
+  
+
 
   // convert into string
 
@@ -1439,7 +1451,7 @@ int main (int argc, char *argv[])
 	  KynMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, false); // pt, eta,
 	  KynIdMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, true); // pt, eta, id
 	  selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // pt, eta, id, iso
-	  selectedLooseMuons = selection.GetSelectedDisplacedMuons(20, mu_eta_cut, mu_iso_cut, true, true); // pt, eta, id, iso
+	  selectedLooseMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // pt, eta, id, iso
 	  //	    selectedMuons = init_muons;
 
 	  //selectedMuons = selection.GetSelectedDisplacedMuons(30., 2., 0.15, true, true); // pt, eta, iso // run normally
@@ -1456,7 +1468,7 @@ int main (int argc, char *argv[])
 	  KynElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, false, false);// pt, eta
 	  KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, false, true);// pt, eta, id
 	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, true, true);// pt, eta, id, iso
-	  selectedLooseElectrons = selection.GetSelectedDisplacedElectrons(20, el_eta_cut, true, true);// pt, eta, id, iso
+	  selectedLooseElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, true, true);// pt, eta, id, iso
 	  //selectedElectrons = init_electrons;
 	  //selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta
 	  //selectedElectrons = selection.GetSelectedElectrons();
@@ -1473,7 +1485,7 @@ int main (int argc, char *argv[])
 
 	  eventCount++;
 
-	  if (debug) cout <<"Initial number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  " << endl << init_muons.size() <<" "  <<init_electrons.size()<<" "<< selectedJets.size()   <<" "   <<" "<<JetCut  <<" "<<Muon<<" "<<Electron<<endl;
+	  if (debug) cout <<"Initial number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  " << endl << init_muons.size() <<" "  <<init_electrons.size()<<" "<< selectedJets.size()   <<" "   <<" "<<JetCut  <<" "<<endl;
 
 
 	  if (debug){
@@ -2762,12 +2774,14 @@ int main (int argc, char *argv[])
       for (map<string,TH1F*>::const_iterator it = histo1D.begin(); it != histo1D.end(); it++)
 	{
 	  cout << "1D Plot: " << it->first << endl;
-	  // TCanvas ctemp = 
-	    
+	  TCanvas *ctemp =  new TCanvas();
+	  ctemp->cd();
 	  TH1F *temp = it->second;
 	  string name = it->first;
 	  cout << name << endl; 
-	  temp->Draw();  // string label, unsigned int RatioType, bool addRatioErrorBand, bool addErrorBand, bool ErrorBandAroundTotalInput, int scaleNPSignal
+	  temp->Draw();
+	  delete ctemp;
+	  // string label, unsigned int RatioType, bool addRatioErrorBand, bool addErrorBand, bool ErrorBandAroundTotalInput, int scaleNPSignal
 	  //c1->SaveAs(pathPNG+"1DPlot/"+name modeString[mode] + "_" + cutLabel + ".png");
 	  //	    temp->Write(fout, name, true, pathPNG+"1DPlot/", "png");  // TFile* fout, string label, bool savePNG, string pathPNG, string ext
 	}
@@ -2778,8 +2792,8 @@ int main (int argc, char *argv[])
       tupfile->Close();
       cout <<"n events having at least two leptons with no id and no iso requirement is  =  "<< passed_pc <<endl;
       cout <<"n events after all the cuts for the e-mu final state is  =  "<< passed <<endl;
-      cout <<"n events with at least two id and iso electrons with pt > 20 GeV is  =  "<< passed_elel <<endl;
-      cout <<"n events with at least two id and iso muons with pt > 20 GeV is  =  "<< passed_mumu <<endl;
+      cout <<"n events with at least two id and iso electrons with pt > "+el_pt_cut_str+" GeV is  =  "<< passed_elel <<endl;
+      cout <<"n events with at least two id and iso muons with pt > "+mu_pt_cut_str+" GeV is  =  "<< passed_mumu <<endl;
       cout << "Event Count: " << eventCount << endl;
       cout << "Number of event skipped because they failled the trigger requirement is " << skippedEvent << endl;
       cout << "The trigger efficiency is " << eventCount-skippedEvent << "/" << eventCount << " = "  << 100.0*(eventCount-skippedEvent)/eventCount << " % " << endl;
