@@ -2536,8 +2536,8 @@ int main (int argc, char *argv[])
 	  }
 
 
-	  Bool_t blindD0_elel = false;
-	  Bool_t blindDvz_elel = false;
+	  Bool_t blindD0_elel = true;
+	  Bool_t blindDvz_elel = true;
 	  
 	  // el el final state
 	  if (nElectrons_elel >= 2){
@@ -2549,16 +2549,16 @@ int main (int argc, char *argv[])
 	      // Remove the events were the D0 is too big
 	      for (Int_t selel =0; selel <= nElectrons_elel; selel++)
 		{
-		  if (d0BeamSpot_electron_elel[selel] < 0.2){
-		    blindD0_elel=true;
+		  if (d0BeamSpot_electron_elel[selel] > 0.2){
+		    blindD0_elel=false;
 		  }
 		}
 		 
 	      // Remove the events were the DeltaVz is too big
 	      for (Int_t selelPairs = 0; selelPairs <= nElectronPairs_elel; selelPairs++)
 		{
-		  if (deltaVz_elel[selelPairs] < 0.1){
-		    blindDvz_elel=true;
+		  if (deltaVz_elel[selelPairs] > 0.5){
+		    blindDvz_elel=false;
 		  }			  
 		}
 	      if (blindD0_elel && blindDvz_elel){
@@ -2577,8 +2577,8 @@ int main (int argc, char *argv[])
 	  }
 	    
 
-	  Bool_t blindD0_mumu = false;
-	  Bool_t blindDvz_mumu = false;
+	  Bool_t blindD0_mumu = true;
+	  Bool_t blindDvz_mumu = true;
 	  // mu mu final state
 	  if (nMuons_mumu >= 2){	  
 	    if (isData){
@@ -2587,16 +2587,16 @@ int main (int argc, char *argv[])
 	      // Remove the events were the D0 is too big
 	      for (Int_t selmu =0; selmu <= nMuons_mumu; selmu++)
 		{
-		  if (d0BeamSpot_muon_mumu[selmu] < 0.2){
-		    blindD0_mumu=true;
+		  if (d0BeamSpot_muon_mumu[selmu] > 0.2){
+		    blindD0_mumu=false;
 		  }
 		}
 		 
 	      // Remove the events were the DeltaVz is too big
 	      for (Int_t selmuPairs = 0; selmuPairs <= nMuonPairs_mumu; selmuPairs++)
 		{
-		  if (deltaVz_mumu[selmuPairs] < 0.1){
-		    blindDvz_mumu=true;
+		  if (deltaVz_mumu[selmuPairs] > 0.5){
+		    blindDvz_mumu=false;
 		  }			  
 		}
 	      if (blindD0_mumu && blindDvz_mumu){
