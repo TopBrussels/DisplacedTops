@@ -719,20 +719,6 @@ int main (int argc, char *argv[])
 
       cout <<"DATE STRING   "<<date_str << endl;
 
-      //string dataSetName = datasets[d]->Name();
-      string channel_dir = "Craneens"+channelpostfix;
-      string date_dir = channel_dir+"/Craneens" + date_str +"/";
-      int mkdirstatus = mkdir(channel_dir.c_str(),0777);
-      mkdirstatus = mkdir(date_dir.c_str(),0777);
-
-
-
-      //     string Ntupname = "Craneens/Craneen_" + dataSetName +postfix + "_" + date_str+  ".root";
-
-      string Ntupname = "Craneens"+channelpostfix+"/Craneens"+ date_str  +"/Craneen_" + dataSetName +postfix + ".root";
-      string Ntuptitle = "Craneen_" + channelpostfix;
-
-      TFile * tupfile = new TFile(Ntupname.c_str(),"RECREATE");
 
 
       // variables for electrons
@@ -2789,7 +2775,6 @@ int main (int argc, char *argv[])
       if (debug) cout << "Done writing the Tree" << endl;
       fout->Write();   
       fout->Close();
-      tupfile->Close();
       cout <<"n events having at least two leptons with no id and no iso requirement is  =  "<< passed_pc <<endl;
       cout <<"n events after all the cuts for the e-mu final state is  =  "<< passed <<endl;
       cout <<"n events with at least two id and iso electrons with pt > "+el_pt_cut_str+" GeV is  =  "<< passed_elel <<endl;
