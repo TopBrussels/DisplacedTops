@@ -68,14 +68,14 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Muon-Electron channel..." << endl;
       channelpostfix = "_MuEl";
-      xmlFileName = "config/FullSamplesMuElV9TreeProc.xml";
+      xmlFileName = "config/FullSamplesElMuV0TreeProc.xml";
       DileptonElMu=true;
     }
   else if(channel=="MuMu")
     {
       cout << " --> Using the Muon-Muon channel..." << endl;
       channelpostfix = "_MuMu";
-      xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
+      xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
       DileptonMuMu=true;
       //      cout << "DileptonMuMu is " << DileptonMuMu << endl;
     }
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Electron-Electron channel..." << endl;
       channelpostfix = "_ElEl";
-      xmlFileName = "config/FullSamplesElElV9TreeProc.xml";
+      xmlFileName = "config/FullSamplesElElV0TreeProc.xml";
       DileptonElEl=true;
     }
   else
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 
   
   if (debug_plot){
-    xmlFileName = "config/FullSamplesMuMuV9TreeProc.xml";
+    xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
     // only few plots!
     if (DileptonMuMu) {
       DatasetPlotter(5, -0.5, 4.5, "nMuons_mumu", xmlFileName,CraneenPath);
@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
       DatasetPlotter(100, 0.0, 0.2, "pfIso_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
 
       // muonPairs plots
-      DatasetPlotter(100, 0.0, 0.1, "deltaVz_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 1.5, "deltaVz_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
 
 
       // electron-muon plots
@@ -220,7 +220,7 @@ int main(int argc, char* argv[])
 
       
       // Dielectron plots
-      DatasetPlotter(100, 0.0, 0.1, "deltaVz_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 1.5, "deltaVz_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
       
       /*
       // muon plots
@@ -308,27 +308,12 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   }
   free(dup);
 
-
-
-  // declaring list of variables that contains the SF info
-  double_t sf_muon, sf_electron, PUSF;
-
-
-  //cout << v[0] << "  " << v[1] << endl;
+  if (debug) cout << v[0] << "  " << v[1] << endl;
   
 
-  //  string CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_12_patch1/src/TopBrussels/DisplacedTops/Craneens_MuEl/Craneens29_9_2015/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/19_11_2015/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/25_11_2015/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/9_12_2015/";
-  // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/13_1_2016/";
-  // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/15_1_2016/_MuMu/";
-  // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/17_1_2016/_ElEl/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/20_1_2016/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/28_1_2016/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_4_14/src/TopBrussels/DisplacedTops/MergedTrees/29_1_2016/";
-
-  
+  // get the desired directory
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/3_2_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/4_2_2016/";
   CraneenPath=CraneenPath+channelpostfix;
   
 
@@ -403,14 +388,47 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       }
 
       // get the SF from the corresponding branch
-      Double_t sf_electron, sf_muon, puSF, globalScaleFactor;
-      //Double_t sf_electron, sf_muon_mumu, puSF, globalScaleFactor;
+      Double_t  puSF, globalScaleFactor, sf_muon, sf_electron;
 
-      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon",&sf_muon);
-      //ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu",&sf_muon_mumu);
+      //      Double_t  puSF, globalScaleFactor;
+
+      /*
+      Double_t Vsf_muon [4];
+      Double_t Vsf_electron [4];
+
+      
+      if (elel){
+	Double_t sf_muon_elel [4];
+	Double_t sf_electron_elel [4];
+	ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_elel",sf_muon_elel);
+	ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_elel",&sf_electron_elel);
+	Vsf_muon = sf_muon_elel;
+	Vsf_electron =sf_electron_elel;
+      }
+
+      if (mumu){
+	Double_t sf_muon_mumu [4];
+	Double_t sf_electron_mumu [4];
+	ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu",sf_muon_mumu);
+	ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_mumu",&sf_electron_mumu);
+	Vsf_muon = sf_muon_mumu;
+	Vsf_electron =sf_electron_mumu;
+      }
+      */
+
+
+      //      Double_t        sf_muon_mumu[4];
+
+      /*
+      //      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon",&sf_muon);
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu",sf_muon_mumu);
       ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron",&sf_electron);
       ttree[dataSetName.c_str()]->SetBranchAddress("puSF",&puSF); // change to sf_pu
-
+      */
+      
+      //      cout << "sf_electron is " << Vsf_electron[0] << endl;
+      //      cout << "sf_muon is " << Vsf_muon[0] << endl;
+      
       // -----------
       // eo of event SF
       // Declare the SF
