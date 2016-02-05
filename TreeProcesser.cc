@@ -48,6 +48,13 @@ bool DileptonElMu = false;
 bool DileptonMuMu = false;
 bool DileptonElEl = false;
 string channelpostfix = "";
+//applying all appropriate scale factors for individual objects if the bool is set to true
+Bool_t applyElectronSF = false; 
+Bool_t applyMuonSF = false; 
+Bool_t applyPUSF = false; 
+Bool_t applyGlobalSF = false; 
+
+
 
 int main(int argc, char* argv[])
 {
@@ -61,7 +68,20 @@ int main(int argc, char* argv[])
 
 
   //Placing arguments in properly typed variables
+
   const string channel = argv[1];
+
+  applyElectronSF = false;
+  applyMuonSF = false;
+  applyPUSF = false;
+  applyGlobalSF = false;
+  debug = strtol(argv[2],NULL,10); 
+  applyElectronSF = strtol(argv[3],NULL,10);
+  applyMuonSF = strtol(argv[4],NULL,10);
+  applyPUSF = strtol(argv[5],NULL,10);
+  applyGlobalSF = strtol(argv[6],NULL,10);
+
+
   string xmlFileName;
 
   if(channel=="ElMu" || channel== "MuEl")
@@ -165,7 +185,7 @@ int main(int argc, char* argv[])
           
       // event plots
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
-      DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
+      DatasetPlotter(70, -0.5, 69.5, "nvtx_mumu", xmlFileName,CraneenPath);
           
      
       /*
@@ -204,7 +224,7 @@ int main(int argc, char* argv[])
           
       // event plots
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
-      DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
+      DatasetPlotter(70, -0.5, 69.5, "nvtx_elel", xmlFileName,CraneenPath);
               
 
       // electron plots
@@ -242,7 +262,7 @@ int main(int argc, char* argv[])
   // eo selecting the right plots and/or variables depending on the final state  
 
 
-  // calling the function that writtes all the MSPlots in a root file
+  // calling the function that writes all the MSPlots in a root file
   MSPCreator ();
 
 }
@@ -378,11 +398,15 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       // -----------
 
       //applying all appropriate scale factors for individual objects if the bool is set to true
+      /*
       Bool_t applyElectronSF, applyMuonSF , applyPUSF, applyGlobalSF;
-      applyElectronSF = true;
-      applyMuonSF = false;
-      applyPUSF = false;
-      applyGlobalSF = true;
+      
+      if (applyElectronSF_arg == 1) applyElectronSF = true;
+      if (applyMuonSF_arg == 1) applyMuonSF = true;
+      if (applyPUSF_arg == 1)  applyPUSF = true;
+      if (applyGlobalSF_arg == 1) applyGlobalSF = true;
+      */
+
       
       if (applyGlobalSF && !isData){
 	cout << "Applying Scale factor " << endl;
