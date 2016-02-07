@@ -9,7 +9,7 @@ from datetime import datetime
 import shutil 
 
 
-# Define time variable                                                           
+# Define time variable 
 now = datetime.now()
 dd = str(now.day)
 mm = str(now.month)
@@ -17,15 +17,15 @@ yyyy = str(now.year)
 hh = str(now.hour)
 mn= str(now.minute)
 
-# make a data string. Pick one of the two above                                                      
+# make a data string. Pick one of the two above 
 #date = dd+"_"+mm+"_"+yyyy+"_"+hh+"h"+mn+"min"
 date = dd+"_"+mm+"_"+yyyy
 #date = dd+"_"+mm+"_"+yyyy+"noTrig"
 
 
 # pick one of the following
-#channels = ["MuMu","ElEl"] 
-channels = ["MuMu"] 
+channels = ["MuMu","ElEl"] 
+#channels = ["MuMu"] 
 #channels = ["ElEl"] 
 #channels=["test"]
 
