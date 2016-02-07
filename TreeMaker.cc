@@ -38,7 +38,6 @@
 #include "TopTreeAnalysisBase/Selection/interface/Run2Selection.h"
 #include "TopTreeAnalysisBase/Selection/interface/MuonSelection.h"
 #include "TopTreeAnalysisBase/Selection/interface/ElectronSelection.h"
-//#include "TopTreeAnalysisBase/Selection/interface/FourTopSelectionTable.h"
 #include "TopTreeAnalysisBase/Content/interface/AnalysisEnvironment.h"
 #include "TopTreeAnalysisBase/Content/interface/Dataset.h"
 #include "TopTreeAnalysisBase/Tools/interface/JetTools.h"
@@ -90,10 +89,6 @@ map<string,MultiSamplePlot*> MSPlot;
 /// MultiPadPlot
 map<string,MultiSamplePlot*> MultiPadPlot;
 
-bool match;
-
-//To cout the Px, Py, Pz, E and Pt of objects
-//float ElectronRelIso(TRootElectron* el, float rho);
 
 int main (int argc, char *argv[])
 {
@@ -181,12 +176,9 @@ int main (int argc, char *argv[])
      
   cout << "----------------------------------------" << endl;
    
-  //    cin.get();
 
-
-
-  ofstream eventlist;
-  eventlist.open ("interesting_events_mu.txt");
+  //  ofstream eventlist;
+  //  eventlist.open ("interesting_events_mu.txt");
 
 
   int passed = 0;
@@ -897,12 +889,12 @@ int main (int argc, char *argv[])
 
 
       // event related variables
-      Int_t run_num_elele;
-      Int_t evt_num_elele;
-      Int_t lumi_num_elele;
-      Int_t nvtx_elele;
-      Int_t npu_elele;
-      Double_t puSF_elele;
+      Int_t run_num_elel;
+      Int_t evt_num_elel;
+      Int_t lumi_num_elel;
+      Int_t nvtx_elel;
+      Int_t npu_elel;
+      Double_t puSF_elel;
 
 
       // eo MyDoubleElTree
@@ -1109,6 +1101,7 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("d0BeamSpot_muon_pc",d0BeamSpot_muon_pc,"d0BeamSpot_muon_pc[nMuons_pc]/D");
       myPreCutTree->Branch("sf_muon_pc",sf_muon_pc,"sf_muon_pc[nMuons_pc]/D");
 
+
       // eo a secondary tree that is filled before the whole list of cut
 
 
@@ -1167,6 +1160,19 @@ int main (int argc, char *argv[])
       myDoubleElTree->Branch("d0_muon_elel",d0_muon_elel,"d0_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("d0BeamSpot_muon_elel",d0BeamSpot_muon_elel,"d0BeamSpot_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("sf_muon_elel",sf_muon_elel,"sf_muon_elel[nMuons_elel]/D");
+      myDoubleElTree->Branch("charge_muon_elel",charge_muon_elel,"charge_muon_elel[nMuons_elel]/D");
+
+      //
+
+      // event related variables
+       myDoubleElTree->Branch("run_num_elel",&run_num,"run_num_elel/I");
+       myDoubleElTree->Branch("evt_num_elel",&evt_num,"evt_num_elel/I");
+       myDoubleElTree->Branch("lumi_num_elel",&lumi_num_elel,"lumi_num_elel/I");
+       myDoubleElTree->Branch("nvtx_elel",&nvtx_elel,"nvtx_elel/I");
+       myDoubleElTree->Branch("npu_elel",&npu_elel,"npu_elel/I");
+       myDoubleElTree->Branch("puSF_elel",&puSF_elel,"puSF_elel/D");
+
+      
 
       // eo a third tree that is filled if there is at least two electrons (el-el)
 
@@ -1229,6 +1235,15 @@ int main (int argc, char *argv[])
       //	myDoubleMuTree->Branch("templatevar",templatevar,"templatevar[nMuonPairs_mumu]/D"); 
       myDoubleMuTree->Branch("nMuonPairs_mumu",&nMuonPairs_mumu,"nMuonPairs_mumu/I"); 
       myDoubleMuTree->Branch("deltaVz_mumu",deltaVz_mumu,"deltaVz_mumu[nMuonPairs_mumu]/D"); 
+
+
+      // event related variables 
+      myDoubleMuTree->Branch("run_num_mumu",&run_num,"run_num_mumu/I");
+      myDoubleMuTree->Branch("evt_num_mumu",&evt_num,"evt_num_mumu/I");
+      myDoubleMuTree->Branch("lumi_num_mumu",&lumi_num_mumu,"lumi_num_mumu/I");
+      myDoubleMuTree->Branch("nvtx_mumu",&nvtx_mumu,"nvtx_mumu/I");
+      myDoubleMuTree->Branch("npu_mumu",&npu_mumu,"npu_mumu/I");
+      myDoubleMuTree->Branch("puSF_mumu",&puSF_mumu,"puSF_mumu/D");
 
 	
       // eo a fourth tree that is filled if there is at least two muons (mu-mu)            
@@ -1356,11 +1371,12 @@ int main (int argc, char *argv[])
 
 
 	  
-	  run_num=event->runId();
-	  evt_num=event->eventId();
-	  lumi_num=event->lumiBlockId();
-	  nvtx=vertex.size();
-	  npu=(int)event->nTruePU();
+	  run_num = run_num_elel = run_num_mumu =event->runId();
+	  evt_num = evt_num_elel = evt_num_mumu =event->eventId();
+	  lumi_num = lumi_num_elel =lumi_num_mumu = event->lumiBlockId();
+	  nvtx = nvtx_elel = nvtx_mumu = vertex.size();
+	  npu = npu_elel = npu_mumu = (int)event->nTruePU();
+
 	  
 	  
 
@@ -1407,7 +1423,7 @@ int main (int argc, char *argv[])
 	  ///////////////////////////////////////////
 
 	  double lumiWeight = LumiWeights.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
-	  puSF=lumiWeight;
+	  puSF = puSF_elel = puSF_mumu = lumiWeight;
 	  if (isData) puSF =1;
 
 
@@ -2735,14 +2751,6 @@ int main (int argc, char *argv[])
 	  passedElMuNotOverlaping=true;
 	  }
 	  }
-	  } 
-	  }
-	  }
-	  }
-	  }
-	  }
-	  }
-	  }
 	  */
 
 	  //cout << "ievt is " << ievt << " and end_d is " << end_d << endl;            
@@ -2787,7 +2795,7 @@ int main (int argc, char *argv[])
       treeLoader.UnLoadDataset();
     } //End Loop on Datasets
 
-  eventlist.close();
+  //  eventlist.close();
 
   /////////////
   // Writing //
