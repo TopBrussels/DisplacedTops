@@ -74,7 +74,7 @@ for chan in channels:
     files_str=""
     scractFiles_str=""
     tmpdirFiles_str=""
-    FilePerJob=0
+    FilePerJob=0 # add dccap...
     addPrefix=True
     N_processed=0
     
@@ -145,6 +145,7 @@ for chan in channels:
                         scractFiles_str=scractFiles_str+ " " + listOfScratchFiles[fpj]
                         tmpdirFiles_str=tmpdirFiles_str+ " " + listOfTmpDirFiles [fpj]
                         N_processed=N_processed+1
+                        # copy all the file
                         print >> outfile , CopyCmdlistOfFiles[fpj]
                         
                     print >> outfile , "\n\n"
@@ -152,7 +153,7 @@ for chan in channels:
 #                    print files_str
 
 
-                    # copy all the files
+                    # run on the files
                     print >> outfile, "# now run on the file copied under /$TMPDIR/ "
                     print >> outfile, commandString, scractFiles_str , " ", chan , " " , str(N_job+1) , " 0" , " 2000000" 
 
