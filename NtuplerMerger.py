@@ -15,8 +15,8 @@ yyyy = str(now.year)
 date = dd+"_"+mm+"_"+yyyy
 #date = "17_1_2016"
 
-#channels = ["_MuMu","_ElEl"]
-channels = ["_ElEl"]
+channels = ["_MuMu","_ElEl"]
+#channels = ["_ElEl"]
 #channels = ["_MuMu"]
 
 for chan in channels:
@@ -30,11 +30,11 @@ for chan in channels:
     
     # get filenames from the xml!!!    
     if "MuMu" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesMuMuV1.xml')
+        tree = ET.ElementTree(file='config/FullSamplesMuMuV0.xml')
     elif "ElEl" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesElElV1.xml')
+        tree = ET.ElementTree(file='config/FullSamplesElElV0.xml')
     elif "ElMu" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesElMuV1.xml')
+        tree = ET.ElementTree(file='config/FullSamplesElMuV0.xml')
     else:
         print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
         sys.exit()
@@ -56,7 +56,7 @@ for chan in channels:
             print "found dataset to be added..." + str(d.attrib['name'])
 
             # select a subset of the existing root file
-            if not "over" in str(d.attrib['name']) :
+            if "" in str(d.attrib['name']) :
                 datasetNames.append(str(d.attrib['name']))
                 print str(d.attrib['name'])
     

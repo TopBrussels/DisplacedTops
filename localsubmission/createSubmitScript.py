@@ -25,9 +25,9 @@ date = dd+"_"+mm+"_"+yyyy
 
 # pick one of the above
 # channel = ["test"]
-#channels = ["MuMu","ElEl"] 
+channels = ["MuMu","ElEl"] 
 #channels = ["MuMu"] 
-channels = ["ElEl"] 
+#channels = ["ElEl"] 
 
 # loop over channels
 for chan in channels:
