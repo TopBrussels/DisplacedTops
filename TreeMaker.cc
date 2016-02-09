@@ -868,7 +868,7 @@ int main (int argc, char *argv[])
       // variables for electronPairs
       Int_t nElectronPairs_elel; // if there is n electrons there is (n*n - n)/2 distinct pairs
       Double_t deltaVz_elel[10]; // max 5 electrons -> max (25 -5)/2 = 10 electronPairs
-
+      Double_t invMass_elel[10];
 
       // variables for muons
       Int_t nMuons_elel;
@@ -949,9 +949,10 @@ int main (int argc, char *argv[])
       Bool_t isId_muon_mumu[10];
       Bool_t isIso_muon_mumu[10];
 
-      // variables for electronPairs                                                                                                        
+      // variables for muonPairs 
       Int_t nMuonPairs_mumu; // if there is n muons there is (n*n - n)/2 distinct pairs
       Double_t deltaVz_mumu[10]; // max 5 muons -> max (25 -5)/2 = 10 muonPairs
+      Double_t invMass_mumu[10];
 
       // event related variables
       Int_t run_num_mumu;
@@ -1140,7 +1141,9 @@ int main (int argc, char *argv[])
       // electronPairs
       //      myDoubleElTree->Branch("templatevar",templatevar,"templatevar[nElectronPairs_elel]/I"); 
       myDoubleElTree->Branch("nElectronPairs_elel",&nElectronPairs_elel, "nElectronPairs_elel/I");
-      myDoubleElTree->Branch("deltaVz_elel",deltaVz_elel,"deltaVz_elel[nElectronPairs_elel]/D"); 
+      myDoubleElTree->Branch("deltaVz_elel",deltaVz_elel,"deltaVz_elel[nElectronPairs_elel]/D");
+      myDoubleElTree->Branch("invMass_elel",invMass_elel,"invMass_elel[nElectronPairs_elel]/D"); 
+
 
 
       // muons
@@ -1235,6 +1238,7 @@ int main (int argc, char *argv[])
       //	myDoubleMuTree->Branch("templatevar",templatevar,"templatevar[nMuonPairs_mumu]/D"); 
       myDoubleMuTree->Branch("nMuonPairs_mumu",&nMuonPairs_mumu,"nMuonPairs_mumu/I"); 
       myDoubleMuTree->Branch("deltaVz_mumu",deltaVz_mumu,"deltaVz_mumu[nMuonPairs_mumu]/D"); 
+      myDoubleMuTree->Branch("invMass_mumu",invMass_mumu,"invMass_mumu[nMuonPairs_mumu]/D"); 
 
 
       // event related variables 
@@ -1474,6 +1478,26 @@ int main (int argc, char *argv[])
 	  //selectedElectrons = init_electrons;
 	  //selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta
 	  //selectedElectrons = selection.GetSelectedElectrons();
+
+
+
+
+	  // fill TLorentz vector to allow easier calculation 	  
+
+	  // electrons
+	  vector<TLorentzVector> selectedElectronsTLV;
+	  for(int iele=0; iele<selectedElectrons.size(); iele++)
+	    {
+	      selectedElectronsTLV.push_back(*selectedElectrons[iele]);
+	    }
+	  
+	  // muons                                     
+	  vector<TLorentzVector> selectedMuonsTLV;
+	  for(int imuo=0; imuo<selectedMuons.size(); imuo++)
+	    {
+	      selectedMuonsTLV.push_back(*selectedMuons[imuo]);
+	    }
+
 
 
 	  int JetCut =0;
@@ -1859,6 +1883,7 @@ int main (int argc, char *argv[])
 	      for (Int_t firstEl = 0; firstEl < secondEl ; firstEl++ )
 		{
 		  deltaVz_elel[nElectronPairs_elel]=abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl]);
+		  invMass_elel[nElectronPairs_elel]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
 		  nElectronPairs_elel++;
 		    
 		  // debug statement
@@ -2051,6 +2076,7 @@ int main (int argc, char *argv[])
 	      for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++ )
 		{
 		  deltaVz_mumu[nMuonPairs_mumu]=abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu]);
+		  invMass_mumu[nMuonPairs_mumu]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M();
 		  nMuonPairs_mumu++;
 		    
 		  // debug statement
@@ -2286,31 +2312,31 @@ int main (int argc, char *argv[])
 
 	  /*		      
 
-			      vector<TLorentzVector> init_electronsTLV;
-			      for(int iele=0; iele<init_electrons.size() && nElectrons<10; iele++)
-			      {
-			      init_electronsTLV.push_back(*init_electrons[iele]);
-			      }
-	    
-			      vector<TLorentzVector> init_muonsTLV;
-			      for(int imuo=0; imuo<init_muons.size() && nMuons<10; imuo++)
-			      {
-			      init_muonsTLV.push_back(*init_muons[imuo]);
-			      }
-    
-
-			      vector<TLorentzVector> postCut_electronsTLV;
-			      for(int iele=0; iele<selectedElectrons.size(); iele++)
-			      {
-			      postCut_electronsTLV.push_back(*selectedElectrons[iele]);
-			      }
-	    
-			      // muons                                     
-			      vector<TLorentzVector> postCut_muonsTLV;
-			      for(int imuo=0; imuo<selectedMuons.size(); imuo++)
-			      {
-			      postCut_muonsTLV.push_back(*selectedMuons[imuo]);//fill a new vector with the muons that passed the cuts
-			      }
+	  vector<TLorentzVector> electronsTLV;
+	  for(int iele=0; iele<init_electrons.size() && nElectrons<10; iele++)
+	    {
+	      init_electronsTLV.push_back(*init_electrons[iele]);
+	    }
+	  
+	  vector<TLorentzVector> init_muonsTLV;
+	  for(int imuo=0; imuo<init_muons.size() && nMuons<10; imuo++)
+	    {
+	      init_muonsTLV.push_back(*init_muons[imuo]);
+	    }
+	  
+	  
+	  vector<TLorentzVector> postCut_electronsTLV;
+	  for(int iele=0; iele<selectedElectrons.size(); iele++)
+	    {
+	      postCut_electronsTLV.push_back(*selectedElectrons[iele]);
+	    }
+	  
+	  // muons                                     
+	  vector<TLorentzVector> postCut_muonsTLV;
+	  for(int imuo=0; imuo<selectedMuons.size(); imuo++)
+	    {
+	      postCut_muonsTLV.push_back(*selectedMuons[imuo]);//fill a new vector with the muons that passed the cuts
+	    }
 	  */
 
 
