@@ -70,11 +70,6 @@ int main(int argc, char* argv[])
   //Placing arguments in properly typed variables
 
   const string channel = argv[1];
-
-  applyElectronSF = false;
-  applyMuonSF = false;
-  applyPUSF = false;
-  applyGlobalSF = false;
   debug = strtol(argv[2],NULL,10); 
   applyElectronSF = strtol(argv[3],NULL,10);
   applyMuonSF = strtol(argv[4],NULL,10);
@@ -95,7 +90,8 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Muon-Muon channel..." << endl;
       channelpostfix = "_MuMu";
-      xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
+      //      xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
+      xmlFileName = "config/output_FullSamplesMuMuV0.xml";
       DileptonMuMu=true;
       //      cout << "DileptonMuMu is " << DileptonMuMu << endl;
     }
@@ -116,10 +112,12 @@ int main(int argc, char* argv[])
 
   
   if (debug_plot){
-    xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
+    //    xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
+    xmlFileName = "config/FullSamplesElElV0TreeProc.xml";
+
     // only few plots!
     if (DileptonMuMu) {
-      DatasetPlotter(5, -0.5, 4.5, "nMuons_mumu", xmlFileName,CraneenPath);
+      //      DatasetPlotter(5, -0.5, 4.5, "nMuons_mumu", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
     }
     if (DileptonElEl){
@@ -328,13 +326,18 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   }
   free(dup);
 
-  if (debug) cout << v[0] << "  " << v[1] << endl;
+  if (debug){
+    cout << "varofInterest is " << varofInterest << endl;
+    cout << "sVarofinterest is " << sVarofinterest << endl;
+    cout << v[0] << "  " << v[1] << endl;
+  }
   
 
   // get the desired directory
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/3_2_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/4_2_2016/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/5_2_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/5_2_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/7_2_2016/";
   CraneenPath=CraneenPath+channelpostfix;
   
 
@@ -385,85 +388,56 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       bool isData= false;
       if(dataSetName.find("Data")!=string::npos || dataSetName.find("data")!=string::npos || dataSetName.find("DATA")!=string::npos) isData =true;
       
-      //      if (isData) slumi=datasets[d]->Eqlumi;
+      
+      Int_t data_index;
+      if (isData) {
+        Luminosity =  datasets[d]->EquivalentLumi() ; // pb-1 
+        cout << "Luminosity is " << Luminosity << endl;
+	data_index=d;
+	
+      }
 
+      //Luminosity =datasets[data_index]->EquivalentLumi() ;
+      Luminosity=2610.49;
 
 
       
-      ///////////////////////////////////////////                                                                    
-      //  Event Scale Factor                                                                                         
-      ///////////////////////////////////////////                                                                    
+      ///////////////////////////////////////////
+      /// Event Scale Factor ///////////////////
+      ///////////////////////////////////////////
+
       
       // bo of event SF
       // -----------
+      Double_t  puSF, globalScaleFactor, sf_muon, sf_electron;
 
-      //applying all appropriate scale factors for individual objects if the bool is set to true
+
       /*
       Bool_t applyElectronSF, applyMuonSF , applyPUSF, applyGlobalSF;
-      
-      if (applyElectronSF_arg == 1) applyElectronSF = true;
-      if (applyMuonSF_arg == 1) applyMuonSF = true;
-      if (applyPUSF_arg == 1)  applyPUSF = true;
-      if (applyGlobalSF_arg == 1) applyGlobalSF = true;
-      */
-
       
       if (applyGlobalSF && !isData){
 	cout << "Applying Scale factor " << endl;
       }
 
       // get the SF from the corresponding branch
-      Double_t  puSF, globalScaleFactor, sf_muon, sf_electron;
 
+      Int_t nEl;
+      ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_elel",&nEl);
+      Int_t nMu;
+      ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_elel",&nMu);
 
-      Int_t nElectrons;
-      Int_t nMuons;
-      Double_t sf_electron_ar [4];
-      Double_t sf_muon_ar [4];
+      Double_t electronSF[10];
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_elel",&electronSF);
+      Double_t muonSF[10];
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_elel", &muonSF);
 
-      //      /*      
-      if (DileptonElEl){
-	ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_elel",&sf_electron_ar);
-	ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_elel",&sf_muon_ar);
-	//	ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_elel",&nElectrons);
-	//	ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_elel",&nMuons);
-      }
-      //      */
-
-      /*
-      if (DileptonMuMu){
-	Double_t sf_muon_mumu [4];
-	Double_t sf_electron_mumu [4];
-	ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu",sf_muon_mumu);
-	ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_mumu",&sf_electron_mumu);
-	//	Vsf_muon = sf_muon_mumu;
-	//	Vsf_electron =sf_electron_mumu;
-      }
       */
-
-
-
-      //      Double_t        sf_muon_mumu[4];
-
-      /*
-      //      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon",&sf_muon);
-      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu",sf_muon_mumu);
-      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron",&sf_electron);
-      ttree[dataSetName.c_str()]->SetBranchAddress("puSF",&puSF); // change to sf_pu
-      */
-      
-      //      cout << "sf_electron is " << Vsf_electron[0] << endl;
-      //      cout << "sf_muon is " << Vsf_muon[0] << endl;
-      
       // -----------
       // eo of event SF
       // Declare the SF
 
 
       
-      //      Luminosity = 1; // pb-1
-      Luminosity = 2461.387; // pb-1
-
       
       //      histo1D[dataSetName.c_str()] = new TH1F((dataSetName+"_"+v[0]).c_str(),(dataSetName+"_"+v[0]).c_str(), nBins, plotLow, plotHigh);
 
@@ -471,39 +445,32 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       for (int j = 0; j<nEntries; j++)
         {
 
-	  puSF = globalScaleFactor = sf_muon = sf_electron = 1;
 	  ttree[(dataSetName).c_str()]->GetEntry(j);
+
+
+	  puSF = globalScaleFactor = sf_muon = sf_electron = 1.;
 	  
-
-	  if (DileptonElEl){
-	    
-
-	  }
-
+	  //trick to avoid overwriting the number of el/mu in the events
+	  //	  if(v.size() == 1 && sVarofinterest.find("nElectrons_elel")!=string::npos) {varofInterest = nEl;}
+	  //	  if(v.size() == 1 && sVarofinterest.find("nMuons_elel")!=string::npos) {varofInterest = nMu;}
 
 	  // bo of event SF
 	  // -----------
 	  
 	  globalScaleFactor = 1.0;
 
+	  /*
 	  // only apply individual SF if applyGlobalSF is true and sample is not data
 	  if (applyGlobalSF && !isData){
-	  
+	    
+	    puSF = globalScaleFactor = sf_muon = sf_electron = 1;
+	    
 	    // electron SF
 	    if (applyElectronSF){
-	      for (int i = 0; i < 12; i++)
+	      for (int i = 0; i < nEl; i++)
 		{
-		  sf_electron *=sf_electron_ar[i];
-		  if (debug){
-		    cout << "sf_electron at index " << i << " is " << sf_electron_ar[i] << endl;
-		    cout << "sf_product after " << i << " iteration  is " << sf_electron << endl;
-		  }
-
+		  sf_electron *=electronSF[i];
 		}
-	      //	      */
-
-		
-	      //	      cout << "nElectrons_elel is " << nElectrons << endl;
 
 	      
 	      globalScaleFactor *= sf_electron;
@@ -535,6 +502,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    }
 	    
 	  }
+	  */
+
 
 	  // -----------
 	  // eo of event SF
@@ -561,7 +530,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    // bo of loop over the number of object per entry
 	    for (int i_object =0 ; i_object < varofInterest ;i_object ++ )
 	      {
-		if (debug) cout << "varofInterest is " << varofInterest << endl;
+		//		if (debug) cout << "varofInterest is " << varofInterest << endl;
 		if (isData) 
 		  {
 		    // for data, fill once per event, weighted with the event scale factor 
