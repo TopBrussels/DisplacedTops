@@ -9,6 +9,13 @@ then
 	    qsub $f
 	done
 	cd -
+    else
+	cd output
+        for f in ../submit_$1*.sh
+        do
+            qsub $f
+        done
+        cd -
     fi
 
 else
