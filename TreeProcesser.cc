@@ -83,7 +83,8 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Muon-Electron channel..." << endl;
       channelpostfix = "_MuEl";
-      xmlFileName = "config/FullSamplesElMuV0TreeProc.xml";
+      //      xmlFileName = "config/FullSamplesElMuV0TreeProc.xml";
+      xmlFileName = "config/TreeProc_FullSamplesElMuV0.xml";
       DileptonElMu=true;
     }
   else if(channel=="MuMu")
@@ -91,7 +92,7 @@ int main(int argc, char* argv[])
       cout << " --> Using the Muon-Muon channel..." << endl;
       channelpostfix = "_MuMu";
       //      xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
-      xmlFileName = "config/output_FullSamplesMuMuV0.xml";
+      xmlFileName = "config/TreeProc_FullSamplesMuMuV0.xml";
       DileptonMuMu=true;
       //      cout << "DileptonMuMu is " << DileptonMuMu << endl;
     }
@@ -99,7 +100,8 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Electron-Electron channel..." << endl;
       channelpostfix = "_ElEl";
-      xmlFileName = "config/FullSamplesElElV0TreeProc.xml";
+      //      xmlFileName = "config/FullSamplesElElV0TreeProc.xml";
+      xmlFileName = "config/TreeProc_FullSamplesElElV0.xml";
       DileptonElEl=true;
     }
   else
@@ -113,7 +115,7 @@ int main(int argc, char* argv[])
   
   if (debug_plot){
     //    xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
-    xmlFileName = "config/FullSamplesElElV0TreeProc.xml";
+    xmlFileName = "config/TreeProc_FullSamplesElElV0.xml";
 
     // only few plots!
     if (DileptonMuMu) {
@@ -211,6 +213,7 @@ int main(int argc, char* argv[])
 
       // muonPairs plots
       DatasetPlotter(100, 0.0, 1.5, "deltaVz_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 1000, "invMass_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
 
 
       // electron-muon plots
@@ -239,6 +242,7 @@ int main(int argc, char* argv[])
       
       // Dielectron plots
       DatasetPlotter(100, 0.0, 1.5, "deltaVz_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 1.5, "invMass_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
       
       /*
       // muon plots
@@ -337,7 +341,10 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/3_2_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/4_2_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/5_2_2016/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/7_2_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/7_2_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/9_2_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/10_2_2016/";
+
   CraneenPath=CraneenPath+channelpostfix;
   
 
@@ -345,6 +352,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets  
     {
       dataSetName = datasets[d]->Name();
+      cout << " sVarofinterest is "  << sVarofinterest << endl;
       cout<<"Dataset:  :"<<dataSetName<<endl;
       filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";  
       //filepath = CraneenPath+dataSetName+ ".root";
