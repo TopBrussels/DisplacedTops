@@ -378,6 +378,7 @@ int main (int argc, char *argv[])
   vector < TRootJet* >      init_fatjets;
   vector < TRootMET* >      mets;
 
+
   //Global variable
   TRootEvent* event = 0;
 
@@ -895,6 +896,7 @@ int main (int argc, char *argv[])
       Int_t nvtx_elel;
       Int_t npu_elel;
       Double_t puSF_elel;
+      Double_t met_elel;
 
 
       // eo MyDoubleElTree
@@ -961,19 +963,11 @@ int main (int argc, char *argv[])
       Int_t nvtx_mumu;
       Int_t npu_mumu;
       Double_t puSF_mumu;
+      Double_t met_mumu;
 
       // eo MyDoubleMuTree
 
 
-
-      // event related variables
-      /*
-        Int_t run_num;
-        Int_t evt_num;
-        Int_t lumi_num;
-        Int_t nvtx;
-        Int_t npu;
-      */
 
       Int_t NEvent = datasets[d]->NofEvtsToRunOver();
       //	Double_t xs [1];
@@ -1174,6 +1168,7 @@ int main (int argc, char *argv[])
        myDoubleElTree->Branch("nvtx_elel",&nvtx_elel,"nvtx_elel/I");
        myDoubleElTree->Branch("npu_elel",&npu_elel,"npu_elel/I");
        myDoubleElTree->Branch("puSF_elel",&puSF_elel,"puSF_elel/D");
+       myDoubleElTree->Branch("met_elel",&met_elel,"met_elel/D");
 
       
 
@@ -1248,6 +1243,7 @@ int main (int argc, char *argv[])
       myDoubleMuTree->Branch("nvtx_mumu",&nvtx_mumu,"nvtx_mumu/I");
       myDoubleMuTree->Branch("npu_mumu",&npu_mumu,"npu_mumu/I");
       myDoubleMuTree->Branch("puSF_mumu",&puSF_mumu,"puSF_mumu/D");
+      myDoubleMuTree->Branch("met_mumu",&met_mumu,"met_mumu/D");
 
 	
       // eo a fourth tree that is filled if there is at least two muons (mu-mu)            
@@ -1303,6 +1299,7 @@ int main (int argc, char *argv[])
       vector<TRootPFJet*>    selectedJets;
       vector<TRootSubstructureJet*>    selectedFatJets;
 
+
       selectedElectrons.reserve(10);
       selectedMuons.reserve(10);
 
@@ -1315,7 +1312,6 @@ int main (int argc, char *argv[])
       for (unsigned int ievt = event_start; ievt < end_d; ievt++)
 	{
 
-	  
 
 	  if (debug) cout << "just entered the event loop!" << endl;
 
@@ -1349,7 +1345,7 @@ int main (int argc, char *argv[])
 	  if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
 	  //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*globalScaleFactor );
 	  
-	    
+	  
 	  /*
 	    for (Int_t initel =0; initel < init_electrons.size(); initel++ )
 	    {
@@ -1374,7 +1370,8 @@ int main (int argc, char *argv[])
 	  //-----
 
 
-	  
+
+	  met_elel = met_mumu = mets[0]->Et();
 	  run_num = run_num_elel = run_num_mumu =event->runId();
 	  evt_num = evt_num_elel = evt_num_mumu =event->eventId();
 	  lumi_num = lumi_num_elel =lumi_num_mumu = event->lumiBlockId();
@@ -1479,8 +1476,8 @@ int main (int argc, char *argv[])
 	  //selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta
 	  //selectedElectrons = selection.GetSelectedElectrons();
 
-
-
+	  //	  mets.TRootParticle();
+	  
 
 	  // fill TLorentz vector to allow easier calculation 	  
 
