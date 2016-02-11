@@ -9,6 +9,8 @@
 #include "TRandom3.h"
 #include "TNtuple.h"
 #include <sstream>
+//#include "TDataType.h"
+//#include "TTree.h"
 
 //user code
 #include "TopTreeProducer/interface/TRootRun.h"
@@ -77,6 +79,14 @@ int main(int argc, char* argv[])
   applyGlobalSF = strtol(argv[6],NULL,10);
 
 
+  /*
+    Double_t aDouble;
+    const char aDoubleType =  aDouble.TDataMember::GetTypeName();
+    cout << "aDoubleType is " << aDoubleType << endl; //faco
+  */
+  
+  
+
   string xmlFileName;
 
   if(channel=="ElMu" || channel== "MuEl")
@@ -115,12 +125,14 @@ int main(int argc, char* argv[])
   
   if (debug_plot){
     //    xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
-    xmlFileName = "config/TreeProc_FullSamplesElElV0.xml";
+    xmlFileName = "config/TreeProc_FullSamplesMuMuV0.xml";
 
     // only few plots!
     if (DileptonMuMu) {
       //      DatasetPlotter(5, -0.5, 4.5, "nMuons_mumu", xmlFileName,CraneenPath);
+      DatasetPlotter(70, -0.5, 69.5, "nvtx_mumu", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(40, 0, 800, "Met_mumu", xmlFileName,CraneenPath);
     }
     if (DileptonElEl){
       //      DatasetPlotter(5, -0.5, 4.5, "nElectrons_elel", xmlFileName,CraneenPath);
@@ -166,7 +178,7 @@ int main(int argc, char* argv[])
 
  
       // muon plots
-      //    DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
+      //      DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0, 1000, "pt_muon[nMuons]", xmlFileName,CraneenPath);
       DatasetPlotter(50, -3.15, 3.15, "eta_muon[nMuons]", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon[nMuons]", xmlFileName,CraneenPath);
@@ -185,7 +197,9 @@ int main(int argc, char* argv[])
           
       // event plots
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
+
       DatasetPlotter(70, -0.5, 69.5, "nvtx_mumu", xmlFileName,CraneenPath);
+      DatasetPlotter(40, 0, 800, "Met_mumu", xmlFileName,CraneenPath);
           
      
       /*
@@ -200,8 +214,9 @@ int main(int argc, char* argv[])
       */
       
  
+      //      /*
       // muon plots
-      //    DatasetPlotter(11, -0.5, 10.5, "nMuons", xmlFileName,CraneenPath);
+      DatasetPlotter(11, -0.5, 10.5, "nMuons_mumu", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0, 1000, "pt_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       //	DatasetPlotter(20, 10, 50, "pt_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(50, -3.15, 3.15, "eta_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
@@ -214,7 +229,7 @@ int main(int argc, char* argv[])
       // muonPairs plots
       DatasetPlotter(100, 0.0, 1.5, "deltaVz_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0.0, 1000, "invMass_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
-
+      //      */
 
       // electron-muon plots
       //    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
@@ -226,6 +241,7 @@ int main(int argc, char* argv[])
       // event plots
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
       DatasetPlotter(70, -0.5, 69.5, "nvtx_elel", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0, 1000, "Met_elel", xmlFileName,CraneenPath);
               
 
       // electron plots
@@ -242,7 +258,7 @@ int main(int argc, char* argv[])
       
       // Dielectron plots
       DatasetPlotter(100, 0.0, 1.5, "deltaVz_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0.0, 1.5, "invMass_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0.0, 1000, "invMass_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
       
       /*
       // muon plots
@@ -300,7 +316,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //***************************************************CREATING PLOTS****************************************************
   //  TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
   //  outfile->cd();
-  string plotname = sVarofinterest;   ///// Non Jet Split plot
+  string plotname = sVarofinterest;  
   // make for loop here!!!
   MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, sVarofinterest.c_str()); 
 
@@ -310,9 +326,18 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   
   int nEntries;
   float ScaleFactor, NormFactor, Luminosity;
-  int varofInterest;
-  double varofInterest_double [20];
 
+  // Declare all the variables that allows to store inforamtion from the trees
+
+  // a vector of double
+  int n_object = 0;
+  double v_varofInterest_double [20];
+
+  // a simple int
+  int varofInterest;
+
+  // a simple double
+  double varofInterest_double;
 
   
   vector<string> v;
@@ -331,9 +356,11 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   free(dup);
 
   if (debug){
-    cout << "varofInterest is " << varofInterest << endl;
+    //    cout << "n_object is " << n_object << endl;
     cout << "sVarofinterest is " << sVarofinterest << endl;
-    cout << v[0] << "  " << v[1] << endl;
+    cout << "v[0] is "  << v[0] << endl;
+    if (v.size()==2) cout << "v[1] is "  << v[1]<< endl;
+    else cout << "v[1] is not filled " << endl;
   }
   
 
@@ -370,20 +397,36 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
 
 
-      ttree[dataSetName.c_str()] = (TTree*)FileObj[dataSetName.c_str()]->Get(TTreename.c_str()); //get ttre for each dataset
+      ttree[dataSetName.c_str()] = (TTree*)FileObj[dataSetName.c_str()]->Get(TTreename.c_str()); //get ttree for each dataset
       nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
       cout<<"                 nEntries: "<<nEntries<<endl;
       
+      //      TTree mytree;
+      /* faco
+      //      char Met_mumu = "Met_mumu";
+
+      TLeaf *myleaf = ttree[dataSetName.c_str()]->GetLeaf("Met_mumu");      
       
+      cout << "myleaf->GetValue(0) is " << myleaf->GetValue(0) << endl;
+      
+
+      */     
+
+
       // bo logic to set the right branch address depending on the string given as argument of the datasetplotter
       if (v.size() == 2){
-	ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&varofInterest); 
-	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),varofInterest_double);
+	ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&n_object); 
+	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),v_varofInterest_double);
       }
 
       else if (v.size() == 1){
-	//	if (debug)	cout << "v.size is to 1" << " and v[0] is " << v[0] << endl ;
-	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest);//&varofInterest // faco To be fixed!
+	if (v[0]=="Met_mumu"){
+	  ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest_double);
+	}
+	else {
+	  ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest);
+	}
+	       
 	
       }
       else {
@@ -421,23 +464,23 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
 
       /*
-      Bool_t applyElectronSF, applyMuonSF , applyPUSF, applyGlobalSF;
+	Bool_t applyElectronSF, applyMuonSF , applyPUSF, applyGlobalSF;
       
-      if (applyGlobalSF && !isData){
+	if (applyGlobalSF && !isData){
 	cout << "Applying Scale factor " << endl;
-      }
+	}
 
-      // get the SF from the corresponding branch
+	// get the SF from the corresponding branch
 
-      Int_t nEl;
-      ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_elel",&nEl);
-      Int_t nMu;
-      ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_elel",&nMu);
+	Int_t nEl;
+	ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_elel",&nEl);
+	Int_t nMu;
+	ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_elel",&nMu);
 
-      Double_t electronSF[10];
-      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_elel",&electronSF);
-      Double_t muonSF[10];
-      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_elel", &muonSF);
+	Double_t electronSF[10];
+	ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_elel",&electronSF);
+	Double_t muonSF[10];
+	ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_elel", &muonSF);
 
       */
       // -----------
@@ -471,43 +514,43 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	  // only apply individual SF if applyGlobalSF is true and sample is not data
 	  if (applyGlobalSF && !isData){
 	    
-	    puSF = globalScaleFactor = sf_muon = sf_electron = 1;
+	  puSF = globalScaleFactor = sf_muon = sf_electron = 1;
 	    
-	    // electron SF
-	    if (applyElectronSF){
-	      for (int i = 0; i < nEl; i++)
-		{
-		  sf_electron *=electronSF[i];
-		}
+	  // electron SF
+	  if (applyElectronSF){
+	  for (int i = 0; i < nEl; i++)
+	  {
+	  sf_electron *=electronSF[i];
+	  }
 
 	      
-	      globalScaleFactor *= sf_electron;
-	      if (debug){
-		cout << "sf_electron is " << sf_electron << endl;
-		cout << "the globalScaleFactor is " << globalScaleFactor << endl;
-	      }
-	    }
+	  globalScaleFactor *= sf_electron;
+	  if (debug){
+	  cout << "sf_electron is " << sf_electron << endl;
+	  cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	  }
+	  }
 	    
-	    // muon SF
-	    if (applyMuonSF){
-	      sf_muon=0.5;
+	  // muon SF
+	  if (applyMuonSF){
+	  sf_muon=0.5;
 
-	      globalScaleFactor *= sf_muon;
-	      if (debug){
-		cout << "sf_muon is " << sf_muon << endl;
-		cout << "the globalScaleFactor is " << globalScaleFactor << endl;
-	      }
-	    }	
+	  globalScaleFactor *= sf_muon;
+	  if (debug){
+	  cout << "sf_muon is " << sf_muon << endl;
+	  cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	  }
+	  }	
 	    
-	    // PU SF
-	    if (applyPUSF){
-	      globalScaleFactor *= puSF;
-	      if (debug){
-		cout << "puSF is " << puSF << endl;
-		cout << "the globalScaleFactor is " << globalScaleFactor << endl;
-	      }
+	  // PU SF
+	  if (applyPUSF){
+	  globalScaleFactor *= puSF;
+	  if (debug){
+	  cout << "puSF is " << puSF << endl;
+	  cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	  }
 
-	    }
+	  }
 	    
 	  }
 	  */
@@ -519,36 +562,45 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
  	  // make MS plot for single value
 	  if (v.size() == 1){
-	    if (isData) 
-	      {
-		// for data, fill once per event, weighted with the event scale factor only ???? what??
-		MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], false, 1); 	
+	    if (v[0]=="Met_mumu"){ // store a double
+	      if (isData) {
+		MSPlot[plotname.c_str()]->Fill(varofInterest_double, datasets[d], false, 1); 
 	      }
-	    else
-	      {
-		// for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
-		MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], true, globalScaleFactor*Luminosity);
+	      else { // not data 
+		MSPlot[plotname.c_str()]->Fill(varofInterest_double, datasets[d], true, globalScaleFactor*Luminosity); 
 	      }
+	    }  
+	    else { // not met
+	      if (isData) {
+		MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], false, 1);
+	      }
+	      else { // not data
+		MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], true, globalScaleFactor*Luminosity); 
+	      }
+	    }
 	  }
-
+	  
 	  
 	  // make MS plot for vector
 	  if (v.size() == 2){
 
 	    // bo of loop over the number of object per entry
-	    for (int i_object =0 ; i_object < varofInterest ;i_object ++ )
+	    for (int i_object =0 ; i_object < n_object ;i_object ++ )
 	      {
-		//		if (debug) cout << "varofInterest is " << varofInterest << endl;
+		if (0)
+		  {
+		    cout << "i_object is " << i_object << endl;
+		    cout << "n_object is " << n_object << endl;
+		  }
 		if (isData) 
 		  {
 		    // for data, fill once per event, weighted with the event scale factor 
-		    MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], false, 1); 	
+		    MSPlot[plotname.c_str()]->Fill(v_varofInterest_double[i_object], datasets[d], false, 1); 	
 		  }
 		else
 		  {
 		    // for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
-		    MSPlot[plotname.c_str()]->Fill(varofInterest_double[i_object], datasets[d], true, globalScaleFactor*Luminosity);
-		    //		  MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], true, globalScaleFactor*Luminosity);
+		    MSPlot[plotname.c_str()]->Fill(v_varofInterest_double[i_object], datasets[d], true, globalScaleFactor*Luminosity);
 		  }
 	      
 	      }
