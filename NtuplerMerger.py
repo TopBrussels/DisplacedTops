@@ -1,5 +1,6 @@
 from ROOT import TChain
 import ROOT
+import sys
 import glob
 import xml.etree.cElementTree as ET
 import os
@@ -14,6 +15,9 @@ yyyy = str(now.year)
 # pick one of the two above
 date = dd+"_"+mm+"_"+yyyy
 #date = "17_1_2016"
+
+#usging argument to filter
+filterSample = sys.argv[1]
 
 channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
@@ -56,7 +60,7 @@ for chan in channels:
             print "found dataset to be added..." + str(d.attrib['name'])
 
             # select a subset of the existing root file
-            if "" in str(d.attrib['name']) :
+            if filterSample in str(d.attrib['name']) :
                 datasetNames.append(str(d.attrib['name']))
                 print str(d.attrib['name'])
     
