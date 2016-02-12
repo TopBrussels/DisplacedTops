@@ -767,7 +767,7 @@ int main (int argc, char *argv[])
 
       // event related variables
       Int_t run_num;
-      Int_t evt_num;
+      Int_t event_num;
       Int_t lumi_num;
       Int_t nvtx;
       Int_t npu;
@@ -824,7 +824,7 @@ int main (int argc, char *argv[])
 
       // event related variables
       Int_t run_num_pc;
-      Int_t evt_num_pc;
+      Int_t event_num_pc;
       Int_t lumi_num_pc;
       Int_t nvtx_pc;
       Int_t npu_pc;
@@ -891,12 +891,12 @@ int main (int argc, char *argv[])
 
       // event related variables
       Int_t run_num_elel;
-      Int_t evt_num_elel;
+      Int_t event_num_elel;
       Int_t lumi_num_elel;
       Int_t nvtx_elel;
       Int_t npu_elel;
-      Double_t puSF_elel;
-      Double_t met_elel;
+      Double_t evt_puSF_elel;
+      Double_t evt_met_elel; //faco here
 
 
       // eo MyDoubleElTree
@@ -958,12 +958,12 @@ int main (int argc, char *argv[])
 
       // event related variables
       Int_t run_num_mumu;
-      Int_t evt_num_mumu;
+      Int_t event_num_mumu;
       Int_t lumi_num_mumu;
       Int_t nvtx_mumu;
       Int_t npu_mumu;
-      Double_t puSF_mumu;
-      Double_t met_mumu;
+      Double_t evt_puSF_mumu;
+      Double_t evt_met_mumu;
 
       // eo MyDoubleMuTree
 
@@ -1038,7 +1038,7 @@ int main (int argc, char *argv[])
 
       // event related variables
       myTree->Branch("run_num",&run_num,"run_num/I");
-      myTree->Branch("evt_num",&evt_num,"evt_num/I");
+      myTree->Branch("event_num",&event_num,"event_num/I");
       myTree->Branch("lumi_num",&lumi_num,"lumi_num/I");
       myTree->Branch("nvtx",&nvtx,"nvtx/I");
       myTree->Branch("npu",&npu,"npu/I");
@@ -1163,12 +1163,12 @@ int main (int argc, char *argv[])
 
       // event related variables
        myDoubleElTree->Branch("run_num_elel",&run_num,"run_num_elel/I");
-       myDoubleElTree->Branch("evt_num_elel",&evt_num,"evt_num_elel/I");
+       myDoubleElTree->Branch("event_num_elel",&event_num,"event_num_elel/I");
        myDoubleElTree->Branch("lumi_num_elel",&lumi_num_elel,"lumi_num_elel/I");
        myDoubleElTree->Branch("nvtx_elel",&nvtx_elel,"nvtx_elel/I");
        myDoubleElTree->Branch("npu_elel",&npu_elel,"npu_elel/I");
-       myDoubleElTree->Branch("puSF_elel",&puSF_elel,"puSF_elel/D");
-       myDoubleElTree->Branch("met_elel",&met_elel,"met_elel/D");
+       myDoubleElTree->Branch("evt_puSF_elel",&evt_puSF_elel,"evt_puSF_elel/D");
+       myDoubleElTree->Branch("evt_met_elel",&evt_met_elel,"evt_met_elel/D");
 
       
 
@@ -1238,12 +1238,12 @@ int main (int argc, char *argv[])
 
       // event related variables 
       myDoubleMuTree->Branch("run_num_mumu",&run_num,"run_num_mumu/I");
-      myDoubleMuTree->Branch("evt_num_mumu",&evt_num,"evt_num_mumu/I");
+      myDoubleMuTree->Branch("event_num_mumu",&event_num,"event_num_mumu/I");
       myDoubleMuTree->Branch("lumi_num_mumu",&lumi_num_mumu,"lumi_num_mumu/I");
       myDoubleMuTree->Branch("nvtx_mumu",&nvtx_mumu,"nvtx_mumu/I");
       myDoubleMuTree->Branch("npu_mumu",&npu_mumu,"npu_mumu/I");
-      myDoubleMuTree->Branch("puSF_mumu",&puSF_mumu,"puSF_mumu/D");
-      myDoubleMuTree->Branch("met_mumu",&met_mumu,"met_mumu/D");
+      myDoubleMuTree->Branch("evt_puSF_mumu",&evt_puSF_mumu,"evt_puSF_mumu/D");
+      myDoubleMuTree->Branch("evt_met_mumu",&evt_met_mumu,"evt_met_mumu/D");
 
 	
       // eo a fourth tree that is filled if there is at least two muons (mu-mu)            
@@ -1364,16 +1364,14 @@ int main (int argc, char *argv[])
 	  //////////////////
 	  //-----
 
-
-
-
 	  //-----
 
 
 
-	  met_elel = met_mumu = mets[0]->Et();
+	  // setting event related variables
+	  evt_met_elel = evt_met_mumu = mets[0]->Et();
+	  event_num = event_num_elel = event_num_mumu =event->eventId();
 	  run_num = run_num_elel = run_num_mumu =event->runId();
-	  evt_num = evt_num_elel = evt_num_mumu =event->eventId();
 	  lumi_num = lumi_num_elel =lumi_num_mumu = event->lumiBlockId();
 	  nvtx = nvtx_elel = nvtx_mumu = vertex.size();
 	  npu = npu_elel = npu_mumu = (int)event->nTruePU();
@@ -1424,7 +1422,7 @@ int main (int argc, char *argv[])
 	  ///////////////////////////////////////////
 
 	  double lumiWeight = LumiWeights.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
-	  puSF = puSF_elel = puSF_mumu = lumiWeight;
+	  puSF = evt_puSF_elel = evt_puSF_mumu = lumiWeight;
 	  if (isData) puSF =1;
 
 

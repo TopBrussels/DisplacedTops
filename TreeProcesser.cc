@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
       //      DatasetPlotter(5, -0.5, 4.5, "nMuons_mumu", xmlFileName,CraneenPath);
       DatasetPlotter(70, -0.5, 69.5, "nvtx_mumu", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-      DatasetPlotter(40, 0, 800, "Met_mumu", xmlFileName,CraneenPath);
+      DatasetPlotter(40, 0, 800, "evt_met_mumu", xmlFileName,CraneenPath);
     }
     if (DileptonElEl){
       //      DatasetPlotter(5, -0.5, 4.5, "nElectrons_elel", xmlFileName,CraneenPath);
@@ -199,7 +199,7 @@ int main(int argc, char* argv[])
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
 
       DatasetPlotter(70, -0.5, 69.5, "nvtx_mumu", xmlFileName,CraneenPath);
-      DatasetPlotter(40, 0, 800, "Met_mumu", xmlFileName,CraneenPath);
+      DatasetPlotter(40, 0, 800, "evt_met_mumu", xmlFileName,CraneenPath);
           
      
       /*
@@ -241,7 +241,7 @@ int main(int argc, char* argv[])
       // event plots
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
       DatasetPlotter(70, -0.5, 69.5, "nvtx_elel", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0, 1000, "Met_elel", xmlFileName,CraneenPath);
+      DatasetPlotter(40, 0, 800, "evt_met_elel", xmlFileName,CraneenPath);
               
 
       // electron plots
@@ -401,17 +401,6 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
       cout<<"                 nEntries: "<<nEntries<<endl;
       
-      //      TTree mytree;
-      /* faco
-      //      char Met_mumu = "Met_mumu";
-
-      TLeaf *myleaf = ttree[dataSetName.c_str()]->GetLeaf("Met_mumu");      
-      
-      cout << "myleaf->GetValue(0) is " << myleaf->GetValue(0) << endl;
-      
-
-      */     
-
 
       // bo logic to set the right branch address depending on the string given as argument of the datasetplotter
       if (v.size() == 2){
@@ -420,7 +409,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       }
 
       else if (v.size() == 1){
-	if (v[0]=="Met_mumu"){
+	if (v[0].compare(0,4,"evt_") == 0){
 	  ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),&varofInterest_double);
 	}
 	else {
@@ -562,7 +551,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
  	  // make MS plot for single value
 	  if (v.size() == 1){
-	    if (v[0]=="Met_mumu"){ // store a double
+	    if (v[0].compare(0,4,"evt_") == 0){ // store a double
 	      if (isData) {
 		MSPlot[plotname.c_str()]->Fill(varofInterest_double, datasets[d], false, 1); 
 	      }
