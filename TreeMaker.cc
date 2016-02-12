@@ -843,7 +843,8 @@ int main (int argc, char *argv[])
       Double_t eta_electron_elel[10];
       Double_t eta_superCluster_electron_elel[10];
       Double_t E_electron_elel[10];
-      Double_t vz_electron_elel[10]; //faco
+      Double_t vz_electron_elel[10]; 
+      Double_t v0_electron_elel[10]; 
       Double_t d0_electron_elel[10];
       Double_t d0BeamSpot_electron_elel[10];
       Double_t chargedHadronIso_electron_elel[10];
@@ -869,6 +870,7 @@ int main (int argc, char *argv[])
       // variables for electronPairs
       Int_t nElectronPairs_elel; // if there is n electrons there is (n*n - n)/2 distinct pairs
       Double_t deltaVz_elel[10]; // max 5 electrons -> max (25 -5)/2 = 10 electronPairs
+      Double_t deltaV0_elel[10];
       Double_t invMass_elel[10];
 
       // variables for muons
@@ -940,6 +942,7 @@ int main (int argc, char *argv[])
       Double_t eta_muon_mumu[10];
       Double_t E_muon_mumu[10];
       Double_t vz_muon_mumu[10]; 
+      Double_t v0_muon_mumu[10]; 
       Double_t d0_muon_mumu[10];
       Double_t d0BeamSpot_muon_mumu[10];
       Double_t chargedHadronIso_muon_mumu[10];
@@ -954,6 +957,7 @@ int main (int argc, char *argv[])
       // variables for muonPairs 
       Int_t nMuonPairs_mumu; // if there is n muons there is (n*n - n)/2 distinct pairs
       Double_t deltaVz_mumu[10]; // max 5 muons -> max (25 -5)/2 = 10 muonPairs
+      Double_t deltaV0_mumu[10];
       Double_t invMass_mumu[10];
 
       // event related variables
@@ -1114,6 +1118,7 @@ int main (int argc, char *argv[])
       myDoubleElTree->Branch("eta_superCluster_electron_elel",eta_superCluster_electron_elel,"eta_superCluster_electron_elel[nElectrons_elel]/D");
       myDoubleElTree->Branch("E_electron_elel",E_electron_elel,"E_electron_elel[nElectrons_elel]/D");
       myDoubleElTree->Branch("vz_electron_elel",vz_electron_elel,"vz_electron_elel[nElectrons_elel]/D");
+      myDoubleElTree->Branch("v0_electron_elel",v0_electron_elel,"v0_electron_elel[nElectrons_elel]/D");
       myDoubleElTree->Branch("chargedHadronIso_electron_elel",chargedHadronIso_electron_elel,"chargedHadronIso_electron_elel[nElectrons_elel]/D");
       myDoubleElTree->Branch("neutralHadronIso_electron_elel",neutralHadronIso_electron_elel,"neutralHadronIso_electron_elel[nElectrons_elel]/D");
       myDoubleElTree->Branch("photonIso_electron_elel",photonIso_electron_elel,"photonIso_electron_elel[nElectrons_elel]/D");
@@ -1136,6 +1141,7 @@ int main (int argc, char *argv[])
       //      myDoubleElTree->Branch("templatevar",templatevar,"templatevar[nElectronPairs_elel]/I"); 
       myDoubleElTree->Branch("nElectronPairs_elel",&nElectronPairs_elel, "nElectronPairs_elel/I");
       myDoubleElTree->Branch("deltaVz_elel",deltaVz_elel,"deltaVz_elel[nElectronPairs_elel]/D");
+      myDoubleElTree->Branch("deltaV0_elel",deltaV0_elel,"deltaV0_elel[nElectronPairs_elel]/D");
       myDoubleElTree->Branch("invMass_elel",invMass_elel,"invMass_elel[nElectronPairs_elel]/D"); 
 
 
@@ -1217,6 +1223,7 @@ int main (int argc, char *argv[])
       myDoubleMuTree->Branch("eta_muon_mumu",eta_muon_mumu,"eta_muon_mumu[nMuons_mumu]/D");
       myDoubleMuTree->Branch("E_muon_mumu",E_muon_mumu,"E_muon_mumu[nMuons_mumu]/D");
       myDoubleMuTree->Branch("vz_muon_mumu",vz_muon_mumu,"vz_muon_mumu[nMuons_mumu]/D");
+      myDoubleMuTree->Branch("v0_muon_mumu",v0_muon_mumu,"v0_muon_mumu[nMuons_mumu]/D");
       myDoubleMuTree->Branch("chargedHadronIso_muon_mumu",chargedHadronIso_muon_mumu,"chargedHadronIso_muon_mumu[nMuons_mumu]/D");
       myDoubleMuTree->Branch("neutralHadronIso_muon_mumu",neutralHadronIso_muon_mumu,"neutralHadronIso_muon_mumu[nMuons_mumu]/D");
       myDoubleMuTree->Branch("photonIso_muon_mumu",photonIso_muon_mumu,"photonIso_muon_mumu[nMuons_mumu]/D");
@@ -1233,6 +1240,7 @@ int main (int argc, char *argv[])
       //	myDoubleMuTree->Branch("templatevar",templatevar,"templatevar[nMuonPairs_mumu]/D"); 
       myDoubleMuTree->Branch("nMuonPairs_mumu",&nMuonPairs_mumu,"nMuonPairs_mumu/I"); 
       myDoubleMuTree->Branch("deltaVz_mumu",deltaVz_mumu,"deltaVz_mumu[nMuonPairs_mumu]/D"); 
+      myDoubleMuTree->Branch("deltaV0_mumu",deltaV0_mumu,"deltaV0_mumu[nMuonPairs_mumu]/D"); 
       myDoubleMuTree->Branch("invMass_mumu",invMass_mumu,"invMass_mumu[nMuonPairs_mumu]/D"); 
 
 
@@ -1809,6 +1817,7 @@ int main (int argc, char *argv[])
 	      eta_superCluster_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->superClusterEta();
 	      E_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->E();
 	      vz_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->vz();
+	      v0_electron_elel[nElectrons_elel]=sqrt(pow (selectedLooseElectrons[selel]->vx(),2 )+pow(selectedLooseElectrons[selel]->vy(),2) );
 	      d0_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->d0();
 	      d0BeamSpot_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->d0BeamSpot();
 	      chargedHadronIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->chargedHadronIso(3);
@@ -1878,6 +1887,7 @@ int main (int argc, char *argv[])
 	      for (Int_t firstEl = 0; firstEl < secondEl ; firstEl++ )
 		{
 		  deltaVz_elel[nElectronPairs_elel]=abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl]);
+		  deltaV0_elel[nElectronPairs_elel]=abs(v0_electron_elel[firstEl]-v0_electron_elel[secondEl]);
 		  invMass_elel[nElectronPairs_elel]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
 		  nElectronPairs_elel++;
 		    
@@ -2033,6 +2043,7 @@ int main (int argc, char *argv[])
 	      eta_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->Eta();
 	      E_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->E();
 	      vz_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->vz();
+	      v0_muon_mumu[nMuons_mumu]=sqrt( pow(selectedLooseMuons[selmu]->vx(), 2) + pow(selectedLooseMuons[selmu]->vy(), 2) );
 	      d0_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->d0();
 	      d0BeamSpot_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->d0BeamSpot();
 	      chargedHadronIso_muon_mumu[nMuons_mumu]=selectedLooseMuons[selmu]->chargedHadronIso(4);
@@ -2071,6 +2082,7 @@ int main (int argc, char *argv[])
 	      for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++ )
 		{
 		  deltaVz_mumu[nMuonPairs_mumu]=abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu]);
+		  deltaV0_mumu[nMuonPairs_mumu]=abs(v0_muon_mumu[firstMu]-v0_muon_mumu[secondMu]);
 		  invMass_mumu[nMuonPairs_mumu]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M();
 		  nMuonPairs_mumu++;
 		    
@@ -2575,6 +2587,7 @@ int main (int argc, char *argv[])
 
 	  Bool_t blindD0_elel = true;
 	  Bool_t blindDvz_elel = true;
+	  Bool_t blindDv0_elel = true;
 	  
 	  // el el final state
 	  if (nElectrons_elel >= 2){
@@ -2597,8 +2610,11 @@ int main (int argc, char *argv[])
 		  if (deltaVz_elel[selelPairs] > 0.5){
 		    blindDvz_elel=false;
 		  }			  
+		  if (deltaV0_elel[selelPairs] > 0.01){
+		    blindDv0_elel=false;
+		  }			  
 		}
-	      if (blindD0_elel && blindDvz_elel){
+	      if (blindD0_elel && blindDvz_elel && blindDv0_elel){
 		myDoubleElTree->Fill();
 		passed_elel++;
 		if (debug) cout << "Blinding conditions passed!" << endl;
@@ -2616,6 +2632,8 @@ int main (int argc, char *argv[])
 
 	  Bool_t blindD0_mumu = true;
 	  Bool_t blindDvz_mumu = true;
+	  Bool_t blindDv0_mumu = true;
+
 	  // mu mu final state
 	  if (nMuons_mumu >= 2){	  
 	    if (isData){
@@ -2635,8 +2653,11 @@ int main (int argc, char *argv[])
 		  if (deltaVz_mumu[selmuPairs] > 0.5){
 		    blindDvz_mumu=false;
 		  }			  
+		  if (deltaV0_mumu[selmuPairs] > 0.01){
+		    blindDv0_mumu=false;
+		  }			  
 		}
-	      if (blindD0_mumu && blindDvz_mumu){
+	      if (blindD0_mumu && blindDvz_mumu && blindDv0_mumu){
 		myDoubleMuTree->Fill();
 		passed_mumu++;
 		if (debug) cout << "Blinding conditions passed!" << endl;
