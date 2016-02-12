@@ -2607,10 +2607,10 @@ int main (int argc, char *argv[])
 	      // Remove the events were the DeltaVz is too big
 	      for (Int_t selelPairs = 0; selelPairs <= nElectronPairs_elel; selelPairs++)
 		{
-		  if (deltaVz_elel[selelPairs] > 0.5){
+		  if (deltaVz_elel[selelPairs] > 0.2){
 		    blindDvz_elel=false;
 		  }			  
-		  if (deltaV0_elel[selelPairs] > 0.01){
+		  if (deltaV0_elel[selelPairs] > 0.03){
 		    blindDv0_elel=false;
 		  }			  
 		}
@@ -2650,10 +2650,10 @@ int main (int argc, char *argv[])
 	      // Remove the events were the DeltaVz is too big
 	      for (Int_t selmuPairs = 0; selmuPairs <= nMuonPairs_mumu; selmuPairs++)
 		{
-		  if (deltaVz_mumu[selmuPairs] > 0.5){
+		  if (deltaVz_mumu[selmuPairs] > 0.2){
 		    blindDvz_mumu=false;
 		  }			  
-		  if (deltaV0_mumu[selmuPairs] > 0.01){
+		  if (deltaV0_mumu[selmuPairs] > 0.03){
 		    blindDv0_mumu=false;
 		  }			  
 		}
