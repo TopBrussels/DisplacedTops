@@ -61,10 +61,12 @@ source compile.sh
 source compile.sh <Macro.cc>
 
 # Make ntuple
+
 ./TreeMaker WWToLNuQQ Diboson 1 390 1 2 1 41297.4650368 47.693 0.0  dcap://maite.iihe.ac.be:/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/TOPTREE_7.root dcap://maite.iihe.ac.be:/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/TOPTREE_6.root dcap://maite.iihe.ac.be:/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/WWToLNuQQ_13TeV-powheg/crab_WWToLNuQQ_13TeV-powheg-RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1-CMSSW_74X_v8-MCRUN2_74_V9/151029_124630/0000/TOPTREE_5.root   ElEl   3  0  2000000
 
 # make MSPlots
-./TreeProcesser ElEl
+./TreeProcesser ElEl 0 0 1 1 1 1
+//./TreeProcesser <channel> <debug> <debugplot> <electronSF> <muonSf> <puSf> <globalSF> 
 
 
 # make plots --obselete--
