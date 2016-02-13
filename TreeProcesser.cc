@@ -80,11 +80,15 @@ int main(int argc, char* argv[])
   applyPUSF = strtol(argv[6],NULL,10);
   applyGlobalSF = strtol(argv[7],NULL,10);
 
-  /*
+  cout << "---------------------------------------------------" << endl;
   if (debug) cout << "debug is true --> adding some cout..." << endl;
   if (debug_plot) cout << "debug_plot is true --> using a reduced set of plots to go faster..." << endl;
-  if (applyElectronSF) cout << "applying "
-  */	       
+  if (applyElectronSF) cout << "applying ElectronSF..." << endl;
+  if (applyMuonSF) cout << "applying MuonSF..." << endl;
+  if (applyPUSF) cout << "applying PUSF..." << endl;
+  if (applyGlobalSF) cout << "applying GlobalSF..." << endl;
+  cout << "---------------------------------------------------" << endl << endl;
+			 
   
   
 
