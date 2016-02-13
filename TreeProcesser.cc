@@ -85,12 +85,6 @@ int main(int argc, char* argv[])
   if (debug_plot) cout << "debug_plot is true --> using a reduced set of plots to go faster..." << endl;
   if (applyElectronSF) cout << "applying "
   */	       
-
-  /*
-    Double_t aDouble;
-    const char aDoubleType =  aDouble.TDataMember::GetTypeName();
-    cout << "aDoubleType is " << aDoubleType << endl; //faco
-  */
   
   
 
@@ -173,7 +167,7 @@ int main(int argc, char* argv[])
           
       // event plots
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
-      DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
+      DatasetPlotter(70, -0.5, 49.5, "nvtx", xmlFileName,CraneenPath);
     
 
       // electron plots
@@ -181,7 +175,7 @@ int main(int argc, char* argv[])
       DatasetPlotter(100, 0, 1000, "pt_electron[nElectrons]", xmlFileName,CraneenPath);
       DatasetPlotter(50, -3.15, 3.15, "eta_electron[nElectrons]", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_electron[nElectrons]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, -0.1, 0.1, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -0.015, 0.015, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron[nElectrons]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0.0, 0.2, "pfIso_electron[nElectrons]", xmlFileName,CraneenPath);
 
@@ -206,7 +200,7 @@ int main(int argc, char* argv[])
           
       // event plots
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
-      DatasetPlotter(70, -0.5, 69.5, "nvtx_mumu", xmlFileName,CraneenPath);
+      DatasetPlotter(50, -0.5, 49.5, "nvtx_mumu", xmlFileName,CraneenPath);
       DatasetPlotter(40, 0, 800, "evt_met_mumu", xmlFileName,CraneenPath);
           
      
@@ -224,16 +218,16 @@ int main(int argc, char* argv[])
  
       //      /*
       // muon plots
-      DatasetPlotter(11, -0.5, 10.5, "nMuons_mumu", xmlFileName,CraneenPath);
+      DatasetPlotter(6, -0.5, 5.5, "nMuons_mumu", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0, 1000, "pt_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       //	DatasetPlotter(20, 10, 50, "pt_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(50, -3.15, 3.15, "eta_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0.0, 0.2, "pfIso_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, -0.1, 0.1, "d0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -0.015, 0.015, "d0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -10, 10, "vz_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0, 1, "v0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0, 0.5, "v0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
 
 
       // muonPairs plots
@@ -251,21 +245,21 @@ int main(int argc, char* argv[])
           
       // event plots
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
-      DatasetPlotter(70, -0.5, 69.5, "nvtx_elel", xmlFileName,CraneenPath);
+      DatasetPlotter(50, -0.5, 49.5, "nvtx_elel", xmlFileName,CraneenPath);
       DatasetPlotter(40, 0, 800, "evt_met_elel", xmlFileName,CraneenPath);
               
 
       // electron plots
-      //    DatasetPlotter(11, -0.5, 10.5, "nElectrons_elel", xmlFileName,CraneenPath);
+      DatasetPlotter(6, -0.5, 5.5, "nElectrons_elel", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0, 1000, "pt_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       //	DatasetPlotter(20, 10, 50, "pt_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(50, -3.15, 3.15, "eta_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0.0, 0.2, "pfIso_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, -0.1, 0.1, "d0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, -0.015, 0.015, "d0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -10, 10, "vz_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0, 1, "v0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      DatasetPlotter(100, 0, 0.5, "v0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
 
       
       // Dielectron plots
@@ -341,7 +335,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   int nEntries;
   float ScaleFactor, NormFactor, Luminosity;
   float DataEqLumi= 1.;
-  
+
+
   // Declare all the variables that allows to store inforamtion from the trees
 
   // a vector of double
@@ -449,13 +444,10 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
       if (isData) {
         DataEqLumi =  datasets[d]->EquivalentLumi() ; // pb-1 
-        cout << "DataEqLumi is " << DataEqLumi << endl;
+        if (debug) cout << "DataEqLumi is " << DataEqLumi << endl;
       }
-      cout << "DataEqLumi is " << DataEqLumi << endl;
-      //      Luminosity=DataEqLumi;
-      Luminosity=2600.;
-      //cout << "DataEqLumi is " << DataEqLumi << endl;
-      //      cout << "Luminosity is " << Luminosity << endl;
+      Luminosity=DataEqLumi;
+
       
       ///////////////////////////////////////////
       /// Event Scale Factor ///////////////////
@@ -611,8 +603,6 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
 	  }
 
-	  //		  MSPlot[plotname.c_str()]->Fill(varofInterest, datasets[d], false, globalScaleFactor); 
-
 	}
       
  
@@ -681,13 +671,14 @@ void MSPCreator (){
     {
       string name = it->first;
       MultiSamplePlot *temp = it->second;
-      if (1){//faco
+      if (debug){
 	cout << "Saving the MSP" << endl;
 	cout << " and it->first is " << it->first << endl;
 	cout << " and it->second is " << it->second << endl;
       }
       temp->Draw("MyMSP", 1, false, false, false, 10);
       temp->Write(outfile, "MyMSP"+it->first, true,"myOutput_MSPlots/"+channelpostfix+"/" , "png");
+      temp->Write(outfile, "MyMSP"+it->first, true,"myOutput_MSPlots/"+channelpostfix+"/" , "pdf");
       //      vector<string> temp_histo = it->GetTH1FNames();
       //      for (int i_hist=0; i_hist < temp_histo.size();i_hist++  ){
       //	cout << "hist is" << temp_histo[i_hist] << endl;
