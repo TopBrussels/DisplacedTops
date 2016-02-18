@@ -6,11 +6,11 @@ import ROOT
 #
 
 # the analysis structure see TTree/TChain description on root.cern.ch
-ch = ROOT.TChain("tree","tree")
+ch = ROOT.TChain("doubleMuTree","doubleMuTree")
 # TChain accepts wildcards and ~infinite numbers of input files! So no need to merge files!
 #pathToRootFile="/user/qpython/TopBrussels7X/CMSSW_7_2_1_patch1/src/TopBrussels/HToZZBachelorProjectNtupleMaker/FreyasNtuple"
-pathToRootFile="../Craneen/"
-ch.Add(pathToRootFile+"stopTobl_m1100_Ctau10_tree.root")
+pathToRootFile="../MergedTrees/12_2_2016/_MuMu/"
+ch.Add(pathToRootFile+"DisplacedTop_Run2_TopTree_Study_NP_overlay_stopTobl_m500_Ctau10_MuMu.root")
 # very loud but useful to know what variables are stored in a tree... it prints them all
 #ch.Print()
 
@@ -42,20 +42,23 @@ for iev in ch:
 
 
 # loop over muons - fill in lorentz vector and fill some histograms
-    for imu in range(0,iev.nMuons) :
-        lvmu.SetPxPyPzE(iev.pX_muon[imu],iev.pY_muon[imu],iev.pZ_muon[imu],iev.E_muon[imu])
+    for imu in range(0,iev.nMuons_mumu) :
+#        lvmu.SetPxPyPzE(iev.pX_muon[imu],iev.pY_muon[imu],iev.pZ_muon[imu],iev.E_muon[imu])
         
-        h_mupt.Fill(lvmu.Pt())
-        h_mueta.Fill(lvmu.Eta())
-        h_mud0.Fill(abs(iev.d0_muon[imu]))
+        # Fill with the value from the tree! (open root file an search!)
+        h_mupt.Fill(iev.pt_muon_mumu[imu])
+#        h_mueta.Fill(lvmu.Eta())
+#        h_mud0.Fill(abs(iev.d0_muon[imu]))
 
 # loop over electrons - fill in lorentz vector and fill some histograms
-    for iele in range(0,iev.nElectrons) :
+    for iele in range(0,iev.nElectrons_mumu) :
+        
 
-        lve.SetPxPyPzE(iev.pX_electron[iele],iev.pY_electron[iele],iev.pZ_electron[iele],iev.E_electron[iele])
-        h_eleeta.Fill(lve.Eta())
-        h_elept.Fill(lve.Pt())
-        h_eled0.Fill(abs(iev.d0_electron[iele]))
+#        lve.SetPxPyPzE(iev.pX_electron[iele],iev.pY_electron[iele],iev.pZ_electron[iele],iev.E_electron[iele])
+        h_eleeta.Fill(3)
+#        h_eleeta.Fill(lve.Eta())
+#        h_elept.Fill(lve.Pt())
+#        h_eled0.Fill(abs(iev.d0_electron[iele]))
 
 # end of loop
 
