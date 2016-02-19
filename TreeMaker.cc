@@ -168,12 +168,17 @@ int main (int argc, char *argv[])
   cout << "Beginning Event: " << startEvent << endl;
   cout << "Ending Event: " << endEvent << endl;
   cout << "JobNum: " << JobNum << endl;
+
   bool isData= false;
   if(dName.find("Data")!=string::npos || dName.find("data")!=string::npos || dName.find("DATA")!=string::npos){
     isData = true;
     cout << "running on data !!!!" << endl;
   }
-     
+  bool isSignal = false;
+  if(dName.find("NP")!=string::npos){
+    isSignal = true;
+    cout << "running on signal !!!!" << endl;
+  }
   cout << "----------------------------------------" << endl;
    
 
@@ -845,6 +850,7 @@ int main (int argc, char *argv[])
       Double_t E_electron_elel[10];
       Double_t vz_electron_elel[10]; 
       Double_t v0_electron_elel[10]; 
+      //      Double_t v0BeamSpot_electron_elel[10]; 
       Double_t d0_electron_elel[10];
       Double_t d0BeamSpot_electron_elel[10];
       Double_t chargedHadronIso_electron_elel[10];
@@ -1383,7 +1389,7 @@ int main (int argc, char *argv[])
 	  lumi_num = lumi_num_elel =lumi_num_mumu = event->lumiBlockId();
 	  nvtx = nvtx_elel = nvtx_mumu = vertex.size();
 	  npu = npu_elel = npu_mumu = (int)event->nTruePU();
-
+	  
 	  
 	  
 
@@ -2588,43 +2594,58 @@ int main (int argc, char *argv[])
 	  Bool_t blindD0_elel = true;
 	  Bool_t blindDvz_elel = true;
 	  Bool_t blindDv0_elel = true;
+	  Bool_t PassIsEBEEGap_elel = true;
 	  
 	  // el el final state
 	  if (nElectrons_elel >= 2){
+	    
+	    // check if in one electron is in ecal crack
+	    for (Int_t selel =0; selel <= nElectrons_elel; selel++)
+	      {
+		if (isEBEEGap_elel[selel]){
+		  PassIsEBEEGap_elel=false;
+		}
+	      }
+		
+	    // fill only if none of the electrons are in the gap
+	    if (PassIsEBEEGap_elel){
+	    
 
-	    if (isData){
+	      // blind for bkgd MC and Data
+	      if (!isSignal){
 
-	      if (debug) cout << "Trying to pass blinding condition for data" << endl;
+		if (debug) cout << "Trying to pass blinding condition for data" << endl;
 	      
-	      // Remove the events were the D0 is too big
-	      for (Int_t selel =0; selel <= nElectrons_elel; selel++)
-		{
-		  if (d0BeamSpot_electron_elel[selel] > 0.2){
-		    blindD0_elel=false;
+		// Remove the events were the D0 is too big
+		for (Int_t selel =0; selel <= nElectrons_elel; selel++)
+		  {
+		    if (d0BeamSpot_electron_elel[selel] > 0.2){
+		      blindD0_elel=false;
+		    }
 		  }
-		}
 		 
-	      // Remove the events were the DeltaVz is too big
-	      for (Int_t selelPairs = 0; selelPairs <= nElectronPairs_elel; selelPairs++)
-		{
-		  if (deltaVz_elel[selelPairs] > 0.2){
-		    blindDvz_elel=false;
-		  }			  
-		  if (deltaV0_elel[selelPairs] > 0.03){
-		    blindDv0_elel=false;
-		  }			  
+		// Remove the events were the DeltaVz is too big
+		for (Int_t selelPairs = 0; selelPairs <= nElectronPairs_elel; selelPairs++)
+		  {
+		    if (deltaVz_elel[selelPairs] > 0.2){
+		      blindDvz_elel=false;
+		    }			  
+		    if (deltaV0_elel[selelPairs] > 0.03){
+		      blindDv0_elel=false;
+		    }			  
+		  }
+		if (blindD0_elel && blindDvz_elel && blindDv0_elel){
+		  myDoubleElTree->Fill();
+		  passed_elel++;
+		  if (debug) cout << "Blinding conditions passed!" << endl;
 		}
-	      if (blindD0_elel && blindDvz_elel && blindDv0_elel){
+	      
+	      }
+	      // if not Data fill it anyway
+	      if (isSignal) {
 		myDoubleElTree->Fill();
 		passed_elel++;
-		if (debug) cout << "Blinding conditions passed!" << endl;
 	      }
-	      
-	    }
-	    // if not Data fill it anyway
-	    if (!isData) {
-	      myDoubleElTree->Fill();
-	      passed_elel++;
 	    }
 
 	  }
@@ -2636,7 +2657,7 @@ int main (int argc, char *argv[])
 
 	  // mu mu final state
 	  if (nMuons_mumu >= 2){	  
-	    if (isData){
+	    if (!isSignal){
 	      if (debug) cout << "Trying to pass blinding condition for data" << endl;
 	      
 	      // Remove the events were the D0 is too big
@@ -2666,7 +2687,7 @@ int main (int argc, char *argv[])
 	    }
 	      
 	    // if not Data fill it anyway
-	    if (!isData) {
+	    if (isSignal) {
 	      myDoubleMuTree->Fill();
 	      passed_mumu++;
 	    }
