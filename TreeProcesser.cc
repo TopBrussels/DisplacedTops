@@ -40,7 +40,7 @@ std::string intToStr (int number);
 void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath);
 void MSPCreator ();
 
-void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX );
+void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, int nBinsY, float lowY, float highY, string sVarofinterestY, string xmlNom, string TreePath );
 
 
 // faco TO BE CHANGED
@@ -57,6 +57,11 @@ Bool_t applyPUSF = false;
 Bool_t applyGlobalSF = false; 
 
 
+// main fucntion
+// get arguments from the cmd line and get appropriate Trees
+// make a list of MSplots
+// make a list of TH2F
+// draw all the MSplots and the TH2F
 
 int main(int argc, char* argv[])
 {
@@ -158,8 +163,9 @@ int main(int argc, char* argv[])
     cout << "xmlFileName is " << xmlFileName << endl;
 
 
-
+    // 
     // calling datasetPlotter to create MSPplots
+    
 
 
 
@@ -289,8 +295,18 @@ int main(int argc, char* argv[])
     }
   }
 
+
   // eo selecting the right plots and/or variables depending on the final state  
 
+  // making 2D histograms
+
+  if (DileptonMuMu){
+    TH2FPlotter(20, -10, 10, "v0_muon_mu[nMuons_mumu]", 20, -0.015, 0.015, "d0BeamSpot_muon_mumu[nMuons_mumu]]",  xmlFileName,CraneenPath);
+  }
+  
+  if (DileptonElEl){
+  TH2FPlotter(20, -10, 10, "v0_electron_elel[nElectrons_elel]", 20, -0.015, 0.015, "d0BeamSpot_electron_elel[nElectrons_elel]",  xmlFileName,CraneenPath);
+  }
 
   // calling the function that writes all the MSPlots in a root file
   MSPCreator ();
@@ -385,7 +401,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/7_2_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/9_2_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/10_2_2016/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/12_2_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/12_2_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/19_2_2016/";
 
   CraneenPath=CraneenPath+channelpostfix;
   
@@ -656,6 +673,139 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
 };
 
+// TH2D function
+
+void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, int nBinsY, float lowY, float highY, string sVarofinterestY, string xmlNom, string TreePath )
+{
+  const char *xmlfile = xmlNom.c_str();
+  cout << "entering TH2FPlotter" << endl;
+  TTreeLoader treeLoader;
+  vector < Dataset* > datasets; 
+  treeLoader.LoadDatasets (datasets, xmlfile);
+  if (debug) cout << "will start loading from xml file ..." << endl; 
+
+  string plotname;
+  plotname=sVarofinterestY+" vs "+sVarofinterestX;
+  
+
+
+  // bo trial example
+  histo2D[plotname.c_str()] =  new TH2F (plotname.c_str() ,plotname.c_str() ,nBinsX , lowX , highX , nBinsY, lowY, highY);
+
+
+  int nEntries;
+  string dataSetName, filepath ;
+  int n_objectX = 0;
+  double v_varofInterest_doubleX [20];
+  int n_objectY = 0;
+  double v_varofInterest_doubleY [20];
+  char delim[] = " []";
+
+
+
+  // get the the x axis
+  vector<string> vX;
+  // to avoid modifying original string                                               
+  // first duplicate the original string and return a char pointer then free the memory                                                                                    
+  
+  char * dupX = strdup(sVarofinterestX.c_str());
+  char * tokenX = strtok(dupX, delim);
+  while(tokenX != NULL){
+   vX.push_back(string(tokenX));
+   // the call is treated as a subsequent calls to strtok:                           
+   // the function continues from where it left in previous invocation               
+   tokenX = strtok(NULL, delim);
+  }
+  free(dupX);
+
+  if (debug){
+    //    cout << "n_object is " << n_object << endl;                                 
+    cout << "sVarofinterest is " << sVarofinterestX << endl;
+    cout << "vX[0] is "  << vX[0] << endl;
+    if (vX.size()==2) cout << "vX[1] is "  << vX[1]<< endl;
+    else cout << "vX[1] is not filled " << endl;
+  }
+
+
+  // get the Y axis
+  vector<string> vY;
+  // to avoid modifying original string                                               
+  // first duplicate the original string and return a char pointer then free the memory                                                                                    
+  
+  char * dupY = strdup(sVarofinterestY.c_str());
+  char * tokenY = strtok(dupY, delim);
+  while(tokenY != NULL){
+   vY.push_back(string(tokenY));
+   // the call is treated as a subsequent calls to strtok:                           
+   // the function continues from where it left in previous invocation               
+   tokenY = strtok(NULL, delim);
+  }
+  free(dupY);
+
+  if (debug){
+    //    cout << "n_object is " << n_object << endl;                                 
+    cout << "sVarofinterest is " << sVarofinterestY << endl;
+    cout << "vY[0] is "  << vY[0] << endl;
+    if (vY.size()==2) cout << "vY[1] is "  << vY[1]<< endl;
+    else cout << "vY[1] is not filled " << endl;
+  }
+  
+  // defining x and y avis titles
+  histo2D[plotname.c_str()]->GetXaxis()->SetTitle(vX[0].c_str());
+  histo2D[plotname.c_str()]->GetYaxis()->SetTitle(vY[0].c_str());
+
+
+
+  // get the desired directory
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/19_2_2016/";
+  CraneenPath=CraneenPath+channelpostfix;
+
+
+  for (int d = 0; d < datasets.size(); d++)   //Loop through datasets       
+    {
+      dataSetName = datasets[d]->Name();
+      cout << " sVarofinterest is "  << sVarofinterestX << endl;
+      cout<<"Dataset:  :"<<dataSetName<<endl;
+      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";
+      //filepath = CraneenPath+dataSetName+ ".root";                                                         
+      if (debug) cout<<"filepath: "<<filepath<<endl;
+
+      // get the tree corresponding to the final state of interest                                           
+      string stree = "";
+      if (DileptonMuMu) stree = "doubleMuTree";
+      if (DileptonElEl) stree = "doubleElTree";
+      if (DileptonElMu) stree = "tree";
+
+      FileObj[dataSetName.c_str()] = new TFile((filepath).c_str(),"READ"); //create TFile for each dataset
+      string TTreename = stree;
+
+      ttree[dataSetName.c_str()] = (TTree*)FileObj[dataSetName.c_str()]->Get(TTreename.c_str()); //get ttree for each dataset              
+      nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
+      cout<<"                 nEntries: "<<nEntries<<endl;
+      
+
+      // set value for x 
+      ttree[dataSetName.c_str()]->SetBranchAddress(vX[1].c_str(),&n_objectX);
+      ttree[dataSetName.c_str()]->SetBranchAddress(vX[0].c_str(),v_varofInterest_doubleX);
+
+      // set value for y 
+      ttree[dataSetName.c_str()]->SetBranchAddress(vY[1].c_str(),&n_objectY);
+      ttree[dataSetName.c_str()]->SetBranchAddress(vY[0].c_str(),v_varofInterest_doubleY);
+
+
+      // loop over the entries
+      for (int j = 0; j<nEntries; j++)
+        {
+	  ttree[(dataSetName).c_str()]->GetEntry(j);
+	  // loop over the number of object
+	    for (int i_object =0 ; i_object < n_objectX ;i_object ++ )// n_objectX = n_objectY
+              {      // Filling histo
+		histo2D[plotname.c_str()]->Fill(v_varofInterest_doubleX[i_object],v_varofInterest_doubleY[i_object]);
+	      }
+	}
+    }
+}
+
 
 // function that writes all the MSPlots created in a root file
 void MSPCreator (){
@@ -668,6 +818,24 @@ void MSPCreator (){
   
   TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
   outfile->cd();
+
+
+
+  // loop over TH2F
+  for(map<string,TH2F*>::const_iterator it = histo2D.begin(); it != histo2D.end(); it++)
+    {
+      cout << "entering the TH2F histo loop " << endl;
+      string name = it->first;
+      TH2F *temp = it->second;
+      if (debug){
+	cout << "Saving the MSP" << endl;
+	cout << " and it->first is " << it->first << endl;
+	cout << " and it->second is " << it->second << endl;
+      }
+      temp->Draw();
+      temp->Write();
+    }
+
   
   
   // Loop over all the MSPlots
@@ -689,6 +857,9 @@ void MSPCreator (){
       //	cout << "integral is " << it->GetTH1F(temp_histo[i_hist].GetSum()) << endl;
       //      }
     }
+
+
+
   
   outfile->Write("kOverwrite");
 }
