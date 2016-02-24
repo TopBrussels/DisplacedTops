@@ -33,18 +33,24 @@ doubleArray=[]
 
 lumivalue = 3
 debug=False
+isElEl=False
+isMuMu=False
 
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
-FinalState="At least two muons"
 
 # define the bound of the Signal region
 #SRxBounds=[0.001,0.002,0.1]
 bound1 = 0.001
-bound2 = 0.01
-bound3 = 0.1
+bound2 = 0.02
+bound3 = 0.05
 
 #bgMCSum=rt.TH1D("bgMCSum","bgMCSum",1,0,1)
 bgMCSum=0
+bgMCSum1=rt.TH1D("bgMCSum1","bgMCSum1",1,0,1)    
+bgMCSum2 = rt.TH1D("bgMCSum2","bgMCSum2",1,0,1)    
+bgMCSum3 = rt.TH1D("bgMCSum3","bgMCSum3",1,0,1)    
+
+
 
 
 # loop over the channel (lepton in final statue)
@@ -53,16 +59,23 @@ for chan in channels:
 
     # get the xmlfile that corresponds to the channel
     if "MuMu" in chan:
+        isMuMu=True
         tree = ET.ElementTree(file='../config/TreeProc_FullSamplesMuMuV0.xml')
-#        tree = ET.ElementTree(file='../config/FullSamplesMuMuV0.xml')
+        treeName="doubleMuTree"
+        FinalState="At least two muons"
     elif "ElEl" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElElV0.xml')
+        isElel=True
+        tree = ET.ElementTree(file='../config/TreeProc_FullSamplesElElV0.xml')
+        treeName="doubleElTree"
+        FinalState="At least two electrons"
     elif "ElMu" in chan:
         tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
     else:
         print "No tree has been loaded!!! Make sure the correct xml file are in the ri\
 ght directories!!!"
         sys.exit()
+
+        
 
     root = tree.getroot()
     datasets = root.find('datasets')
@@ -75,23 +88,42 @@ ght directories!!!"
 
     # loop over datasets
     for d in datasets:
-        if d.attrib['add'] == '1'  and "QCD_MuEnriched_120to170" in str(d.attrib['name']):
+        if d.attrib['add'] == '1' :
+#        if d.attrib['add'] == '1' and "QCD_MuEnriched" in str(d.attrib['name']):
             print "found dataset to be added..." + str(d.attrib['name'])
             datasetNames.append(str(d.attrib['name']))
             print str(d.attrib['name'])
             # one array per dataset [name, title, Eqlumi, N1, N2, N3, SR1, SR2, SR3]
-            ch = rt.TChain("doubleMuTree","doubleMuTree")
+            ch = rt.TChain(treeName,treeName)
             sampleName=d.attrib['name']
-            ch.Add("/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"+date+"/_MuMu/DisplacedTop_Run2_TopTree_Study_"+sampleName+"_MuMu.root")
+            
+            # fix the type of dataset (bgMC, signal or data)
+            isBgMC = False
+            isSignal = False
+            isData = False
+            
+            if "Data" not in sampleName and "NP" not in sampleName:
+                isBgMC = True
+            if "NP" in sampleName:
+                isSignal = True
+            if "Data" in sampleName:
+                isData = True
+
+
+                
+
+
+            ch.Add("/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
             Sum_SR1=Sum_SR2=Sum_SR3=0
             N1=rt.TH1D("N1"+sampleName,"N1",1,0,1)
-            # ideal way to do this (fix):
-            # N2 = N1.Clone("N2"+samplename)
-            N2=rt.TH1D("N2"+sampleName,"N2",1,0,1)
-            N3=rt.TH1D("N3"+sampleName,"N3",1,0,1)
-            SR1=rt.TH1D("SR1"+sampleName,"SR1",1,0,1)
-            SR2=rt.TH1D("SR2"+sampleName,"SR2",1,0,1)
-            SR3=rt.TH1D("SR3"+sampleName,"SR3",1,0,1)
+            N2 = N1.Clone("N2"+sampleName)
+            N3 = N1.Clone("N3"+sampleName)
+
+            SR1 = N1.Clone("SR1"+sampleName)
+            SR2 = N1.Clone("SR2"+sampleName)
+            SR3 = N1.Clone("SR3"+sampleName)
+
+
 
             # you can also use two bins, one for the weighted event and one for the unweighted event
 #            N1=rt.TH1D("N1"+sampleName,"N1",2,0,2)
@@ -106,7 +138,7 @@ ght directories!!!"
             
     
             # calculate weight
-            if "Data" in sampleName:
+            if isData :
                 lumivalue=float(d.attrib['EqLumi'])
                 
             weight= lumivalue / float(d.attrib['EqLumi'])
@@ -139,11 +171,6 @@ ght directories!!!"
                     
                     
                     MuonWeight *= iev.sf_muon_mumu[imu]
-    
-#                    lvmu.SetPxPyPzE(iev.pX_muon[imu],iev.pY_muon[imu],iev.pZ_muon[imu],iev.E_muon[imu])
-#                    lve.SetPxPyPzE(iev.pX_electron[iele],iev.pY_electron[iele],iev.pZ_electron[iele],iev.E_electron[iele])
-                    
-
                         
 #                    for bound in range(0,len(SRxBounds)):
 
@@ -168,71 +195,44 @@ ght directories!!!"
                             print "Electron and muon entering N2"
                             print "d0 muon is " , iev.d0BeamSpot_muon_mumu[imu]
 
-                if "Data" in sampleName:
+                if isData :
                     PileUpWeight=1
                     MuonWeight=1
                             
 
                 if (passed==True):
                     N1.Fill(0.5,weight*PileUpWeight*MuonWeight)
-
+                    
                 if (passed2==True):
                     N2.Fill(0.5,weight*PileUpWeight*MuonWeight)
-
+                    
                 if (passed3==True):
                     N3.Fill(0.5,weight*PileUpWeight*MuonWeight)
 
 
                 if (passed==True) and (passed2==False) and (passed3==False):
                     SR1.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    if isBgMC:
+                        bgMCSum1.Fill(0.5,weight*PileUpWeight*MuonWeight)
                     
                 elif (passed==True) and (passed2==True) and (passed3==False):
-                     SR2.Fill(0.5,weight*PileUpWeight*MuonWeight)
-
+                    SR2.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    if isBgMC:
+                        bgMCSum2.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    
                 elif (passed==True) and (passed2==True) and (passed3==True):
-                     SR3.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    SR3.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    if isBgMC:
+                        bgMCSum3.Fill(0.5,weight*PileUpWeight*MuonWeight)
 
 
 
-
-
-
-
-#                if abs(iev.d0_electron[iele])>0.05 and abs(iev.d0_muon[imu])>0.05 :
-#                    print "Electron and muon entering N2"
-#                    print "d0 electron is " , iev.d0_electron[iele]
-#                    print "d0 muon is " , iev.d0_muon[imu]
-#                    N2[d]=N2[d]+1*weight
-#                    print N2
-#                if abs(iev.d0_electron[iele])>0.1 and abs(iev.d0_muon[imu])>0.1 :
-#                    print "Electron and muon entering N3"
-#                    print "d0 electron is " , iev.d0_electron[iele]
-#                    print "d0 muon is " , iev.d0_muon[imu]
-#                    N3[d]=N3[d]+1*weight
-#                    print N3
-#
-    
-            # define the non-overlaping singal region (SR) out of the displaced -regions
-#            SR1=N1-N2
-#            SR2=N2-N3
-#            SR3=N3
     
             # Fill the two D array for clearer output
             datasetArray = [ d.attrib['name'], d.attrib['title'], d.attrib['EqLumi'], nevents, N1.GetBinContent(1),N1.GetBinError(1), N2.GetBinContent(1),N2.GetBinError(1), N3.GetBinContent(1),N3.GetBinError(1), SR1.GetBinContent(1),SR1.GetBinError(1), SR2.GetBinContent(1),SR2.GetBinError(1), SR3.GetBinContent(1),SR3.GetBinError(1)]
             print datasetArray
             
             
-            
-#            datasetArray[0]= d.attrib['name']
-#            datasetArray[1]= d.attrib['title']
-#            datasetArray[2]= float(d.attrib['EqLumi'])
-#            datasetArray[3]=nevents
-#            datasetArray[4]=N1
-#            datasetArray[5]=N2
-#            datasetArray[6]=N3
-#            datasetArray[7]=SR1
-#            datasetArray[8]=SR2
-#            datasetArray[9]=SR3
 #
             doubleArray.append(datasetArray)
             print "double array is"
@@ -267,9 +267,10 @@ ght directories!!!"
 
     # print the final number per SR    
     for i in range (0,idataset):
-        Sum_SR1=Sum_SR1+doubleArray[i][iSR1]
-        Sum_SR2=Sum_SR2+doubleArray[i][iSR2]
-        Sum_SR3=Sum_SR3+doubleArray[i][iSR3]
+        if "Data" not in doubleArray[i][0]  and "NP" not in doubleArray[i][0]:
+            Sum_SR1=Sum_SR1+doubleArray[i][iSR1]
+            Sum_SR2=Sum_SR2+doubleArray[i][iSR2]
+            Sum_SR3=Sum_SR3+doubleArray[i][iSR3]
             
 
     print "we expect " , Sum_SR1 ,"events in the SR1"               
@@ -302,15 +303,15 @@ ght directories!!!"
             bgMCcounter = bgMCcounter + 1
             rawlabel = doubleArray[i][0]
             label = rawlabel.replace("","").replace("#tau","$\\tau$").replace("\Nu","$\\nu$").replace("\rightarrow","${\\rightarrow}$").replace(" ","\\ ").replace("_","")
-            myYield = doubleArray[i][iSR1]
-            bgMCSum = bgMCSum+myYield
-            line = label + " & " + str(round(myYield,3)) + " $\pm$ "+ str(round(doubleArray[i][iSR1+1],3)) + " & " + str(round(doubleArray[i][iSR2],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR2+1],3)) + " &  " + str(round(doubleArray[i][iSR3],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR3+1],3))
+#            myYield = doubleArray[i][iSR1]
+#            bgMCSum = bgMCSum+myYield
+            line = label + " & " + str(round(doubleArray[i][iSR1],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR1+1],3)) + " & " + str(round(doubleArray[i][iSR2],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR2+1],3)) + " &  " + str(round(doubleArray[i][iSR3],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR3+1],3))
             line = line + endLine + newLine + hLine
             fout.write(line)
 
     #write a line with the sum of the backgrounds
     if bgMCcounter is not 0:
-        line = hLine+"Total expected background & " + str(round(bgMCSum,3)) + " $\pm$ " + ""
+        line = hLine+"Total expected background & " + str(round(bgMCSum1.GetBinContent(1),3)) + " $\pm$ " + str(round(bgMCSum1.GetBinError(1),3)) + " & " + str(round(bgMCSum2.GetBinContent(1),3)) + " $\pm$ " + str(round(bgMCSum2.GetBinError(1),3)) +" & " + str(round(bgMCSum3.GetBinContent(1),3)) + " $\pm$ " + str(round(bgMCSum3.GetBinError(1),3))
         line = line + endLine + newLine + hLine
         fout.write(line)
 
@@ -328,8 +329,10 @@ ght directories!!!"
             continue
         rawlabel = doubleArray[i][0]
         label = rawlabel.replace("_","")
-        myYield= doubleArray[i][iSR1]
-        fout.write(label + " & " + str(myYield) + endLine + newLine) 
+#        myYield= doubleArray[i][iSR1]
+        line = label + " & " + str(round(doubleArray[i][iSR1],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR1+1],3)) + " & " + str(round(doubleArray[i][iSR2],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR2+1],3)) + " &  " + str(round(doubleArray[i][iSR3],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR3+1],3))
+        line = line + endLine + newLine + hLine
+        fout.write(line)
 
 
         
