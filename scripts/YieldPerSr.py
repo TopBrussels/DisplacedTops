@@ -35,7 +35,15 @@ lumivalue = 3
 debug=False
 
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
-SRxBounds=[0.001,0.002,0.1]
+FinalState="At least two muons"
+
+# define the bound of the Signal region
+#SRxBounds=[0.001,0.002,0.1]
+bound1 = 0.001
+bound2 = 0.01
+bound3 = 0.1
+
+#bgMCSum=rt.TH1D("bgMCSum","bgMCSum",1,0,1)
 bgMCSum=0
 
 
@@ -61,10 +69,13 @@ ght directories!!!"
     print "found  "  + str(len(datasets)) + " datasets"
     datasetNames = []
     idataset=0
+    iSR1=10
+    iSR2=12
+    iSR3=14
 
     # loop over datasets
     for d in datasets:
-        if d.attrib['add'] == '1': # and "ZZ" in str(d.attrib['title']):
+        if d.attrib['add'] == '1'  and "QCD_MuEnriched_120to170" in str(d.attrib['name']):
             print "found dataset to be added..." + str(d.attrib['name'])
             datasetNames.append(str(d.attrib['name']))
             print str(d.attrib['name'])
@@ -72,7 +83,21 @@ ght directories!!!"
             ch = rt.TChain("doubleMuTree","doubleMuTree")
             sampleName=d.attrib['name']
             ch.Add("/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"+date+"/_MuMu/DisplacedTop_Run2_TopTree_Study_"+sampleName+"_MuMu.root")
-            N1=N2=N3=SR1=SR2=SR3=Sum_SR1=Sum_SR2=Sum_SR3=0
+            Sum_SR1=Sum_SR2=Sum_SR3=0
+            N1=rt.TH1D("N1"+sampleName,"N1",1,0,1)
+            # ideal way to do this (fix):
+            # N2 = N1.Clone("N2"+samplename)
+            N2=rt.TH1D("N2"+sampleName,"N2",1,0,1)
+            N3=rt.TH1D("N3"+sampleName,"N3",1,0,1)
+            SR1=rt.TH1D("SR1"+sampleName,"SR1",1,0,1)
+            SR2=rt.TH1D("SR2"+sampleName,"SR2",1,0,1)
+            SR3=rt.TH1D("SR3"+sampleName,"SR3",1,0,1)
+
+            # you can also use two bins, one for the weighted event and one for the unweighted event
+#            N1=rt.TH1D("N1"+sampleName,"N1",2,0,2)
+            # N2 = N1.Clone("N2"+samplename)
+            # ...
+            
             # get number of events
             nevents=ch.GetEntries()
             
@@ -93,6 +118,11 @@ ght directories!!!"
             ii=0
             # start of loop over events
             for iev in ch:
+
+                PileUpWeight=iev.evt_puSF_mumu
+                MuonWeight=1.0
+
+                
 #                if ii % (nevents/50.) ==0 :
 #                print  d.attrib['title']," ", ii, "/", nevents, " ,", (100*ii)/nevents, "%"
                 ii+=1
@@ -103,55 +133,67 @@ ght directories!!!"
         # loop over muons - fill in lorentz vector and fill some histograms
 #                for imu in range(0,iev.nMuons_mumu) :
                 # only the two leading muons
+                SFWeight = 1.0
+
                 for imu in range (0,2):
-
-
+                    
+                    
+                    MuonWeight *= iev.sf_muon_mumu[imu]
     
 #                    lvmu.SetPxPyPzE(iev.pX_muon[imu],iev.pY_muon[imu],iev.pZ_muon[imu],iev.E_muon[imu])
 #                    lve.SetPxPyPzE(iev.pX_electron[iele],iev.pY_electron[iele],iev.pZ_electron[iele],iev.E_electron[iele])
                     
-                    # Define the displaced regions
-                #if abs(iev.d0_electron[iele])>0.02 and abs(iev.d0_muon[imu])>0.02 :
-#                        if abs(iev.d0BeamSpot_muon_mumu[imu]) > 0.02:
+
                         
 #                    for bound in range(0,len(SRxBounds)):
+
                     
                     # if one leptons smaller than bound, event fails
-                    if abs(iev.d0BeamSpot_muon_mumu[imu]) < 0.001:
+                    if abs(iev.d0BeamSpot_muon_mumu[imu]) < bound1:
                         passed=False
                         if (debug):
                             print "Electron and muon entering N1"
                             print "d0 muon is " , iev.d0BeamSpot_muon_mumu[imu]
                             
 
-                    if abs(iev.d0BeamSpot_muon_mumu[imu]) < 0.01:
+                    if abs(iev.d0BeamSpot_muon_mumu[imu]) < bound2:
                         passed2=False
                         if (debug):
                             print "Electron and muon entering N2"
                             print "d0 muon is " , iev.d0BeamSpot_muon_mumu[imu]
 
-                    if abs(iev.d0BeamSpot_muon_mumu[imu]) < 0.1:
+                    if abs(iev.d0BeamSpot_muon_mumu[imu]) < bound3:
                         passed3=False
                         if (debug):
                             print "Electron and muon entering N2"
                             print "d0 muon is " , iev.d0BeamSpot_muon_mumu[imu]
+
+                if "Data" in sampleName:
+                    PileUpWeight=1
+                    MuonWeight=1
                             
 
                 if (passed==True):
-                    N1=N1+1*weight
-                    if (debug):
-                        print N1
-
+                    N1.Fill(0.5,weight*PileUpWeight*MuonWeight)
 
                 if (passed2==True):
-                    N2=N2+1*weight
-                    if (debug):
-                        print N2
+                    N2.Fill(0.5,weight*PileUpWeight*MuonWeight)
 
                 if (passed3==True):
-                    N3=N3+1*weight
-                    if (debug):
-                        print N3
+                    N3.Fill(0.5,weight*PileUpWeight*MuonWeight)
+
+
+                if (passed==True) and (passed2==False) and (passed3==False):
+                    SR1.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    
+                elif (passed==True) and (passed2==True) and (passed3==False):
+                     SR2.Fill(0.5,weight*PileUpWeight*MuonWeight)
+
+                elif (passed==True) and (passed2==True) and (passed3==True):
+                     SR3.Fill(0.5,weight*PileUpWeight*MuonWeight)
+
+
+
 
 
 
@@ -171,14 +213,15 @@ ght directories!!!"
 #
     
             # define the non-overlaping singal region (SR) out of the displaced -regions
-            SR1=N1-N2
-            SR2=N2-N3
-            SR3=N3
+#            SR1=N1-N2
+#            SR2=N2-N3
+#            SR3=N3
     
             # Fill the two D array for clearer output
-            datasetArray = [ d.attrib['name'], d.attrib['title'], d.attrib['EqLumi'], nevents, N1, N2, N3, SR1, SR2, SR3]
+            datasetArray = [ d.attrib['name'], d.attrib['title'], d.attrib['EqLumi'], nevents, N1.GetBinContent(1),N1.GetBinError(1), N2.GetBinContent(1),N2.GetBinError(1), N3.GetBinContent(1),N3.GetBinError(1), SR1.GetBinContent(1),SR1.GetBinError(1), SR2.GetBinContent(1),SR2.GetBinError(1), SR3.GetBinContent(1),SR3.GetBinError(1)]
             print datasetArray
-             
+            
+            
             
 #            datasetArray[0]= d.attrib['name']
 #            datasetArray[1]= d.attrib['title']
@@ -224,25 +267,32 @@ ght directories!!!"
 
     # print the final number per SR    
     for i in range (0,idataset):
-        Sum_SR1=Sum_SR1+doubleArray[i][7]
-        Sum_SR2=Sum_SR2+doubleArray[i][8]
-        Sum_SR3=Sum_SR3+doubleArray[i][9]
+        Sum_SR1=Sum_SR1+doubleArray[i][iSR1]
+        Sum_SR2=Sum_SR2+doubleArray[i][iSR2]
+        Sum_SR3=Sum_SR3+doubleArray[i][iSR3]
             
 
     print "we expect " , Sum_SR1 ,"events in the SR1"               
     print "we expect " , Sum_SR2 ,"events in the SR2"               
     print "we expect " , Sum_SR3 ,"events in the SR3"               
+
+#    bgMCSum.Add()
     
 
-
     # writing results in a tex file
-    outputFile = "test.tex"
+    outputFile = "YieldTable_MuMu.tex"
     fout = open (outputFile, "w")
     fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
-    fout.write ("\\renewcommand{\\arraystretch}{1.2}\\begin{tabular}{lr}"+newLine+hLine)
+    fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
+    fout.write("\\begin{table}"+newLine)
+    fout.write("\\caption{ " + FinalState + "}"+newLine)
+    fout.write("\\begin{tabular}{lrrr}"+newLine+hLine)
 
-    line = "Event Source & Event Yield $\pm$ 1$\sigma$ (stat.)"
-    line = line +endLine+newLine+hLine
+    line = "Event Source &  \multicolumn{3}{c}{Event Yield $\pm$ 1$\sigma$ (stat.)} "
+    line = line +endLine+newLine+hLine+hLine
+    fout.write(line)
+    line = " &  d0 $>$ "+str(bound1)+ " & d0 $>$ " + str(bound2) + " & d0 $>$ " + str(bound3)
+    line = line + endLine + hLine
     fout.write(line)
     
     # write a line for each background sample
@@ -252,15 +302,15 @@ ght directories!!!"
             bgMCcounter = bgMCcounter + 1
             rawlabel = doubleArray[i][0]
             label = rawlabel.replace("","").replace("#tau","$\\tau$").replace("\Nu","$\\nu$").replace("\rightarrow","${\\rightarrow}$").replace(" ","\\ ").replace("_","")
-            myYield = doubleArray[i][7]
+            myYield = doubleArray[i][iSR1]
             bgMCSum = bgMCSum+myYield
-            line = label + " & " + str(myYield) + " $\pm$ "
+            line = label + " & " + str(round(myYield,3)) + " $\pm$ "+ str(round(doubleArray[i][iSR1+1],3)) + " & " + str(round(doubleArray[i][iSR2],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR2+1],3)) + " &  " + str(round(doubleArray[i][iSR3],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR3+1],3))
             line = line + endLine + newLine + hLine
             fout.write(line)
 
     #write a line with the sum of the backgrounds
     if bgMCcounter is not 0:
-        line = hLine+"Total expected background & " + str(bgMCSum) + " $\pm$ " + ""
+        line = hLine+"Total expected background & " + str(round(bgMCSum,3)) + " $\pm$ " + ""
         line = line + endLine + newLine + hLine
         fout.write(line)
 
@@ -269,7 +319,7 @@ ght directories!!!"
         if "Data" not in doubleArray[i][0]:
             continue
         label = "Observation"
-        myYield= doubleArray[i][7]
+        myYield= doubleArray[i][iSR1]
         fout.write(label + " & " + str(myYield) + endLine + newLine) 
 
     # write a line for each signal sample
@@ -278,13 +328,14 @@ ght directories!!!"
             continue
         rawlabel = doubleArray[i][0]
         label = rawlabel.replace("_","")
-        myYield= doubleArray[i][7]
+        myYield= doubleArray[i][iSR1]
         fout.write(label + " & " + str(myYield) + endLine + newLine) 
 
 
         
     # end of tabular
     fout.write("\\end{tabular}"+newLine)
+    fout.write("\\end{table}"+newLine)
     fout.write("\\end{document}"+newLine)
     fout.close()
 
