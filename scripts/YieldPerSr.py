@@ -1,12 +1,15 @@
+##############
+# pyroot macro to calcultate the Yield for different Signal region and create a compilable tex file.
+# February 2016by qpython@cern.ch
+#############
+
+
 import xml.etree.cElementTree as ET
 import os, sys
 from array import array
 import ROOT as rt
 import tdrstyle, CMS_lumi
-##############
-# example pyroot loop for yield counting on output trees of Ntupler
-# March 2015 by qpython@cern.ch
-#
+
 
 
 # usefull variables for writing a tex file
@@ -21,20 +24,18 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 
-#channels=["_ElEl","_MuMu"]
-channels=["_MuMu"]
+channels=["_ElEl","_MuMu"]
+#channels=["_MuMu"]
+#channels=["_ElEl"]
 
 date="12_2_2016"
 
 # double array containing an array of samples. Each sample is an array with different varaibles such as ["fancyname", "name" x-sec,samplepresels,...] 
 #doubleArray=[['Data', 'Data', '2629.405', 893018L, 346646, 33, 0, 346613, 33, 0], ['NP_overlay_stopTobl_m500_Ctau10', 'stopTobl_m500_Ctau10', '170941.984262', 9312L, 9103, 7789, 3322, 1314, 4467, 3322], ['WJetsToLNu', 'W\\rightarrow l+\\Nu', '392.612052979', 13L, 8, 0, 0, 8, 0, 0], ['WWToLNuQQ', 'Diboson', '139928.395704', 23L, 14, 0, 0, 14, 0, 0], ['WWTo2l2Nu', 'Diboson', '162587.288553', 42970L, 15089, 0, 0, 15089, 0, 0], ['ZZ', 'Diboson', '59650.1845912', 13757L, 4718, 0, 0, 4718, 0, 0], ['SingleTop_tW', 'SingletTop', '28089.8876404', 3573L, 1283, 0, 0, 1283, 0, 0], ['SingleTop_tbarW', 'SingletTop', '28073.0337079', 3585L, 1278, 0, 0, 1278, 0, 0], ['TTJets_Madgrap', 'TTJets_Madgraph', '12281.3443782', 33704L, 11864, 2, 0, 11862, 2, 0], ['QCD_MuEnriched_50to80', 'QCDMuEnriched', '11.5493477661', 1L, 0, 0, 0, 0, 0, 0], ['QCD_MuEnriched_80to120', 'QCDMuEnriched', '36.6018728008', 6L, 3, 0, 0, 3, 0, 0], ['QCD_MuEnriched_120to170', 'QCDMuEnriched', '137.512206973', 20L, 8, 2, 0, 6, 2, 0], ['QCD_MuEnriched_170to300', 'QCDMuEnriched', '455.559903971', 34L, 23, 6, 0, 17, 6, 0], ['QCD_MuEnriched_300to470', 'QCDMuEnriched', '4904.063158', 52L, 23, 3, 1, 20, 2, 1], ['QCD_MuEnriched_470to600', 'QCDMuEnriched', '24402.503292', 35L, 14, 0, 0, 14, 0, 0], ['QCD_MuEnriched_600to800', 'QCDMuEnriched', '79034.0011142', 38L, 13, 0, 0, 13, 0, 0], ['QCD_MuEnriched_800to1000', 'QCDMuEnriched', '421108.780958', 40L, 17, 1, 0, 16, 1, 0], ['QCD_MuEnriched_1000toInf', 'QCDMuEnriched', '1079300.96335', 49L, 23, 0, 0, 23, 0, 0], ['DYJetsToLL_M-50toInf_Madgraph', 'Z/\\gamma^{*}\\rightarrow ll', '1494.44466574', 539047L, 193576, 0, 0, 193576, 0, 0]]
 
-doubleArray=[]
 
 lumivalue = 3
 debug=False
-isElEl=False
-isMuMu=False
 
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 
@@ -46,16 +47,18 @@ bound3 = 0.05
 
 #bgMCSum=rt.TH1D("bgMCSum","bgMCSum",1,0,1)
 bgMCSum=0
-bgMCSum1=rt.TH1D("bgMCSum1","bgMCSum1",1,0,1)    
-bgMCSum2 = rt.TH1D("bgMCSum2","bgMCSum2",1,0,1)    
-bgMCSum3 = rt.TH1D("bgMCSum3","bgMCSum3",1,0,1)    
-
 
 
 
 # loop over the channel (lepton in final statue)
 for chan in channels:
     
+    bgMCSum1=rt.TH1D("bgMCSum1"+chan,"bgMCSum1",1,0,1)    
+    bgMCSum2=bgMCSum1.Clone("bgMCSum2"+chan)
+    bgMCSum3=bgMCSum1.Clone("bgMCSum3"+chan)
+    isElEl=False
+    isMuMu=False
+    doubleArray=[]
 
     # get the xmlfile that corresponds to the channel
     if "MuMu" in chan:
@@ -63,11 +66,13 @@ for chan in channels:
         tree = ET.ElementTree(file='../config/TreeProc_FullSamplesMuMuV0.xml')
         treeName="doubleMuTree"
         FinalState="At least two muons"
+        print FinalState
     elif "ElEl" in chan:
-        isElel=True
+        isElEl=True
         tree = ET.ElementTree(file='../config/TreeProc_FullSamplesElElV0.xml')
         treeName="doubleElTree"
         FinalState="At least two electrons"
+        print FinalState
     elif "ElMu" in chan:
         tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
     else:
@@ -89,8 +94,8 @@ ght directories!!!"
     # loop over datasets
     for d in datasets:
         if d.attrib['add'] == '1' :
-#        if d.attrib['add'] == '1' and "QCD_MuEnriched" in str(d.attrib['name']):
-            print "found dataset to be added..." + str(d.attrib['name'])
+#        if d.attrib['add'] == '1' and "QCD_" in str(d.attrib['name']):
+#            print "found dataset to be added..." + str(d.attrib['name'])
             datasetNames.append(str(d.attrib['name']))
             print str(d.attrib['name'])
             # one array per dataset [name, title, Eqlumi, N1, N2, N3, SR1, SR2, SR3]
@@ -113,28 +118,30 @@ ght directories!!!"
                 
 
 
-            ch.Add("/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
+            ch.Add(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
             Sum_SR1=Sum_SR2=Sum_SR3=0
-            N1=rt.TH1D("N1"+sampleName,"N1",1,0,1)
-            N2 = N1.Clone("N2"+sampleName)
-            N3 = N1.Clone("N3"+sampleName)
+            
+            # define 3 histograms containing inclusive yields
+            N1=rt.TH1D("N1"+sampleName+chan,"N1",1,0,1)
+            N2 = N1.Clone("N2"+sampleName+chan)
+            N3 = N1.Clone("N3"+sampleName+chan)
 
-            SR1 = N1.Clone("SR1"+sampleName)
-            SR2 = N1.Clone("SR2"+sampleName)
-            SR3 = N1.Clone("SR3"+sampleName)
+            # define 3 histograms containing exclusive yields
+            SR1 = N1.Clone("SR1"+sampleName+chan)
+            SR2 = N1.Clone("SR2"+sampleName+chan)
+            SR3 = N1.Clone("SR3"+sampleName+chan)
 
 
 
             # you can also use two bins, one for the weighted event and one for the unweighted event
 #            N1=rt.TH1D("N1"+sampleName,"N1",2,0,2)
-            # N2 = N1.Clone("N2"+samplename)
-            # ...
+
             
             # get number of events
             nevents=ch.GetEntries()
             
-            if nevents == 0 :
-                continue
+#            if nevents == 0 :
+#                continue
             
     
             # calculate weight
@@ -151,8 +158,12 @@ ght directories!!!"
             # start of loop over events
             for iev in ch:
 
-                PileUpWeight=iev.evt_puSF_mumu
-                MuonWeight=1.0
+                if isMuMu:
+                    PileUpWeight=iev.evt_puSF_mumu
+                if isElEl:
+                    PileUpWeight=iev.evt_puSF_elel
+                
+                LeptonWeight=1.0
 
                 
 #                if ii % (nevents/50.) ==0 :
@@ -162,69 +173,97 @@ ght directories!!!"
                 passed2= True
                 passed3= True
     
-        # loop over muons - fill in lorentz vector and fill some histograms
-#                for imu in range(0,iev.nMuons_mumu) :
-                # only the two leading muons
-                SFWeight = 1.0
+                # loop over the 2 highest pt letpon
+                for ilept in range (0,2):
 
-                for imu in range (0,2):
-                    
-                    
-                    MuonWeight *= iev.sf_muon_mumu[imu]
-                        
-#                    for bound in range(0,len(SRxBounds)):
+                    # make the logic for the muon
+                    if isMuMu:
+                        LeptonWeight *= iev.sf_muon_mumu[ilept]                        
 
-                    
-                    # if one leptons smaller than bound, event fails
-                    if abs(iev.d0BeamSpot_muon_mumu[imu]) < bound1:
-                        passed=False
-                        if (debug):
-                            print "Electron and muon entering N1"
-                            print "d0 muon is " , iev.d0BeamSpot_muon_mumu[imu]
+                    # if one of the leptons  is smaller than bound, the event fails
+                        if abs(iev.d0BeamSpot_muon_mumu[ilept]) < bound1:
+                            passed=False
+                            if (debug):
+                                print "Electron and muon entering N1"
+                                print "d0 muon is " , iev.d0BeamSpot_muon_mumu[ilept]
                             
 
-                    if abs(iev.d0BeamSpot_muon_mumu[imu]) < bound2:
-                        passed2=False
-                        if (debug):
-                            print "Electron and muon entering N2"
-                            print "d0 muon is " , iev.d0BeamSpot_muon_mumu[imu]
+                        if abs(iev.d0BeamSpot_muon_mumu[ilept]) < bound2:
+                            passed2=False
+                            if (debug):
+                                print "Electron and muon entering N2"
+                                print "d0 muon is " , iev.d0BeamSpot_muon_mumu[ilept]
 
-                    if abs(iev.d0BeamSpot_muon_mumu[imu]) < bound3:
-                        passed3=False
-                        if (debug):
-                            print "Electron and muon entering N2"
-                            print "d0 muon is " , iev.d0BeamSpot_muon_mumu[imu]
+                        if abs(iev.d0BeamSpot_muon_mumu[ilept]) < bound3:
+                            passed3=False
+                            if (debug):
+                                print "Electron and muon entering N3"
+                                print "d0 muon is " , iev.d0BeamSpot_muon_mumu[ilept]
+                    # eo the logic for the muon 
 
+
+                                
+                    # make the logic for the electron
+                    if isElEl :
+                        LeptonWeight *= iev.sf_electron_elel[ilept]
+                        #for bound in range(0,len(SRxBounds)):                                                                                                                                          
+
+
+                        # if one of the leptons  is smaller than bound, the event fails
+                        if abs(iev.d0BeamSpot_electron_elel[ilept]) < bound1:
+                            passed=False
+                            if (debug):
+                                print "Electron and muon entering N1"
+                                print "d0 electron is " , iev.d0BeamSpot_electron_elel[ilept]
+
+
+                        if abs(iev.d0BeamSpot_electron_elel[ilept]) < bound2:
+                            passed2=False
+                            if (debug):
+                                print "Electron and muon entering N2"
+                                print "d0 electron is " , iev.d0BeamSpot_electron_elel[ilept]
+
+                        if abs(iev.d0BeamSpot_electron_elel[ilept]) < bound3:
+                            passed3=False
+                            if (debug):
+                                print "Electron and muon entering N3"
+                                print "d0 electron is " , iev.d0BeamSpot_electron_elel[ilept]
+                    # eo the logic for the electron
+
+
+
+                # Filling the histogram
                 if isData :
                     PileUpWeight=1
-                    MuonWeight=1
+                    LeptonWeight=1
                             
 
                 if (passed==True):
-                    N1.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    N1.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     
                 if (passed2==True):
-                    N2.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    N2.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     
                 if (passed3==True):
-                    N3.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    N3.Fill(0.5,weight*PileUpWeight*LeptonWeight)
 
 
                 if (passed==True) and (passed2==False) and (passed3==False):
-                    SR1.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    SR1.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     if isBgMC:
-                        bgMCSum1.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                        bgMCSum1.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     
                 elif (passed==True) and (passed2==True) and (passed3==False):
-                    SR2.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    SR2.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     if isBgMC:
-                        bgMCSum2.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                        bgMCSum2.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     
                 elif (passed==True) and (passed2==True) and (passed3==True):
-                    SR3.Fill(0.5,weight*PileUpWeight*MuonWeight)
+                    SR3.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     if isBgMC:
-                        bgMCSum3.Fill(0.5,weight*PileUpWeight*MuonWeight)
-
+                        bgMCSum3.Fill(0.5,weight*PileUpWeight*LeptonWeight)
+            
+            # eo event loop
 
 
     
@@ -277,11 +316,10 @@ ght directories!!!"
     print "we expect " , Sum_SR2 ,"events in the SR2"               
     print "we expect " , Sum_SR3 ,"events in the SR3"               
 
-#    bgMCSum.Add()
     
 
     # writing results in a tex file
-    outputFile = "YieldTable_MuMu.tex"
+    outputFile = "YieldTable"+chan+".tex"
     fout = open (outputFile, "w")
     fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
     fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
@@ -303,8 +341,6 @@ ght directories!!!"
             bgMCcounter = bgMCcounter + 1
             rawlabel = doubleArray[i][0]
             label = rawlabel.replace("","").replace("#tau","$\\tau$").replace("\Nu","$\\nu$").replace("\rightarrow","${\\rightarrow}$").replace(" ","\\ ").replace("_","")
-#            myYield = doubleArray[i][iSR1]
-#            bgMCSum = bgMCSum+myYield
             line = label + " & " + str(round(doubleArray[i][iSR1],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR1+1],3)) + " & " + str(round(doubleArray[i][iSR2],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR2+1],3)) + " &  " + str(round(doubleArray[i][iSR3],3)) + " $\pm$ "+ str(round(doubleArray[i][iSR3+1],3))
             line = line + endLine + newLine + hLine
             fout.write(line)
@@ -342,15 +378,10 @@ ght directories!!!"
     fout.write("\\end{document}"+newLine)
     fout.close()
 
-        
 
-    print "end of the program !!!!"
-
-
-    
-    
 
     # end of sample loop
-    
-    
 
+
+print "end of the program !!!!"
+# end of the channel loop
