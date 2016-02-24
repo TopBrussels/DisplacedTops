@@ -1,6 +1,6 @@
 ##############
 # pyroot macro to calcultate the Yield for different Signal region and create a compilable tex file.
-# February 2016by qpython@cern.ch
+# February 2016 by qpython@cern.ch
 #############
 
 
@@ -8,7 +8,6 @@ import xml.etree.cElementTree as ET
 import os, sys
 from array import array
 import ROOT as rt
-import tdrstyle, CMS_lumi
 
 
 
@@ -23,21 +22,17 @@ newLine = " \n"
 lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
-
-channels=["_ElEl","_MuMu"]
+#channel
 #channels=["_MuMu"]
 #channels=["_ElEl"]
+channels=["_ElEl","_MuMu"]
 
+# path to tree
 date="12_2_2016"
-
-# double array containing an array of samples. Each sample is an array with different varaibles such as ["fancyname", "name" x-sec,samplepresels,...] 
-#doubleArray=[['Data', 'Data', '2629.405', 893018L, 346646, 33, 0, 346613, 33, 0], ['NP_overlay_stopTobl_m500_Ctau10', 'stopTobl_m500_Ctau10', '170941.984262', 9312L, 9103, 7789, 3322, 1314, 4467, 3322], ['WJetsToLNu', 'W\\rightarrow l+\\Nu', '392.612052979', 13L, 8, 0, 0, 8, 0, 0], ['WWToLNuQQ', 'Diboson', '139928.395704', 23L, 14, 0, 0, 14, 0, 0], ['WWTo2l2Nu', 'Diboson', '162587.288553', 42970L, 15089, 0, 0, 15089, 0, 0], ['ZZ', 'Diboson', '59650.1845912', 13757L, 4718, 0, 0, 4718, 0, 0], ['SingleTop_tW', 'SingletTop', '28089.8876404', 3573L, 1283, 0, 0, 1283, 0, 0], ['SingleTop_tbarW', 'SingletTop', '28073.0337079', 3585L, 1278, 0, 0, 1278, 0, 0], ['TTJets_Madgrap', 'TTJets_Madgraph', '12281.3443782', 33704L, 11864, 2, 0, 11862, 2, 0], ['QCD_MuEnriched_50to80', 'QCDMuEnriched', '11.5493477661', 1L, 0, 0, 0, 0, 0, 0], ['QCD_MuEnriched_80to120', 'QCDMuEnriched', '36.6018728008', 6L, 3, 0, 0, 3, 0, 0], ['QCD_MuEnriched_120to170', 'QCDMuEnriched', '137.512206973', 20L, 8, 2, 0, 6, 2, 0], ['QCD_MuEnriched_170to300', 'QCDMuEnriched', '455.559903971', 34L, 23, 6, 0, 17, 6, 0], ['QCD_MuEnriched_300to470', 'QCDMuEnriched', '4904.063158', 52L, 23, 3, 1, 20, 2, 1], ['QCD_MuEnriched_470to600', 'QCDMuEnriched', '24402.503292', 35L, 14, 0, 0, 14, 0, 0], ['QCD_MuEnriched_600to800', 'QCDMuEnriched', '79034.0011142', 38L, 13, 0, 0, 13, 0, 0], ['QCD_MuEnriched_800to1000', 'QCDMuEnriched', '421108.780958', 40L, 17, 1, 0, 16, 1, 0], ['QCD_MuEnriched_1000toInf', 'QCDMuEnriched', '1079300.96335', 49L, 23, 0, 0, 23, 0, 0], ['DYJetsToLL_M-50toInf_Madgraph', 'Z/\\gamma^{*}\\rightarrow ll', '1494.44466574', 539047L, 193576, 0, 0, 193576, 0, 0]]
-
-
-lumivalue = 3
-debug=False
-
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
+
+# debug
+debug=False
 
 # define the bound of the Signal region
 #SRxBounds=[0.001,0.002,0.1]
@@ -45,9 +40,8 @@ bound1 = 0.001
 bound2 = 0.02
 bound3 = 0.05
 
-#bgMCSum=rt.TH1D("bgMCSum","bgMCSum",1,0,1)
-bgMCSum=0
 
+lumivalue = 3
 
 
 # loop over the channel (lepton in final statue)
@@ -76,8 +70,7 @@ for chan in channels:
     elif "ElMu" in chan:
         tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
     else:
-        print "No tree has been loaded!!! Make sure the correct xml file are in the ri\
-ght directories!!!"
+        print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
         sys.exit()
 
         
@@ -87,6 +80,8 @@ ght directories!!!"
     print "found  "  + str(len(datasets)) + " datasets"
     datasetNames = []
     idataset=0
+
+    # index to get the bin conten of the 3 different signal region
     iSR1=10
     iSR2=12
     iSR3=14
@@ -113,9 +108,6 @@ ght directories!!!"
                 isSignal = True
             if "Data" in sampleName:
                 isData = True
-
-
-                
 
 
             ch.Add(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
@@ -169,7 +161,7 @@ ght directories!!!"
 #                if ii % (nevents/50.) ==0 :
 #                print  d.attrib['title']," ", ii, "/", nevents, " ,", (100*ii)/nevents, "%"
                 ii+=1
-                passed= True
+                passed1= True
                 passed2= True
                 passed3= True
     
@@ -182,7 +174,7 @@ ght directories!!!"
 
                     # if one of the leptons  is smaller than bound, the event fails
                         if abs(iev.d0BeamSpot_muon_mumu[ilept]) < bound1:
-                            passed=False
+                            passed1=False
                             if (debug):
                                 print "Electron and muon entering N1"
                                 print "d0 muon is " , iev.d0BeamSpot_muon_mumu[ilept]
@@ -211,7 +203,7 @@ ght directories!!!"
 
                         # if one of the leptons  is smaller than bound, the event fails
                         if abs(iev.d0BeamSpot_electron_elel[ilept]) < bound1:
-                            passed=False
+                            passed1=False
                             if (debug):
                                 print "Electron and muon entering N1"
                                 print "d0 electron is " , iev.d0BeamSpot_electron_elel[ilept]
@@ -238,7 +230,7 @@ ght directories!!!"
                     LeptonWeight=1
                             
 
-                if (passed==True):
+                if (passed1==True):
                     N1.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     
                 if (passed2==True):
@@ -248,17 +240,17 @@ ght directories!!!"
                     N3.Fill(0.5,weight*PileUpWeight*LeptonWeight)
 
 
-                if (passed==True) and (passed2==False) and (passed3==False):
+                if (passed1==True) and (passed2==False) and (passed3==False):
                     SR1.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     if isBgMC:
                         bgMCSum1.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     
-                elif (passed==True) and (passed2==True) and (passed3==False):
+                elif (passed1==True) and (passed2==True) and (passed3==False):
                     SR2.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     if isBgMC:
                         bgMCSum2.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     
-                elif (passed==True) and (passed2==True) and (passed3==True):
+                elif (passed1==True) and (passed2==True) and (passed3==True):
                     SR3.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     if isBgMC:
                         bgMCSum3.Fill(0.5,weight*PileUpWeight*LeptonWeight)
