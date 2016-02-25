@@ -440,10 +440,37 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
       cout<<"                 nEntries: "<<nEntries<<endl;
 
+
       //      /*
+      Int_t nMuons_;
+      TBranch        *b_nMuons_;
+      Int_t nElectrons_;
+      TBranch        *b_nElectrons_;
+//      */
+
+      // Set the adress of the Branch that will be used in any case
+      //      /*
+
+      if(DileptonElMu){
       Int_t           nMuons_mumu;
       TBranch        *b_nMuons_mumu;
       ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_mumu", &nMuons_mumu, &b_nMuons_mumu);
+
+      Int_t           nElectrons_mumu;
+      TBranch        *b_nElectrons_mumu; 
+      ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_mumu", &nElectrons_mumu, &b_nElectrons_mumu);
+
+      nMuons_=nMuons_mumu;
+      nElectrons_=nElectrons_mumu;
+      b_nMuons_= b_nMuons_mumu;
+      b_nElectrons_=b_nElectrons_mumu;
+      }
+
+      //      /*
+      //      */
+      
+
+
 //      */
 
       // bo logic to set the right branch address depending on the string given as argument of the datasetplotter
@@ -510,45 +537,42 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       // get the SF from the corresponding branch
 	
 
-      // for muons final state
-      //      if (DileptonMuMu){
-      //      /*
-      Int_t           nElectrons_mumu;
-      TBranch        *b_nElectrons_mumu; 
-      ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_mumu", &nElectrons_mumu, &b_nElectrons_mumu);
+      //      Double_t sf_electron_[10];
+      //      Double_t sf_muon_[10];
+      Double_t evt_puSF_;
+      TBranch  *b_evt_puSF_;
 
+      // for muons final state
+
+      //      /*
+      //      if (DileptonMuMu){
       Double_t sf_electron_mumu[10]; 
       TBranch        *b_sf_electron_mumu;
       ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_mumu", sf_electron_mumu, &b_sf_electron_mumu);
 
 
-      /* to put back!!!
-      Int_t           nMuons_mumu;
-      TBranch        *b_nMuons_mumu;
-      ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_mumu", &nMuons_mumu, &b_nMuons_mumu);
-      */
-
-
-
-      //      cout << "&nMuons_mumu is " << &nMuons_mumu << endl;
-      //      cout << "nMuons_mumu is " << nMuons_mumu << endl;
-      
-
       Double_t sf_muon_mumu[10]; 
       TBranch        *b_sf_muon_mumu;
       ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu", sf_muon_mumu, &b_sf_muon_mumu);
 
-      Double_t        evt_puSF_mumu;
-      TBranch        *b_evt_puSF_mumu;
-      ttree[dataSetName.c_str()]->SetBranchAddress("evt_puSF_mumu", &evt_puSF_mumu, &b_evt_puSF_mumu);
       //      }
 //      */
 
+      if (DileptonMuMu){
+      Double_t        evt_puSF_mumu;
+      TBranch        *b_evt_puSF_mumu;
+      ttree[dataSetName.c_str()]->SetBranchAddress("evt_puSF_mumu", &evt_puSF_mumu, &b_evt_puSF_mumu);
+      
+      evt_puSF_=evt_puSF_mumu;
+      b_evt_puSF_=b_evt_puSF_mumu;
+      }
+      
+      
 
 
-     
+      /*
       // for electrons final state
-      if (DileptonElEl){
+      //      if (DileptonElEl){
       Int_t           nElectrons_elel;
       TBranch        *b_nElectrons_elel; 
       ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_elel", &nElectrons_elel, &b_nElectrons_elel);
@@ -568,8 +592,11 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       Double_t        evt_puSF_elel;
       TBranch        *b_evt_puSF_elel;
       ttree[dataSetName.c_str()]->SetBranchAddress("evt_puSF_elel", &evt_puSF_elel, &b_evt_puSF_elel);
-      }
-      // */
+      //      }
+      */
+
+
+
 
       
       // -----------
@@ -607,7 +634,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    
 	    // electron SF
 	    if (applyElectronSF){
-	      for (int i = 0; i < nElectrons_mumu; i++)
+	      for (int i = 0; i < nElectrons_; i++)
 		{
 		  sf_electron *=sf_electron_mumu[i];
 		}
@@ -622,7 +649,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    
 	    // muon SF
 	    if (applyMuonSF){
-	      for (int i = 0 ; i < nMuons_mumu ; i++ )
+	      for (int i = 0 ; i < nMuons_ ; i++ )
 		{
 		  sf_muon *= sf_muon_mumu[i] ;
 		  //		  cout << "sf_muon_mumu[i] is " << sf_muon_mumu[i] << endl;
@@ -637,7 +664,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    
 	    // PU SF
 	    if (applyPUSF){
-	      puSF=evt_puSF_mumu;
+	      puSF=evt_puSF_;
 	      //	      cout << "puSF is " << puSF << endl;
 
 
