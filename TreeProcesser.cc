@@ -143,6 +143,7 @@ int main(int argc, char* argv[])
       //      DatasetPlotter(5, -0.5, 4.5, "nMuons_mumu", xmlFileName,CraneenPath);
       DatasetPlotter(70, -0.5, 69.5, "nvtx_mumu", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      //            DatasetPlotter(30, -3.15, 3.15, "phi_muon[nMuons]", xmlFileName,CraneenPath);
       DatasetPlotter(40, 0, 800, "evt_met_mumu", xmlFileName,CraneenPath);
     }
     if (DileptonElEl){
@@ -234,7 +235,7 @@ int main(int argc, char* argv[])
       DatasetPlotter(50, -3.15, 3.15, "eta_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0.0, 0.2, "pfIso_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, -0.015, 0.015, "d0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, -0.015, 0.015, "d0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -10, 10, "vz_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0, 0.5, "v0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
@@ -266,7 +267,7 @@ int main(int argc, char* argv[])
       DatasetPlotter(50, -3.15, 3.15, "eta_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0.0, 0.2, "pfIso_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, -0.015, 0.015, "d0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, -0.015, 0.015, "d0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -10, 10, "vz_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0, 0.5, "v0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
@@ -300,13 +301,16 @@ int main(int argc, char* argv[])
 
   // making 2D histograms
 
+
+  /*
   if (DileptonMuMu){
-    TH2FPlotter(20, -10, 10, "v0_muon_mu[nMuons_mumu]", 20, -0.015, 0.015, "d0BeamSpot_muon_mumu[nMuons_mumu]]",  xmlFileName,CraneenPath);
+    TH2FPlotter(20, -10, 10, "v0_muon_mumu[nMuons_mumu]", 20, -0.015, 0.015, "d0BeamSpot_muon_mumu[nMuons_mumu]]",  xmlFileName,CraneenPath);
   }
   
   if (DileptonElEl){
-  TH2FPlotter(20, -10, 10, "v0_electron_elel[nElectrons_elel]", 20, -0.015, 0.015, "d0BeamSpot_electron_elel[nElectrons_elel]",  xmlFileName,CraneenPath);
+    TH2FPlotter(20, -10, 10, "v0_electron_elel[nElectrons_elel]", 20, -0.015, 0.015, "d0BeamSpot_electron_elel[nElectrons_elel]",  xmlFileName,CraneenPath);
   }
+  */
 
   // calling the function that writes all the MSPlots in a root file
   MSPCreator ();
@@ -402,7 +406,10 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/9_2_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/10_2_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/12_2_2016/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/19_2_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/19_2_2016/";
+
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/25_2_2016/";
+
 
   CraneenPath=CraneenPath+channelpostfix;
   
@@ -432,12 +439,18 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       ttree[dataSetName.c_str()] = (TTree*)FileObj[dataSetName.c_str()]->Get(TTreename.c_str()); //get ttree for each dataset
       nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
       cout<<"                 nEntries: "<<nEntries<<endl;
-      
+
+
+      Int_t           nMuons_mumu;
+      TBranch        *b_nMuons_mumu;
+      ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_mumu", &nMuons_mumu, &b_nMuons_mumu);
 
       // bo logic to set the right branch address depending on the string given as argument of the datasetplotter
       if (v.size() == 2){
-	ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&n_object); 
 	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),v_varofInterest_double);
+	//ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&n_object); 
+	//	ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&n_ob)
+	n_object=nMuons_mumu;
       }
 
       else if (v.size() == 1){
@@ -480,26 +493,84 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       Double_t  puSF, globalScaleFactor, sf_muon, sf_electron;
 
 
-      /*
-	Bool_t applyElectronSF, applyMuonSF , applyPUSF, applyGlobalSF;
+      //      /*
+      //      Bool_t applyElectronSF, applyMuonSF , applyPUSF, applyGlobalSF;
       
-	if (applyGlobalSF && !isData){
+
+//      */
+
+
+
+      if (applyGlobalSF && !isData){
 	cout << "Applying Scale factor " << endl;
-	}
+      }
 
-	// get the SF from the corresponding branch
 
-	Int_t nEl;
-	ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_elel",&nEl);
-	Int_t nMu;
-	ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_elel",&nMu);
+      // get the SF from the corresponding branch
+	
 
-	Double_t electronSF[10];
-	ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_elel",&electronSF);
-	Double_t muonSF[10];
-	ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_elel", &muonSF);
+      // for muons final state
+      //      if (DileptonMuMu){
+      //      /*
+      Int_t           nElectrons_mumu;
+      TBranch        *b_nElectrons_mumu; 
+      ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_mumu", &nElectrons_mumu, &b_nElectrons_mumu);
 
+      Double_t sf_electron_mumu[10]; 
+      TBranch        *b_sf_electron_mumu;
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_mumu", sf_electron_mumu, &b_sf_electron_mumu);
+
+
+      /* to put back!!!
+      Int_t           nMuons_mumu;
+      TBranch        *b_nMuons_mumu;
+      ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_mumu", &nMuons_mumu, &b_nMuons_mumu);
       */
+
+
+
+      //      cout << "&nMuons_mumu is " << &nMuons_mumu << endl;
+      //      cout << "nMuons_mumu is " << nMuons_mumu << endl;
+      
+
+      Double_t sf_muon_mumu[10]; 
+      TBranch        *b_sf_muon_mumu;
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu", sf_muon_mumu, &b_sf_muon_mumu);
+
+      Double_t        evt_puSF_mumu;
+      TBranch        *b_evt_puSF_mumu;
+      ttree[dataSetName.c_str()]->SetBranchAddress("evt_puSF_mumu", &evt_puSF_mumu, &b_evt_puSF_mumu);
+      //      }
+//      */
+
+
+
+     
+      // for electrons final state
+      if (DileptonElEl){
+      Int_t           nElectrons_elel;
+      TBranch        *b_nElectrons_elel; 
+      ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_elel", &nElectrons_elel, &b_nElectrons_elel);
+
+      Double_t sf_electron_elel[10]; 
+      TBranch        *b_sf_electron_elel;
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_elel", sf_electron_elel, &b_sf_electron_elel);
+
+      Int_t           nMuons_elel;
+      TBranch        *b_nMuons_elel; 
+      ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_elel", &nMuons_elel, &b_nMuons_elel);
+
+      Double_t sf_muon_elel[10]; 
+      TBranch        *b_sf_muon_elel;
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_elel", sf_muon_elel, &b_sf_muon_elel);
+
+      Double_t        evt_puSF_elel;
+      TBranch        *b_evt_puSF_elel;
+      ttree[dataSetName.c_str()]->SetBranchAddress("evt_puSF_elel", &evt_puSF_elel, &b_evt_puSF_elel);
+      }
+      // */
+
+      
       // -----------
       // eo of event SF
       // Declare the SF
@@ -527,57 +598,65 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	  
 	  globalScaleFactor = 1.0;
 
-	  /*
+	  //	  /*
 	  // only apply individual SF if applyGlobalSF is true and sample is not data
 	  if (applyGlobalSF && !isData){
 	    
-	  puSF = globalScaleFactor = sf_muon = sf_electron = 1;
+	    puSF = globalScaleFactor = sf_muon = sf_electron = 1;
 	    
-	  // electron SF
-	  if (applyElectronSF){
-	  for (int i = 0; i < nEl; i++)
-	  {
-	  sf_electron *=electronSF[i];
-	  }
+	    // electron SF
+	    if (applyElectronSF){
+	      for (int i = 0; i < nElectrons_mumu; i++)
+		{
+		  sf_electron *=sf_electron_mumu[i];
+		}
 
 	      
-	  globalScaleFactor *= sf_electron;
-	  if (debug){
-	  cout << "sf_electron is " << sf_electron << endl;
-	  cout << "the globalScaleFactor is " << globalScaleFactor << endl;
-	  }
-	  }
+	      globalScaleFactor *= sf_electron;
+	      if (debug){
+		cout << "sf_electron is " << sf_electron << endl;
+		cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	      }
+	    }
 	    
-	  // muon SF
-	  if (applyMuonSF){
-	  sf_muon=0.5;
+	    // muon SF
+	    if (applyMuonSF){
+	      for (int i = 0 ; i < nMuons_mumu ; i++ )
+		{
+		  sf_muon *= sf_muon_mumu[i] ;
+		  //		  cout << "sf_muon_mumu[i] is " << sf_muon_mumu[i] << endl;
+		}
+	    
+	      globalScaleFactor *= sf_muon;
+	      if (debug){
+		cout << "sf_muon is " << sf_muon << endl;
+		cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	      }
+	    }	
+	    
+	    // PU SF
+	    if (applyPUSF){
+	      puSF=evt_puSF_mumu;
+	      //	      cout << "puSF is " << puSF << endl;
 
-	  globalScaleFactor *= sf_muon;
-	  if (debug){
-	  cout << "sf_muon is " << sf_muon << endl;
-	  cout << "the globalScaleFactor is " << globalScaleFactor << endl;
-	  }
-	  }	
-	    
-	  // PU SF
-	  if (applyPUSF){
-	  globalScaleFactor *= puSF;
-	  if (debug){
-	  cout << "puSF is " << puSF << endl;
-	  cout << "the globalScaleFactor is " << globalScaleFactor << endl;
-	  }
 
-	  }
+	      globalScaleFactor *= puSF;
+	      if (debug){
+		cout << "puSF is " << puSF << endl;
+		cout << "the globalScaleFactor is " << globalScaleFactor << endl;
+	      }
+
+	    }
 	    
 	  }
-	  */
+	  //	  */
 
 
 	  // -----------
 	  // eo of event SF
 
 
- 	  // make MS plot for single value
+	  // make MS plot for single value
 	  if (v.size() == 1){
 	    if (v[0].compare(0,4,"evt_") == 0){ // store a double
 	      if (isData) {
@@ -633,13 +712,13 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       //      histo1D[dataSetName.c_str()]->Draw();
       string writename = "";
       if(isData)
-        {
+	{
 	  writename = "data_nominal";
-        }
+	}
       else
-        {
+	{
 	  writename = dataSetName +"__nominal";
-        }
+	}
       //cout<<"writename  :"<<writename<<endl;
       //      histo1D[dataSetName.c_str()]->Write((writename).c_str());
      
@@ -711,10 +790,10 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
   char * dupX = strdup(sVarofinterestX.c_str());
   char * tokenX = strtok(dupX, delim);
   while(tokenX != NULL){
-   vX.push_back(string(tokenX));
-   // the call is treated as a subsequent calls to strtok:                           
-   // the function continues from where it left in previous invocation               
-   tokenX = strtok(NULL, delim);
+    vX.push_back(string(tokenX));
+    // the call is treated as a subsequent calls to strtok:                           
+    // the function continues from where it left in previous invocation               
+    tokenX = strtok(NULL, delim);
   }
   free(dupX);
 
@@ -735,10 +814,10 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
   char * dupY = strdup(sVarofinterestY.c_str());
   char * tokenY = strtok(dupY, delim);
   while(tokenY != NULL){
-   vY.push_back(string(tokenY));
-   // the call is treated as a subsequent calls to strtok:                           
-   // the function continues from where it left in previous invocation               
-   tokenY = strtok(NULL, delim);
+    vY.push_back(string(tokenY));
+    // the call is treated as a subsequent calls to strtok:                           
+    // the function continues from where it left in previous invocation               
+    tokenY = strtok(NULL, delim);
   }
   free(dupY);
 
@@ -757,7 +836,7 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
 
 
   // get the desired directory
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/19_2_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/25_2_2016/";
   CraneenPath=CraneenPath+channelpostfix;
 
 
@@ -798,10 +877,10 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
         {
 	  ttree[(dataSetName).c_str()]->GetEntry(j);
 	  // loop over the number of object
-	    for (int i_object =0 ; i_object < n_objectX ;i_object ++ )// n_objectX = n_objectY
-              {      // Filling histo
-		histo2D[plotname.c_str()]->Fill(v_varofInterest_doubleX[i_object],v_varofInterest_doubleY[i_object]);
-	      }
+	  for (int i_object =0 ; i_object < n_objectX ;i_object ++ )// n_objectX = n_objectY
+	    {      // Filling histo
+	      histo2D[plotname.c_str()]->Fill(v_varofInterest_doubleX[i_object],v_varofInterest_doubleY[i_object]);
+	    }
 	}
     }
 }
@@ -822,6 +901,7 @@ void MSPCreator (){
 
 
   // loop over TH2F
+  /*
   for(map<string,TH2F*>::const_iterator it = histo2D.begin(); it != histo2D.end(); it++)
     {
       cout << "entering the TH2F histo loop " << endl;
@@ -835,6 +915,7 @@ void MSPCreator (){
       temp->Draw();
       temp->Write();
     }
+  */
 
   
   
