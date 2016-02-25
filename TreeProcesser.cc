@@ -440,17 +440,18 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
       cout<<"                 nEntries: "<<nEntries<<endl;
 
-
+      //      /*
       Int_t           nMuons_mumu;
       TBranch        *b_nMuons_mumu;
       ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_mumu", &nMuons_mumu, &b_nMuons_mumu);
+//      */
 
       // bo logic to set the right branch address depending on the string given as argument of the datasetplotter
       if (v.size() == 2){
 	ttree[dataSetName.c_str()]->SetBranchAddress(v[0].c_str(),v_varofInterest_double);
-	//ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&n_object); 
-	//	ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&n_ob)
-	n_object=nMuons_mumu;
+	ttree[dataSetName.c_str()]->SetBranchAddress(v[1].c_str(),&n_object); // this work and I am not sure why!
+	//	ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_mumu", &n_object, &b_nMuons_mumu); // this work but might depends on the last argument
+	//	n_object=nMuons_mumu; // this work but this is not flexible
       }
 
       else if (v.size() == 1){
