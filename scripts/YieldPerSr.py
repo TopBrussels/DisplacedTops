@@ -35,21 +35,31 @@ pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
 debug=False
 
 # define the bound of the Signal region
-#SRxBounds=[0.001,0.002,0.1]
-bound1 = 0.001
-bound2 = 0.02
-bound3 = 0.05
+LowBounds=[0.001,0.02,0.05]
+#bound1 = 0.001
+#bound2 = 0.02
+#bound3 = 0.05
 
+# template histogram that contains one single bin
+hist=rt.TH1D("template","template",1,0,1,)
 
 lumivalue = 3
 
 
 # loop over the channel (lepton in final statue)
 for chan in channels:
+
+    # loop over the low bounds
+    for ilb in range (1,len(LowBounds)+1):
+        dict = ('bgMCSum+')
+        bgMCSum
+    
     
     bgMCSum1=rt.TH1D("bgMCSum1"+chan,"bgMCSum1",1,0,1)    
     bgMCSum2=bgMCSum1.Clone("bgMCSum2"+chan)
     bgMCSum3=bgMCSum1.Clone("bgMCSum3"+chan)
+
+
     isElEl=False
     isMuMu=False
     doubleArray=[]
@@ -57,18 +67,18 @@ for chan in channels:
     # get the xmlfile that corresponds to the channel
     if "MuMu" in chan:
         isMuMu=True
-        tree = ET.ElementTree(file='../config/TreeProc_FullSamplesMuMuV0.xml')
+        tree = ET.ElementTree(file='../config/Yield_FullSamplesMuMuV0.xml')
         treeName="doubleMuTree"
         FinalState="At least two muons"
         print FinalState
     elif "ElEl" in chan:
         isElEl=True
-        tree = ET.ElementTree(file='../config/TreeProc_FullSamplesElElV0.xml')
+        tree = ET.ElementTree(file='../config/Yield_FullSamplesElElV0.xml')
         treeName="doubleElTree"
         FinalState="At least two electrons"
         print FinalState
     elif "ElMu" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
+        tree = ET.ElementTree(file='../config/Yield_FullSamplesElMuV0.xml')
     else:
         print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
         sys.exit()
