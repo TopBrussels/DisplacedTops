@@ -175,7 +175,7 @@ int main (int argc, char *argv[])
     cout << "running on data !!!!" << endl;
   }
   bool isSignal = false;
-  if(dName.find("NP")!=string::npos){
+  if(dName.find("stopTobl")!=string::npos){
     isSignal = true;
     cout << "running on signal !!!!" << endl;
   }
@@ -2595,7 +2595,8 @@ int main (int argc, char *argv[])
 	  Bool_t blindDvz_elel = true;
 	  Bool_t blindDv0_elel = true;
 	  Bool_t PassIsEBEEGap_elel = true;
-	  
+	  //	  debug=true; 
+
 	  // el el final state
 	  if (nElectrons_elel >= 2){
 	    
@@ -2610,11 +2611,10 @@ int main (int argc, char *argv[])
 	    // fill only if none of the electrons are in the gap
 	    if (PassIsEBEEGap_elel){
 	    
-
 	      // blind for bkgd MC and Data
 	      if (!isSignal){
 
-		if (debug) cout << "Trying to pass blinding condition for data" << endl;
+		if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
 	      
 		// Remove the events were the D0 is too big
 		for (Int_t selel =0; selel <= nElectrons_elel; selel++)
@@ -2658,7 +2658,7 @@ int main (int argc, char *argv[])
 	  // mu mu final state
 	  if (nMuons_mumu >= 2){	  
 	    if (!isSignal){
-	      if (debug) cout << "Trying to pass blinding condition for data" << endl;
+	      if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
 	      
 	      // Remove the events were the D0 is too big
 	      for (Int_t selmu =0; selmu <= nMuons_mumu; selmu++)
@@ -2692,8 +2692,8 @@ int main (int argc, char *argv[])
 	      passed_mumu++;
 	    }
 	  }
-
-
+	  //	  debug=false;
+	  
 	    
 	  if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
 
