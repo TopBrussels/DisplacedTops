@@ -451,19 +451,34 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       // Set the adress of the Branch that will be used in any case
       //      /*
 
-      if(DileptonElMu){
       Int_t           nMuons_mumu;
       TBranch        *b_nMuons_mumu;
-      ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_mumu", &nMuons_mumu, &b_nMuons_mumu);
 
       Int_t           nElectrons_mumu;
       TBranch        *b_nElectrons_mumu; 
-      ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_mumu", &nElectrons_mumu, &b_nElectrons_mumu);
 
-      nMuons_=nMuons_mumu;
-      nElectrons_=nElectrons_mumu;
-      b_nMuons_= b_nMuons_mumu;
-      b_nElectrons_=b_nElectrons_mumu;
+      if(DileptonMuMu){
+	ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_mumu", &nMuons_mumu, &b_nMuons_mumu);
+	ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_mumu", &nElectrons_mumu, &b_nElectrons_mumu);
+	nMuons_=nMuons_mumu;
+	nElectrons_=nElectrons_mumu;
+	b_nMuons_= b_nMuons_mumu;
+	b_nElectrons_=b_nElectrons_mumu;
+      }
+
+      Int_t           nMuons_elel;
+      TBranch        *b_nMuons_elel;
+
+      Int_t           nElectrons_elel;
+      TBranch        *b_nElectrons_elel; 
+
+      if(DileptonElEl){
+	ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_elel", &nMuons_elel, &b_nMuons_elel);
+	ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_elel", &nElectrons_elel, &b_nElectrons_elel);
+	nMuons_=nMuons_elel;
+	nElectrons_=nElectrons_elel;
+	b_nMuons_= b_nMuons_elel;
+	b_nElectrons_=b_nElectrons_elel;
       }
 
       //      /*
@@ -521,16 +536,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       Double_t  puSF, globalScaleFactor, sf_muon, sf_electron;
 
 
-      //      /*
-      //      Bool_t applyElectronSF, applyMuonSF , applyPUSF, applyGlobalSF;
-      
-
-//      */
-
-
-
       if (applyGlobalSF && !isData){
-	cout << "Applying Scale factor " << endl;
+	//	cout << "Applying Scale factor " << endl;
       }
 
 
@@ -539,61 +546,46 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
       //      Double_t sf_electron_[10];
       //      Double_t sf_muon_[10];
-      Double_t evt_puSF_;
-      TBranch  *b_evt_puSF_;
+      //Double_t evt_puSF_;
+      //TBranch  *b_evt_puSF_;
 
       // for muons final state
 
       //      /*
-      //      if (DileptonMuMu){
+
       Double_t sf_electron_mumu[10]; 
       TBranch        *b_sf_electron_mumu;
-      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_mumu", sf_electron_mumu, &b_sf_electron_mumu);
-
 
       Double_t sf_muon_mumu[10]; 
       TBranch        *b_sf_muon_mumu;
-      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu", sf_muon_mumu, &b_sf_muon_mumu);
 
-      //      }
-//      */
-
-      if (DileptonMuMu){
       Double_t        evt_puSF_mumu;
       TBranch        *b_evt_puSF_mumu;
+
+      if (DileptonMuMu){
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_mumu", sf_electron_mumu, &b_sf_electron_mumu); 
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_mumu", sf_muon_mumu, &b_sf_muon_mumu); 
       ttree[dataSetName.c_str()]->SetBranchAddress("evt_puSF_mumu", &evt_puSF_mumu, &b_evt_puSF_mumu);
-      
-      evt_puSF_=evt_puSF_mumu;
-      b_evt_puSF_=b_evt_puSF_mumu;
-      }
-      
-      
+      }      
 
 
-      /*
+
       // for electrons final state
-      //      if (DileptonElEl){
-      Int_t           nElectrons_elel;
-      TBranch        *b_nElectrons_elel; 
-      ttree[dataSetName.c_str()]->SetBranchAddress("nElectrons_elel", &nElectrons_elel, &b_nElectrons_elel);
-
       Double_t sf_electron_elel[10]; 
       TBranch        *b_sf_electron_elel;
-      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_elel", sf_electron_elel, &b_sf_electron_elel);
-
-      Int_t           nMuons_elel;
-      TBranch        *b_nMuons_elel; 
-      ttree[dataSetName.c_str()]->SetBranchAddress("nMuons_elel", &nMuons_elel, &b_nMuons_elel);
 
       Double_t sf_muon_elel[10]; 
       TBranch        *b_sf_muon_elel;
-      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_elel", sf_muon_elel, &b_sf_muon_elel);
 
       Double_t        evt_puSF_elel;
       TBranch        *b_evt_puSF_elel;
+
+      if (DileptonElEl){
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_electron_elel", sf_electron_elel, &b_sf_electron_elel);
+      ttree[dataSetName.c_str()]->SetBranchAddress("sf_muon_elel", sf_muon_elel, &b_sf_muon_elel);
       ttree[dataSetName.c_str()]->SetBranchAddress("evt_puSF_elel", &evt_puSF_elel, &b_evt_puSF_elel);
-      //      }
-      */
+      }
+
 
 
 
@@ -636,7 +628,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    if (applyElectronSF){
 	      for (int i = 0; i < nElectrons_; i++)
 		{
-		  sf_electron *=sf_electron_mumu[i];
+		  if (DileptonMuMu) sf_electron *=sf_electron_mumu[i];
+		  if (DileptonElEl) sf_electron *=sf_electron_elel[i];
 		}
 
 	      
@@ -651,7 +644,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    if (applyMuonSF){
 	      for (int i = 0 ; i < nMuons_ ; i++ )
 		{
-		  sf_muon *= sf_muon_mumu[i] ;
+		  if (DileptonMuMu) sf_muon *= sf_muon_mumu[i] ;
+		  if (DileptonElEl) sf_muon *= sf_muon_elel[i] ;
 		  //		  cout << "sf_muon_mumu[i] is " << sf_muon_mumu[i] << endl;
 		}
 	    
@@ -664,7 +658,11 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	    
 	    // PU SF
 	    if (applyPUSF){
-	      puSF=evt_puSF_;
+	      if (DileptonMuMu) puSF=evt_puSF_mumu;
+	      if (DileptonElEl) puSF=evt_puSF_elel;
+	      //	      cout << "puSF is = evt_puSF_mumu and its value is " << puSF << endl;  
+	      //	      cout << "evt_puSF_ is " << evt_puSF_ << endl;
+	      
 	      //	      cout << "puSF is " << puSF << endl;
 
 
