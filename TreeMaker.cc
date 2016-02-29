@@ -2619,7 +2619,7 @@ int main (int argc, char *argv[])
 		// Remove the events were the D0 is too big
 		for (Int_t selel =0; selel <= nElectrons_elel; selel++)
 		  {
-		    if (d0BeamSpot_electron_elel[selel] > 0.2){
+		    if (d0BeamSpot_electron_elel[selel] > 0.02){
 		      blindD0_elel=false;
 		    }
 		  }
@@ -2663,7 +2663,7 @@ int main (int argc, char *argv[])
 	      // Remove the events were the D0 is too big
 	      for (Int_t selmu =0; selmu <= nMuons_mumu; selmu++)
 		{
-		  if (d0BeamSpot_muon_mumu[selmu] > 0.2){
+		  if (d0BeamSpot_muon_mumu[selmu] > 0.02){
 		    blindD0_mumu=false;
 		  }
 		}
