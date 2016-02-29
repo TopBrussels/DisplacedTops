@@ -252,11 +252,14 @@ int main(int argc, char* argv[])
     }
 
     // El-El FINAL STATE
+    //    if (0){
     if (DileptonElEl){
           
       // event plots
       //    DatasetPlotter(70, -0.5, 69.5, "npu", xmlFileName,CraneenPath);
       DatasetPlotter(50, -0.5, 49.5, "nvtx_elel", xmlFileName,CraneenPath);
+
+      //      /*
       DatasetPlotter(40, 0, 800, "evt_met_elel", xmlFileName,CraneenPath);
               
 
@@ -277,7 +280,8 @@ int main(int argc, char* argv[])
       DatasetPlotter(100, 0.0, 1000, "invMass_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0.0, 0.4, "deltaVz_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, 0.0, 0.06, "deltaV0_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
-
+//      */
+      
       
       /*
       // muon plots
@@ -306,17 +310,20 @@ int main(int argc, char* argv[])
   if (DileptonMuMu){
     TH2FPlotter(20, -10, 10, "v0_muon_mumu[nMuons_mumu]", 20, -0.015, 0.015, "d0BeamSpot_muon_mumu[nMuons_mumu]]",  xmlFileName,CraneenPath);
   }
-  
+  */
+
+  /*
   if (DileptonElEl){
     TH2FPlotter(20, -10, 10, "v0_electron_elel[nElectrons_elel]", 20, -0.015, 0.015, "d0BeamSpot_electron_elel[nElectrons_elel]",  xmlFileName,CraneenPath);
+    cout << "trying TH2F" << endl;
   }
-  */
+  //  */
 
   // calling the function that writes all the MSPlots in a root file
   MSPCreator ();
 
 }
-
+// eo main
 
 void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath)
 {
@@ -399,16 +406,9 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   
 
   // get the desired directory
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/3_2_2016/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/4_2_2016/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/5_2_2016/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/7_2_2016/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/9_2_2016/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/10_2_2016/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/12_2_2016/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/19_2_2016/";
 
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/25_2_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/25_2_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/29_2_2016/";
 
 
   CraneenPath=CraneenPath+channelpostfix;
@@ -790,7 +790,7 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
   if (debug) cout << "will start loading from xml file ..." << endl; 
 
   string plotname;
-  plotname=sVarofinterestY+" vs "+sVarofinterestX;
+  plotname=sVarofinterestY+"Vs"+sVarofinterestX;
   
 
 
@@ -862,14 +862,15 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
 
 
   // get the desired directory
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/25_2_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/29_2_2016/";
   CraneenPath=CraneenPath+channelpostfix;
 
 
   for (int d = 0; d < datasets.size(); d++)   //Loop through datasets       
     {
       dataSetName = datasets[d]->Name();
-      cout << " sVarofinterest is "  << sVarofinterestX << endl;
+      cout << " sVarofinterestX is "  << sVarofinterestX << endl;
+      cout << " sVarofinterestY is "  << sVarofinterestY << endl;
       cout<<"Dataset:  :"<<dataSetName<<endl;
       filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";
       //filepath = CraneenPath+dataSetName+ ".root";                                                         
@@ -890,19 +891,24 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
       
 
       // set value for x 
-      ttree[dataSetName.c_str()]->SetBranchAddress(vX[1].c_str(),&n_objectX);
       ttree[dataSetName.c_str()]->SetBranchAddress(vX[0].c_str(),v_varofInterest_doubleX);
+      ttree[dataSetName.c_str()]->SetBranchAddress(vX[1].c_str(),&n_objectX);
+      cout << "n_objectX is " << n_objectX << endl;
 
       // set value for y 
-      ttree[dataSetName.c_str()]->SetBranchAddress(vY[1].c_str(),&n_objectY);
       ttree[dataSetName.c_str()]->SetBranchAddress(vY[0].c_str(),v_varofInterest_doubleY);
+      ttree[dataSetName.c_str()]->SetBranchAddress(vY[1].c_str(),&n_objectY);
+
 
 
       // loop over the entries
       for (int j = 0; j<nEntries; j++)
         {
+
+	  //	  histo2D[plotname.c_str()]->Fill(1.2,5);	  // dummy fill trial
 	  ttree[(dataSetName).c_str()]->GetEntry(j);
-	  // loop over the number of object
+	  // loop over the number of object 
+	  // FIXME in this case the n_objectX is always equal to zero!!!
 	  for (int i_object =0 ; i_object < n_objectX ;i_object ++ )// n_objectX = n_objectY
 	    {      // Filling histo
 	      histo2D[plotname.c_str()]->Fill(v_varofInterest_doubleX[i_object],v_varofInterest_doubleY[i_object]);
