@@ -35,10 +35,10 @@ pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
 debug=False
 
 # define the bound of the Signal region
-LowBounds=[0.001,0.02,0.05]
-#bound1 = 0.001
-#bound2 = 0.02
-#bound3 = 0.05
+#LowBounds=[0.001,0.02,0.05]
+bound1 = 0.001
+bound2 = 0.02
+bound3 = 0.05
 
 # template histogram that contains one single bin
 hist=rt.TH1D("template","template",1,0,1,)
@@ -50,9 +50,9 @@ lumivalue = 3
 for chan in channels:
 
     # loop over the low bounds
-    for ilb in range (1,len(LowBounds)+1):
-        dict = ('bgMCSum+')
-        bgMCSum
+#    for ilb in range (1,len(LowBounds)+1):
+#        dict = ('bgMCSum+')
+#        bgMCSum
     
     
     bgMCSum1=rt.TH1D("bgMCSum1"+chan,"bgMCSum1",1,0,1)    
