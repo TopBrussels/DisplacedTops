@@ -50,6 +50,8 @@ bool DileptonElMu = false;
 bool DileptonMuMu = false;
 bool DileptonElEl = false;
 string channelpostfix = "";
+string regSuf = "";
+
 //applying all appropriate scale factors for individual objects if the bool is set to true
 Bool_t applyElectronSF = false; 
 Bool_t applyMuonSF = false; 
@@ -234,17 +236,17 @@ int main(int argc, char* argv[])
       //	DatasetPlotter(20, 10, 50, "pt_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(50, -3.15, 3.15, "eta_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0.0, 0.2, "pfIso_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, 0.0, 0.2, "pfIso_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       //      DatasetPlotter(100, -0.015, 0.015, "d0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, -10, 10, "vz_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0, 0.5, "v0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, -10, 10, "vz_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, 0, 0.5, "v0_muon_mumu[nMuons_mumu]", xmlFileName,CraneenPath);
 
 
       // muonPairs plots
       DatasetPlotter(100, 0.0, 1000, "invMass_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0.0, 0.4, "deltaVz_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0.0, 0.06, "deltaV0_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, 0.0, 0.4, "deltaVz_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, 0.0, 0.06, "deltaV0_mumu[nMuonPairs_mumu]", xmlFileName,CraneenPath);
       //      */
 
       // electron-muon plots
@@ -269,17 +271,17 @@ int main(int argc, char* argv[])
       //	DatasetPlotter(20, 10, 50, "pt_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(50, -3.15, 3.15, "eta_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0.0, 0.2, "pfIso_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, 0.0, 0.2, "pfIso_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       //      DatasetPlotter(100, -0.015, 0.015, "d0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
       DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, -10, 10, "vz_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0, 0.5, "v0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, -10, 10, "vz_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, 0, 0.5, "v0_electron_elel[nElectrons_elel]", xmlFileName,CraneenPath);
 
       
       // Dielectron plots
       DatasetPlotter(100, 0.0, 1000, "invMass_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0.0, 0.4, "deltaVz_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, 0.0, 0.06, "deltaV0_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, 0.0, 0.4, "deltaVz_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, 0.0, 0.06, "deltaV0_elel[nElectronPairs_elel]", xmlFileName,CraneenPath);
 //      */
       
       
@@ -407,8 +409,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
   // get the desired directory
 
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/25_2_2016/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/29_2_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/29_2_2016/";
+TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/2_3_2016/";
 
 
   CraneenPath=CraneenPath+channelpostfix;
@@ -862,7 +864,11 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
 
 
   // get the desired directory
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/29_2_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/29_2_2016/";
+
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/2_3_2016/";
+
+
   CraneenPath=CraneenPath+channelpostfix;
 
 
@@ -872,7 +878,8 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
       cout << " sVarofinterestX is "  << sVarofinterestX << endl;
       cout << " sVarofinterestY is "  << sVarofinterestY << endl;
       cout<<"Dataset:  :"<<dataSetName<<endl;
-      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";
+      //      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";
+      filepath = CraneenPath+"/"+dataSetName + channelpostfix + "MuMuSkimmed.root";
       //filepath = CraneenPath+dataSetName+ ".root";                                                         
       if (debug) cout<<"filepath: "<<filepath<<endl;
 
@@ -881,6 +888,11 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
       if (DileptonMuMu) stree = "doubleMuTree";
       if (DileptonElEl) stree = "doubleElTree";
       if (DileptonElMu) stree = "tree";
+
+      // add the correct suffix to selecte the corresponding region. (PCR, DCR, SR1, SR2, SR3)
+      regSuf = "DCR";
+      stree=stree+regSuf;
+      
 
       FileObj[dataSetName.c_str()] = new TFile((filepath).c_str(),"READ"); //create TFile for each dataset
       string TTreename = stree;
@@ -923,7 +935,7 @@ void MSPCreator (){
   Bool_t debug = false;
 
   string pathPNG = "myOutput";
-  pathPNG += "_MSPlots/"+channelpostfix+"/";
+  pathPNG += "_MSPlots/"+channelpostfix+"/"+regSuf+"/";
   mkdir(pathPNG.c_str(),0777);
   //  cout <<"Making directory :"<< pathPNG  <<endl;		//make directory
   
