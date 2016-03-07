@@ -28,7 +28,7 @@ lve=rt.TLorentzVector()
 channels=["_ElEl","_MuMu"]
 
 # path to tree
-date="12_2_2016"
+date="2_3_2016"
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 
 # debug
@@ -36,7 +36,7 @@ debug=False
 
 # define the bound of the Signal region
 #LowBounds=[0.001,0.02,0.05]
-bound1 = 0.001
+bound1 = 0.01
 bound2 = 0.02
 bound3 = 0.05
 
