@@ -270,7 +270,6 @@ int main (int argc, char *argv[])
 
   AnalysisEnvironment anaEnv;
   cout<<" - Creating environment ..."<<endl;
-  //    AnalysisEnvironmentLoader anaLoad(anaEnv,xmlfile);
   anaEnv.PrimaryVertexCollection = "PrimaryVertex";
   anaEnv.JetCollection = "PFJets_slimmedJets";
   anaEnv.FatJetCollection = "FatJets_slimmedJetsAK8";
@@ -278,16 +277,11 @@ int main (int argc, char *argv[])
   anaEnv.MuonCollection = "Muons_slimmedMuons";
   anaEnv.ElectronCollection = "Electrons_slimmedElectrons";
   anaEnv.GenJetCollection   = "GenJets_slimmedGenJets";
-  //  anaEnv.TrackMETCollection = "";
-  //  anaEnv.GenEventCollection = "GenEvent";
   anaEnv.NPGenEventCollection = "NPGenEvent";
   anaEnv.MCParticlesCollection = "MCParticles";
   anaEnv.loadFatJetCollection = true;
-  //  anaEnv.loadGenJetCollection = false;
-  //  anaEnv.loadGenEventCollection = false;
   anaEnv.loadNPGenEventCollection = false;
   anaEnv.loadMCParticles = true;
-  //  anaEnv.loadTrackMETCollection = false;
   anaEnv.JetType = 2;
   anaEnv.METType = 2;
   int verbose = 2;//anaEnv.Verbose;
@@ -302,7 +296,6 @@ int main (int argc, char *argv[])
   vector < Dataset* > datasets;
   cout << " - Creating Dataset ..." << endl;
   Dataset* theDataset = new Dataset(dName, dTitle, true, color, ls, lw, normf, xSect, vecfileNames);
-  //    theDataset->SetEquivalentLuminosity(EqLumi*normf);
   datasets.push_back(theDataset);
 
 
@@ -327,7 +320,7 @@ int main (int argc, char *argv[])
   //  MuonSFWeight *muonSFWeightID_L = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);
   
 
-  // Muon Iso SF
+  // Muon Iso SF depending on the WP of the muon ID SF
   MuonSFWeight *muonSFWeightIso_TT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);  // Tight RelIso, Tight ID
   //   MuonSFWeight *muonSFWeightIso_TM = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_TightRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Tight RelIso, Medium ID
   //   MuonSFWeight *muonSFWeightIso_LT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunD_Reco74X_Nov20.root", "NUM_LooseRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio", false, false);  // Loose RelIso, Tight ID
@@ -440,6 +433,7 @@ int main (int argc, char *argv[])
   // -------------------------
   // bo defining cuts value --
   // -------------------------
+
   // think to do it in a loop as it will be faster and much less error prompt
 
   // electron
@@ -1493,8 +1487,9 @@ int main (int argc, char *argv[])
 	  //selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta
 	  //selectedElectrons = selection.GetSelectedElectrons();
 
-	  //	  mets.TRootParticle();
-	  
+
+
+
 
 	  // fill TLorentz vector to allow easier calculation 	  
 
@@ -1883,7 +1878,7 @@ int main (int argc, char *argv[])
 	  // ElectronPairs Plots //
 	  /////////////////////////
 	  // to count distinguishable pairs of the same object we need the lowest pt to go from the last object to the second
-	  // then we compare the hight pt object from the first to the second-1
+	  // then we compare the high pt object from the first to the second-1
 	  // example with 5 object "e"
 	  //  (e0;e4) (e1;e4) (e2;e4) (e3;e4)
 	  //  (e0;e3) (e1;e3) (e2;e3)

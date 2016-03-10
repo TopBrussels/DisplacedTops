@@ -422,7 +422,8 @@ TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/D
       dataSetName = datasets[d]->Name();
       cout << " sVarofinterest is "  << sVarofinterest << endl;
       cout<<"Dataset:  :"<<dataSetName<<endl;
-      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";  
+      //      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";  
+      filepath = CraneenPath+"/"+dataSetName + channelpostfix + "Skimmed.root";
       //filepath = CraneenPath+dataSetName+ ".root";
       if (debug) cout<<"filepath: "<<filepath<<endl;
 	
@@ -431,13 +432,30 @@ TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/D
       if (DileptonMuMu) stree = "doubleMuTree";
       if (DileptonElEl) stree = "doubleElTree";
       if (DileptonElMu) stree = "tree";
+
+
+      // add the correct suffix to select the corresponding region. (PCR, DCR, SR1, SR2, SR3)
+      //      prefix=stree+"PCR/";
+      //      string prefix=stree+"DCR/";
+      string prefix=stree+"OnZ/";
+
+      
+
+      stree = prefix+stree;
+
 		  
       FileObj[dataSetName.c_str()] = new TFile((filepath).c_str(),"READ"); //create TFile for each dataset      
       string TTreename = stree;	
 
+      cout << "TTreename is " << TTreename << endl;
 
+      // change directory
 
+      //      FileObj[dataSetName.c_str()]->cd("doubleElTreePCR");
+	//      doubleElTreePCR->cd();
+      //      cout << "current dir is "<< gDirectory->pwd() << endl;
 
+      
       ttree[dataSetName.c_str()] = (TTree*)FileObj[dataSetName.c_str()]->Get(TTreename.c_str()); //get ttree for each dataset
       nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
       cout<<"                 nEntries: "<<nEntries<<endl;
@@ -879,7 +897,7 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
       cout << " sVarofinterestY is "  << sVarofinterestY << endl;
       cout<<"Dataset:  :"<<dataSetName<<endl;
       //      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";
-      filepath = CraneenPath+"/"+dataSetName + channelpostfix + "MuMuSkimmed.root";
+      //      filepath = CraneenPath+"/"+dataSetName + channelpostfix + "MuMuSkimmed.root";
       //filepath = CraneenPath+dataSetName+ ".root";                                                         
       if (debug) cout<<"filepath: "<<filepath<<endl;
 
@@ -888,15 +906,11 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
       if (DileptonMuMu) stree = "doubleMuTree";
       if (DileptonElEl) stree = "doubleElTree";
       if (DileptonElMu) stree = "tree";
-
-      // add the correct suffix to selecte the corresponding region. (PCR, DCR, SR1, SR2, SR3)
-      regSuf = "DCR";
-      stree=stree+regSuf;
       
 
       FileObj[dataSetName.c_str()] = new TFile((filepath).c_str(),"READ"); //create TFile for each dataset
       string TTreename = stree;
-
+      cout << "TTreename is " << TTreename << endl;
       ttree[dataSetName.c_str()] = (TTree*)FileObj[dataSetName.c_str()]->Get(TTreename.c_str()); //get ttree for each dataset              
       nEntries = (int)ttree[dataSetName.c_str()]->GetEntries();
       cout<<"                 nEntries: "<<nEntries<<endl;
