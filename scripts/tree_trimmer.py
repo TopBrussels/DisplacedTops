@@ -208,16 +208,17 @@ for chan in channels:
     
             # eo loop over the event 
     
-            # to be FIXED only write CR for data.
+            # to be FIXED only write SR for data.
             # to be FIXED logic for CR...
             # write the tree
             for i_reg in range(0,len(regions)):
                 directories[i_reg].cd()
                 trees[i_reg].Write()
+#                trees[i_reg].GetCurrentFile().Close()
 
             # closing files
             new_file.Close()
-#            trees[i_reg].GetCurrentFile().Close()
+            ch_in.GetCurrentFile().Close()
     
     # eo loop over dataset
                                                        
