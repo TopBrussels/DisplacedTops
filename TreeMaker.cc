@@ -826,6 +826,21 @@ int main (int argc, char *argv[])
       Bool_t isId_muon_pc[10];
       Bool_t isIso_muon_pc[10];
 
+
+      // variables for mcParticles 
+      Int_t nMcParticles_pc;
+      Double_t pt_mcParticle_pc[10];
+      Double_t phi_mcParticle_pc[10];
+      Double_t eta_mcParticle_pc[10];
+      Double_t E_mcParticle_pc[10];
+      Int_t type_mcParticle_pc[10];
+      Int_t motherType_mcParticle_pc[10];
+      Int_t grannyType_mcParticle_pc[10];
+      Double_t d0_mcParticle_pc[10];
+      Double_t d0BeamSpot_mcParticle_pc[10];
+
+
+
       // event related variables
       Int_t run_num_pc;
       Int_t event_num_pc;
@@ -894,6 +909,9 @@ int main (int argc, char *argv[])
       Int_t charge_muon_elel[10];
       Bool_t isId_muon_elel[10];
       Bool_t isIso_muon_elel[10];
+
+
+
 
 
       // event related variables
@@ -1105,6 +1123,20 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("d0BeamSpot_muon_pc",d0BeamSpot_muon_pc,"d0BeamSpot_muon_pc[nMuons_pc]/D");
       myPreCutTree->Branch("sf_muon_pc",sf_muon_pc,"sf_muon_pc[nMuons_pc]/D");
 
+      // mcParticles
+      //        myPreCutTree->Branch("templatevar",templatevar,"templatevar[nMcParticles_pc]/D");
+      myPreCutTree->Branch("nMcParticles_pc",&nMcParticles_pc, "nMcParticles_pc/I");
+      myPreCutTree->Branch("pt_mcParticle_pc",pt_mcParticle_pc,"pt_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("phi_mcParticle_pc",phi_mcParticle_pc,"phi_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("eta_mcParticle_pc",eta_mcParticle_pc,"eta_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("E_mcParticle_pc",E_mcParticle_pc,"E_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("d0_mcParticle_pc",d0_mcParticle_pc,"d0_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("d0BeamSpot_mcParticle_pc",d0BeamSpot_mcParticle_pc,"d0BeamSpot_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("type_mcParticle_pc",type_mcParticle_pc,"type_mcParticle_pc[nMcParticles_pc]/I");
+      myPreCutTree->Branch("motherType_mcParticle_pc",motherType_mcParticle_pc,"motherType_mcParticle_pc[nMcParticles_pc]/I");
+      myPreCutTree->Branch("grannyType_mcParticle_pc",grannyType_mcParticle_pc,"grannyType_mcParticle_pc[nMcParticles_pc]/I");
+
+
 
       // eo a secondary tree that is filled before the whole list of cut
 
@@ -1158,6 +1190,8 @@ int main (int argc, char *argv[])
       myDoubleElTree->Branch("phi_muon_elel",phi_muon_elel,"phi_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("eta_muon_elel",eta_muon_elel,"eta_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("E_muon_elel",E_muon_elel,"E_muon_elel[nMuons_elel]/D");
+      myDoubleElTree->Branch("d0_muon_elel",d0_muon_elel,"d0_muon_elel[nMuons_elel]/D");
+      myDoubleElTree->Branch("d0BeamSpot_muon_elel",d0BeamSpot_muon_elel,"d0BeamSpot_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("chargedHadronIso_muon_elel",chargedHadronIso_muon_elel,"chargedHadronIso_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("neutralHadronIso_muon_elel",neutralHadronIso_muon_elel,"neutralHadronIso_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("photonIso_muon_elel",photonIso_muon_elel,"photonIso_muon_elel[nMuons_elel]/D");
@@ -1165,12 +1199,11 @@ int main (int argc, char *argv[])
       myDoubleElTree->Branch("charge_muon_elel",charge_muon_elel,"charge_muon_elel[nMuons_elel]/I");
       myDoubleElTree->Branch("isId_muon_elel",isId_muon_elel,"isId_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("isIso_muon_elel",isIso_muon_elel,"isIso_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("d0_muon_elel",d0_muon_elel,"d0_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("d0BeamSpot_muon_elel",d0BeamSpot_muon_elel,"d0BeamSpot_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("sf_muon_elel",sf_muon_elel,"sf_muon_elel[nMuons_elel]/D");
       myDoubleElTree->Branch("charge_muon_elel",charge_muon_elel,"charge_muon_elel[nMuons_elel]/D");
 
       //
+
 
       // event related variables
        myDoubleElTree->Branch("run_num_elel",&run_num,"run_num_elel/I");
@@ -1312,6 +1345,8 @@ int main (int argc, char *argv[])
       vector<TRootPFJet*>    selectedJets;
       vector<TRootSubstructureJet*>    selectedFatJets;
 
+
+      vector<TRootMCParticle*> mcParticles;
 
       selectedElectrons.reserve(10);
       selectedMuons.reserve(10);
@@ -1488,6 +1523,9 @@ int main (int argc, char *argv[])
 	  //selectedElectrons = selection.GetSelectedElectrons();
 
 
+	  // loading mcparticles
+	  treeLoader.LoadMCEvent(ievt, 0, mcParticles, false);
+	  sort(mcParticles.begin(),mcParticles.end(),HighestPt());
 
 
 
@@ -1789,6 +1827,32 @@ int main (int argc, char *argv[])
 	      
 	      
 	    }
+
+
+	  /////////////////////////////
+	  // mcParticles Based Plots //
+	  /////////////////////////////
+
+	  nMcParticles_pc=0;
+	  for (unsigned int i = 0; i < mcParticles.size(); i++){
+	    if (mcParticles[i]->status() == 23) // check what it means!!
+	      {
+		pt_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->Pt();
+		phi_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->Phi();
+		eta_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->Eta();
+		E_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->E();
+		type_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->type();
+		motherType_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->motherType();
+		grannyType_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->grannyType();
+		//	    d0_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->d0();
+		//	    pt_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->Pt();
+		
+		nMcParticles_pc++;
+	      }
+	    else cout << "mcParticles[i]->status() is " << mcParticles[i]->status() << endl;
+	  }
+
+
 	    
 	  // eo  assigning values to the precut tree
 	    
@@ -1946,6 +2010,7 @@ int main (int argc, char *argv[])
 	      nMuons_elel++;
 
 	    }
+
 
 	  // eo assigning values to the elel tree
 
