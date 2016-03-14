@@ -827,6 +827,25 @@ int main (int argc, char *argv[])
       Bool_t isIso_muon_pc[10];
 
 
+      // variables for jets
+      Int_t nJets_pc;
+      Double_t pt_jet_pc[10];
+      Double_t phi_jet_pc[10];
+      Double_t eta_jet_pc[10];
+      Double_t E_jet_pc[10];
+      Double_t CSV_jet_pc[10];
+
+
+
+      // variables for bjets
+      Int_t nBjets_pc;
+      Double_t pt_bjet_pc[10];
+      Double_t phi_bjet_pc[10];
+      Double_t eta_bjet_pc[10];
+      Double_t E_bjet_pc[10];
+      Double_t CSV_bjet_pc[10];
+
+
       // variables for mcParticles 
       Int_t nMcParticles_pc;
       Double_t pt_mcParticle_pc[10];
@@ -1122,6 +1141,29 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("d0_muon_pc",d0_muon_pc,"d0_muon_pc[nMuons_pc]/D");
       myPreCutTree->Branch("d0BeamSpot_muon_pc",d0BeamSpot_muon_pc,"d0BeamSpot_muon_pc[nMuons_pc]/D");
       myPreCutTree->Branch("sf_muon_pc",sf_muon_pc,"sf_muon_pc[nMuons_pc]/D");
+
+
+      // jets
+      //      myPreCutTree->Branch("templatevar",templatevar,"templatevar[nJets_pc]/D"); 
+      myPreCutTree->Branch("nJets_pc",&nJets_pc, "nJets_pc/I");
+      myPreCutTree->Branch("pt_jet_pc",pt_jet_pc,"pt_jet_pc[nJets_pc]/D"); 
+      myPreCutTree->Branch("eta_jet_pc",eta_jet_pc,"eta_jet_pc[nJets_pc]/D"); 
+      myPreCutTree->Branch("phi_jet_pc",phi_jet_pc,"phi_jet_pc[nJets_pc]/D"); 
+      myPreCutTree->Branch("E_jet_pc",E_jet_pc,"E_jet_pc[nJets_pc]/D"); 
+      myPreCutTree->Branch("CSV_jet_pc",CSV_jet_pc,"CSV_jet_pc[nJets_pc]/D"); 
+      //      myPreCutTree->Branch("templatevar",templatevar,"templatevar[nJets_pc]/D"); 
+
+
+      // bjets
+      //      myPreCutTree->Branch("templatevar",templatevar,"templatevar[nBjets_pc]/D"); 
+      myPreCutTree->Branch("nBjets_pc",&nBjets_pc, "nBjets_pc/I");
+      myPreCutTree->Branch("pt_bjet_pc",pt_bjet_pc,"pt_bjet_pc[nBjets_pc]/D"); 
+      myPreCutTree->Branch("eta_bjet_pc",eta_bjet_pc,"eta_bjet_pc[nBjets_pc]/D"); 
+      myPreCutTree->Branch("phi_bjet_pc",phi_bjet_pc,"phi_bjet_pc[nBjets_pc]/D"); 
+      myPreCutTree->Branch("E_bjet_pc",E_bjet_pc,"E_bjet_pc[nBjets_pc]/D"); 
+      myPreCutTree->Branch("CSV_bjet_pc",CSV_bjet_pc,"CSV_bjet_pc[nBjets_pc]/D"); 
+      //      myPreCutTree->Branch("templatevar",templatevar,"templatevar[nBjets_pc]/D"); 
+
 
       // mcParticles
       //        myPreCutTree->Branch("templatevar",templatevar,"templatevar[nMcParticles_pc]/D");
@@ -1708,14 +1750,6 @@ int main (int argc, char *argv[])
 
 	  // Precut Tree
 	    
-	  //////////////////////
-	  // Jets Based Plots //
-	  //////////////////////
-	  if (debug) cout << "before jets loop" << endl;
-	    
-	  for (Int_t seljet1 =0; seljet1 < selectedJets.size(); seljet1++ )
-	    {
-	    }
 
 
 	  //////////////////////////
@@ -1802,7 +1836,7 @@ int main (int argc, char *argv[])
 	      chargedHadronIso_muon_pc[nMuons_pc]=init_muons[initmu]->chargedHadronIso(4);
 	      neutralHadronIso_muon_pc[nMuons_pc]=init_muons[initmu]->neutralHadronIso(4);
 	      photonIso_muon_pc[nMuons_pc]=init_muons[initmu]->photonIso(4);
-	      pfIso_muon_pc[nMuons_pc]=init_muons[initmu]->relPfIso(4,0);
+	      pfIso_muon_pc[nMuons_pc]=init_muons[in<itmu]->relPfIso(4,0);
 	      charge_muon_pc[nMuons_pc]=init_muons[initmu]->charge(); 
 	      // id
 	      isId_muon_pc[nMuons_pc]=false;
@@ -1829,6 +1863,41 @@ int main (int argc, char *argv[])
 	    }
 
 
+	  //////////////////////
+	  // Jets Based Plots //
+	  //////////////////////
+	  if (debug) cout << "before jets loop" << endl;
+
+	  nJets_pc=0;
+	  for (Int_t seljet =0; seljet < selectedJets.size() && seljet < 10 ; seljet++ )
+	    {
+	      if (selectedJets[seljet]->Pt() > 30 && abs(selectedJets[seljet]->Eta()) < 2.4 )
+		{
+		  pt_jet_pc[nJets_pc] = selectedJets[seljet]->Pt();
+		  eta_jet_pc[nJets_pc] = selectedJets[seljet]->Eta();
+		  phi_jet_pc[nJets_pc] = selectedJets[seljet]->Phi();
+		  E_jet_pc[nJets_pc] = selectedJets[seljet]->E();
+		  CSV_jet_pc[nJets_pc] = selectedJets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+		  nJets_pc++;
+		}
+	    }
+
+	  nBjets_pc=0;
+	  for (Int_t seljet =0; seljet < selectedJets.size() && seljet < 10 ; seljet++ )
+	    {
+	      if (selectedJets[seljet]->Pt() > 30 && abs(selectedJets[seljet]->Eta()) < 2.4 && selectedJets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > 0.89 )
+		{
+		  pt_bjet_pc[nBjets_pc] = selectedJets[seljet]->Pt();
+		  eta_bjet_pc[nBjets_pc] = selectedJets[seljet]->Eta();
+		  phi_bjet_pc[nBjets_pc] = selectedJets[seljet]->Phi();
+		  E_bjet_pc[nBjets_pc] = selectedJets[seljet]->E();
+		  CSV_bjet_pc[nBjets_pc] = selectedJets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+		  nBjets_pc++;
+		}
+	    }
+
+
+
 	  /////////////////////////////
 	  // mcParticles Based Plots //
 	  /////////////////////////////
@@ -1849,7 +1918,7 @@ int main (int argc, char *argv[])
 		
 		nMcParticles_pc++;
 	      }
-	    else cout << "mcParticles[i]->status() is " << mcParticles[i]->status() << endl;
+	    //	    else cout << "mcParticles[i]->status() is " << mcParticles[i]->status() << endl;
 	  }
 
 
