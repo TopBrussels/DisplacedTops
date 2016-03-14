@@ -232,6 +232,10 @@ int main (int argc, char *argv[])
   bool elel = false; 
   bool elmu = false; 
   bool mumu = false; 
+  bool bbmu = false; 
+  bool bbel = false; 
+
+
 
 
 
@@ -252,6 +256,18 @@ int main (int argc, char *argv[])
       cout << " --> Using the Electron-Electron channel..." << endl;
       elel=true;
       channelpostfix = "_ElEl";
+    }
+  else if(channel=="bbMu")
+    {
+      cout << " --> Using the bbar+muon control region..." << endl;
+      bbmu=true;
+      channelpostfix = "_bbMu";
+    }
+  else if(channel=="bbEl")
+    {
+      cout << " --> Using the bbar+electron control region..." << endl;
+      bbel=true;
+      channelpostfix = "_bbEl";
     }
   else
     {
@@ -461,6 +477,9 @@ int main (int argc, char *argv[])
     mu_pt_cut=40;
     el_pt_cut=40;
   }
+  else if (bbmu){
+    mu_pt_cut=30;
+  }
   
   
   
@@ -601,6 +620,12 @@ int main (int argc, char *argv[])
   }
   else if (channel=="ElEl"){
     trigger = new Trigger(0, 1 , 0, 1);
+  }
+  else if (channel=="bbMu"){
+    trigger = new Trigger(1, 0 , 1, 0);
+  }
+  else if (channel=="bbEl"){
+    trigger = new Trigger(0, 1 , 1, 0);
   }
   else cout << "Wrong chanel name" << endl;
   
@@ -1376,12 +1401,14 @@ int main (int argc, char *argv[])
       vector<TRootElectron*> KynIdElectrons;
       vector<TRootElectron*> selectedElectrons;
       vector<TRootElectron*> selectedLooseElectrons;
+      vector<TRootElectron*> selectedLooseIsoElectrons;
       vector<TRootElectron*> selectedExtraElectrons;
 
       vector<TRootMuon*> KynMuons;
       vector<TRootMuon*> KynIdMuons;
       vector<TRootMuon*> selectedMuons;
       vector<TRootMuon*> selectedLooseMuons;
+      vector<TRootMuon*> selectedLooseIsoMuons;
       vector<TRootMuon*> selectedExtraMuons;
 
       vector<TRootPFJet*>    selectedJets;
@@ -1543,6 +1570,7 @@ int main (int argc, char *argv[])
 	  KynIdMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, true); // pt, eta, id
 	  selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // pt, eta, id, iso
 	  selectedLooseMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // pt, eta, id, iso
+	  selectedLooseIsoMuons = selection.GetSelectedDisplacedMuons(40, 2.4, 1.5, true, true); // pt, eta, id, iso
 	  //	    selectedMuons = init_muons;
 
 	  //selectedMuons = selection.GetSelectedDisplacedMuons(30., 2., 0.15, true, true); // pt, eta, iso // run normally
@@ -1560,6 +1588,7 @@ int main (int argc, char *argv[])
 	  KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, false, true);// pt, eta, id
 	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, true, true);// pt, eta, id, iso
 	  selectedLooseElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, true, true);// pt, eta, id, iso
+	  //	  selectedLooseIsoElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, true, true);// pt, eta, id, iso
 	  //selectedElectrons = init_electrons;
 	  //selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta
 	  //selectedElectrons = selection.GetSelectedElectrons();
@@ -1823,37 +1852,38 @@ int main (int argc, char *argv[])
 	  //////////////////////
 	  // Muon Based Plots //
 	  //////////////////////
-	    
+	  //	  selectedLooseIsoMuons
+
 	  nMuons_pc=0;
-	  for (Int_t initmu =0; initmu < init_muons.size() && initmu < 10; initmu++ )
+	  for (Int_t i_muon =0; i_muon < selectedLooseIsoMuons.size() && i_muon < 10; i_muon++ )
             {
-	      pt_muon_pc[nMuons_pc]=init_muons[initmu]->Pt();
-	      phi_muon_pc[nMuons_pc]=init_muons[initmu]->Phi();
-	      eta_muon_pc[nMuons_pc]=init_muons[initmu]->Eta();
-	      E_muon_pc[nMuons_pc]=init_muons[initmu]->E();
-	      d0_muon_pc[nMuons_pc]=init_muons[initmu]->d0();
-	      d0BeamSpot_muon_pc[nMuons_pc]=init_muons[initmu]->d0BeamSpot();
-	      chargedHadronIso_muon_pc[nMuons_pc]=init_muons[initmu]->chargedHadronIso(4);
-	      neutralHadronIso_muon_pc[nMuons_pc]=init_muons[initmu]->neutralHadronIso(4);
-	      photonIso_muon_pc[nMuons_pc]=init_muons[initmu]->photonIso(4);
-	      pfIso_muon_pc[nMuons_pc]=init_muons[in<itmu]->relPfIso(4,0);
-	      charge_muon_pc[nMuons_pc]=init_muons[initmu]->charge(); 
+	      pt_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->Pt();
+	      phi_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->Phi();
+	      eta_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->Eta();
+	      E_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->E();
+	      d0_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->d0();
+	      d0BeamSpot_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->d0BeamSpot();
+	      chargedHadronIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->chargedHadronIso(4);
+	      neutralHadronIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->neutralHadronIso(4);
+	      photonIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->photonIso(4);
+	      pfIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->relPfIso(4,0);
+	      charge_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->charge(); 
 	      // id
 	      isId_muon_pc[nMuons_pc]=false;
-	      if( init_muons[initmu]->isGlobalMuon() && init_muons[initmu]->isPFMuon()
-		  && init_muons[initmu]->chi2() < 10
-		  && init_muons[initmu]->nofTrackerLayersWithMeasurement() > 5
-		  &&  init_muons[initmu]->nofValidMuHits() > 0
-		  && init_muons[initmu]->nofValidPixelHits() > 0 
-		  && init_muons[initmu]->nofMatchedStations()> 1){
+	      if( selectedLooseIsoMuons[i_muon]->isGlobalMuon() && selectedLooseIsoMuons[i_muon]->isPFMuon()
+		  && selectedLooseIsoMuons[i_muon]->chi2() < 10
+		  && selectedLooseIsoMuons[i_muon]->nofTrackerLayersWithMeasurement() > 5
+		  &&  selectedLooseIsoMuons[i_muon]->nofValidMuHits() > 0
+		  && selectedLooseIsoMuons[i_muon]->nofValidPixelHits() > 0 
+		  && selectedLooseIsoMuons[i_muon]->nofMatchedStations()> 1){
 		isId_muon_pc[nMuons_pc]=true;
 	      }
 	      //iso
 	      isIso_muon_pc[nMuons_pc]=false;
-	      if ( (init_muons[initmu]->chargedHadronIso(4) + max( 0.0, init_muons[initmu]->neutralHadronIso(4) + init_muons[initmu]->photonIso(4) - 0.5*init_muons[initmu]->puChargedHadronIso(4) ) ) / init_muons[initmu]->Pt() < mu_iso_cut ) isIso_muon_pc[nMuons_pc]=true;
+	      if ( (selectedLooseIsoMuons[i_muon]->chargedHadronIso(4) + max( 0.0, selectedLooseIsoMuons[i_muon]->neutralHadronIso(4) + selectedLooseIsoMuons[i_muon]->photonIso(4) - 0.5*selectedLooseIsoMuons[i_muon]->puChargedHadronIso(4) ) ) / selectedLooseIsoMuons[i_muon]->Pt() < mu_iso_cut ) isIso_muon_pc[nMuons_pc]=true;
 
-	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(init_muons[initmu]->Eta(), init_muons[initmu]->Pt(), 0)* muonSFWeightIso_TT->at(init_muons[initmu]->Eta(), init_muons[initmu]->Pt(), 0);
-	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(init_muons[initmu]->Eta(), init_muons[initmu]->Pt(), 0);//* muonSFWeightIso_TT->at(init_muons[initmu]->Eta(), init_muons[initmu]->Pt(), 0);
+	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0)* muonSFWeightIso_TT->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0);
+	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0);//* muonSFWeightIso_TT->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0);
 	      
 
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons_pc << " and pt equals to " << pt_muon_pc[nMuons_pc] << endl;
