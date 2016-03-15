@@ -24,7 +24,8 @@ date = dd+"_"+mm+"_"+yyyy
 
 
 # pick one of the following
-channels = ["MuMu","ElEl"] 
+channels = ["bbMu"] 
+#channels = ["MuMu","ElEl"] 
 #channels = ["MuMu"] 
 #channels = ["ElEl"] 
 #channels=["test"]
@@ -40,6 +41,10 @@ for chan in channels:
         tree = ET.ElementTree(file='../config/FullSamplesElElV0.xml')
     elif "ElMu" in chan:
         tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
+    elif "bbMu" in chan:
+        tree = ET.ElementTree(file='../config/FullSamplesbbMuV0.xml')
+    elif "bbEl" in chan:
+        tree = ET.ElementTree(file='../config/FullSamplesbbElV0.xml')
     elif "test" in chan:
         tree = ET.ElementTree(file='../config/test.xml')
     else:

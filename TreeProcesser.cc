@@ -49,6 +49,9 @@ Bool_t debug_plot = false;
 bool DileptonElMu = false;
 bool DileptonMuMu = false;
 bool DileptonElEl = false;
+bool bbMu = false;
+bool bbEl = false;
+
 string channelpostfix = "";
 string regSuf = "";
 
@@ -105,7 +108,6 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Muon-Electron channel..." << endl;
       channelpostfix = "_MuEl";
-      //      xmlFileName = "config/FullSamplesElMuV0TreeProc.xml";
       xmlFileName = "config/TreeProc_FullSamplesElMuV0.xml";
       DileptonElMu=true;
     }
@@ -113,18 +115,29 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Muon-Muon channel..." << endl;
       channelpostfix = "_MuMu";
-      //      xmlFileName = "config/FullSamplesMuMuV0TreeProc.xml";
       xmlFileName = "config/TreeProc_FullSamplesMuMuV0.xml";
       DileptonMuMu=true;
-      //      cout << "DileptonMuMu is " << DileptonMuMu << endl;
     }
   else if(channel=="ElEl")
     {
       cout << " --> Using the Electron-Electron channel..." << endl;
       channelpostfix = "_ElEl";
-      //      xmlFileName = "config/FullSamplesElElV0TreeProc.xml";
       xmlFileName = "config/TreeProc_FullSamplesElElV0.xml";
       DileptonElEl=true;
+    }
+  else if(channel=="bbMu")
+    {
+      cout << " --> Using the bbar+Muon control region..." << endl;
+      channelpostfix = "_bbMu";
+      xmlFileName = "config/TreeProc_FullSamplesbbMuV0.xml";
+      bbMu=true;
+    }
+  else if(channel=="bbEl")
+    {
+      cout << " --> Using the bbar+Electron control region..." << endl;
+      channelpostfix = "_bbEl";
+      xmlFileName = "config/TreeProc_FullSamplesbbElV0.xml";
+      bbEl=true;
     }
   else
     {
@@ -300,6 +313,13 @@ int main(int argc, char* argv[])
       //    DatasetPlotter(100, 0.0, 0.2, "to_Add_Invmass", xmlFileName,CraneenPath);
 
     }
+    if (bbMu){
+      DatasetPlotter(50, -0.05, 0.05, "d0BeamSpot_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
+      DatasetPlotter(50, 0.0, 1.6, "pfIso_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
+      DatasetPlotter(50, 0, 1, "CSV_jet_pc[nJets_pc]", xmlFileName,CraneenPath);
+
+    }
+
   }
 
 
@@ -409,8 +429,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
   // get the desired directory
 
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/29_2_2016/";
-TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/2_3_2016/";
+  // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/2_3_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/14_3_2016/";
 
 
   CraneenPath=CraneenPath+channelpostfix;
@@ -422,8 +442,7 @@ TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/D
       dataSetName = datasets[d]->Name();
       cout << " sVarofinterest is "  << sVarofinterest << endl;
       cout<<"Dataset:  :"<<dataSetName<<endl;
-      //      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";  
-      filepath = CraneenPath+"/"+dataSetName + channelpostfix + "Skimmed.root";
+      filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";  
       //filepath = CraneenPath+dataSetName+ ".root";
       if (debug) cout<<"filepath: "<<filepath<<endl;
 	
@@ -432,16 +451,22 @@ TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/D
       if (DileptonMuMu) stree = "doubleMuTree";
       if (DileptonElEl) stree = "doubleElTree";
       if (DileptonElMu) stree = "tree";
+      if (bbMu || bbEl) stree = "preCutTree";
 
 
-      // add the correct suffix to select the corresponding region. (PCR, DCR, SR1, SR2, SR3)
-      //      prefix=stree+"PCR/";
-      //      string prefix=stree+"DCR/";
-      string prefix=stree+"OnZ/";
+      bool useTrimmedTree =false;
+      if (useTrimmedTree)
+	{
 
-      
+	  filepath = CraneenPath+"/"+dataSetName + channelpostfix + "Skimmed.root";
 
-      stree = prefix+stree;
+	  // add the correct suffix to select the corresponding region. (PCR, DCR, SR1, SR2, SR3)
+	  //      prefix=stree+"PCR/";
+	  //      string prefix=stree+"DCR/";
+	  string prefix=stree+"OnZ/";
+	  
+	  stree = prefix+stree;
+	}
 
 		  
       FileObj[dataSetName.c_str()] = new TFile((filepath).c_str(),"READ"); //create TFile for each dataset      
@@ -882,9 +907,10 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
 
 
   // get the desired directory
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/29_2_2016/";
 
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/2_3_2016/";
+
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/2_3_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/14_3_2016/";
 
 
   CraneenPath=CraneenPath+channelpostfix;
@@ -906,6 +932,7 @@ void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, in
       if (DileptonMuMu) stree = "doubleMuTree";
       if (DileptonElEl) stree = "doubleElTree";
       if (DileptonElMu) stree = "tree";
+      if (bbMu || bbEl) stree = "preCutTree";
       
 
       FileObj[dataSetName.c_str()] = new TFile((filepath).c_str(),"READ"); //create TFile for each dataset

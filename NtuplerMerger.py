@@ -19,7 +19,8 @@ date = dd+"_"+mm+"_"+yyyy
 #usging argument to filter
 filterSample = sys.argv[1]
 
-channels = ["_MuMu","_ElEl"]
+channels = ["_bbMu"]
+#channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
 #channels = ["_MuMu"]
 
@@ -39,6 +40,10 @@ for chan in channels:
         tree = ET.ElementTree(file='config/FullSamplesElElV0.xml')
     elif "ElMu" in chan:
         tree = ET.ElementTree(file='config/FullSamplesElMuV0.xml')
+    elif "bbMu" in chan:
+        tree = ET.ElementTree(file='config/FullSamplesbbMuV0.xml')
+    elif "bbEl" in chan:
+        tree = ET.ElementTree(file='config/FullSamplesbbElV0.xml')
     else:
         print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
         sys.exit()

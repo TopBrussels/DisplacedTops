@@ -2742,7 +2742,7 @@ int main (int argc, char *argv[])
 	  //////////////////
 	  //	    /*
 	  if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
-	  if (nElectrons_pc >= 1 && nMuons_pc >= 1){
+	  if ( nMuons_pc == 1 && nBjets_pc >=1 && nJets_pc >= 1 ){
 	    myPreCutTree->Fill(); 
 	    passed_pc++;
 	  }
