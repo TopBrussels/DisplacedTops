@@ -1432,7 +1432,7 @@ int main (int argc, char *argv[])
 	  vector<TRootPFJet*>    idedJets;
 	  vector<TRootPFJet*>    preSelectedJets;
 	  vector<TRootPFJet*>    selectedJets;
-	  vector<TRootPFJet*>    leadingCSVBjets;
+	  vector<TRootPFJet*>    leadingCSVJets;
 	  vector<TRootPFJet*>    idedBjets;
 	  vector<TRootPFJet*>    selectedBjets;
 
@@ -1629,8 +1629,9 @@ int main (int argc, char *argv[])
 
 
 	  
-	  //	  /*
-	  // check angle between jet and bjet
+	  // get new collection of jet and b-jet depending on their relative Delta-Phi
+	  // idedBjets are reduced to selectedBjets
+	  // idedJets are reducted to preSelectedJets
 	  for (int i_bjet = 0; i_bjet < idedBjets.size(); i_bjet++ ){
 	    for (int i_jet = 0; i_jet < idedJets.size() ; i_jet++ ){
 	      if ( idedBjets[i_bjet]->DeltaPhi(*(idedJets[i_jet])) > 2.5 ) { // back to back bjet and jet
@@ -1640,24 +1641,53 @@ int main (int argc, char *argv[])
 	      }
 	    }
 	  }
-	  cout << " preSelectedJets.size is " << preSelectedJets.size() << endl;
+	  //	  cout << " preSelectedJets.size is " << preSelectedJets.size() << endl;
 
-	  
+
+
+	  // get new collection of jets depending on their Delta R wiht the lepton of interest
+	  // preSelectedJets reduced to selectedJets 
+	  // and selectedJets reduced to leadingCSVJets
 	  double maxCSV =0;
 	  // muon close to jet
-	  for (int i_jet = 0; i_jet < preSelectedJets.size() ; i_jet++ ){
-	    for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
-	      if (preSelectedJets[i_jet]->DeltaR(*(selectedMuons[i_mu])) < 0.2) {
-		selectedJets.push_back(preSelectedJets[i_jet]);
-		leadingCSVBjets.push_back(preSelectedJets[i_jet]);
-		if (preSelectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > maxCSV){
-		  maxCSV= preSelectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
-		  leadingCSVBjets.pop_back();
-		  leadingCSVBjets.push_back(preSelectedJets[i_jet]);
+
+	  
+	  // for muon
+	  if (channel == "bbMu"){
+	    for (int i_jet = 0; i_jet < preSelectedJets.size() ; i_jet++ ){
+	      for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
+		if (preSelectedJets[i_jet]->DeltaR(*(selectedMuons[i_mu])) < 0.2) {
+		  selectedJets.push_back(preSelectedJets[i_jet]);
+		  leadingCSVJets.push_back(preSelectedJets[i_jet]);
+		  if (preSelectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > maxCSV){
+		    maxCSV= preSelectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+		    leadingCSVJets.pop_back();
+		    leadingCSVJets.push_back(preSelectedJets[i_jet]);
+		  }
 		}
 	      }
 	    }
 	  }
+
+	  // for electron
+	  if (channel == "bbEl"){
+	    for (int i_jet = 0; i_jet < preSelectedJets.size() ; i_jet++ ){
+	      for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
+		if (preSelectedJets[i_jet]->DeltaR(*(selectedElectrons[i_el])) < 0.2) {
+		  selectedJets.push_back(preSelectedJets[i_jet]);
+		  leadingCSVJets.push_back(preSelectedJets[i_jet]);
+		  if (preSelectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > maxCSV){
+		    maxCSV= preSelectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+		    leadingCSVJets.pop_back();
+		    leadingCSVJets.push_back(preSelectedJets[i_jet]);
+		  }
+		}
+	      }
+	    }
+	  }
+
+	  
+
 	  //	  */
 
 
@@ -1964,7 +1994,25 @@ int main (int argc, char *argv[])
 	  if (debug) cout << "before jets loop" << endl;
 	  
 	  
-	  
+	  // Choose wich collection to put in the tree. 
+	  // selected jets -> all jets that pass all the cuts
+	  // leadingCSVJets -> if multiple jets per event pick the one with the highest CSV value
+	  // most of the time these two collection will be the same (i guess)
+
+	  /*
+	  nJets_pc=0;
+	  for (Int_t seljet =0; seljet < leadingCSVJets.size() && seljet < 10 ; seljet++ )
+	    {
+	      pt_jet_pc[nJets_pc] = leadingCSVJets[seljet]->Pt();
+	      eta_jet_pc[nJets_pc] = leadingCSVJets[seljet]->Eta();
+	      phi_jet_pc[nJets_pc] = leadingCSVJets[seljet]->Phi();
+	      E_jet_pc[nJets_pc] = leadingCSVJets[seljet]->E();
+	      CSV_jet_pc[nJets_pc] = leadingCSVJets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+	      nJets_pc++;
+	    }
+	  */
+
+	  //	  /*
 	  nJets_pc=0;
 	  for (Int_t seljet =0; seljet < selectedJets.size() && seljet < 10 ; seljet++ )
 	    {
@@ -1975,6 +2023,7 @@ int main (int argc, char *argv[])
 	      CSV_jet_pc[nJets_pc] = selectedJets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
 	      nJets_pc++;
 	    }
+	  //	  */
 	  //	  cout << "selectedJets.size() is " << selectedJets.size() << endl;
 	  //	  cout << "nJets_pc is " << nJets_pc << endl;
 
@@ -2812,8 +2861,9 @@ int main (int argc, char *argv[])
 
 	  //	  if (nMuons_pc >= 1 && nElectrons_pc >=1){
 
-	  cout << "number of of leading B-jets is " << leadingCSVBjets.size() << endl;
-	  if ( nMuons_pc == 1 && selectedJets.size() >=1 && nBjets_pc >= 1 ){
+	  //	  cout << "number of leading B-jets is " << leadingCSVJets.size() << endl;
+	  //	  if ( nMuons_pc == 1 && selectedJets.size() >=1 && nBjets_pc >= 1 ){
+	  if ( nMuons_pc == 1 && leadingCSVJets.size() >=1 && nBjets_pc >= 1 ){
 	    myPreCutTree->Fill(); 
 	    passed_pc++;
 	  }
