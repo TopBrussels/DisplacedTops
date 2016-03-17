@@ -1576,8 +1576,7 @@ int main (int argc, char *argv[])
 
 	  // jet selections
 	  if (debug)cout<<"Getting Jets"<<endl;
-	  idedJets = selection.GetSelectedJets(30, 2.4, true, "Loose"); // pt, eta, applyId, WP
-	  //selectedJets = selection.GetSelectedJets(30, 2.4, true, "Loose"); // pt, eta, applyId, WP
+	  selectedJets = selection.GetSelectedJets(30, 2.4, true, "Loose"); // pt, eta, applyId, WP
 
 
 	  // bjet selections
@@ -1585,8 +1584,8 @@ int main (int argc, char *argv[])
 	  if (debug)cout<<"Getting Bjets"<<endl;
 	  Int_t btagAlgo = 1; // btag_combinedInclusiveSecondaryVertexV2BJetTags
 	  Float_t discirminantCut = 0.935; // 0.460, 0.800, 0.935 -> L, M, T
-	  idedBjets = selection.GetSelectedBJets(idedJets, btagAlgo, discirminantCut ); // jet collection, btagAlgo, discriminant cut
-	  //selectedBjets = selection.GetSelectedBJets(selectedJets, btagAlgo, discirminantCut ); // jet collection, btagAlgo, discriminant cut
+	  selectedBjets = selection.GetSelectedBJets(idedJets, btagAlgo, discirminantCut ); // jet collection, btagAlgo, discriminant cut
+
 
 
 
@@ -1617,6 +1616,7 @@ int main (int argc, char *argv[])
 	  KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, true);// pt, eta, id
 	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
 	  selectedLooseElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso
+
 	  //	  selectedLooseIsoElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut true, true);// pt, eta, id, iso
 	  //selectedElectrons = init_electrons;
 	  //selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta
@@ -1629,20 +1629,18 @@ int main (int argc, char *argv[])
 
 
 
-	  // anti iso electrons
-	  vector<TRootElectron*> selectedAntiIsoElectrons;
-	  for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
-	    if ( selectedElectrons[i_el]->relPfIso(3,0) > 0.15 ){
-	      selectedAntiIsoElectrons.push_back(selectedElectrons[i_el]);
+	  // anti iso electrons (erase isolated electrons)
+	  for (int i_el = 0; i_el < selectedLooseElectrons.size() ; i_el++ ){
+	    if ( selectedLooseElectrons[i_el]->relPfIso(3,0) < 0.15 ){
+	      selectedLooseElectrons.erase(selectedLooseElectrons.begin()+i_el);
 	    }
 	  }
 
 
-	  // anti iso muon
-	  vector<TRootMuon*> selectedAntiIsoMuons;
+	  // anti iso muon (erase isolated muons)
 	  for (int i_mu = 0; i_mu < selectedLooseIsoMuons.size() ; i_mu++ ){
-	    if ( selectedLooseIsoMuons[i_mu]->chargedHadronIso(4) + max( 0.0, selectedLooseIsoMuons[i_mu]->neutralHadronIso(4) + selectedLooseIsoMuons[i_mu]->photonIso(4) - 0.5*selectedLooseIsoMuons[i_mu]->puChargedHadronIso(4) )  / selectedLooseIsoMuons[i_mu]->Pt() > 0.15 ){
-	      selectedAntiIsoMuons.push_back(selectedLooseIsoMuons[i_mu]);
+	    if ( selectedLooseIsoMuons[i_mu]->relPfIso(4,0) > 0.15 ){ // check iso!
+	      selectedLooseIsoMuons.erase(selectedLooseIsoMuons.begin()+i_mu);
 	    }
 	  }
 	  
@@ -1968,42 +1966,40 @@ int main (int argc, char *argv[])
 	  nMuons_pc=0;
 	  for (Int_t i_muon =0; i_muon < selectedLooseIsoMuons.size() && i_muon < 10; i_muon++ )
             { 
-	      // inverted iso
-	      if ((selectedLooseIsoMuons[i_muon]->chargedHadronIso(4) + max( 0.0, selectedLooseIsoMuons[i_muon]->neutralHadronIso(4) + selectedLooseIsoMuons[i_muon]->photonIso(4) - 0.5*selectedLooseIsoMuons[i_muon]->puChargedHadronIso(4) ) ) / selectedLooseIsoMuons[i_muon]->Pt() > 0.15)
-		{
-		  pt_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->Pt();
-		  phi_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->Phi();
-		  eta_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->Eta();
-		  E_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->E();
-		  d0_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->d0();
-		  d0BeamSpot_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->d0BeamSpot();
-		  chargedHadronIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->chargedHadronIso(4);
-		  neutralHadronIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->neutralHadronIso(4);
-		  photonIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->photonIso(4);
-		  pfIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->relPfIso(4,0);
-		  relIso_muon_pc[nMuons_pc]=(selectedLooseIsoMuons[i_muon]->chargedHadronIso(4) + max( 0.0, selectedLooseIsoMuons[i_muon]->neutralHadronIso(4) + selectedLooseIsoMuons[i_muon]->photonIso(4) - 0.5*selectedLooseIsoMuons[i_muon]->puChargedHadronIso(4) ) ) / selectedLooseIsoMuons[i_muon]->Pt();
-		  charge_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->charge(); 
-		  // id
-		  isId_muon_pc[nMuons_pc]=false;
-		  if( selectedLooseIsoMuons[i_muon]->isGlobalMuon() && selectedLooseIsoMuons[i_muon]->isPFMuon()
-		      && selectedLooseIsoMuons[i_muon]->chi2() < 10
-		      && selectedLooseIsoMuons[i_muon]->nofTrackerLayersWithMeasurement() > 5
-		      &&  selectedLooseIsoMuons[i_muon]->nofValidMuHits() > 0
-		      && selectedLooseIsoMuons[i_muon]->nofValidPixelHits() > 0 
-		      && selectedLooseIsoMuons[i_muon]->nofMatchedStations()> 1){
-		    isId_muon_pc[nMuons_pc]=true;
-		  }
-		  //iso
-		  isIso_muon_pc[nMuons_pc]=false;
-		  if ( (selectedLooseIsoMuons[i_muon]->chargedHadronIso(4) + max( 0.0, selectedLooseIsoMuons[i_muon]->neutralHadronIso(4) + selectedLooseIsoMuons[i_muon]->photonIso(4) - 0.5*selectedLooseIsoMuons[i_muon]->puChargedHadronIso(4) ) ) / selectedLooseIsoMuons[i_muon]->Pt() < mu_iso_cut ) isIso_muon_pc[nMuons_pc]=true;
 
-		  //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0)* muonSFWeightIso_TT->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0);
-		  //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0);//* muonSFWeightIso_TT->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0);
+	      pt_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->Pt();
+	      phi_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->Phi();
+	      eta_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->Eta();
+	      E_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->E();
+	      d0_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->d0();
+	      d0BeamSpot_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->d0BeamSpot();
+	      chargedHadronIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->chargedHadronIso(4);
+	      neutralHadronIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->neutralHadronIso(4);
+	      photonIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->photonIso(4);
+	      pfIso_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->relPfIso(4,0);
+	      relIso_muon_pc[nMuons_pc]=(selectedLooseIsoMuons[i_muon]->chargedHadronIso(4) + max( 0.0, selectedLooseIsoMuons[i_muon]->neutralHadronIso(4) + selectedLooseIsoMuons[i_muon]->photonIso(4) - 0.5*selectedLooseIsoMuons[i_muon]->puChargedHadronIso(4) ) ) / selectedLooseIsoMuons[i_muon]->Pt();
+	      charge_muon_pc[nMuons_pc]=selectedLooseIsoMuons[i_muon]->charge(); 
+	      // id
+	      isId_muon_pc[nMuons_pc]=false;
+	      if( selectedLooseIsoMuons[i_muon]->isGlobalMuon() && selectedLooseIsoMuons[i_muon]->isPFMuon()
+		  && selectedLooseIsoMuons[i_muon]->chi2() < 10
+		  && selectedLooseIsoMuons[i_muon]->nofTrackerLayersWithMeasurement() > 5
+		  &&  selectedLooseIsoMuons[i_muon]->nofValidMuHits() > 0
+		  && selectedLooseIsoMuons[i_muon]->nofValidPixelHits() > 0 
+		  && selectedLooseIsoMuons[i_muon]->nofMatchedStations()> 1){
+		isId_muon_pc[nMuons_pc]=true;
+	      }
+	      //iso
+	      isIso_muon_pc[nMuons_pc]=false;
+	      if ( (selectedLooseIsoMuons[i_muon]->chargedHadronIso(4) + max( 0.0, selectedLooseIsoMuons[i_muon]->neutralHadronIso(4) + selectedLooseIsoMuons[i_muon]->photonIso(4) - 0.5*selectedLooseIsoMuons[i_muon]->puChargedHadronIso(4) ) ) / selectedLooseIsoMuons[i_muon]->Pt() < mu_iso_cut ) isIso_muon_pc[nMuons_pc]=true;
+
+	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0)* muonSFWeightIso_TT->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0);
+	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0);//* muonSFWeightIso_TT->at(selectedLooseIsoMuons[i_muon]->Eta(), selectedLooseIsoMuons[i_muon]->Pt(), 0);
 	      
 
-		  if (debug) cout << "in muons loops, nmuons equals to " << nMuons_pc << " and pt equals to " << pt_muon_pc[nMuons_pc] << endl;
-		  nMuons_pc++;
-		}
+	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons_pc << " and pt equals to " << pt_muon_pc[nMuons_pc] << endl;
+	      nMuons_pc++;
+
 	      
 	    }
 
@@ -3227,22 +3223,25 @@ int main (int argc, char *argv[])
 }
 
 
-/*
-  float ElectronRelIso(TRootElectron* el, float rho)
-  {
+
+float ElectronRelIso(TRootElectron* el, float rho)
+{
   double EffectiveArea = 0.;
-  // Updated to 2015 EA from https://indico.cern.ch/event/370494/contribution/2/attachments/736984/1011061/Rami_update_on_CB_ELE_ID_PHYS14PU20bx25.pdf
-  if (fabs(el->superClusterEta()) >= 0.0   && fabs(el->superClusterEta()) < 0.8   ) EffectiveArea = 0.1013;
-  if (fabs(el->superClusterEta()) >= 0.8   && fabs(el->superClusterEta()) < 1.3 ) EffectiveArea = 0.0988;
-  if (fabs(el->superClusterEta()) >= 1.3 && fabs(el->superClusterEta()) < 2.0   ) EffectiveArea = 0.0572;
-  if (fabs(el->superClusterEta()) >= 2.0   && fabs(el->superClusterEta()) < 2.2   ) EffectiveArea = 0.0842;
-  if (fabs(el->superClusterEta()) >= 2.2   && fabs(el->superClusterEta()) < 2.5   ) EffectiveArea = 0.1530;
-  if (fabs(el->superClusterEta()) >= 2.5) EffectiveArea = -9999;
+  
 
-  double isoCorr = 0;
-  isoCorr = el->neutralHadronIso(3) + el->photonIso(3) - rho*EffectiveArea;
-  float isolation = (el->chargedHadronIso(3) + (isoCorr > 0.0 ? isoCorr : 0.0))/(el->Pt());
+  // Updated to Spring 2015 EA from https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_14/RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt#L8                                                                     
+  if (fabs(el->superClusterEta()) >= 0.0   && fabs(el->superClusterEta()) < 1.0   ) EffectiveArea = 0.1752;
+  if (fabs(el->superClusterEta()) >= 1.0   && fabs(el->superClusterEta()) < 1.479 ) EffectiveArea = 0.1862;
+  if (fabs(el->superClusterEta()) >= 1.479 && fabs(el->superClusterEta()) < 2.0   ) EffectiveArea = 0.1411;
+  if (fabs(el->superClusterEta()) >= 2.0   && fabs(el->superClusterEta()) < 2.2   ) EffectiveArea = 0.1534;
+  if (fabs(el->superClusterEta()) >= 2.2   && fabs(el->superClusterEta()) < 2.3   ) EffectiveArea = 0.1903;
+  if (fabs(el->superClusterEta()) >= 2.3   && fabs(el->superClusterEta()) < 2.4   ) EffectiveArea = 0.2243;
+  if (fabs(el->superClusterEta()) >= 2.4   && fabs(el->superClusterEta()) < 5.0   ) EffectiveArea = 0.2687;
+ 
+ 
+  float isoCorr = el->neutralHadronIso(3) + el->photonIso(3) - rho*EffectiveArea;
+  float relIsolation = (el->chargedHadronIso(3) + (isoCorr > 0.0 ? isoCorr : 0.0))/(el->Pt());
 
-  return isolation;
-  }
-*/
+  return relIsolation;
+}
+
