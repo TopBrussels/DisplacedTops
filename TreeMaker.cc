@@ -456,6 +456,8 @@ int main (int argc, char *argv[])
   float el_pt_cut = 42.; // 42
   float el_eta_cut = 2.4; // 2.4
   float el_d0_cut = 0.02; // 0.02
+  float el_relIsoB_cut = 0.0354;
+  float el_relIsoEC_cut = 0.0646;
 
 
   // muon
@@ -786,7 +788,7 @@ int main (int argc, char *argv[])
       Double_t chargedHadronIso_muon[10];
       Double_t neutralHadronIso_muon[10];
       Double_t photonIso_muon[10];
-      //        Double_t relIso_muon[10];
+      //      Double_t relIso_muon[10];
       Bool_t isId_muon[10];
       Bool_t isIso_muon[10];
       Double_t pfIso_muon[10];
@@ -1611,11 +1613,11 @@ int main (int argc, char *argv[])
 	  if (debug)cout<<"Getting Electrons"<<endl;
 
 	  // make three collection of muons for the synch exercise
-	  KynElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, false, false);// pt, eta
-	  KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, false, true);// pt, eta, id
-	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, true, true);// pt, eta, id, iso
-	  selectedLooseElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, true, true);// pt, eta, id, iso
-	  //	  selectedLooseIsoElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, true, true);// pt, eta, id, iso
+	  KynElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, false);// pt, eta
+	  KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, true);// pt, eta, id
+	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
+	  selectedLooseElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso
+	  //	  selectedLooseIsoElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut true, true);// pt, eta, id, iso
 	  //selectedElectrons = init_electrons;
 	  //selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta
 	  //selectedElectrons = selection.GetSelectedElectrons();
@@ -1627,6 +1629,24 @@ int main (int argc, char *argv[])
 
 
 
+	  // anti iso electrons
+	  vector<TRootElectron*> selectedAntiIsoElectrons;
+	  for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
+	    if ( selectedElectrons[i_el]->relPfIso(3,0) > 0.15 ){
+	      selectedAntiIsoElectrons.push_back(selectedElectrons[i_el]);
+	    }
+	  }
+
+
+	  // anti iso muon
+	  vector<TRootMuon*> selectedAntiIsoMuons;
+	  for (int i_mu = 0; i_mu < selectedLooseIsoMuons.size() ; i_mu++ ){
+	    if ( selectedLooseIsoMuons[i_mu]->chargedHadronIso(4) + max( 0.0, selectedLooseIsoMuons[i_mu]->neutralHadronIso(4) + selectedLooseIsoMuons[i_mu]->photonIso(4) - 0.5*selectedLooseIsoMuons[i_mu]->puChargedHadronIso(4) )  / selectedLooseIsoMuons[i_mu]->Pt() > 0.15 ){
+	      selectedAntiIsoMuons.push_back(selectedLooseIsoMuons[i_mu]);
+	    }
+	  }
+	  
+	  
 
 	  
 	  // get new collection of jet and b-jet depending on their relative Delta-Phi
