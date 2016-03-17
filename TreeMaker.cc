@@ -90,6 +90,34 @@ map<string,MultiSamplePlot*> MSPlot;
 map<string,MultiSamplePlot*> MultiPadPlot;
 
 
+
+
+
+
+float ElectronRelIso(TRootElectron* el, float rho)
+{
+  double EffectiveArea = 0.;
+  
+
+  // Updated to Spring 2015 EA from https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_14/RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt#L8                                                                     
+  if (fabs(el->superClusterEta()) >= 0.0   && fabs(el->superClusterEta()) < 1.0   ) EffectiveArea = 0.1752;
+  if (fabs(el->superClusterEta()) >= 1.0   && fabs(el->superClusterEta()) < 1.479 ) EffectiveArea = 0.1862;
+  if (fabs(el->superClusterEta()) >= 1.479 && fabs(el->superClusterEta()) < 2.0   ) EffectiveArea = 0.1411;
+  if (fabs(el->superClusterEta()) >= 2.0   && fabs(el->superClusterEta()) < 2.2   ) EffectiveArea = 0.1534;
+  if (fabs(el->superClusterEta()) >= 2.2   && fabs(el->superClusterEta()) < 2.3   ) EffectiveArea = 0.1903;
+  if (fabs(el->superClusterEta()) >= 2.3   && fabs(el->superClusterEta()) < 2.4   ) EffectiveArea = 0.2243;
+  if (fabs(el->superClusterEta()) >= 2.4   && fabs(el->superClusterEta()) < 5.0   ) EffectiveArea = 0.2687;
+ 
+ 
+  float isoCorr = el->neutralHadronIso(3) + el->photonIso(3) - rho*EffectiveArea;
+  float relIsolation = (el->chargedHadronIso(3) + (isoCorr > 0.0 ? isoCorr : 0.0))/(el->Pt());
+
+  return relIsolation;
+}
+
+
+
+
 int main (int argc, char *argv[])
 {
 
@@ -820,6 +848,7 @@ int main (int argc, char *argv[])
       Double_t neutralHadronIso_electron_pc[10];
       Double_t photonIso_electron_pc[10];
       Double_t pfIso_electron_pc[10];
+      Double_t relIso_electron_pc[10];
       Int_t charge_electron_pc[10];
 
 
@@ -1137,6 +1166,7 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("neutralHadronIso_electron_pc",neutralHadronIso_electron_pc,"neutralHadronIso_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("photonIso_electron_pc",photonIso_electron_pc,"photonIso_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("pfIso_electron_pc",pfIso_electron_pc,"pfIso_electron_pc[nElectrons_pc]/D");
+      myPreCutTree->Branch("relIso_electron_pc",relIso_electron_pc,"relIso_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("charge_electron_pc",charge_electron_pc,"charge_electron_pc[nElectrons_pc]/I");
       myPreCutTree->Branch("d0_electron_pc",d0_electron_pc,"d0_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("d0BeamSpot_electron_pc",d0BeamSpot_electron_pc,"d0BeamSpot_electron_pc[nElectrons_pc]/D");
@@ -1631,7 +1661,8 @@ int main (int argc, char *argv[])
 
 	  // anti iso electrons (erase isolated electrons)
 	  for (int i_el = 0; i_el < selectedLooseElectrons.size() ; i_el++ ){
-	    if ( selectedLooseElectrons[i_el]->relPfIso(3,0) < 0.15 ){
+	    float relIso = ElectronRelIso(selectedLooseElectrons[i_el], 0);
+	    if ( relIso < 0.15 ){
 	      selectedLooseElectrons.erase(selectedLooseElectrons.begin()+i_el);
 	    }
 	  }
@@ -1639,7 +1670,8 @@ int main (int argc, char *argv[])
 
 	  // anti iso muon (erase isolated muons)
 	  for (int i_mu = 0; i_mu < selectedLooseIsoMuons.size() ; i_mu++ ){
-	    if ( selectedLooseIsoMuons[i_mu]->relPfIso(4,0) > 0.15 ){ // check iso!
+	    if ( selectedLooseIsoMuons[i_mu]->relPfIso(4,0) < 0.15 ){ // check iso!
+	      //	      cout << " muon relIso is " << selectedLooseIsoMuons[i_mu]->relPfIso(4,0) << " and is too smal!!" << endl;
 	      selectedLooseIsoMuons.erase(selectedLooseIsoMuons.begin()+i_mu);
 	    }
 	  }
@@ -1899,6 +1931,9 @@ int main (int argc, char *argv[])
 	  nElectrons_pc=0;
 	  for (Int_t initel =0; initel < init_electrons.size() && initel < 10; initel++ )
 	    {
+	      float relIso = ElectronRelIso(init_electrons[initel], 0); 
+	      //	      cout << "electron relIso is " << relIso << endl;
+
 	      pt_electron_pc[nElectrons_pc]=init_electrons[initel]->Pt();
 	      phi_electron_pc[nElectrons_pc]=init_electrons[initel]->Phi();
 	      eta_electron_pc[nElectrons_pc]=init_electrons[initel]->Eta();
@@ -1910,6 +1945,7 @@ int main (int argc, char *argv[])
 	      neutralHadronIso_electron_pc[nElectrons_pc]=init_electrons[initel]->neutralHadronIso(3);
 	      photonIso_electron_pc[nElectrons_pc]=init_electrons[initel]->photonIso(3);
 	      pfIso_electron_pc[nElectrons_pc]=init_electrons[initel]->relPfIso(3,0);
+	      relIso_electron_pc[nElectrons_pc]=relIso;
 	      charge_electron_pc[nElectrons_pc]=init_electrons[initel]->charge();
 	      sigmaIEtaIEta_electron_pc[nElectrons_pc]=init_electrons[initel]->sigmaIEtaIEta();
 	      deltaEtaIn_electron_pc[nElectrons_pc]=init_electrons[initel]->deltaEtaIn();
@@ -1946,10 +1982,10 @@ int main (int argc, char *argv[])
 	      // iso to be checked!!! Make sure what is this function getting! faco
 	      isIso_electron_pc[nElectrons_pc]=false;
 	      if( fabs(init_electrons[initel]->superClusterEta()) <= 1.479){
-		if(init_electrons[initel]->relPfIso(3,0) < 0.0354) isIso_electron_pc[nElectrons_pc]=true;
+		if(relIso < 0.0354) isIso_electron_pc[nElectrons_pc]=true;// wrong iso!!!! faco
 	      }
 	      else if (fabs(init_electrons[initel]->superClusterEta()) < 2.5){
-		if(init_electrons[initel]->relPfIso(3,0) < 0.0646) isIso_electron_pc[nElectrons_pc]=true;
+		if(relIso < 0.0646) isIso_electron_pc[nElectrons_pc]=true; // wrong iso!!! faco
 	      }
 		
 	      sf_electron_pc[nElectrons_pc]=electronSFWeight_->at(init_electrons[initel]->Eta(),init_electrons[initel]->Pt(),0);
@@ -3222,26 +3258,4 @@ int main (int argc, char *argv[])
   return 0;
 }
 
-
-
-float ElectronRelIso(TRootElectron* el, float rho)
-{
-  double EffectiveArea = 0.;
-  
-
-  // Updated to Spring 2015 EA from https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_14/RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt#L8                                                                     
-  if (fabs(el->superClusterEta()) >= 0.0   && fabs(el->superClusterEta()) < 1.0   ) EffectiveArea = 0.1752;
-  if (fabs(el->superClusterEta()) >= 1.0   && fabs(el->superClusterEta()) < 1.479 ) EffectiveArea = 0.1862;
-  if (fabs(el->superClusterEta()) >= 1.479 && fabs(el->superClusterEta()) < 2.0   ) EffectiveArea = 0.1411;
-  if (fabs(el->superClusterEta()) >= 2.0   && fabs(el->superClusterEta()) < 2.2   ) EffectiveArea = 0.1534;
-  if (fabs(el->superClusterEta()) >= 2.2   && fabs(el->superClusterEta()) < 2.3   ) EffectiveArea = 0.1903;
-  if (fabs(el->superClusterEta()) >= 2.3   && fabs(el->superClusterEta()) < 2.4   ) EffectiveArea = 0.2243;
-  if (fabs(el->superClusterEta()) >= 2.4   && fabs(el->superClusterEta()) < 5.0   ) EffectiveArea = 0.2687;
- 
- 
-  float isoCorr = el->neutralHadronIso(3) + el->photonIso(3) - rho*EffectiveArea;
-  float relIsolation = (el->chargedHadronIso(3) + (isoCorr > 0.0 ? isoCorr : 0.0))/(el->Pt());
-
-  return relIsolation;
-}
 
