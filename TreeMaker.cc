@@ -1601,7 +1601,8 @@ int main (int argc, char *argv[])
 
 
 	  // Declare selection instance
-	  Run2Selection selection(init_jets, init_fatjets, init_muons, init_electrons, mets);
+	  Run2Selection selection(init_jets, init_muons, init_electrons, mets, rho);
+	  // compute one rho per event and use it to correct electron relIso
 
 
 	  // jet selections
@@ -1661,7 +1662,7 @@ int main (int argc, char *argv[])
 
 	  // anti iso electrons (erase isolated electrons)
 	  for (int i_el = 0; i_el < selectedLooseElectrons.size() ; i_el++ ){
-	    float relIso = ElectronRelIso(selectedLooseElectrons[i_el], 0);
+	    float relIso = ElectronRelIso(selectedLooseElectrons[i_el], rho);
 	    if ( relIso < 0.15 ){
 	      selectedLooseElectrons.erase(selectedLooseElectrons.begin()+i_el);
 	    }
@@ -1931,7 +1932,7 @@ int main (int argc, char *argv[])
 	  nElectrons_pc=0;
 	  for (Int_t initel =0; initel < init_electrons.size() && initel < 10; initel++ )
 	    {
-	      float relIso = ElectronRelIso(init_electrons[initel], 0); 
+	      float relIso = ElectronRelIso(init_electrons[initel], rho); 
 	      //	      cout << "electron relIso is " << relIso << endl;
 
 	      pt_electron_pc[nElectrons_pc]=init_electrons[initel]->Pt();
