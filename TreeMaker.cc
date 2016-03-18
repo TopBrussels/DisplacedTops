@@ -1669,158 +1669,154 @@ int main (int argc, char *argv[])
 
 
 
-	  // anti iso electrons (erase isolated electrons)
-	  for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
-	    float relIso = ElectronRelIso(selectedElectrons[i_el], rho);
-	    if ( relIso < 0.15 ){
-	      selectedElectrons.erase(selectedElectrons.begin()+i_el);
-	    }
-	  }
+	  
+	  // bo cut for bb+el or bb+mu final state
+	  if (bbmu || bbel){
 
-
-	  // anti iso muon (erase isolated muons)
-	  for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
-	    if ( selectedMuons[i_mu]->relPfIso(4,0) < 0.15 ){ // check iso!
-	      //	      cout << " muon relIso is " << selectedLooseIsoMuons[i_mu]->relPfIso(4,0) << " and is too smal!!" << endl;
-	      selectedMuons.erase(selectedMuons.begin()+i_mu);
-	    }
-	  }
+	    // vector of bool for each collection
+	    vector <bool> keepBjet(selectedBjets.size(),false);
+	    vector <bool> keepJet(selectedJets.size(),false);
 	  
-	  
-	  
-
-	  // vector of bool for each collection
-	  vector <bool> keepBjet(selectedBjets.size(),false);
-	  vector <bool> keepJet(selectedJets.size(),false);
-	  
-	  // get new collection of jet and b-jet depending on their relative Delta-Phi
-	  // idedBjets are reduced to selectedBjets
-	  // idedJets are reducted to preSelectedJets
-	  for (int i_bjet = 0; i_bjet < selectedBjets.size(); i_bjet++ ){
-	    for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
-	      cout << "in the loop " << endl;
-	      if ( selectedBjets[i_bjet]->DeltaPhi(*(selectedJets[i_jet])) > 2.5 ) { // back to back bjet and jet
-		cout << "back to back bjet and jet found! " << "i_jet is " << i_jet << endl;
-		keepJet[i_jet]=true;
-		keepBjet[i_bjet]=true;
+	    // set the flags to get the new collections jet and b-jet depending on their relative Delta-Phi
+	    for (int i_bjet = 0; i_bjet < selectedBjets.size(); i_bjet++ ){
+	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+		if ( selectedBjets[i_bjet]->DeltaPhi(*(selectedJets[i_jet])) > 2.5 ) { // back to back bjet and jet
+		  keepJet[i_jet]=true;
+		  keepBjet[i_bjet]=true;
+		  //		cout << "back to back bjet and jet found! " << "i_jet is " << i_jet << endl;
+		}
 	      }
 	    }
-	  }
-
-
-	  // reduce the jet collection
-	  for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
-	    if (keepJet[i_jet] == false){
-	      cout << "selectedJets.size is " << selectedJets.size() << endl;
-	      selectedJets.erase(selectedJets.begin()+i_jet);
-	      cout << "selectedJets.size is " << selectedJets.size() << endl;
-	    }
-	  }
-
-
-	  // reduce the bjet collection
-	  for (int i_bjet = 0; i_bjet < selectedBjets.size() ; i_bjet++ ){
-	    if (keepBjet[i_bjet] == false){
-	      cout << "selectedBjets.size is " << selectedBjets.size() << endl;
-	      selectedBjets.erase(selectedBjets.begin()+i_bjet);
-	      cout << "selectedBjets.size is " << selectedBjets.size() << endl;
-	    }
-	  }
-	  keepBjet.clear();
-	  keepJet.clear();
 	  
-
-	  vector <bool> keepJet2(selectedBjets.size(),false);
-	  vector <bool> keepMuon(selectedMuons.size(),false);
-	  vector <bool> keepElectron(selectedElectrons.size(),false);
-
-
-	  // get new collection of jets depending on their Delta R wiht the lepton of interest
-	  // preSelectedJets reduced to selectedJets 
-	  // and selectedJets reduced to leadingCSVJets
-
-	  // muon close to jet
-
-	  
-	  // for mu
-	  if (channel == "bbMu"){
+	    // reduce the jet collection
 	    for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+	      if (keepJet[i_jet] == false){
+		//		cout << "selectedJets.size is " << selectedJets.size() << endl;
+		selectedJets.erase(selectedJets.begin()+i_jet);
+		//		cout << "selectedJets.size is " << selectedJets.size() << endl;
+	      }
+	    }
+
+
+	    // reduce the bjet collection
+	    for (int i_bjet = 0; i_bjet < selectedBjets.size() ; i_bjet++ ){
+	      if (keepBjet[i_bjet] == false){
+		//		cout << "selectedBjets.size is " << selectedBjets.size() << endl;
+		selectedBjets.erase(selectedBjets.begin()+i_bjet);
+		//		cout << "selectedBjets.size is " << selectedBjets.size() << endl;
+	      }
+	    }
+	    keepBjet.clear();
+	    keepJet.clear();
+
+
+	    
+	    // bo of bbmu specific cut
+	    if (bbmu){
+		    
+	      // anti iso muon (erase isolated muons)
 	      for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
-		if (selectedJets[i_jet]->DeltaR(*(selectedMuons[i_mu])) < 0.2) {
-		  keepJet2[i_jet]=true;
-		  keepMuon[i_mu]=true;
-
-		  /*
-		  selectedJets.push_back(selectedJets[i_jet]);
-		  leadingCSVJets.push_back(selectedJets[i_jet]);
-		  if (selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > maxCSV){
-		    maxCSV= selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
-		    leadingCSVJets.pop_back();
-		    leadingCSVJets.push_back(selectedJets[i_jet]);
-		  }
-		  */
+		if ( selectedMuons[i_mu]->relPfIso(4,0) < 0.15 ){ // check iso!
+		  selectedMuons.erase(selectedMuons.begin()+i_mu);
 		}
 	      }
-	    }
-	  }
-
-
-	  double maxCSV =0.0;
-
-	  // reduce the jet collection 
-          for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
-            if (keepJet2[i_jet] == false){
-              selectedJets.erase(selectedJets.begin()+i_jet);
-	    }
-	    /*
-	    else { // get the leading CSV one
-	      leadingCSVJets.push_back(selectedJets[i_jet]);
-	      if (selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > maxCSV){
-		maxCSV= selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
-		leadingCSVJets.pop_back();
-		leadingCSVJets.push_back(selectedJets[i_jet]);
+	      
+	      vector <bool> keepMuon(selectedMuons.size(),false);
+	      vector <bool> keepJet2(selectedJets.size(),false);
+	      
+	      // set the flags to get the new collections of jets and muons depending on their Delta R 
+	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+		for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
+		  if (selectedJets[i_jet]->DeltaR(*(selectedMuons[i_mu])) < 0.2) {
+		    keepJet2[i_jet]=true;
+		    keepMuon[i_mu]=true;
+		    /*
+		      selectedJets.push_back(selectedJets[i_jet]);
+		      leadingCSVJets.push_back(selectedJets[i_jet]);
+		      if (selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > maxCSV){
+		      maxCSV= selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+		      leadingCSVJets.pop_back();
+		      leadingCSVJets.push_back(selectedJets[i_jet]);
+		      }
+		    */
+		  }
+		}
 	      }
-            }
-	    */
-          }
-	  
-	  
-	  // sort from higest csv to lowest csv
-	  sort(selectedJets.begin(), selectedJets.end(), HighestCSVBtag());
-	  
-	  // get the leading csv one
-	  for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
-	    if ( i_jet != 0 ) selectedJets.erase(selectedJets.begin()+i_jet);
-	  }
+	      
+	      // reduce the muon collection
+	      for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
+		if (keepMuon[i_mu] == false){
+		  selectedMuons.erase(selectedMuons.begin()+i_mu);
+		}
+	      }
 
+	      // reduce the jet collection 
+	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+		if (keepJet2[i_jet] == false){
+		  selectedJets.erase(selectedJets.begin()+i_jet);
+		}
+	      }
 
-	  // reduce the muon collection
-	  for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
-	    if (keepMuon[i_mu] == false){
-	      selectedMuons.erase(selectedMuons.begin()+i_mu);
 	    }
-	  }
-
-
-
-	  // for electron
-	  if (channel == "bbEl"){
-	    for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+	    // eo of bbmu specific cut
+	    
+	  
+	    // cut for bb+el finale state
+	    if (bbel){
+	      vector <bool> keepElectron(selectedElectrons.size(),false);
+	      vector <bool> keepJet2(selectedJets.size(),false);
+	      
+	      // anti iso electrons (erase isolated electrons)
 	      for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
-		if (selectedJets[i_jet]->DeltaR(*(selectedElectrons[i_el])) < 0.2) {
-		  selectedJets.push_back(selectedJets[i_jet]);
-		  leadingCSVJets.push_back(selectedJets[i_jet]);
-		  if (selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > maxCSV){
-		    maxCSV= selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
-		    leadingCSVJets.pop_back();
-		    leadingCSVJets.push_back(selectedJets[i_jet]);
+		float relIso = ElectronRelIso(selectedElectrons[i_el], rho);
+		if ( relIso < 0.15 ){
+		  selectedElectrons.erase(selectedElectrons.begin()+i_el);
+		}
+	      }
+
+	      // set the flags to get the new collections of jets and electrons depending on their Delta R 
+	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+		for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
+		  if (selectedJets[i_jet]->DeltaR(*(selectedElectrons[i_el])) < 0.2) {
+		    keepJet2[i_jet]=true;
+		    keepElectron[i_el]=true;
 		  }
 		}
 	      }
-	    }
-	  }
 
+	      // reduce the electron collection
+	      for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
+		if (keepElectron[i_el] == false){
+		  selectedElectrons.erase(selectedElectrons.begin()+i_el);
+		}
+	      }
+
+	      // reduce the jet collection 
+	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+		if (keepJet2[i_jet] == false){
+		  selectedJets.erase(selectedJets.begin()+i_jet);
+		}
+	      }
+	      
+
+	    }
+	    // eo of bbel specific cut    
+
+	    
+	    // sort from higest csv to lowest csv
+	    sort(selectedJets.begin(), selectedJets.end(), HighestCSVBtag());
 	  
+	    // get the leading csv one
+	    for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+	      if ( i_jet != 0 ) selectedJets.erase(selectedJets.begin()+i_jet);
+	    }
+
+	    
+	  }
+	  // eo of bb+el or bb+mu cuts
+	  
+	  
+
 
 	  //	  */
 
@@ -2998,13 +2994,13 @@ int main (int argc, char *argv[])
 	  //	  if (nMuons_pc >= 1 && nElectrons_pc >=1){
 
 	  //	  cout << "number of leading B-jets is " << leadingCSVJets.size() << endl;
-	  if ( nMuons_pc == 1 && selectedJets.size() >=1 && nBjets_pc >= 1 ){
+	  if ( nMuons_pc == 1 && nJets_pc >= 1 && nBjets_pc >= 1 ){
 	  //	  if ( nMuons_pc == 1 && leadingCSVJets.size() >=1 && nBjets_pc >= 1 ){
 	    myPreCutTree->Fill(); 
 	    passed_pc++;
 	  }
 	  else 
-	    cout << "nMuons_pc is " << nMuons_pc << " nJets_pc is " << nJets_pc << " nBjets_pc is " << nBjets_pc << endl;
+	    //	    cout << "nMuons_pc is " << nMuons_pc << " nJets_pc is " << nJets_pc << " nBjets_pc is " << nBjets_pc << endl;
 
 	  if (testTree && (nElectrons >= 1 || nMuons >= 1 )){
 	    //	      cout << "nElectrons is " << nElectrons << endl;
