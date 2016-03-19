@@ -1716,7 +1716,7 @@ int main (int argc, char *argv[])
 		    
 	      // anti iso muon (erase isolated muons)
 	      for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
-		if ( selectedMuons[i_mu]->relPfIso(4,0) < 0.15 ){ // check iso!
+		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15 ){ // check iso!
 		  selectedMuons.erase(selectedMuons.begin()+i_mu);
 		}
 	      }
@@ -1984,7 +1984,7 @@ int main (int argc, char *argv[])
 	      //iso
 	      isIso_muon[nMuons]=false;
 	      if ( (selectedMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedMuons[selmu]->neutralHadronIso(4) + selectedMuons[selmu]->photonIso(4) - 0.5*selectedMuons[selmu]->puChargedHadronIso(4) ) ) / selectedMuons[selmu]->Pt() < mu_iso_cut ) isIso_muon[nMuons]=true;
-	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0);
+	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0.5);
 	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
 	      sf_muon[nMuons]=muonSFWeightIso_TT->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0)* muonSFWeightID_T->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
@@ -2092,7 +2092,7 @@ int main (int argc, char *argv[])
 	      chargedHadronIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->chargedHadronIso(4);
 	      neutralHadronIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->neutralHadronIso(4);
 	      photonIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->photonIso(4);
-	      pfIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->relPfIso(4,0);
+	      pfIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->relPfIso(4,0.5);
 	      relIso_muon_pc[nMuons_pc]=(selectedMuons[i_muon]->chargedHadronIso(4) + max( 0.0, selectedMuons[i_muon]->neutralHadronIso(4) + selectedMuons[i_muon]->photonIso(4) - 0.5*selectedMuons[i_muon]->puChargedHadronIso(4) ) ) / selectedMuons[i_muon]->Pt();
 	      charge_muon_pc[nMuons_pc]=selectedMuons[i_muon]->charge(); 
 	      // id
