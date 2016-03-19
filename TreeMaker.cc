@@ -89,6 +89,15 @@ map<string,MultiSamplePlot*> MSPlot;
 /// MultiPadPlot
 map<string,MultiSamplePlot*> MultiPadPlot;
 
+//http://stackoverflow.com/questions/3487717/erasing-multiple-objects-from-a-stdvector
+/*
+void quickDelete( int idx, vector *vec )
+{
+  vec[idx] = vec.back();
+  vec.pop_back();
+}
+*/
+
 
 struct HighestCSVBtag
 {
@@ -514,7 +523,10 @@ int main (int argc, char *argv[])
     el_pt_cut=40;
   }
   else if (bbmu){
-    mu_pt_cut=30;
+    mu_pt_cut=40;
+  }
+  else if (bbel){
+    el_pt_cut=40;
   }
   
   
@@ -1608,6 +1620,7 @@ int main (int argc, char *argv[])
 
 	  // Declare selection instance
 	  Run2Selection selection(init_jets, init_muons, init_electrons, mets, rho);
+
 	  // compute one rho per event and use it to correct electron relIso
 
 
@@ -1636,7 +1649,7 @@ int main (int argc, char *argv[])
 	  //	  selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso
 	  selectedMuons = selection.GetSelectedDisplacedMuons(40, 2.4, 1.5, true, true); // id and iso 
 	  selectedLooseMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso
-	  selectedLooseIsoMuons = selection.GetSelectedDisplacedMuons(40, 2.4, 1.5, true, true); // is and iso
+	  //	  selectedLooseIsoMuons = selection.GetSelectedDisplacedMuons(40, 2.4, 1.5, true, true); // is and iso
 	  //	    selectedMuons = init_muons;
 
 
@@ -1688,6 +1701,32 @@ int main (int argc, char *argv[])
 	      }
 	    }
 	  
+
+	    /*
+	    // reduce the jet collection
+	    for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+	      if (keepJet[i_jet] == false){
+		//		cout << "selectedJets.size is " << selectedJets.size() << endl;
+		selectedJets[i_jet] = selectedJets.back();
+		selectedJets.pop_back();
+		//		cout << "selectedJets.size is " << selectedJets.size() << endl;
+	      }
+	    }
+
+
+	    // reduce the bjet collection
+	    for (int i_bjet = 0; i_bjet < selectedBjets.size() ; i_bjet++ ){
+	      if (keepBjet[i_bjet] == false){
+		//		cout << "selectedBjets.size is " << selectedBjets.size() << endl;
+		selectedBjets.erase(selectedBjets.begin()+i_bjet);
+		//		cout << "selectedBjets.size is " << selectedBjets.size() << endl;
+	      }
+	    }
+	    keepBjet.clear();
+	    keepJet.clear();
+	    */
+
+	    //	    /*
 	    // reduce the jet collection
 	    for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
 	      if (keepJet[i_jet] == false){
@@ -1708,6 +1747,7 @@ int main (int argc, char *argv[])
 	    }
 	    keepBjet.clear();
 	    keepJet.clear();
+	    //	    */
 
 
 	    
@@ -1715,11 +1755,37 @@ int main (int argc, char *argv[])
 	    if (bbmu){
 		    
 	      // anti iso muon (erase isolated muons)
+
+	      // 1) method one : use the fancy (complicated) "remove_if" function
+	      // http://stackoverflow.com/questions/25240953/removing-an-object-from-a-vector-based-on-a-member-function-from-the-object?rq=1
+	      /*
+	      selectedMuons.erase(std::remove_if(selectedMuons.begin(), selectedMuons.end(),[] (TRootMuon *p) {return p->relPfIso(4,0.5) < 0.60;}  ), selectedMuons.end());
+	      */
+
+	      // 2) method two : use a single erase (this only remove properly one element) BUG!!!
+	      // this will work only for the first object that will be erased. After that the iterator is not pointing the the desired element anymore !!!! 
+	      /*
 	      for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
-		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15 ){ // check iso!
+		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.60 ){
 		  selectedMuons.erase(selectedMuons.begin()+i_mu);
 		}
 	      }
+	      */
+
+	      // 3) method three : put the desire element at then end then use pop_back to remove it. This might destroy the ordering!? 
+	      // This method only work if you loop from the highest element to the lowest otherwise it has the same behaviour than method 1.
+	      // http://stackoverflow.com/questions/3487717/erasing-multiple-objects-from-a-stdvector
+	      // 
+
+	      //	      /*
+	      for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
+		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.60 ){ 
+		  selectedMuons[i_mu]= selectedMuons.back();
+		  selectedMuons.pop_back();
+		}
+	      }
+	      //	      */
+
 	      
 	      vector <bool> keepMuon(selectedMuons.size(),false);
 	      vector <bool> keepJet2(selectedJets.size(),false);
@@ -1749,6 +1815,7 @@ int main (int argc, char *argv[])
 		  selectedMuons.erase(selectedMuons.begin()+i_mu);
 		}
 	      }
+	      keepMuon.clear();
 
 	      // reduce the jet collection 
 	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
@@ -1756,6 +1823,7 @@ int main (int argc, char *argv[])
 		  selectedJets.erase(selectedJets.begin()+i_jet);
 		}
 	      }
+	      keepJet2.clear();
 
 	    }
 	    // eo of bbmu specific cut
@@ -1784,19 +1852,27 @@ int main (int argc, char *argv[])
 		}
 	      }
 
+
+
 	      // reduce the electron collection
+	      //	      selectedElectrons.erase(std::remove_if(selectedElectrons.begin(),selectedElectrons.end(), [](TRootElectron *p) {return keepJet2[p];} ) , selectedElectrons.end());
+
+	      //	      /*
 	      for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
 		if (keepElectron[i_el] == false){
 		  selectedElectrons.erase(selectedElectrons.begin()+i_el);
 		}
 	      }
-
+	      keepElectron.clear();
+	      //	      */
+	      
 	      // reduce the jet collection 
 	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
 		if (keepJet2[i_jet] == false){
 		  selectedJets.erase(selectedJets.begin()+i_jet);
 		}
 	      }
+	      keepJet2.clear();
 	      
 
 	    }
@@ -1819,6 +1895,7 @@ int main (int argc, char *argv[])
 
 
 	  //	  */
+
 
 
 	  // fill TLorentz vector to allow easier calculation 	  
@@ -3339,5 +3416,4 @@ int main (int argc, char *argv[])
 
   return 0;
 }
-
 
