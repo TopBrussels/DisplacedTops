@@ -1702,52 +1702,26 @@ int main (int argc, char *argv[])
 	    }
 	  
 
-	    /*
-	    // reduce the jet collection
-	    for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
-	      if (keepJet[i_jet] == false){
-		//		cout << "selectedJets.size is " << selectedJets.size() << endl;
-		selectedJets[i_jet] = selectedJets.back();
-		selectedJets.pop_back();
-		//		cout << "selectedJets.size is " << selectedJets.size() << endl;
-	      }
-	    }
-
-
-	    // reduce the bjet collection
-	    for (int i_bjet = 0; i_bjet < selectedBjets.size() ; i_bjet++ ){
-	      if (keepBjet[i_bjet] == false){
-		//		cout << "selectedBjets.size is " << selectedBjets.size() << endl;
-		selectedBjets.erase(selectedBjets.begin()+i_bjet);
-		//		cout << "selectedBjets.size is " << selectedBjets.size() << endl;
-	      }
-	    }
-	    keepBjet.clear();
-	    keepJet.clear();
-	    */
-
 	    //	    /*
 	    // reduce the jet collection
-	    for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+	    for (int i_jet = selectedJets.size()-1; i_jet > 0  ; i_jet-- ){
 	      if (keepJet[i_jet] == false){
-		//		cout << "selectedJets.size is " << selectedJets.size() << endl;
-		selectedJets.erase(selectedJets.begin()+i_jet);
-		//		cout << "selectedJets.size is " << selectedJets.size() << endl;
+		selectedJets[i_jet] = selectedJets.back();
+		selectedJets.pop_back();
 	      }
 	    }
 
 
 	    // reduce the bjet collection
-	    for (int i_bjet = 0; i_bjet < selectedBjets.size() ; i_bjet++ ){
+	    for (int i_bjet = selectedBjets.size()-1 ; i_bjet > 0  ; i_bjet-- ){
 	      if (keepBjet[i_bjet] == false){
-		//		cout << "selectedBjets.size is " << selectedBjets.size() << endl;
-		selectedBjets.erase(selectedBjets.begin()+i_bjet);
-		//		cout << "selectedBjets.size is " << selectedBjets.size() << endl;
+		selectedBjets[i_bjet] = selectedBjets.back();
+		selectedBjets.pop_back();
 	      }
 	    }
 	    keepBjet.clear();
 	    keepJet.clear();
-	    //	    */
+//	    */
 
 
 	    
@@ -1759,14 +1733,14 @@ int main (int argc, char *argv[])
 	      // 1) method one : use the fancy (complicated) "remove_if" function
 	      // http://stackoverflow.com/questions/25240953/removing-an-object-from-a-vector-based-on-a-member-function-from-the-object?rq=1
 	      /*
-	      selectedMuons.erase(std::remove_if(selectedMuons.begin(), selectedMuons.end(),[] (TRootMuon *p) {return p->relPfIso(4,0.5) < 0.60;}  ), selectedMuons.end());
+	      selectedMuons.erase(std::remove_if(selectedMuons.begin(), selectedMuons.end(),[] (TRootMuon *p) {return p->relPfIso(4,0.5) < 0.15;}  ), selectedMuons.end());
 	      */
 
 	      // 2) method two : use a single erase (this only remove properly one element) BUG!!!
 	      // this will work only for the first object that will be erased. After that the iterator is not pointing the the desired element anymore !!!! 
 	      /*
 	      for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
-		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.60 ){
+		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15 ){
 		  selectedMuons.erase(selectedMuons.begin()+i_mu);
 		}
 	      }
@@ -1779,7 +1753,7 @@ int main (int argc, char *argv[])
 
 	      //	      /*
 	      for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
-		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.60 ){ 
+		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15 ){ 
 		  selectedMuons[i_mu]= selectedMuons.back();
 		  selectedMuons.pop_back();
 		}
@@ -1796,31 +1770,24 @@ int main (int argc, char *argv[])
 		  if (selectedJets[i_jet]->DeltaR(*(selectedMuons[i_mu])) < 0.2) {
 		    keepJet2[i_jet]=true;
 		    keepMuon[i_mu]=true;
-		    /*
-		      selectedJets.push_back(selectedJets[i_jet]);
-		      leadingCSVJets.push_back(selectedJets[i_jet]);
-		      if (selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > maxCSV){
-		      maxCSV= selectedJets[i_jet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
-		      leadingCSVJets.pop_back();
-		      leadingCSVJets.push_back(selectedJets[i_jet]);
-		      }
-		    */
 		  }
 		}
 	      }
 	      
 	      // reduce the muon collection
-	      for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
-		if (keepMuon[i_mu] == false){
-		  selectedMuons.erase(selectedMuons.begin()+i_mu);
-		}
-	      }
+	      for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
+                if (keepMuon[i_mu]==false ){
+                  selectedMuons[i_mu]= selectedMuons.back();
+                  selectedMuons.pop_back();
+                }
+              }
 	      keepMuon.clear();
 
 	      // reduce the jet collection 
-	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+	      for (int i_jet = selectedJets.size()-1; i_jet > 0  ; i_jet-- ){
 		if (keepJet2[i_jet] == false){
-		  selectedJets.erase(selectedJets.begin()+i_jet);
+		  selectedJets[i_jet] = selectedJets.back();
+		  selectedJets.pop_back();
 		}
 	      }
 	      keepJet2.clear();
@@ -1835,10 +1802,11 @@ int main (int argc, char *argv[])
 	      vector <bool> keepJet2(selectedJets.size(),false);
 	      
 	      // anti iso electrons (erase isolated electrons)
-	      for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
+	      for (int i_el = selectedElectrons.size()-1 ; i_el > 0 ; i_el-- ){
 		float relIso = ElectronRelIso(selectedElectrons[i_el], rho);
 		if ( relIso < 0.15 ){
-		  selectedElectrons.erase(selectedElectrons.begin()+i_el);
+		  selectedElectrons[i_el] = selectedElectrons.back();
+		  selectedElectrons.pop_back();
 		}
 	      }
 
@@ -1855,25 +1823,23 @@ int main (int argc, char *argv[])
 
 
 	      // reduce the electron collection
-	      //	      selectedElectrons.erase(std::remove_if(selectedElectrons.begin(),selectedElectrons.end(), [](TRootElectron *p) {return keepJet2[p];} ) , selectedElectrons.end());
-
-	      //	      /*
-	      for (int i_el = 0; i_el < selectedElectrons.size() ; i_el++ ){
+	      for (int i_el = selectedElectrons.size()-1 ; i_el > 0 ; i_el-- ){
 		if (keepElectron[i_el] == false){
-		  selectedElectrons.erase(selectedElectrons.begin()+i_el);
+		  selectedElectrons[i_el] = selectedElectrons.back();
+		  selectedElectrons.pop_back();
 		}
 	      }
 	      keepElectron.clear();
-	      //	      */
-	      
+
+
 	      // reduce the jet collection 
-	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
+	      for (int i_jet = selectedJets.size()-1; i_jet > 0  ; i_jet-- ){
 		if (keepJet2[i_jet] == false){
-		  selectedJets.erase(selectedJets.begin()+i_jet);
+		  selectedJets[i_jet] = selectedJets.back();
+		  selectedJets.pop_back();
 		}
 	      }
 	      keepJet2.clear();
-	      
 
 	    }
 	    // eo of bbel specific cut    
@@ -1883,8 +1849,11 @@ int main (int argc, char *argv[])
 	    sort(selectedJets.begin(), selectedJets.end(), HighestCSVBtag());
 	  
 	    // get the leading csv one
-	    for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
-	      if ( i_jet != 0 ) selectedJets.erase(selectedJets.begin()+i_jet);
+	    for (int i_jet = selectedJets.size()-1 ; i_jet > 0  ; i_jet-- ){
+	      if ( i_jet != 0 ){
+		selectedJets[i_jet] = selectedJets.back();
+		selectedJets.pop_back();
+	      }
 	    }
 
 	    
