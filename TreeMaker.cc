@@ -516,17 +516,17 @@ int main (int argc, char *argv[])
     mu_pt_cut=35;
   }
   else if (elel){
-    el_pt_cut=40;
+    el_pt_cut=42;
   }
   else if (elmu){
     mu_pt_cut=40;
     el_pt_cut=40;
   }
+  else if (bbel){
+    el_pt_cut=42;
+  }
   else if (bbmu){
     mu_pt_cut=40;
-  }
-  else if (bbel){
-    el_pt_cut=40;
   }
   
   
@@ -1457,6 +1457,8 @@ int main (int argc, char *argv[])
       for (unsigned int ievt = event_start; ievt < end_d; ievt++)
 	{
 
+	  if (debug) cout << "Event number is " << ievt << endl << endl;
+
 
 	  //define object containers
 
@@ -1704,7 +1706,7 @@ int main (int argc, char *argv[])
 
 	    //	    /*
 	    // reduce the jet collection
-	    for (int i_jet = selectedJets.size()-1; i_jet > 0  ; i_jet-- ){
+	    for (int i_jet = selectedJets.size()-1; i_jet >= 0  ; i_jet-- ){
 	      if (keepJet[i_jet] == false){
 		selectedJets[i_jet] = selectedJets.back();
 		selectedJets.pop_back();
@@ -1713,7 +1715,7 @@ int main (int argc, char *argv[])
 
 
 	    // reduce the bjet collection
-	    for (int i_bjet = selectedBjets.size()-1 ; i_bjet > 0  ; i_bjet-- ){
+	    for (int i_bjet = selectedBjets.size()-1 ; i_bjet >= 0  ; i_bjet-- ){
 	      if (keepBjet[i_bjet] == false){
 		selectedBjets[i_bjet] = selectedBjets.back();
 		selectedBjets.pop_back();
@@ -1784,7 +1786,7 @@ int main (int argc, char *argv[])
 	      keepMuon.clear();
 
 	      // reduce the jet collection 
-	      for (int i_jet = selectedJets.size()-1; i_jet > 0  ; i_jet-- ){
+	      for (int i_jet = selectedJets.size()-1; i_jet >= 0  ; i_jet-- ){
 		if (keepJet2[i_jet] == false){
 		  selectedJets[i_jet] = selectedJets.back();
 		  selectedJets.pop_back();
@@ -1802,8 +1804,12 @@ int main (int argc, char *argv[])
 	      vector <bool> keepJet2(selectedJets.size(),false);
 	      
 	      // anti iso electrons (erase isolated electrons)
-	      for (int i_el = selectedElectrons.size()-1 ; i_el > 0 ; i_el-- ){
+	      for (int i_el = selectedElectrons.size()-1 ; i_el >= 0 ; i_el-- ){
 		float relIso = ElectronRelIso(selectedElectrons[i_el], rho);
+		//		cout << "----------- ievt is " << ievt << "------------" << endl << endl;
+		//		cout << "i_el is " << i_el << endl;
+		//		cout << "relIso is " << relIso << endl;
+		//		cout << "rho is " << rho << endl;
 		if ( relIso < 0.15 ){
 		  selectedElectrons[i_el] = selectedElectrons.back();
 		  selectedElectrons.pop_back();
@@ -1823,7 +1829,7 @@ int main (int argc, char *argv[])
 
 
 	      // reduce the electron collection
-	      for (int i_el = selectedElectrons.size()-1 ; i_el > 0 ; i_el-- ){
+	      for (int i_el = selectedElectrons.size()-1 ; i_el >= 0 ; i_el-- ){
 		if (keepElectron[i_el] == false){
 		  selectedElectrons[i_el] = selectedElectrons.back();
 		  selectedElectrons.pop_back();
@@ -1833,7 +1839,7 @@ int main (int argc, char *argv[])
 
 
 	      // reduce the jet collection 
-	      for (int i_jet = selectedJets.size()-1; i_jet > 0  ; i_jet-- ){
+	      for (int i_jet = selectedJets.size()-1; i_jet >= 0  ; i_jet-- ){
 		if (keepJet2[i_jet] == false){
 		  selectedJets[i_jet] = selectedJets.back();
 		  selectedJets.pop_back();
@@ -1849,7 +1855,7 @@ int main (int argc, char *argv[])
 	    sort(selectedJets.begin(), selectedJets.end(), HighestCSVBtag());
 	  
 	    // get the leading csv one
-	    for (int i_jet = selectedJets.size()-1 ; i_jet > 0  ; i_jet-- ){
+	    for (int i_jet = selectedJets.size()-1 ; i_jet >= 0  ; i_jet-- ){
 	      if ( i_jet != 0 ){
 		selectedJets[i_jet] = selectedJets.back();
 		selectedJets.pop_back();
@@ -2055,66 +2061,70 @@ int main (int argc, char *argv[])
 
 	    
 	  nElectrons_pc=0;
-	  for (Int_t initel =0; initel < init_electrons.size() && initel < 10; initel++ )
+	  for (Int_t i_el =0; i_el < selectedElectrons.size() && i_el < 10; i_el++ )
 	    {
-	      float relIso = ElectronRelIso(init_electrons[initel], rho); 
-	      //	      cout << "electron relIso is " << relIso << endl;
+	      float relIso = ElectronRelIso(selectedElectrons[i_el], rho); 
+	      //	      cout << "----------- ievt is " << ievt << "------------" << endl << endl;
+	      //	      cout << "Filling the tree! " << endl;
+	      //	      cout << "i_el is " << i_el << endl;
+	      //	      cout << "relIso is " << relIso << endl;
+	      //	      cout << "rho is " << rho << endl;
 
-	      pt_electron_pc[nElectrons_pc]=init_electrons[initel]->Pt();
-	      phi_electron_pc[nElectrons_pc]=init_electrons[initel]->Phi();
-	      eta_electron_pc[nElectrons_pc]=init_electrons[initel]->Eta();
-	      eta_superCluster_electron_pc[nElectrons_pc]=init_electrons[initel]->superClusterEta();
-	      E_electron_pc[nElectrons_pc]=init_electrons[initel]->E();
-	      d0_electron_pc[nElectrons_pc]=init_electrons[initel]->d0();
-	      d0BeamSpot_electron_pc[nElectrons_pc]=init_electrons[initel]->d0BeamSpot();
-	      chargedHadronIso_electron_pc[nElectrons_pc]=init_electrons[initel]->chargedHadronIso(3);
-	      neutralHadronIso_electron_pc[nElectrons_pc]=init_electrons[initel]->neutralHadronIso(3);
-	      photonIso_electron_pc[nElectrons_pc]=init_electrons[initel]->photonIso(3);
-	      pfIso_electron_pc[nElectrons_pc]=init_electrons[initel]->relPfIso(3,0);
+	      pt_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->Pt();
+	      phi_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->Phi();
+	      eta_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->Eta();
+	      eta_superCluster_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->superClusterEta();
+	      E_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->E();
+	      d0_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->d0();
+	      d0BeamSpot_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->d0BeamSpot();
+	      chargedHadronIso_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->chargedHadronIso(3);
+	      neutralHadronIso_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->neutralHadronIso(3);
+	      photonIso_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->photonIso(3);
+	      pfIso_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->relPfIso(3,0);
 	      relIso_electron_pc[nElectrons_pc]=relIso;
-	      charge_electron_pc[nElectrons_pc]=init_electrons[initel]->charge();
-	      sigmaIEtaIEta_electron_pc[nElectrons_pc]=init_electrons[initel]->sigmaIEtaIEta();
-	      deltaEtaIn_electron_pc[nElectrons_pc]=init_electrons[initel]->deltaEtaIn();
-	      deltaPhiIn_electron_pc[nElectrons_pc]=init_electrons[initel]->deltaPhiIn();
-	      hadronicOverEm_electron_pc[nElectrons_pc]=init_electrons[initel]->hadronicOverEm();
-	      missingHits_electron_pc[nElectrons_pc]=init_electrons[initel]->missingHits();
-	      passConversion_electron_pc[nElectrons_pc]=init_electrons[initel]->passConversion();
-	      isEBEEGap_pc[nElectrons_pc]=init_electrons[initel]->isEBEEGap();
+	      charge_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->charge();
+	      sigmaIEtaIEta_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->sigmaIEtaIEta();
+	      deltaEtaIn_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->deltaEtaIn();
+	      deltaPhiIn_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->deltaPhiIn();
+	      hadronicOverEm_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->hadronicOverEm();
+	      missingHits_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->missingHits();
+	      passConversion_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->passConversion();
+	      isEBEEGap_pc[nElectrons_pc]=selectedElectrons[i_el]->isEBEEGap();
 
 	      // id
 	      isId_electron_pc[nElectrons_pc]=false;
-	      if( fabs(init_electrons[initel]->superClusterEta()) <= 1.479){
-		if (init_electrons[initel]->sigmaIEtaIEta() < 0.0101
-		    && fabs(init_electrons[initel]->deltaEtaIn()) < 0.00926
-		    && fabs(init_electrons[initel]->deltaPhiIn()) < 0.0336
-		    && init_electrons[initel]->hadronicOverEm() < 0.0597
-		    && fabs(1/init_electrons[initel]->E() - 1/init_electrons[initel]->P()) < 0.012
-		    && init_electrons[initel]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
-		    && init_electrons[initel]->passConversion()){
+	      if( fabs(selectedElectrons[i_el]->superClusterEta()) <= 1.479){
+		if (selectedElectrons[i_el]->sigmaIEtaIEta() < 0.0101
+		    && fabs(selectedElectrons[i_el]->deltaEtaIn()) < 0.00926
+		    && fabs(selectedElectrons[i_el]->deltaPhiIn()) < 0.0336
+		    && selectedElectrons[i_el]->hadronicOverEm() < 0.0597
+		    && fabs(1/selectedElectrons[i_el]->E() - 1/selectedElectrons[i_el]->P()) < 0.012
+		    && selectedElectrons[i_el]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
+		    && selectedElectrons[i_el]->passConversion()){
 		  isId_electron_pc[nElectrons_pc]=true;
 		}
 	      }
-	      else if (fabs(init_electrons[initel]->superClusterEta()) < 2.5){
-		if ( init_electrons[initel]->sigmaIEtaIEta() < 0.0279
-		     && fabs(init_electrons[initel]->deltaEtaIn()) < 0.00724
-		     && fabs(init_electrons[initel]->deltaPhiIn()) < 0.0918
-		     && init_electrons[initel]->hadronicOverEm() < 0.0615
-		     && fabs(1/init_electrons[initel]->E() - 1/init_electrons[initel]->P()) < 0.00999
-		     && init_electrons[initel]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
-		     && init_electrons[initel]->passConversion()){
+	      else if (fabs(selectedElectrons[i_el]->superClusterEta()) < 2.5){
+		if ( selectedElectrons[i_el]->sigmaIEtaIEta() < 0.0279
+		     && fabs(selectedElectrons[i_el]->deltaEtaIn()) < 0.00724
+		     && fabs(selectedElectrons[i_el]->deltaPhiIn()) < 0.0918
+		     && selectedElectrons[i_el]->hadronicOverEm() < 0.0615
+		     && fabs(1/selectedElectrons[i_el]->E() - 1/selectedElectrons[i_el]->P()) < 0.00999
+		     && selectedElectrons[i_el]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
+		     && selectedElectrons[i_el]->passConversion()){
 		  isId_electron_pc[nElectrons_pc]=true;
 		}
 	      }
 	      // iso to be checked!!! Make sure what is this function getting! faco
 	      isIso_electron_pc[nElectrons_pc]=false;
-	      if( fabs(init_electrons[initel]->superClusterEta()) <= 1.479){
+	      if( fabs(selectedElectrons[i_el]->superClusterEta()) <= 1.479){
 		if(relIso < 0.0354) isIso_electron_pc[nElectrons_pc]=true;// wrong iso!!!! faco
 	      }
-	      else if (fabs(init_electrons[initel]->superClusterEta()) < 2.5){
+	      else if (fabs(selectedElectrons[i_el]->superClusterEta()) < 2.5){
 		if(relIso < 0.0646) isIso_electron_pc[nElectrons_pc]=true; // wrong iso!!! faco
 	      }
 		
-	      sf_electron_pc[nElectrons_pc]=electronSFWeight_->at(init_electrons[initel]->Eta(),init_electrons[initel]->Pt(),0);
+	      sf_electron_pc[nElectrons_pc]=electronSFWeight_->at(selectedElectrons[i_el]->Eta(),selectedElectrons[i_el]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons_pc << " and pt equals to " << pt_electron_pc[nElectrons_pc] << endl;
 	      nElectrons_pc++;
             }
@@ -3039,12 +3049,15 @@ int main (int argc, char *argv[])
 
 	  //	  if (nMuons_pc >= 1 && nElectrons_pc >=1){
 
-	  //	  cout << "number of leading B-jets is " << leadingCSVJets.size() << endl;
-	  if ( nMuons_pc == 1 && nJets_pc >= 1 && nBjets_pc >= 1 ){
-	  //	  if ( nMuons_pc == 1 && leadingCSVJets.size() >=1 && nBjets_pc >= 1 ){
+	  Int_t nLeptons = 0;
+	  if ( bbmu )nLeptons = nMuons_pc ;
+	  if ( bbel ) nLeptons = nElectrons_pc ;
+
+	  if ( nLeptons == 1 && nJets_pc >= 1 && nBjets_pc >= 1 ){
 	    myPreCutTree->Fill(); 
 	    passed_pc++;
 	  }
+
 	  else 
 	    //	    cout << "nMuons_pc is " << nMuons_pc << " nJets_pc is " << nJets_pc << " nBjets_pc is " << nBjets_pc << endl;
 
