@@ -37,7 +37,7 @@ map<string,MultiSamplePlot*> MSPlot;
 
 // functions prototype
 std::string intToStr (int number);
-void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath);
+void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath, bool plotAbs = false);
 void MSPCreator ();
 
 void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, int nBinsY, float lowY, float highY, string sVarofinterestY, string xmlNom, string TreePath );
@@ -315,9 +315,19 @@ int main(int argc, char* argv[])
     }
     if (bbMu){
       DatasetPlotter(50, -0.05, 0.05, "d0BeamSpot_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
-      DatasetPlotter(50, 0.0, 1.6, "pfIso_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(50, 0.0, 1.6, "pfIso_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
+      DatasetPlotter(30, 0.05, 1.55, "relIso_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
       DatasetPlotter(50, 0, 1, "CSV_jet_pc[nJets_pc]", xmlFileName,CraneenPath);
+      DatasetPlotter(6, 0.922, 1, "CSV_bjet_pc[nBjets_pc]", xmlFileName,CraneenPath);
+    }
 
+    if (bbEl){
+      //      DatasetPlotter(50, -0.05, 0.05, "d0BeamSpot_electron_pc[nElectrons_pc]", xmlFileName,CraneenPath);
+      DatasetPlotter(25, 0.0, 0.05, "d0BeamSpot_electron_pc[nElectrons_pc]", xmlFileName,CraneenPath, true);
+      //      DatasetPlotter(50, 0.0, 1.6, "pfIso_electron_pc[nElectrons_pc]", xmlFileName,CraneenPath);
+      DatasetPlotter(30, 0.05, 1.55, "relIso_electron_pc[nElectrons_pc]", xmlFileName,CraneenPath);
+      DatasetPlotter(50, 0, 1, "CSV_jet_pc[nJets_pc]", xmlFileName,CraneenPath);
+      DatasetPlotter(6, 0.922, 1, "CSV_bjet_pc[nBjets_pc]", xmlFileName,CraneenPath);
     }
 
   }
@@ -347,7 +357,7 @@ int main(int argc, char* argv[])
 }
 // eo main
 
-void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath)
+void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath, bool plotAbs)
 {
   cout<<""<<endl;
   cout<<"RUNNING NOMINAL DATASETS"<<endl;
@@ -429,8 +439,9 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
   // get the desired directory
 
-  // TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/2_3_2016/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/14_3_2016/";
+
+  //TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/24_3_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/30_3_2016/";
 
 
   CraneenPath=CraneenPath+channelpostfix;
@@ -762,12 +773,15 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 		if (isData) 
 		  {
 		    // for data, fill once per event, weighted with the event scale factor 
-		    MSPlot[plotname.c_str()]->Fill(v_varofInterest_double[i_object], datasets[d], false, 1); 	
+		    if (plotAbs) MSPlot[plotname.c_str()]->Fill(fabs(v_varofInterest_double[i_object]), datasets[d], false, 1);
+		    if (!plotAbs) MSPlot[plotname.c_str()]->Fill(v_varofInterest_double[i_object], datasets[d], false, 1);
 		  }
 		else
 		  {
 		    // for MC, fill once per event and multiply by the event scale factor. Then reweigt by Lumi/Eqlumi where Eqlumi is gotten from the xml file
-		    MSPlot[plotname.c_str()]->Fill(v_varofInterest_double[i_object], datasets[d], true, globalScaleFactor*Luminosity);
+		    if (plotAbs) MSPlot[plotname.c_str()]->Fill(fabs(v_varofInterest_double[i_object]), datasets[d], true, globalScaleFactor*Luminosity);
+		    if (!plotAbs) MSPlot[plotname.c_str()]->Fill(v_varofInterest_double[i_object], datasets[d], true, globalScaleFactor*Luminosity);
+		    
 		  }
 	      
 	      }
@@ -978,6 +992,11 @@ void MSPCreator (){
   string pathPNG = "myOutput";
   pathPNG += "_MSPlots/"+channelpostfix+"/"+regSuf+"/";
   mkdir(pathPNG.c_str(),0777);
+  
+  //  cout << "removing all the file of the directory " << pathPNG << endl;
+  //  system("exec rm -r /"+pathPNG+"/");
+
+
   //  cout <<"Making directory :"<< pathPNG  <<endl;		//make directory
   
   TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
