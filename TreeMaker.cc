@@ -130,6 +130,8 @@ float ElectronRelIso(TRootElectron* el, float rho)
   return relIsolation;
 }
 
+// declare infinity as a global float
+float infinity = std::numeric_limits<float>::infinity();
 
 
 
@@ -271,12 +273,16 @@ int main (int argc, char *argv[])
   string channelpostfix = "";
   string xmlFileName = "";
 
-  //Setting Lepton Channels (Setting both flags true will select Muon-Electron Channel when dilepton is also true)
-  bool elel = false; 
-  bool elmu = false; 
-  bool mumu = false; 
-  bool bbmu = false; 
-  bool bbel = false; 
+  //Setting bools for different channal and or final state. They are all mutually exclusive
+  bool elel = false; // e-e final state
+  bool elmu = false; // e-mu final state
+  bool mumu = false; // mu-mu final state
+  bool bbmu = false; // bbbar + mu (Control region)
+  bool bbel = false; // bbbar + el (Control region) 
+
+  // Setting a extra bool for the iso requirement on the lepton. This can be cobined with the previous channels
+  bool antiIso = true;
+
 
 
 
@@ -418,6 +424,8 @@ int main (int argc, char *argv[])
   stringstream ss;
   ss << JobNum;
   string strJobNum = ss.str();
+
+  if (antiIso) channelpostfix = channelpostfix+"_antiIso";
 
   string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+".root");
   if (strJobNum != "0")
@@ -1650,6 +1658,7 @@ int main (int argc, char *argv[])
 	  KynIdMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, true); // id
 	  //	  selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso
 	  selectedMuons = selection.GetSelectedDisplacedMuons(40, 2.4, 1.5, true, true); // id and iso 
+	  if (antiIso) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, infinity, true, true); // id and iso
 	  selectedLooseMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso
 	  //	  selectedLooseIsoMuons = selection.GetSelectedDisplacedMuons(40, 2.4, 1.5, true, true); // is and iso
 	  //	    selectedMuons = init_muons;
@@ -1670,7 +1679,9 @@ int main (int argc, char *argv[])
 	  KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, true);// pt, eta, id
 	  //	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
 	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso
+	  if (antiIso) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, infinity, infinity, true, true);// pt, eta, id, iso 
 	  selectedLooseElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso
+
 
 	  //	  selectedLooseIsoElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut true, true);// pt, eta, id, iso
 	  //selectedElectrons = init_electrons;
@@ -1682,6 +1693,28 @@ int main (int argc, char *argv[])
 	  treeLoader.LoadMCEvent(ievt, 0, mcParticles, false);
 	  sort(mcParticles.begin(),mcParticles.end(),HighestPt());
 
+	  // bo of antiIso
+	  if (antiIso){
+	    
+	    // remove isolated muons
+	    for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
+	      if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15 ){
+		selectedMuons[i_mu]= selectedMuons.back();
+		selectedMuons.pop_back();
+	      }
+	    }
+	    
+	    // remove isolate electrons
+	    for (int i_el = selectedElectrons.size()-1 ; i_el >= 0 ; i_el-- ){
+	      float relIso = ElectronRelIso(selectedElectrons[i_el], rho);
+	      if ( relIso < 0.15 ){
+		selectedElectrons[i_el] = selectedElectrons.back();
+		selectedElectrons.pop_back();
+	      }
+	    }
+
+	  }
+	  // eo of antiIso
 
 
 	  
