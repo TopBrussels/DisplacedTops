@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-This script will make a copy of some specific tree in a root file a fill them only if a certain condition is met.
+This script will make a copy of some specific tree in a root file and fill them only if a certain condition is met.
 This can be view as a skimer.
 uses: python tree_trimmer.py 
 
