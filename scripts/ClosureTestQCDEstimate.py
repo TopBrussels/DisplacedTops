@@ -8,7 +8,7 @@ import xml.etree.cElementTree as ET
 import os, sys
 from array import array
 import ROOT as rt
-
+import math
 
 
 # usefull variables for writing a tex file
@@ -27,9 +27,18 @@ channels=["_MuMu"]
 #channels=["_ElEl"]
 #channels=["_ElEl","_MuMu"]
 
-# path to tree
+# path to antiIso tree
 date="1_4_2016"
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
+
+
+# root file wit d0 distribution
+inputFile = rt.TFile("d0forTFs.root",'READ')
+
+h_electrond0=inputFile.Get("electrond0")
+h_muond0=inputFile.Get("muond0")
+
+print h_electrond0.GetBinContent(1)
 
 # debug
 debug=False
@@ -37,25 +46,34 @@ debug=False
 # define various bound on the first and second leptonn
 boundsLept1 = [0.012, 0.015, 0.018]
 boundsLept2 = [0.012, 0.015, 0.018]
-#boundLept2 = 0.015
 
+# define vector of Transfer Factors
+TFs = [[0,0,0],[0,0,0],[0,0,0]]
+
+
+#def TF1 (channel, cut1):
+#    if channel == elel :
+        
 
 # template histogram that contains one single bin
 hist=rt.TH1D("template","template",1,0,1,)
 
 lumivalue = 3
 
-
+i_lept1 = 0
 # loop over the bound of the first lepton
 for boundLept1 in boundsLept1 :
+    i_lept1=i_lept1+1
 
+    i_lept2 = 0
     # loop over the bound of the first lepton
     for boundLept2 in boundsLept2 :
+        i_lept2=i_lept2+1
     
         print "boundLept1 is" , boundLept1
         print "boundLept2 is" , boundLept2
         
-        # loop over the channel (lepton in final statue)
+        # loop over the channel (lepton in final state)
         for chan in channels:
         
             # loop over the low bounds
@@ -66,10 +84,14 @@ for boundLept1 in boundsLept1 :
             # Histogram containing the number of events
             NonQCDBase=rt.TH1D("NonQCDBase"+chan,"NonQCDBase",1,0,1)
             DataBase=rt.TH1D("DataBase"+chan,"DataBase",1,0,1)
+            QCDBase=rt.TH1D("QCDBase"+chan,"QCDBase",1,0,1)
             NonQCDTarget=rt.TH1D("NonQCDTarget"+chan,"NonQCDTarget",1,0,1)
             DataTarget=rt.TH1D("DataTarget"+chan,"DataTarget",1,0,1)
             EstimatedQCDTarget=rt.TH1D("EstimatedQCDTarget"+chan,"EstimatedQCDTarget",1,0,1)
         
+            # 
+            NBase=rt.TH1D("NBase"+chan,"NBase",1,0,1)
+            NTarget=rt.TH1D("NTarget"+chan,"NTarget",1,0,1)
         
         
             isElEl=False
@@ -94,6 +116,7 @@ for boundLept1 in boundsLept1 :
             else:
                 print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
                 sys.exit()
+            
         
                 
         
@@ -148,7 +171,7 @@ for boundLept1 in boundsLept1 :
                         lumivalue=float(d.attrib['EqLumi'])
                         
                     weight= lumivalue / float(d.attrib['EqLumi'])
-                    if (1):
+                    if (0):
                         print "lumivalue is " ,lumivalue
                         print " float(d.attrib['EqLumi']) is ",  float(d.attrib['EqLumi'])
                         print "weight is " , weight
@@ -217,8 +240,11 @@ for boundLept1 in boundsLept1 :
         #                    print "isInbase!!"
                             if (isData):
                                 DataBase.Fill(0.5,weight*PileUpWeight*LeptonWeight)
+#                                QCDBase.Fill(0.5,-1)
                             if (isBgMC and not isQCD):
                                 NonQCDBase.Fill(0.5,weight*PileUpWeight*LeptonWeight)
+#                                QCDBase.Fill(0.5,weight*PileUpWeight*LeptonWeight)
+                                
                                 
                         # filling target histo
                         elif (isInTarget):
@@ -234,18 +260,55 @@ for boundLept1 in boundsLept1 :
                     # eo event loop
         
             # eo dataset loop
+
+
+            # Get the TFs
             
-    
-            EstimatedQCDTarget.Fill(0.5,1000)
+            # convert cut into bin Number
+            ibin1 = h_muond0.FindBin(boundLept1) - 1
+            ibin2 = h_muond0.FindBin(boundLept2) - 1
+
+
+            # example to calculate error (looks like it is just the sqrt of the integral..)
+#            Base = h_muond0.Integral(ibin1+1,10)
+#            Base_err=rt.Double()
+#            h_muond0.IntegralAndError(ibin1+1,10,Base_err)
+#            print "Base is " , Base
+#            print "Base_err is ", Base_err
+
+
+            TF1 = h_muond0.Integral(ibin1+1,10)/ h_muond0.Integral(1,ibin1)
+            TF1_err = TF1 * (1/math.sqrt(h_muond0.Integral(ibin1+1,10)) + 1/math.sqrt(h_muond0.Integral(1,ibin1)) )
+#            print "TF1_err/TF1 is ", TF1_err/TF1
+
+
+            TF2 = h_muond0.Integral(ibin2+1,10)/ h_muond0.Integral(1,ibin2)
+            TF2_err =  TF2 * (1/math.sqrt(h_muond0.Integral(ibin2+1,10)) + 1/math.sqrt(h_muond0.Integral(1,ibin2)) )
+            
+            TF = TF1 * TF2
+
+            print "boundLept1 , ibin1 , TF1 , boundLept2, ibin2 , TF2 , TF are ..."
+            print boundLept1 , ibin1 , TF1 , boundLept2, ibin2 , TF2 , TF
+
+            
+            NEstimateQCDTarget = DataBase.GetBinContent(1)-NonQCDBase.GetBinContent(1)
+            EstimatedQCDTarget.Fill(0.5,TF * NEstimateQCDTarget )
+            NEstimateQCDTarget_err = DataBase.GetBinError(1)+NonQCDBase.GetBinError(1)
+            CombinedError = EstimatedQCDTarget.GetBinContent(1) * (TF1_err/TF1 + TF2_err/TF2 + NEstimateQCDTarget_err/NEstimateQCDTarget )
+            EstimatedQCDTarget.SetBinError(1,CombinedError )
+
+#            EstimatedQCDTarget.Fill(0.5,TF * QCDBase.GetBinContent(1) )
         
         
             # make some printout
             print  "NonQCDBase is ", NonQCDBase.GetBinContent(1) 
             print  "DataBase is ", DataBase.GetBinContent(1)  
             print  "NonQCDTarget is ", NonQCDTarget.GetBinContent(1)  
-            print  "DataTarget is ", DataTarget.GetBinContent(1) 
-            print  "EstimatedQCDTarget is ", EstimatedQCDTarget.GetBinContent(1) 
+            print  "DataTarget is ", DataTarget.GetBinContent(1) , " +/- " , DataTarget.GetBinError(1)
+            print  "EstimatedQCDTarget is ", EstimatedQCDTarget.GetBinContent(1) , " +/- " , EstimatedQCDTarget.GetBinError(1)
                                 
+
+
             
                     # Fill the two D array for clearer output
                     
