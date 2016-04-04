@@ -3,7 +3,7 @@
 # February 2016 by qpython@cern.ch
 #############
 
-
+from tabulate import tabulate
 import xml.etree.cElementTree as ET
 import os, sys
 from array import array
@@ -23,8 +23,8 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 #channel
-channels=["_MuMu"]
-#channels=["_ElEl"]
+#channels=["_MuMu"]
+channels=["_ElEl"]
 #channels=["_ElEl","_MuMu"]
 
 # path to antiIso tree
@@ -38,7 +38,6 @@ inputFile = rt.TFile("d0forTFs.root",'READ')
 h_electrond0=inputFile.Get("electrond0")
 h_muond0=inputFile.Get("muond0")
 
-print h_electrond0.GetBinContent(1)
 
 # debug
 debug=False
@@ -51,24 +50,19 @@ boundsLept2 = [0.012, 0.015, 0.018]
 TFs = [[0,0,0],[0,0,0],[0,0,0]]
 
 
-#def TF1 (channel, cut1):
-#    if channel == elel :
-        
-
-# template histogram that contains one single bin
-hist=rt.TH1D("template","template",1,0,1,)
-
+# random lumivalue
 lumivalue = 3
+
+# double array for table writting
+doubleArray = []
 
 i_lept1 = 0
 # loop over the bound of the first lepton
 for boundLept1 in boundsLept1 :
-    i_lept1=i_lept1+1
 
     i_lept2 = 0
     # loop over the bound of the first lepton
     for boundLept2 in boundsLept2 :
-        i_lept2=i_lept2+1
     
         print "boundLept1 is" , boundLept1
         print "boundLept2 is" , boundLept2
@@ -82,22 +76,22 @@ for boundLept1 in boundsLept1 :
         #        bgMCSum
             
             # Histogram containing the number of events
-            NonQCDBase=rt.TH1D("NonQCDBase"+chan,"NonQCDBase",1,0,1)
-            DataBase=rt.TH1D("DataBase"+chan,"DataBase",1,0,1)
-            QCDBase=rt.TH1D("QCDBase"+chan,"QCDBase",1,0,1)
-            NonQCDTarget=rt.TH1D("NonQCDTarget"+chan,"NonQCDTarget",1,0,1)
-            DataTarget=rt.TH1D("DataTarget"+chan,"DataTarget",1,0,1)
-            EstimatedQCDTarget=rt.TH1D("EstimatedQCDTarget"+chan,"EstimatedQCDTarget",1,0,1)
+            NonQCDBase=rt.TH1D("NonQCDBase"+chan+str(boundLept1)+str(boundLept2),"NonQCDBase",1,0,1)
+            DataBase=rt.TH1D("DataBase"+chan+str(boundLept1)+str(boundLept2),"DataBase",1,0,1)
+            QCDBase=rt.TH1D("QCDBase"+chan+str(boundLept1)+str(boundLept2),"QCDBase",1,0,1)
+            NonQCDTarget=rt.TH1D("NonQCDTarget"+chan+str(boundLept1)+str(boundLept2),"NonQCDTarget",1,0,1)
+            DataTarget=rt.TH1D("DataTarget"+chan+str(boundLept1)+str(boundLept2),"DataTarget",1,0,1)
+            EstimatedQCDTarget=rt.TH1D("EstimatedQCDTarget"+chan+str(boundLept1)+str(boundLept2),"EstimatedQCDTarget",1,0,1)
         
             # 
-            NBase=rt.TH1D("NBase"+chan,"NBase",1,0,1)
-            NTarget=rt.TH1D("NTarget"+chan,"NTarget",1,0,1)
+            NBase=rt.TH1D("NBase"+chan+str(boundLept1)+str(boundLept2),"NBase",1,0,1)
+            NTarget=rt.TH1D("NTarget"+chan+str(boundLept1)+str(boundLept2),"NTarget",1,0,1)
         
         
             isElEl=False
             isMuMu=False
-            doubleArray=[]
-        
+            isElMu=False        
+
             # get the xmlfile that corresponds to the channel
             if "MuMu" in chan:
                 isMuMu=True
@@ -113,6 +107,9 @@ for boundLept1 in boundsLept1 :
                 print FinalState
             elif "ElMu" in chan:
                 tree = ET.ElementTree(file='../config/Yield_FullSamplesElMuV0.xml')
+                treeName="tree"
+                FinalState="One muon and one electron"
+                print FinalState
             else:
                 print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
                 sys.exit()
@@ -137,7 +134,7 @@ for boundLept1 in boundsLept1 :
         #        if d.attrib['add'] == '1' and "QCD_" in str(d.attrib['name']):
         #            print "found dataset to be added..." + str(d.attrib['name'])
                     datasetNames.append(str(d.attrib['name']))
-                    print str(d.attrib['name'])
+#                    print str(d.attrib['name'])
                     # one array per dataset [name, title, Eqlumi, N1, N2, N3, SR1, SR2, SR3]
                     ch = rt.TChain(treeName,treeName)
                     sampleName=d.attrib['name']
@@ -203,12 +200,24 @@ for boundLept1 in boundsLept1 :
                         for ilept in range (0,2):
                             # bo the logic for the muon
                             if isMuMu:
-                                LeptonWeight *= iev.sf_muon_mumu[ilept]                        
-        
-        
-                        # define shorter variable
-                        d01=abs(iev.d0BeamSpot_muon_mumu[0])
-                        d02=abs(iev.d0BeamSpot_muon_mumu[1])
+                                LeptonWeight *= iev.sf_muon_mumu[ilept]
+                            if isElEl:
+                                LeptonWeight *= iev.sf_electron_elel[ilept]
+
+                                
+
+                        # define shorter variable depending on the channel
+                        if (isElEl):
+                            d01=abs(iev.d0BeamSpot_electron_elel[0])
+                            d02=abs(iev.d0BeamSpot_electron_elel[1])
+
+                        if (isMuMu):
+                            d01=abs(iev.d0BeamSpot_muon_mumu[0])
+                            d02=abs(iev.d0BeamSpot_muon_mumu[1])
+
+                        if (isElMu):
+                            d01=abs(iev.d0BeamSpot_electron_elel[0])
+                            d02=abs(iev.d0BeamSpot_muon_mumu[0])
                             
                         # event in base if both lepton are smaller than a bound but still in DCR
                         if 0.01 < d01 and  d01 < boundLept1 and 0.01 < d02 and d02 < boundLept2:
@@ -226,7 +235,6 @@ for boundLept1 in boundsLept1 :
                             if (debug):
                                 print "Lepton entering Target"
                                 print "d0 muon is " , iev.d0BeamSpot_muon_mumu[ilept]
-                        # eo the logic for the muon 
         
         
         
@@ -264,26 +272,42 @@ for boundLept1 in boundsLept1 :
 
             # Get the TFs
             
+
+            
+            # get the correct histograms depending on the channel
+            if (isElEl):
+                lepton1=h_electrond0
+                lepton2=h_electrond0
+
+            if (isMuMu):
+                lepton1=h_muond0
+                lepton2=h_muond0
+
+            if (isElMu):
+                lepton1=h_electrond0
+                lepton2=h_muond0
+            
+                
             # convert cut into bin Number
-            ibin1 = h_muond0.FindBin(boundLept1) - 1
-            ibin2 = h_muond0.FindBin(boundLept2) - 1
+            ibin1 = lepton1.FindBin(boundLept1) - 1
+            ibin2 = lepton2.FindBin(boundLept2) - 1
 
 
             # example to calculate error (looks like it is just the sqrt of the integral..)
-#            Base = h_muond0.Integral(ibin1+1,10)
+#            Base = lepton1.Integral(ibin1+1,10)
 #            Base_err=rt.Double()
-#            h_muond0.IntegralAndError(ibin1+1,10,Base_err)
+#            lepton1.IntegralAndError(ibin1+1,10,Base_err)
 #            print "Base is " , Base
 #            print "Base_err is ", Base_err
 
-
-            TF1 = h_muond0.Integral(ibin1+1,10)/ h_muond0.Integral(1,ibin1)
-            TF1_err = TF1 * (1/math.sqrt(h_muond0.Integral(ibin1+1,10)) + 1/math.sqrt(h_muond0.Integral(1,ibin1)) )
+            TF = 0
+            TF1 = lepton1.Integral(ibin1+1,10)/ lepton1.Integral(1,ibin1)
+            TF1_err = TF1 * (1/math.sqrt(lepton1.Integral(ibin1+1,10)) + 1/math.sqrt(lepton1.Integral(1,ibin1)) )
 #            print "TF1_err/TF1 is ", TF1_err/TF1
 
 
-            TF2 = h_muond0.Integral(ibin2+1,10)/ h_muond0.Integral(1,ibin2)
-            TF2_err =  TF2 * (1/math.sqrt(h_muond0.Integral(ibin2+1,10)) + 1/math.sqrt(h_muond0.Integral(1,ibin2)) )
+            TF2 = lepton2.Integral(ibin2+1,10)/ lepton2.Integral(1,ibin2)
+            TF2_err =  TF2 * (1/math.sqrt(lepton2.Integral(ibin2+1,10)) + 1/math.sqrt(lepton2.Integral(1,ibin2)) )
             
             TF = TF1 * TF2
 
@@ -311,35 +335,59 @@ for boundLept1 in boundsLept1 :
 
             
                     # Fill the two D array for clearer output
-                    
-                    
+            singleArray = [str(boundLept1)+" ; "+str(boundLept2),DataTarget.GetBinContent(1),  DataTarget.GetBinError(1), EstimatedQCDTarget.GetBinContent(1), EstimatedQCDTarget.GetBinError(1) ] 
+            doubleArray.append(singleArray)
+#            doubleArray[i_lept1].append(singleArray)
+            print "doubleArray is " , doubleArray
+    
+        i_lept2=i_lept2+1
+    i_lept1=i_lept1+1
+
+
+
+            
+# print the summary contained it the double array
+for i in range (0,len(doubleArray)):
+    #    for i in range (0,lendidataset):
+    print "---------"
+    print "NEW bound pair!!!"
+    print "---------"
+    for j in range (0,len(doubleArray[i])):
+        print doubleArray[i][j]
+
+
+# get the info for the table
+headers=["bounds","DirectCount","Error","EstimatedCount","Error"]
+print tabulate(doubleArray, headers, tablefmt="latex")
+
+# writing results in a tex file                                                                   
+outputFile = "ClosureTestTable"+chan+".tex"
+fout = open (outputFile, "w")
+fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
+fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
+fout.write("\\begin{table}"+newLine)
+fout.write("\\caption{ " + "QCD Closure Test"+chan+ "}"+newLine)
+
+# the actual tabular
+fout.write(tabulate(doubleArray, headers, tablefmt="latex"))
+
+
+# end of table                                                                   
+fout.write("\\end{table}"+newLine)
+fout.write("\\end{document}"+newLine)
+fout.close()
+
+
+# write a line for each value of the bound on the the second letpon
+
         
-        """
+"""
         
                     datasetArray = [ d.attrib['name'], d.attrib['title'], d.attrib['EqLumi'], nevents, NonQCDBase.GetBinContent(1),NonQCDBase.GetBinError(1), DataBase.GetBinContent(1), DataBase.GetBinError(1), NonQCDTarget.GetBinContent(1),NonQCDTarget.GetBinError(1), DataTarget.GetBinContent(1),DataTarget.GetBinError(1), EstimatedQCDTarget.GetBinContent(1),EstimatedQCDTarget.GetBinError(1)]
                     print datasetArray
                     
                     
-        #
-                    doubleArray.append(datasetArray)
-                    print "double array is"
-                    print doubleArray
-        
-                
-                    # end of event loop
-                    idataset=idataset+1    
             
-            
-            # print the summary contained it the double array
-            for i in range (0,len(doubleArray)):
-        #    for i in range (0,lendidataset):
-                print "---------"
-                print "NEW SAMPLE!!!"
-                print "---------"
-                for j in range (0,len(doubleArray[i])):
-                    print doubleArray[i][j]
-                print ""
-                print ""
             
             # print the minimum necessary for the Yield
             for i in range (0,len(doubleArray)):
@@ -352,7 +400,7 @@ for boundLept1 in boundsLept1 :
                 print ""
                 print ""
     
-        """
+"""
     
 print "end of the program !!!!"
 
