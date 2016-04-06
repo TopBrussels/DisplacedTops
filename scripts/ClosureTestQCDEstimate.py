@@ -196,13 +196,17 @@ for boundLept1 in boundsLept1 :
                         isInBase= False
                         isInTarget= False
             
-                        # get the scale factor
-                        for ilept in range (0,2):
-                            # bo the logic for the muon
-                            if isMuMu:
+                        # get the lepton scale factor depending on the channel
+                        if isElEl:
+                            for ilept in range (0,2):
+                                LeptonWeight *= iev.sf_electron_elel[ilept]         
+               
+                        if isMuMu:
+                            for ilept in range (0,2):
                                 LeptonWeight *= iev.sf_muon_mumu[ilept]
-                            if isElEl:
-                                LeptonWeight *= iev.sf_electron_elel[ilept]
+
+                        if isElMu:
+                            LeptonWeight= iev.sf_muon_mumu[0]*iev.sf_electron_elel[0]
 
                                 
 
@@ -218,7 +222,14 @@ for boundLept1 in boundsLept1 :
                         if (isElMu):
                             d01=abs(iev.d0BeamSpot_electron_elel[0])
                             d02=abs(iev.d0BeamSpot_muon_mumu[0])
+
                             
+                        if d01 < 0.01 or 0.02 < d01 :
+                            continue
+                        if d02 < 0.01 or 0.02 < d02 :
+                            continue
+                        
+
                         # event in base if both lepton are smaller than a bound but still in DCR
                         if 0.01 < d01 and  d01 < boundLept1 and 0.01 < d02 and d02 < boundLept2:
                             isInBase=True
