@@ -4,6 +4,7 @@
 #############
 
 from tabulate import tabulate
+from uncertainties import ufloat
 import xml.etree.cElementTree as ET
 import os, sys
 from array import array
@@ -16,6 +17,12 @@ hLine = "\\hline\n"
 endLine = " \\\\ "
 newLine = " \n"
 
+
+# testing uncertainties propagation
+#x = ufloat(1, 0.25)
+#print x**2
+#print x-x
+#print (x**2+ x +1000).derivatives[x]
 
 
 # using Lorentz Vectors (lv) as easy to calculate angles, pseudorapidity, etc
@@ -195,20 +202,7 @@ for boundLept1 in boundsLept1 :
                         ii+=1
                         isInBase= False
                         isInTarget= False
-            
-                        # get the lepton scale factor depending on the channel
-                        if isElEl:
-                            for ilept in range (0,2):
-                                LeptonWeight *= iev.sf_electron_elel[ilept]         
-               
-                        if isMuMu:
-                            for ilept in range (0,2):
-                                LeptonWeight *= iev.sf_muon_mumu[ilept]
 
-                        if isElMu:
-                            LeptonWeight= iev.sf_muon_mumu[0]*iev.sf_electron_elel[0]
-
-                                
 
                         # define shorter variable depending on the channel
                         if (isElEl):
@@ -224,10 +218,28 @@ for boundLept1 in boundsLept1 :
                             d02=abs(iev.d0BeamSpot_muon_mumu[0])
 
                             
+                        # skip events outside range of interest
                         if d01 < 0.01 or 0.02 < d01 :
                             continue
                         if d02 < 0.01 or 0.02 < d02 :
                             continue
+
+            
+                        # get the lepton scale factor depending on the channel
+                        if isElEl:
+                            for ilept in range (0,2):
+                                LeptonWeight *= iev.sf_electron_elel[ilept]         
+               
+                        if isMuMu:
+                            for ilept in range (0,2):
+                                LeptonWeight *= iev.sf_muon_mumu[ilept]
+
+                        if isElMu:
+                            LeptonWeight= iev.sf_muon_mumu[0]*iev.sf_electron_elel[0]
+
+                                
+
+                            
                         
 
                         # event in base if both lepton are smaller than a bound but still in DCR
@@ -312,24 +324,37 @@ for boundLept1 in boundsLept1 :
 #            print "Base_err is ", Base_err
 
             TF = 0
+
             TF1 = lepton1.Integral(ibin1+1,10)/ lepton1.Integral(1,ibin1)
             TF1_err = TF1 * (1/math.sqrt(lepton1.Integral(ibin1+1,10)) + 1/math.sqrt(lepton1.Integral(1,ibin1)) )
+            TF1_ = ufloat (TF1,TF1_err)
 #            print "TF1_err/TF1 is ", TF1_err/TF1
 
 
             TF2 = lepton2.Integral(ibin2+1,10)/ lepton2.Integral(1,ibin2)
             TF2_err =  TF2 * (1/math.sqrt(lepton2.Integral(ibin2+1,10)) + 1/math.sqrt(lepton2.Integral(1,ibin2)) )
+            TF2_ = ufloat (TF2, TF2_err)
             
             TF = TF1 * TF2
+            TF_ = TF1_ * TF2_
+            
+            print "TF is ", TF
+            print "TF_ is ", TF_
 
             print "boundLept1 , ibin1 , TF1 , boundLept2, ibin2 , TF2 , TF are ..."
             print boundLept1 , ibin1 , TF1 , boundLept2, ibin2 , TF2 , TF
 
             
-            NEstimateQCDTarget = DataBase.GetBinContent(1)-NonQCDBase.GetBinContent(1)
-            EstimatedQCDTarget.Fill(0.5,TF * NEstimateQCDTarget )
-            NEstimateQCDTarget_err = DataBase.GetBinError(1)+NonQCDBase.GetBinError(1)
-            CombinedError = EstimatedQCDTarget.GetBinContent(1) * (TF1_err/TF1 + TF2_err/TF2 + NEstimateQCDTarget_err/NEstimateQCDTarget )
+            NQCDBase = DataBase.GetBinContent(1)-NonQCDBase.GetBinContent(1)
+            NQCDBase_ = ufloat (DataBase.GetBinContent(1),DataBase.GetBinError(1)) - ufloat(NonQCDBase.GetBinContent(1),NonQCDBase.GetBinError(1))
+#            print "NEstimateQCDBase is " , NEstimateQCDBase
+#            print "NEstimateQCDBase_ is " , NEstimateQCDBase_
+            EstimatedQCDTarget.Fill(0.5,TF * NQCDBase )
+            EstimatedQCDTarget_ = NQCDBase_ * TF1_ * TF2_
+            DirectQCDTarget_ = ufloat (DataTarget.GetBinContent(1),DataTarget.GetBinError(1)) - ufloat(NonQCDTarget.GetBinContent(1),NonQCDTarget.GetBinError(1))
+
+            NQCDBase_err = DataBase.GetBinError(1)+NonQCDBase.GetBinError(1)
+            CombinedError = EstimatedQCDTarget.GetBinContent(1) * (TF1_err/TF1 + TF2_err/TF2 + NQCDBase_err/NQCDBase )
             EstimatedQCDTarget.SetBinError(1,CombinedError )
 
 #            EstimatedQCDTarget.Fill(0.5,TF * QCDBase.GetBinContent(1) )
@@ -347,7 +372,13 @@ for boundLept1 in boundsLept1 :
             
                     # Fill the two D array for clearer output
             singleArray = [str(boundLept1)+" ; "+str(boundLept2),DataTarget.GetBinContent(1),  DataTarget.GetBinError(1), EstimatedQCDTarget.GetBinContent(1), EstimatedQCDTarget.GetBinError(1) ] 
-            doubleArray.append(singleArray)
+
+
+            singleArray_ = [str(boundLept1)+" ; "+str(boundLept2), DirectQCDTarget_, EstimatedQCDTarget_ ] 
+
+
+            
+            doubleArray.append(singleArray_)
 #            doubleArray[i_lept1].append(singleArray)
             print "doubleArray is " , doubleArray
     
