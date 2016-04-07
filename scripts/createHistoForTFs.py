@@ -24,8 +24,8 @@ debug = False
 
 
 # define do histograms
-electrond0=rt.TH1D("electrond0","electrond0",10,0.01,0.02)
-muond0=rt.TH1D("muond0","muond0",10,0.01,0.02)
+electrond0=rt.TH1D("electrond0","electrond0",10,0.01,0.019999999)
+muond0=rt.TH1D("muond0","muond0",10,0.01,0.019999999999)
 
 
 
