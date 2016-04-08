@@ -13,7 +13,7 @@ date="24_3_2016"
 
 
 # output root file
-outfile = rt.TFile("d0forTFs.root",'RECREATE')
+outfile = rt.TFile("rootFiles/d0forTFs.root",'RECREATE')
 
 
 #leptons

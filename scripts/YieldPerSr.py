@@ -321,7 +321,7 @@ for chan in channels:
     
 
     # writing results in a tex file
-    outputFile = "YieldTable"+chan+".tex"
+    outputFile = "tables/YieldTable"+chan+".tex"
     fout = open (outputFile, "w")
     fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
     fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)

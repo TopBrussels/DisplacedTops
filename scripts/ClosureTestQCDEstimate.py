@@ -46,15 +46,14 @@ h_electrond0=inputFile.Get("electrond0")
 h_muond0=inputFile.Get("muond0")
 
 
-# debug
+
+
+# Manage the number of print outs
 debug=False
 
 # define various bound on the first and second leptonn
 boundsLept1 = [0.012, 0.015, 0.018]
 boundsLept2 = [0.012, 0.015, 0.018]
-
-# define vector of Transfer Factors
-TFs = [[0,0,0],[0,0,0],[0,0,0]]
 
 
 # random lumivalue
@@ -88,11 +87,9 @@ for boundLept1 in boundsLept1 :
             QCDBase=rt.TH1D("QCDBase"+chan+str(boundLept1)+str(boundLept2),"QCDBase",1,0,1)
             NonQCDTarget=rt.TH1D("NonQCDTarget"+chan+str(boundLept1)+str(boundLept2),"NonQCDTarget",1,0,1)
             DataTarget=rt.TH1D("DataTarget"+chan+str(boundLept1)+str(boundLept2),"DataTarget",1,0,1)
+            QCDTarget=rt.TH1D("QCDTarget"+chan+str(boundLept1)+str(boundLept2),"QCDTarget",1,0,1)
             EstimatedQCDTarget=rt.TH1D("EstimatedQCDTarget"+chan+str(boundLept1)+str(boundLept2),"EstimatedQCDTarget",1,0,1)
         
-            # 
-            NBase=rt.TH1D("NBase"+chan+str(boundLept1)+str(boundLept2),"NBase",1,0,1)
-            NTarget=rt.TH1D("NTarget"+chan+str(boundLept1)+str(boundLept2),"NTarget",1,0,1)
         
         
             isElEl=False
@@ -345,15 +342,14 @@ for boundLept1 in boundsLept1 :
             print boundLept1 , ibin1 , TF1 , boundLept2, ibin2 , TF2 , TF
 
             
-            NQCDBase = DataBase.GetBinContent(1)-NonQCDBase.GetBinContent(1)
+            NQCDBase = DataBase.GetBinContent(1) - NonQCDBase.GetBinContent(1)
+            NQCDBase_err = DataBase.GetBinError(1)+ NonQCDBase.GetBinError(1)
             NQCDBase_ = ufloat (DataBase.GetBinContent(1),DataBase.GetBinError(1)) - ufloat(NonQCDBase.GetBinContent(1),NonQCDBase.GetBinError(1))
-#            print "NEstimateQCDBase is " , NEstimateQCDBase
-#            print "NEstimateQCDBase_ is " , NEstimateQCDBase_
+
             EstimatedQCDTarget.Fill(0.5,TF * NQCDBase )
             EstimatedQCDTarget_ = NQCDBase_ * TF1_ * TF2_
             DirectQCDTarget_ = ufloat (DataTarget.GetBinContent(1),DataTarget.GetBinError(1)) - ufloat(NonQCDTarget.GetBinContent(1),NonQCDTarget.GetBinError(1))
 
-            NQCDBase_err = DataBase.GetBinError(1)+NonQCDBase.GetBinError(1)
             CombinedError = EstimatedQCDTarget.GetBinContent(1) * (TF1_err/TF1 + TF2_err/TF2 + NQCDBase_err/NQCDBase )
             EstimatedQCDTarget.SetBinError(1,CombinedError )
 
@@ -403,7 +399,7 @@ headers=["bounds","DirectCount","Error","EstimatedCount","Error"]
 print tabulate(doubleArray, headers, tablefmt="latex")
 
 # writing results in a tex file                                                                   
-outputFile = "ClosureTestTable"+chan+".tex"
+outputFile = "tables/ClosureTestTable"+chan+".tex"
 fout = open (outputFile, "w")
 fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
 fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
