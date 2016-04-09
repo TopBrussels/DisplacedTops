@@ -277,7 +277,7 @@ int main (int argc, char *argv[])
   bool bbel = false; // bbbar + el (Control region) 
 
   // Setting a extra bool for the iso requirement on the lepton. This can be cobined with the previous channels
-  bool antiIso = false;
+  bool antiIso = true;
   bool looseIso = false;
 
 
@@ -1526,7 +1526,7 @@ int main (int argc, char *argv[])
 	    
 	    // remove isolated muons
 	    for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
-	      if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15 ){
+	      if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15  ){
 		selectedMuons[i_mu]= selectedMuons.back();
 		selectedMuons.pop_back();
 	      }
@@ -1935,6 +1935,8 @@ int main (int argc, char *argv[])
 	      isIso_muon[nMuons]=false;
 	      if ( (selectedMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedMuons[selmu]->neutralHadronIso(4) + selectedMuons[selmu]->photonIso(4) - 0.5*selectedMuons[selmu]->puChargedHadronIso(4) ) ) / selectedMuons[selmu]->Pt() < mu_iso_cut ) isIso_muon[nMuons]=true;
 	      pfIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0.5);
+	      relIso_muon[nMuons]=(selectedMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedMuons[selmu]->neutralHadronIso(4) + selectedMuons[selmu]->photonIso(4) - 0.5*selectedMuons[selmu]->puChargedHadronIso(4) ) ) / selectedMuons[selmu]->Pt();
+	      //	      relIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0.5)
 	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
 	      sf_muon[nMuons]=muonSFWeightIso_TT->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0)* muonSFWeightID_T->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
@@ -2774,7 +2776,7 @@ int main (int argc, char *argv[])
 					    passedElMuNotOverlaping=true;
 					    passed++;
 					    if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
-					    myTree->Fill(); 
+					    //					    myTree->Fill(); 
 					  }
 					}
 				      }
@@ -2981,11 +2983,11 @@ int main (int argc, char *argv[])
 	      myTree->Fill();
 	      passed++;
 	    }
-	    else if (mumu && nMuons >= 2 ){
+	    if (mumu && nMuons >= 2 ){
 	      myTree->Fill();
 	      passed++;
 	    }
-	    else if (elmu && nElectrons >= 1 && nMuons >= 1){
+	    if (elmu && nElectrons >= 1 && nMuons >= 1){
 	      myTree->Fill();
 	      passed++;
 	    }
