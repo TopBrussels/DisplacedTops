@@ -281,7 +281,8 @@ int main (int argc, char *argv[])
   bool bbel = false; // bbbar + el (Control region) 
 
   // Setting a extra bool for the iso requirement on the lepton. This can be cobined with the previous channels
-  bool antiIso = true;
+  bool antiIso = false;
+  bool looseIso = false;
 
 
 
@@ -426,6 +427,7 @@ int main (int argc, char *argv[])
   string strJobNum = ss.str();
 
   if (antiIso) channelpostfix = channelpostfix+"_antiIso";
+  if (looseIso) channelpostfix = channelpostfix+"_looseIso";
 
   string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+".root");
   if (strJobNum != "0")
@@ -1657,7 +1659,8 @@ int main (int argc, char *argv[])
 	  KynMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, false); // pt, eta, isocut, applyIso, applyID
 	  KynIdMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, true); // id
 	  //	  selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso
-	  selectedMuons = selection.GetSelectedDisplacedMuons(40, 2.4, 1.5, true, true); // id and iso 
+	  selectedMuons = selection.GetSelectedDisplacedMuons(40, 2.4, mu_iso_cut, true, true); // id and iso 
+	  if (looseIso) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, 1.5, true, true); // id and iso
 	  if (antiIso) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, infinity, true, true); // id and iso
 	  selectedLooseMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso
 	  //	  selectedLooseIsoMuons = selection.GetSelectedDisplacedMuons(40, 2.4, 1.5, true, true); // is and iso
@@ -1674,12 +1677,18 @@ int main (int argc, char *argv[])
 	  // make a new collections of electrons
 	  if (debug)cout<<"Getting Electrons"<<endl;
 
+
+	  if (!looseIso && !antiIso)selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
+	  if (looseIso) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso 
+	  if (antiIso) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, infinity, infinity, true, true);// pt, eta, id, iso 
+
 	  // make three collection of muons for the synch exercise
 	  KynElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, false);// pt, eta
 	  KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, true);// pt, eta, id
 	  //	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
-	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso
-	  if (antiIso) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, infinity, infinity, true, true);// pt, eta, id, iso 
+
+
+
 	  selectedLooseElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso
 
 
@@ -3109,54 +3118,42 @@ int main (int argc, char *argv[])
 	  //	  debug=true; 
 
 	  // el el final state
-	  if (nElectrons_elel >= 2){
+	  if (elel){
 	    
-	    // check if in one electron is in ecal crack
-	    for (Int_t selel =0; selel <= nElectrons_elel; selel++)
-	      {
-		if (isEBEEGap_elel[selel]){
-		  PassIsEBEEGap_elel=false;
-		}
-	      }
-		
-	    // fill only if none of the electrons are in the gap
-	    if (PassIsEBEEGap_elel){
-	    
-	      // blind for bkgd MC and Data
-	      if (!isSignal){
+	    // blind for bkgd MC and Data
+	    if (!isSignal){
 
-		if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
+	      if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
 	      
-		// Remove the events were the D0 is too big
-		for (Int_t selel =0; selel <= nElectrons_elel; selel++)
-		  {
-		    if (d0BeamSpot_electron_elel[selel] > 0.02){
-		      blindD0_elel=false;
-		    }
+	      // Remove the events were the D0 is too big
+	      for (Int_t selel =0; selel <= nElectrons_elel; selel++)
+		{
+		  if (d0BeamSpot_electron_elel[selel] > 0.02){
+		    blindD0_elel=false;
 		  }
-		 
-		// Remove the events were the DeltaVz is too big
-		for (Int_t selelPairs = 0; selelPairs <= nElectronPairs_elel; selelPairs++)
-		  {
-		    if (deltaVz_elel[selelPairs] > 0.2){
-		      blindDvz_elel=false;
-		    }			  
-		    if (deltaV0_elel[selelPairs] > 0.03){
-		      blindDv0_elel=false;
-		    }			  
-		  }
-		if (blindD0_elel && blindDvz_elel && blindDv0_elel){
-		  myDoubleElTree->Fill();
-		  passed_elel++;
-		  if (debug) cout << "Blinding conditions passed!" << endl;
 		}
-	      
-	      }
-	      // if not Data fill it anyway
-	      if (isSignal) {
+		 
+	      // Remove the events were the DeltaVz is too big
+	      for (Int_t selelPairs = 0; selelPairs <= nElectronPairs_elel; selelPairs++)
+		{
+		  if (deltaVz_elel[selelPairs] > 0.2){
+		    blindDvz_elel=false;
+		  }			  
+		  if (deltaV0_elel[selelPairs] > 0.03){
+		    blindDv0_elel=false;
+		  }			  
+		}
+	      if (blindD0_elel && blindDvz_elel && blindDv0_elel){
 		myDoubleElTree->Fill();
 		passed_elel++;
+		if (debug) cout << "Blinding conditions passed!" << endl;
 	      }
+	      
+	    }
+	    // if not Data fill it anyway
+	    if (isSignal) {
+	      myDoubleElTree->Fill();
+	      passed_elel++;
 	    }
 
 	  }
@@ -3167,7 +3164,7 @@ int main (int argc, char *argv[])
 	  Bool_t blindDv0_mumu = true;
 
 	  // mu mu final state
-	  if (nMuons_mumu >= 2){	  
+	  if (mumu){	  
 	    if (!isSignal){
 	      if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
 	      
