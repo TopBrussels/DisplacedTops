@@ -1,8 +1,6 @@
-
-
 //////////////////////////////////////////////////////////////////////////////
-////         Analysis code for search for Four Top Production.                  ////
-////////////////////////////////////////////////////////////////////////////////////
+////         Analysis code for search for Displaced letpton.              ////
+//////////////////////////////////////////////////////////////////////////////
 
 // ttbar @ NLO 13 TeV:
 //all-had ->679 * .46 = 312.34
@@ -233,8 +231,6 @@ int main (int argc, char *argv[])
 
   int passed = 0;
   int passed_pc = 0;
-  int passed_elel =0;
-  int passed_mumu =0;
   int ndefs =0;
   int negWeights = 0;
   float weightCount = 0.0;
@@ -522,11 +518,11 @@ int main (int argc, char *argv[])
 
 
   // change value depending on the trigger
-  if (mumu){
-    mu_pt_cut=35;
-  }
-  else if (elel){
+  if (elel){
     el_pt_cut=42;
+  }
+  else if (mumu){
+    mu_pt_cut=35;
   }
   else if (elmu){
     mu_pt_cut=40;
@@ -536,7 +532,7 @@ int main (int argc, char *argv[])
     el_pt_cut=42;
   }
   else if (bbmu){
-    mu_pt_cut=40;
+    mu_pt_cut=35;
   }
   
   
@@ -669,21 +665,21 @@ int main (int argc, char *argv[])
   //Trigger* trigger = new Trigger(hasMuon, hasElectron, trigSingleLep, trigDoubleLep);
 
   Trigger * trigger;
-  
-  if (channel=="ElMu"){
-    trigger = new Trigger(1, 1, 0, 1);
-  }
+
+  if (channel=="ElEl"){
+    trigger = new Trigger(0, 1 , 0, 1);
+  }  
   else if (channel=="MuMu"){
     trigger = new Trigger(1, 0 , 0, 1);
   }
-  else if (channel=="ElEl"){
-    trigger = new Trigger(0, 1 , 0, 1);
-  }
-  else if (channel=="bbMu"){
-    trigger = new Trigger(1, 0 , 1, 0);
+  else if (channel=="ElMu"){
+    trigger = new Trigger(1, 1, 0, 1);
   }
   else if (channel=="bbEl"){
     trigger = new Trigger(0, 1 , 1, 0);
+  }
+  else if (channel=="bbMu"){
+    trigger = new Trigger(1, 0 , 1, 0);
   }
   else cout << "Wrong chanel name" << endl;
   
@@ -799,24 +795,27 @@ int main (int argc, char *argv[])
 
       cout <<"DATE STRING   "<<date_str << endl;
 
+      // bo of the main Tree
 
 
       // variables for electrons
-      Int_t nElectronsPostCut;
       Int_t nElectrons;
       Double_t pt_electron[10];
       Double_t phi_electron[10];
       Double_t eta_electron[10];
       Double_t eta_superCluster_electron[10];
       Double_t E_electron[10];
+      Double_t vz_electron[10]; 
+      Double_t v0_electron[10]; 
+      //      Double_t v0BeamSpot_electron[10]; 
       Double_t d0_electron[10];
       Double_t d0BeamSpot_electron[10];
       Double_t chargedHadronIso_electron[10];
       Double_t neutralHadronIso_electron[10];
       Double_t photonIso_electron[10];
       Double_t pfIso_electron[10];
+      Double_t relIso_electron[10];  
       Int_t charge_electron[10];
-
 
       //bo id related variables
       Double_t sigmaIEtaIEta_electron[10];
@@ -825,31 +824,73 @@ int main (int argc, char *argv[])
       Double_t hadronicOverEm_electron[10];
       Int_t missingHits_electron[10];
       Bool_t passConversion_electron[10];
-      Bool_t isId_electron[10];
-      Bool_t isIso_electron[10];
       // eo id realted variables
 
-      Bool_t isEBEEGap[10]; // change at some point.
+      Bool_t isId_electron[10];
+      Bool_t isIso_electron[10];
+      Bool_t isEBEEGap[10];
       Double_t sf_electron[10];	
 
+
+      // variables for electronPairs
+      Int_t nElectronPairs; // if there is n electrons there is (n*n - n)/2 distinct pairs
+      Double_t deltaVz_elel[10]; // max 5 electrons -> max (25 -5)/2 = 10 electronPairs
+      Double_t deltaV0_elel[10];
+      Double_t invMass_elel[10];
+
       // variables for muons
-      Int_t nMuonsPostCut;
       Int_t nMuons;
       Double_t pt_muon[10];
       Double_t phi_muon[10];
       Double_t eta_muon[10];
       Double_t E_muon[10];
+      Double_t vz_muon[10]; 
+      Double_t v0_muon[10]; 
       Double_t d0_muon[10];
       Double_t d0BeamSpot_muon[10];
       Double_t chargedHadronIso_muon[10];
       Double_t neutralHadronIso_muon[10];
       Double_t photonIso_muon[10];
-      //      Double_t relIso_muon[10];
+      Double_t pfIso_muon[10];
+      Double_t relIso_muon[10];
+      Int_t charge_muon[10];
       Bool_t isId_muon[10];
       Bool_t isIso_muon[10];
-      Double_t pfIso_muon[10];
       Double_t sf_muon[10];
-      Int_t charge_muon[10];
+
+      // variables for muonPairs                                                                                                    
+      Int_t nMuonPairs; // if there is n muons there is (n*n - n)/2 distinct pairs                                             
+      Double_t deltaVz_mumu[10]; // max 5 muons -> max (25 -5)/2 = 10 muonPairs                                                     
+      Double_t deltaV0_mumu[10];
+      Double_t invMass_mumu[10];
+
+      // variables for jets 
+      Int_t nJets;
+      Double_t pt_jet[10];
+      Double_t phi_jet[10];
+      Double_t eta_jet[10];
+      Double_t E_jet[10];
+      Double_t CSV_jet[10];
+
+      // variables for bjets 
+      Int_t nBjets;
+      Double_t pt_bjet[10];
+      Double_t phi_bjet[10];
+      Double_t eta_bjet[10];
+      Double_t E_bjet[10];
+      Double_t CSV_bjet[10];
+
+      // variables for mcParticles 
+      Int_t nMcParticles;
+      Double_t pt_mcParticle[10];
+      Double_t phi_mcParticle[10];
+      Double_t eta_mcParticle[10];
+      Double_t E_mcParticle[10];
+      Int_t type_mcParticle[10];
+      Int_t motherType_mcParticle[10];
+      Int_t grannyType_mcParticle[10];
+      Double_t d0_mcParticle[10];
+      Double_t d0BeamSpot_mcParticle[10];
 
 
       // event related variables
@@ -858,7 +899,13 @@ int main (int argc, char *argv[])
       Int_t lumi_num;
       Int_t nvtx;
       Int_t npu;
-      Double_t puSF;
+
+      // non integer event related variables starts with "evt_"
+      Double_t evt_puSF;
+      Double_t evt_met; 
+
+      // eo the main Tree
+
 
 
       // bo MytreePreCut
@@ -870,6 +917,8 @@ int main (int argc, char *argv[])
       Double_t eta_electron_pc[10];
       Double_t eta_superCluster_electron_pc[10];
       Double_t E_electron_pc[10];
+      Double_t vz_electron_pc[10];
+      Double_t v0_electron_pc[10];
       Double_t d0_electron_pc[10];
       Double_t d0BeamSpot_electron_pc[10];
       Double_t chargedHadronIso_electron_pc[10];
@@ -878,7 +927,6 @@ int main (int argc, char *argv[])
       Double_t pfIso_electron_pc[10];
       Double_t relIso_electron_pc[10];
       Int_t charge_electron_pc[10];
-
 
       //bo id related variables
       Double_t sigmaIEtaIEta_electron_pc[10];
@@ -893,12 +941,20 @@ int main (int argc, char *argv[])
       Bool_t isEBEEGap_pc[10];
       Double_t sf_electron_pc[10];	
 
+      // variables for electronPairs 
+      Int_t nElectronPairs_pc; // if there is n electrons there is (n*n - n)/2 distinct pairs                                          
+      Double_t deltaVz_elel_pc[10]; // max 5 electrons -> max (25 -5)/2 = 10 electronPairs                                                  
+      Double_t deltaV0_elel_pc[10];
+      Double_t invMass_elel_pc[10];
+
       // variables for muons
       Int_t nMuons_pc;
       Double_t pt_muon_pc[10];
       Double_t phi_muon_pc[10];
       Double_t eta_muon_pc[10];
       Double_t E_muon_pc[10];
+      Double_t v0_muon_pc[10];
+      Double_t vz_muon_pc[10];
       Double_t d0_muon_pc[10];
       Double_t d0BeamSpot_muon_pc[10];
       Double_t chargedHadronIso_muon_pc[10];
@@ -911,6 +967,11 @@ int main (int argc, char *argv[])
       Bool_t isId_muon_pc[10];
       Bool_t isIso_muon_pc[10];
 
+      // variables for muons
+      Int_t nMuonPairs_pc; // if there is n muons there is (n*n - n)/2 distinct pairs                                                  
+      Double_t deltaVz_mumu_pc[10]; // max 5 muons -> max (25 -5)/2 = 10 muonPairs                                                          
+      Double_t deltaV0_mumu_pc[10];
+      Double_t invMass_mumu_pc[10];
 
       // variables for jets
       Int_t nJets_pc;
@@ -920,8 +981,6 @@ int main (int argc, char *argv[])
       Double_t E_jet_pc[10];
       Double_t CSV_jet_pc[10];
 
-
-
       // variables for bjets
       Int_t nBjets_pc;
       Double_t pt_bjet_pc[10];
@@ -929,7 +988,6 @@ int main (int argc, char *argv[])
       Double_t eta_bjet_pc[10];
       Double_t E_bjet_pc[10];
       Double_t CSV_bjet_pc[10];
-
 
       // variables for mcParticles 
       Int_t nMcParticles_pc;
@@ -943,167 +1001,24 @@ int main (int argc, char *argv[])
       Double_t d0_mcParticle_pc[10];
       Double_t d0BeamSpot_mcParticle_pc[10];
 
-
-
       // event related variables
       Int_t run_num_pc;
       Int_t event_num_pc;
       Int_t lumi_num_pc;
       Int_t nvtx_pc;
       Int_t npu_pc;
-      Double_t puSF_pc;
 
+      // non integer event related variables starts with "evt_"                                                                     
+      Double_t evt_puSF_pc;
+      Double_t evt_met_pc;
 
       // eo MytreePreCut
-
-
-      // bo MyDoubleElTree
-
-      // variables for electrons
-      Int_t nElectrons_elel;
-      Double_t pt_electron_elel[10];
-      Double_t phi_electron_elel[10];
-      Double_t eta_electron_elel[10];
-      Double_t eta_superCluster_electron_elel[10];
-      Double_t E_electron_elel[10];
-      Double_t vz_electron_elel[10]; 
-      Double_t v0_electron_elel[10]; 
-      //      Double_t v0BeamSpot_electron_elel[10]; 
-      Double_t d0_electron_elel[10];
-      Double_t d0BeamSpot_electron_elel[10];
-      Double_t chargedHadronIso_electron_elel[10];
-      Double_t neutralHadronIso_electron_elel[10];
-      Double_t photonIso_electron_elel[10];
-      Double_t pfIso_electron_elel[10];
-      Int_t charge_electron_elel[10];
-
-      //bo id related variables
-      Double_t sigmaIEtaIEta_electron_elel[10];
-      Double_t deltaEtaIn_electron_elel[10];
-      Double_t deltaPhiIn_electron_elel[10];
-      Double_t hadronicOverEm_electron_elel[10];
-      Int_t missingHits_electron_elel[10];
-      Bool_t passConversion_electron_elel[10];
-      // eo id realted variables
-      Bool_t isId_electron_elel[10];
-      Bool_t isIso_electron_elel[10];
-      Bool_t isEBEEGap_elel[10];
-      Double_t sf_electron_elel[10];	
-
-
-      // variables for electronPairs
-      Int_t nElectronPairs_elel; // if there is n electrons there is (n*n - n)/2 distinct pairs
-      Double_t deltaVz_elel[10]; // max 5 electrons -> max (25 -5)/2 = 10 electronPairs
-      Double_t deltaV0_elel[10];
-      Double_t invMass_elel[10];
-
-      // variables for muons
-      Int_t nMuons_elel;
-      Double_t pt_muon_elel[10];
-      Double_t phi_muon_elel[10];
-      Double_t eta_muon_elel[10];
-      Double_t E_muon_elel[10];
-      Double_t d0_muon_elel[10];
-      Double_t d0BeamSpot_muon_elel[10];
-      Double_t chargedHadronIso_muon_elel[10];
-      Double_t neutralHadronIso_muon_elel[10];
-      Double_t photonIso_muon_elel[10];
-      Double_t pfIso_muon_elel[10];
-      Double_t sf_muon_elel[10];
-      Int_t charge_muon_elel[10];
-      Bool_t isId_muon_elel[10];
-      Bool_t isIso_muon_elel[10];
-
-
-
-
-
-      // event related variables
-      Int_t run_num_elel;
-      Int_t event_num_elel;
-      Int_t lumi_num_elel;
-      Int_t nvtx_elel;
-      Int_t npu_elel;
-      Double_t evt_puSF_elel;
-      Double_t evt_met_elel; //faco here
-
-
-      // eo MyDoubleElTree
-
-
-      // bo MyDoubleMuTree
-
-      // variables for electrons
-      Int_t nElectrons_mumu;
-      Double_t pt_electron_mumu[10];
-      Double_t phi_electron_mumu[10];
-      Double_t eta_electron_mumu[10];
-      Double_t eta_superCluster_electron_mumu[10];
-      Double_t E_electron_mumu[10];
-      Double_t d0_electron_mumu[10];
-      Double_t d0BeamSpot_electron_mumu[10];
-      Double_t chargedHadronIso_electron_mumu[10];
-      Double_t neutralHadronIso_electron_mumu[10];
-      Double_t photonIso_electron_mumu[10];
-      Double_t pfIso_electron_mumu[10];
-      Int_t charge_electron_mumu[10];
-
-
-      //bo id related variables
-      Double_t sigmaIEtaIEta_electron_mumu[10];
-      Double_t deltaEtaIn_electron_mumu[10];
-      Double_t deltaPhiIn_electron_mumu[10];
-      Double_t hadronicOverEm_electron_mumu[10];
-      Int_t missingHits_electron_mumu[10];
-      Bool_t passConversion_electron_mumu[10];
-      // eo id realted variables
-      Bool_t isId_electron_mumu[10];
-      Bool_t isIso_electron_mumu[10];
-      Bool_t isEBEEGap_mumu[10];
-      Double_t sf_electron_mumu[10];	
-
-      // variables for muons
-      Int_t nMuons_mumu;
-      Double_t pt_muon_mumu[10];
-      Double_t phi_muon_mumu[10];
-      Double_t eta_muon_mumu[10];
-      Double_t E_muon_mumu[10];
-      Double_t vz_muon_mumu[10]; 
-      Double_t v0_muon_mumu[10]; 
-      Double_t d0_muon_mumu[10];
-      Double_t d0BeamSpot_muon_mumu[10];
-      Double_t chargedHadronIso_muon_mumu[10];
-      Double_t neutralHadronIso_muon_mumu[10];
-      Double_t photonIso_muon_mumu[10];
-      Double_t pfIso_muon_mumu[10];
-      Double_t sf_muon_mumu[10];
-      Int_t charge_muon_mumu[10];
-      Bool_t isId_muon_mumu[10];
-      Bool_t isIso_muon_mumu[10];
-
-      // variables for muonPairs 
-      Int_t nMuonPairs_mumu; // if there is n muons there is (n*n - n)/2 distinct pairs
-      Double_t deltaVz_mumu[10]; // max 5 muons -> max (25 -5)/2 = 10 muonPairs
-      Double_t deltaV0_mumu[10];
-      Double_t invMass_mumu[10];
-
-      // event related variables
-      Int_t run_num_mumu;
-      Int_t event_num_mumu;
-      Int_t lumi_num_mumu;
-      Int_t nvtx_mumu;
-      Int_t npu_mumu;
-      Double_t evt_puSF_mumu;
-      Double_t evt_met_mumu;
-
-      // eo MyDoubleMuTree
-
 
 
       Int_t NEvent = datasets[d]->NofEvtsToRunOver();
       //	Double_t xs [1];
        
-
+      // eo MytreePreCut
 
 
       // Define the bookkeeping tree
@@ -1129,10 +1044,13 @@ int main (int argc, char *argv[])
       myTree->Branch("eta_electron",eta_electron,"eta_electron[nElectrons]/D");
       myTree->Branch("eta_superCluster_electron",eta_superCluster_electron,"eta_superCluster_electron[nElectrons]/D");
       myTree->Branch("E_electron",E_electron,"E_electron[nElectrons]/D");
+      myTree->Branch("vz_electron",vz_electron,"vz_electron[nElectrons]/D");
+      myTree->Branch("v0_electron",v0_electron,"v0_electron[nElectrons]/D");
       myTree->Branch("chargedHadronIso_electron",chargedHadronIso_electron,"chargedHadronIso_electron[nElectrons]/D");
       myTree->Branch("neutralHadronIso_electron",neutralHadronIso_electron,"neutralHadronIso_electron[nElectrons]/D");
       myTree->Branch("photonIso_electron",photonIso_electron,"photonIso_electron[nElectrons]/D");
       myTree->Branch("pfIso_electron",pfIso_electron,"pfIso_electron[nElectrons]/D");
+      myTree->Branch("relIso_electron",relIso_electron,"relIso_electron[nElectrons]/D"); 
       myTree->Branch("charge_electron",charge_electron,"charge_electron[nElectrons]/I");
       myTree->Branch("d0_electron",d0_electron,"d0_electron[nElectrons]/D");
       myTree->Branch("d0BeamSpot_electron",d0BeamSpot_electron,"d0BeamSpot_electron[nElectrons]/D");
@@ -1146,6 +1064,13 @@ int main (int argc, char *argv[])
       myTree->Branch("isIso_electron",isIso_electron,"isIso_electron[nElectrons]/O)");
       myTree->Branch("isEBEEGap",isEBEEGap,"isEBEEGap[nElectrons]/O)");
       myTree->Branch("sf_electron",sf_electron,"sf_electron[nElectrons]/D");
+
+      // electronPairs                                                                                                              
+      //      myTree->Branch("templatevar",templatevar,"templatevar[nElectronPairs]/I");                               
+      myTree->Branch("nElectronPairs",&nElectronPairs, "nElectronPairs/I");
+      myTree->Branch("deltaVz_elel",deltaVz_elel,"deltaVz_elel[nElectronPairs]/D");
+      myTree->Branch("deltaV0_elel",deltaV0_elel,"deltaV0_elel[nElectronPairs]/D");
+      myTree->Branch("invMass_elel",invMass_elel,"invMass_elel[nElectronPairs]/D");
 	
 
       // muons
@@ -1155,16 +1080,63 @@ int main (int argc, char *argv[])
       myTree->Branch("phi_muon",phi_muon,"phi_muon[nMuons]/D");
       myTree->Branch("eta_muon",eta_muon,"eta_muon[nMuons]/D");
       myTree->Branch("E_muon",E_muon,"E_muon[nMuons]/D");
+      myTree->Branch("vz_muon",vz_muon,"vz_muon[nMuons]/D");
+      myTree->Branch("v0_muon",v0_muon,"v0_muon[nMuons]/D");
       myTree->Branch("chargedHadronIso_muon",chargedHadronIso_muon,"chargedHadronIso_muon[nMuons]/D");
       myTree->Branch("neutralHadronIso_muon",neutralHadronIso_muon,"neutralHadronIso_muon[nMuons]/D");
       myTree->Branch("photonIso_muon",photonIso_muon,"photonIso_muon[nMuons]/D");
       myTree->Branch("isId_muon",isId_muon,"isId_muon[nMuons]/O");
       myTree->Branch("isIso_muon",isIso_muon,"isIso_muon[nMuons]/O");
       myTree->Branch("pfIso_muon",pfIso_muon,"pfIso_muon[nMuons]/D");
+      myTree->Branch("relIso_muon",relIso_muon,"relIso_muon[nMuons]/D");
       myTree->Branch("charge_muon",charge_muon,"charge_muon[nMuons]/I");
       myTree->Branch("d0_muon",d0_muon,"d0_muon[nMuons]/D");
       myTree->Branch("d0BeamSpot_muon",d0BeamSpot_muon,"d0BeamSpot_muon[nMuons]/D");
       myTree->Branch("sf_muon",sf_muon,"sf_muon[nMuons]/D");
+      
+      // muonPairs 
+      //      myTree->Branch("templatevar",templatevar,"templatevar[nMuonPairs]/I"); 
+      myTree->Branch("nMuonPairs",&nMuonPairs, "nMuonPairs/I");
+      myTree->Branch("deltaVz_mumu",deltaVz_mumu,"deltaVz_mumu[nMuonPairs]/D");
+      myTree->Branch("deltaV0_mumu",deltaV0_mumu,"deltaV0_mumu[nMuonPairs]/D");
+      myTree->Branch("invMass_mumu",invMass_mumu,"invMass_mumu[nMuonPairs]/D");
+
+
+
+      // jets
+      //      myTree->Branch("templatevar",templatevar,"templatevar[nJets]/D"); 
+      myTree->Branch("nJets",&nJets, "nJets/I");
+      myTree->Branch("pt_jet",pt_jet,"pt_jet[nJets]/D"); 
+      myTree->Branch("eta_jet",eta_jet,"eta_jet[nJets]/D"); 
+      myTree->Branch("phi_jet",phi_jet,"phi_jet[nJets]/D"); 
+      myTree->Branch("E_jet",E_jet,"E_jet[nJets]/D"); 
+      myTree->Branch("CSV_jet",CSV_jet,"CSV_jet[nJets]/D"); 
+      //      myTree->Branch("templatevar",templatevar,"templatevar[nJets]/D"); 
+
+
+      // bjets
+      //      myTree->Branch("templatevar",templatevar,"templatevar[nBjets]/D"); 
+      myTree->Branch("nBjets",&nBjets, "nBjets/I");
+      myTree->Branch("pt_bjet",pt_bjet,"pt_bjet[nBjets]/D"); 
+      myTree->Branch("eta_bjet",eta_bjet,"eta_bjet[nBjets]/D"); 
+      myTree->Branch("phi_bjet",phi_bjet,"phi_bjet[nBjets]/D"); 
+      myTree->Branch("E_bjet",E_bjet,"E_bjet[nBjets]/D"); 
+      myTree->Branch("CSV_bjet",CSV_bjet,"CSV_bjet[nBjets]/D"); 
+      //      myTree->Branch("templatevar",templatevar,"templatevar[nBjets]/D"); 
+
+
+      // mcParticles
+      //        myTree->Branch("templatevar",templatevar,"templatevar[nMcParticles]/D");
+      myTree->Branch("nMcParticles",&nMcParticles, "nMcParticles/I");
+      myTree->Branch("pt_mcParticle",pt_mcParticle,"pt_mcParticle[nMcParticles]/D");
+      myTree->Branch("phi_mcParticle",phi_mcParticle,"phi_mcParticle[nMcParticles]/D");
+      myTree->Branch("eta_mcParticle",eta_mcParticle,"eta_mcParticle[nMcParticles]/D");
+      myTree->Branch("E_mcParticle",E_mcParticle,"E_mcParticle[nMcParticles]/D");
+      myTree->Branch("d0_mcParticle",d0_mcParticle,"d0_mcParticle[nMcParticles]/D");
+      myTree->Branch("d0BeamSpot_mcParticle",d0BeamSpot_mcParticle,"d0BeamSpot_mcParticle[nMcParticles]/D");
+      myTree->Branch("type_mcParticle",type_mcParticle,"type_mcParticle[nMcParticles]/I");
+      myTree->Branch("motherType_mcParticle",motherType_mcParticle,"motherType_mcParticle[nMcParticles]/I");
+      myTree->Branch("grannyType_mcParticle",grannyType_mcParticle,"grannyType_mcParticle[nMcParticles]/I");
 
 
       // event related variables
@@ -1173,9 +1145,12 @@ int main (int argc, char *argv[])
       myTree->Branch("lumi_num",&lumi_num,"lumi_num/I");
       myTree->Branch("nvtx",&nvtx,"nvtx/I");
       myTree->Branch("npu",&npu,"npu/I");
-      myTree->Branch("puSF",&puSF,"puSF/D");	
+
+      // non integer event related variables starts with "evt_" 
+      myTree->Branch("evt_puSF",&evt_puSF,"evt_puSF/D");
+      myTree->Branch("evt_met",&evt_met,"evt_met/D");
 	
-      // eo the tree with all the cuts applied for e-mu final state
+      // eo the main tree
 
 	
       // bo a secondary tree that is filled before the whole list of cut
@@ -1184,12 +1159,14 @@ int main (int argc, char *argv[])
 
       // electrons
       //	myPreCutTree->Branch("templatevar",templatevar,"templatevar[nElectrons_elel_pc]/D");
-      myPreCutTree->Branch("nElectrons_pc",&nElectrons_pc, "nElectrons_pc/I");//                                                            
+      myPreCutTree->Branch("nElectrons_pc",&nElectrons_pc, "nElectrons_pc/I");
       myPreCutTree->Branch("pt_electron_pc",pt_electron_pc,"pt_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("phi_electron_pc",phi_electron_pc,"phi_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("eta_electron_pc",eta_electron_pc,"eta_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("eta_superCluster_electron_pc",eta_superCluster_electron_pc,"eta_superCluster_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("E_electron_pc",E_electron_pc,"E_electron_pc[nElectrons_pc]/D");
+      myPreCutTree->Branch("vz_electron_pc",vz_electron_pc,"vz_electron_pc[nElectrons_pc]/D"); 
+      myPreCutTree->Branch("v0_electron_pc",v0_electron_pc,"v0_electron_pc[nElectrons_pc]/D"); 
       myPreCutTree->Branch("chargedHadronIso_electron_pc",chargedHadronIso_electron_pc,"chargedHadronIso_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("neutralHadronIso_electron_pc",neutralHadronIso_electron_pc,"neutralHadronIso_electron_pc[nElectrons_pc]/D");
       myPreCutTree->Branch("photonIso_electron_pc",photonIso_electron_pc,"photonIso_electron_pc[nElectrons_pc]/D");
@@ -1208,7 +1185,15 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("isIso_electron_pc",isIso_electron_pc,"isIso_electron_pc[nElectrons_pc]/O)");
       myPreCutTree->Branch("isEBEEGap_pc",isEBEEGap_pc,"isEBEEGap_pc[nElectrons_pc]/O)");
       myPreCutTree->Branch("sf_electron_pc",sf_electron_pc,"sf_electron_pc[nElectrons_pc]/D");
-	
+      
+
+      // electronPairs 
+      //      myPreCutTree->Branch("templatevar",templatevar,"templatevar[nElectronPairs_pc]/I"); 
+      myPreCutTree->Branch("nElectronPairs_pc",&nElectronPairs_pc, "nElectronPairs_pc/I");
+      myPreCutTree->Branch("deltaVz_elel_pc",deltaVz_elel_pc,"deltaVz_elel_pc[nElectronPairs_pc]/I"); 
+      myPreCutTree->Branch("deltaV0_elel_pc",deltaV0_elel_pc,"deltaV0_elel_pc_elel_pc[nElectronPairs_pc]/I"); 
+      myPreCutTree->Branch("invMass_elel_pc",invMass_elel_pc,"invMass_elel_pc[nElectronPairs_pc]/I"); 
+
 
       // muons
       //        myPreCutTree->Branch("templatevar",templatevar,"templatevar[nMuons_pc]/D");
@@ -1225,9 +1210,18 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("charge_muon_pc",charge_muon_pc,"charge_muon_pc[nMuons_pc]/I");
       myPreCutTree->Branch("isId_muon_pc",isId_muon_pc,"isId_muon_pc[nMuons_pc]/D");
       myPreCutTree->Branch("isIso_muon_pc",isIso_muon_pc,"isIso_muon_pc[nMuons_pc]/D");
+      myPreCutTree->Branch("v0_muon_pc",v0_muon_pc,"v0_muon_pc[nMuons_pc]/D");
+      myPreCutTree->Branch("vz_muon_pc",vz_muon_pc,"vz_muon_pc[nMuons_pc]/D");
       myPreCutTree->Branch("d0_muon_pc",d0_muon_pc,"d0_muon_pc[nMuons_pc]/D");
       myPreCutTree->Branch("d0BeamSpot_muon_pc",d0BeamSpot_muon_pc,"d0BeamSpot_muon_pc[nMuons_pc]/D");
       myPreCutTree->Branch("sf_muon_pc",sf_muon_pc,"sf_muon_pc[nMuons_pc]/D");
+
+      // muonPairs 
+      //      myPreCutTree->Branch("templatevar",templatevar,"templatevar[nMuonPairs_pc]/I"); 
+      myPreCutTree->Branch("nMuonPairs_pc",&nMuonPairs_pc, "nMuonPairs_pc/I");
+      myPreCutTree->Branch("deltaVz_mumu_pc",deltaVz_mumu_pc,"deltaVz_mumu_pc[nMuonPairs_pc]/I");
+      myPreCutTree->Branch("deltaV0_mumu_pc",deltaV0_mumu_pc,"deltaV0_mumu_pc[nMuonPairs_pc]/I");
+      myPreCutTree->Branch("invMass_mumu_pc",invMass_mumu_pc,"invMass_mumu_pc[nMuonPairs_pc]/I");
 
 
       // jets
@@ -1266,165 +1260,9 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("grannyType_mcParticle_pc",grannyType_mcParticle_pc,"grannyType_mcParticle_pc[nMcParticles_pc]/I");
 
 
-
       // eo a secondary tree that is filled before the whole list of cut
 
-
-      // bo a third tree that is filled if there is at least two electrons (el-el)
-
-      TTree* myDoubleElTree = new TTree("doubleElTree","doubleElTree");
-
-
-      // electrons
-      //	myDoubleElTree->Branch("templatevar",templatevar,"templatevar[nElectrons_elel]/D");
-      myDoubleElTree->Branch("nElectrons_elel",&nElectrons_elel, "nElectrons_elel/I");//                                                            
-      myDoubleElTree->Branch("pt_electron_elel",pt_electron_elel,"pt_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("phi_electron_elel",phi_electron_elel,"phi_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("eta_electron_elel",eta_electron_elel,"eta_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("eta_superCluster_electron_elel",eta_superCluster_electron_elel,"eta_superCluster_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("E_electron_elel",E_electron_elel,"E_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("vz_electron_elel",vz_electron_elel,"vz_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("v0_electron_elel",v0_electron_elel,"v0_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("chargedHadronIso_electron_elel",chargedHadronIso_electron_elel,"chargedHadronIso_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("neutralHadronIso_electron_elel",neutralHadronIso_electron_elel,"neutralHadronIso_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("photonIso_electron_elel",photonIso_electron_elel,"photonIso_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("pfIso_electron_elel",pfIso_electron_elel,"pfIso_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("charge_electron_elel",charge_electron_elel,"charge_electron_elel[nElectrons_elel]/I");
-      myDoubleElTree->Branch("d0_electron_elel",d0_electron_elel,"d0_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("d0BeamSpot_electron_elel",d0BeamSpot_electron_elel,"d0BeamSpot_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("sigmaIEtaIEta_electron_elel",sigmaIEtaIEta_electron_elel,"sigmaIEtaIEta_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("deltaEtaIn_electron_elel",deltaEtaIn_electron_elel,"deltaEtaIn_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("deltaPhiIn_electron_elel",deltaPhiIn_electron_elel,"deltaPhiIn_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("hadronicOverEm_electron_elel",hadronicOverEm_electron_elel,"hadronicOverEm_electron_elel[nElectrons_elel]/D");
-      myDoubleElTree->Branch("missingHits_electron_elel",missingHits_electron_elel,"missingHits_electron_elel[nElectrons_elel]/I");
-      myDoubleElTree->Branch("passConversion_electron_elel",passConversion_electron_elel,"passConversion_electron_elel[nElectrons_elel]/O)");
-      myDoubleElTree->Branch("isId_electron_elel",isId_electron_elel,"isId_electron_elel[nElectrons_elel]/O)");
-      myDoubleElTree->Branch("isIso_electron_elel",isIso_electron_elel,"isIso_electron_elel[nElectrons_elel]/O)");
-      myDoubleElTree->Branch("isEBEEGap_elel",isEBEEGap_elel,"isEBEEGap_elel[nElectrons_elel]/O)");
-      myDoubleElTree->Branch("sf_electron_elel",sf_electron_elel,"sf_electron_elel[nElectrons_elel]/D");
-	
-      // electronPairs
-      //      myDoubleElTree->Branch("templatevar",templatevar,"templatevar[nElectronPairs_elel]/I"); 
-      myDoubleElTree->Branch("nElectronPairs_elel",&nElectronPairs_elel, "nElectronPairs_elel/I");
-      myDoubleElTree->Branch("deltaVz_elel",deltaVz_elel,"deltaVz_elel[nElectronPairs_elel]/D");
-      myDoubleElTree->Branch("deltaV0_elel",deltaV0_elel,"deltaV0_elel[nElectronPairs_elel]/D");
-      myDoubleElTree->Branch("invMass_elel",invMass_elel,"invMass_elel[nElectronPairs_elel]/D"); 
-
-
-
-      // muons
-      //        myDoubleElTree->Branch("templatevar",templatevar,"templatevar[nMuons_elel]/D");
-      myDoubleElTree->Branch("nMuons_elel",&nMuons_elel, "nMuons_elel/I");
-      myDoubleElTree->Branch("pt_muon_elel",pt_muon_elel,"pt_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("phi_muon_elel",phi_muon_elel,"phi_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("eta_muon_elel",eta_muon_elel,"eta_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("E_muon_elel",E_muon_elel,"E_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("d0_muon_elel",d0_muon_elel,"d0_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("d0BeamSpot_muon_elel",d0BeamSpot_muon_elel,"d0BeamSpot_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("chargedHadronIso_muon_elel",chargedHadronIso_muon_elel,"chargedHadronIso_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("neutralHadronIso_muon_elel",neutralHadronIso_muon_elel,"neutralHadronIso_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("photonIso_muon_elel",photonIso_muon_elel,"photonIso_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("pfIso_muon_elel",pfIso_muon_elel,"pfIso_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("charge_muon_elel",charge_muon_elel,"charge_muon_elel[nMuons_elel]/I");
-      myDoubleElTree->Branch("isId_muon_elel",isId_muon_elel,"isId_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("isIso_muon_elel",isIso_muon_elel,"isIso_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("sf_muon_elel",sf_muon_elel,"sf_muon_elel[nMuons_elel]/D");
-      myDoubleElTree->Branch("charge_muon_elel",charge_muon_elel,"charge_muon_elel[nMuons_elel]/D");
-
-      //
-
-
-      // event related variables
-       myDoubleElTree->Branch("run_num_elel",&run_num,"run_num_elel/I");
-       myDoubleElTree->Branch("event_num_elel",&event_num,"event_num_elel/I");
-       myDoubleElTree->Branch("lumi_num_elel",&lumi_num_elel,"lumi_num_elel/I");
-       myDoubleElTree->Branch("nvtx_elel",&nvtx_elel,"nvtx_elel/I");
-       myDoubleElTree->Branch("npu_elel",&npu_elel,"npu_elel/I");
-       myDoubleElTree->Branch("evt_puSF_elel",&evt_puSF_elel,"evt_puSF_elel/D");
-       myDoubleElTree->Branch("evt_met_elel",&evt_met_elel,"evt_met_elel/D");
-
       
-
-      // eo a third tree that is filled if there is at least two electrons (el-el)
-
-
-
-
-      // bo a fourth tree that is filled if there is at least two muons (mu-mu)
-
-      TTree* myDoubleMuTree = new TTree("doubleMuTree","doubleMuTree");
-
-
-      // electrons
-      //	myDoubleMuTree->Branch("templatevar",templatevar,"templatevar[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("nElectrons_mumu",&nElectrons_mumu, "nElectrons_mumu/I");//                                                            
-      myDoubleMuTree->Branch("pt_electron_mumu",pt_electron_mumu,"pt_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("phi_electron_mumu",phi_electron_mumu,"phi_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("eta_electron_mumu",eta_electron_mumu,"eta_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("eta_superCluster_electron_mumu",eta_superCluster_electron_mumu,"eta_superCluster_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("E_electron_mumu",E_electron_mumu,"E_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("chargedHadronIso_electron_mumu",chargedHadronIso_electron_mumu,"chargedHadronIso_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("neutralHadronIso_electron_mumu",neutralHadronIso_electron_mumu,"neutralHadronIso_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("photonIso_electron_mumu",photonIso_electron_mumu,"photonIso_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("pfIso_electron_mumu",pfIso_electron_mumu,"pfIso_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("charge_electron_mumu",charge_electron_mumu,"charge_electron_mumu[nElectrons_mumu]/I");
-      myDoubleMuTree->Branch("d0_electron_mumu",d0_electron_mumu,"d0_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("d0BeamSpot_electron_mumu",d0BeamSpot_electron_mumu,"d0BeamSpot_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("sigmaIEtaIEta_electron_mumu",sigmaIEtaIEta_electron_mumu,"sigmaIEtaIEta_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("deltaEtaIn_electron_mumu",deltaEtaIn_electron_mumu,"deltaEtaIn_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("deltaPhiIn_electron_mumu",deltaPhiIn_electron_mumu,"deltaPhiIn_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("hadronicOverEm_electron_mumu",hadronicOverEm_electron_mumu,"hadronicOverEm_electron_mumu[nElectrons_mumu]/D");
-      myDoubleMuTree->Branch("missingHits_electron_mumu",missingHits_electron_mumu,"missingHits_electron_mumu[nElectrons_mumu]/I");
-      myDoubleMuTree->Branch("passConversion_electron_mumu",passConversion_electron_mumu,"passConversion_electron_mumu[nElectrons_mumu]/O)");
-      myDoubleMuTree->Branch("isId_electron_mumu",isId_electron_mumu,"isId_electron_mumu[nElectrons_mumu]/O)");
-      myDoubleMuTree->Branch("isIso_electron_mumu",isIso_electron_mumu,"isIso_electron_mumu[nElectrons_mumu]/O)");
-      myDoubleMuTree->Branch("isEBEEGap_mumu",isEBEEGap_mumu,"isEBEEGap_mumu[nElectrons_mumu]/O)");
-      myDoubleMuTree->Branch("sf_electron_mumu",sf_electron_mumu,"sf_electron_mumu[nElectrons_mumu]/D");
-	
-
-      // muons
-      //        myDoubleMuTree->Branch("templatevar",templatevar,"templatevar[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("nMuons_mumu",&nMuons_mumu, "nMuons_mumu/I");
-      myDoubleMuTree->Branch("pt_muon_mumu",pt_muon_mumu,"pt_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("phi_muon_mumu",phi_muon_mumu,"phi_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("eta_muon_mumu",eta_muon_mumu,"eta_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("E_muon_mumu",E_muon_mumu,"E_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("vz_muon_mumu",vz_muon_mumu,"vz_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("v0_muon_mumu",v0_muon_mumu,"v0_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("chargedHadronIso_muon_mumu",chargedHadronIso_muon_mumu,"chargedHadronIso_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("neutralHadronIso_muon_mumu",neutralHadronIso_muon_mumu,"neutralHadronIso_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("photonIso_muon_mumu",photonIso_muon_mumu,"photonIso_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("pfIso_muon_mumu",pfIso_muon_mumu,"pfIso_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("charge_muon_mumu",charge_muon_mumu,"charge_muon_mumu[nMuons_mumu]/I");
-      myDoubleMuTree->Branch("isId_muon_mumu",isId_muon_mumu,"isId_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("isIso_muon_mumu",isIso_muon_mumu,"isIso_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("d0_muon_mumu",d0_muon_mumu,"d0_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("d0BeamSpot_muon_mumu",d0BeamSpot_muon_mumu,"d0BeamSpot_muon_mumu[nMuons_mumu]/D");
-      myDoubleMuTree->Branch("sf_muon_mumu",sf_muon_mumu,"sf_muon_mumu[nMuons_mumu]/D");
-
-
-      // muonPairs
-      //	myDoubleMuTree->Branch("templatevar",templatevar,"templatevar[nMuonPairs_mumu]/D"); 
-      myDoubleMuTree->Branch("nMuonPairs_mumu",&nMuonPairs_mumu,"nMuonPairs_mumu/I"); 
-      myDoubleMuTree->Branch("deltaVz_mumu",deltaVz_mumu,"deltaVz_mumu[nMuonPairs_mumu]/D"); 
-      myDoubleMuTree->Branch("deltaV0_mumu",deltaV0_mumu,"deltaV0_mumu[nMuonPairs_mumu]/D"); 
-      myDoubleMuTree->Branch("invMass_mumu",invMass_mumu,"invMass_mumu[nMuonPairs_mumu]/D"); 
-
-
-      // event related variables 
-      myDoubleMuTree->Branch("run_num_mumu",&run_num,"run_num_mumu/I");
-      myDoubleMuTree->Branch("event_num_mumu",&event_num,"event_num_mumu/I");
-      myDoubleMuTree->Branch("lumi_num_mumu",&lumi_num_mumu,"lumi_num_mumu/I");
-      myDoubleMuTree->Branch("nvtx_mumu",&nvtx_mumu,"nvtx_mumu/I");
-      myDoubleMuTree->Branch("npu_mumu",&npu_mumu,"npu_mumu/I");
-      myDoubleMuTree->Branch("evt_puSF_mumu",&evt_puSF_mumu,"evt_puSF_mumu/D");
-      myDoubleMuTree->Branch("evt_met_mumu",&evt_met_mumu,"evt_met_mumu/D");
-
-	
-      // eo a fourth tree that is filled if there is at least two muons (mu-mu)            
-
-
-
       //////////////////////////////////////////////////
       // Loop on events
       /////////////////////////////////////////////////
@@ -1511,10 +1349,9 @@ int main (int argc, char *argv[])
 	  if (debug) cout << "just entered the event loop!" << endl;
 
 	  // Set default value for evertything that goes in the Tree
-	  nMuons = nElectrons = 0;
+	  nMuons = nElectrons = 0; // is this actually necessary?
 	  nMuons_pc = nElectrons_pc = 0;
-	  nMuons_elel = nElectrons_elel = 0;
-	  nMuons_mumu = nElectrons_mumu = 0;
+
 	    
 	    
 	  double ievt_d = ievt;
@@ -1564,12 +1401,12 @@ int main (int argc, char *argv[])
 
 
 	  // setting event related variables
-	  evt_met_elel = evt_met_mumu = mets[0]->Et();
-	  event_num = event_num_elel = event_num_mumu =event->eventId();
-	  run_num = run_num_elel = run_num_mumu =event->runId();
-	  lumi_num = lumi_num_elel =lumi_num_mumu = event->lumiBlockId();
-	  nvtx = nvtx_elel = nvtx_mumu = vertex.size();
-	  npu = npu_elel = npu_mumu = (int)event->nTruePU();
+	  evt_met = evt_met_pc= mets[0]->Et();
+	  event_num = event_num_pc =event->eventId();
+	  run_num = run_num_pc =event->runId();
+	  lumi_num = lumi_num_pc = event->lumiBlockId();
+	  nvtx = nvtx_pc = vertex.size();
+	  npu = npu_pc = (int)event->nTruePU();
 	  
 	  
 	  
@@ -1617,8 +1454,8 @@ int main (int argc, char *argv[])
 	  ///////////////////////////////////////////
 
 	  double lumiWeight = LumiWeights.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
-	  puSF = evt_puSF_elel = evt_puSF_mumu = lumiWeight;
-	  if (isData) puSF =1;
+	  evt_puSF = evt_puSF_pc = lumiWeight;
+	  if (isData) evt_puSF = evt_puSF_pc = 1;
 
 
 	  ///////////////////////
@@ -1655,47 +1492,29 @@ int main (int argc, char *argv[])
 	    
 	  // muons selections
 	  if (debug)cout<<"Getting Muons"<<endl;
-	  // make three collection of muons for the synch exercise
-	  KynMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, false); // pt, eta, isocut, applyIso, applyID
-	  KynIdMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, true); // id
-	  //	  selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso
+
+	  // different iso 
 	  selectedMuons = selection.GetSelectedDisplacedMuons(40, 2.4, mu_iso_cut, true, true); // id and iso 
 	  if (looseIso) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, 1.5, true, true); // id and iso
 	  if (antiIso) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, infinity, true, true); // id and iso
-	  selectedLooseMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso
-	  //	  selectedLooseIsoMuons = selection.GetSelectedDisplacedMuons(40, 2.4, 1.5, true, true); // is and iso
-	  //	    selectedMuons = init_muons;
+
+	  // make extra collections of muons for the synch exercise
+	  KynMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, false); // pt, eta, isocut, applyIso, applyID
+	  KynIdMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, true); // id
 
 
-	  //selectedMuons = selection.GetSelectedDisplacedMuons(30., 2., 0.15, true, true); // pt, eta, iso // run normally
-
-	  //	    selectedMuons = selection.GetSelectedMuons();
-	  //selectedMuons = init_muons;
-
-
-	  // electrons selecttions
-	  // make a new collections of electrons
+	  // electrons selections
 	  if (debug)cout<<"Getting Electrons"<<endl;
 
-
+	  // different iso 
 	  if (!looseIso && !antiIso)selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
 	  if (looseIso) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso 
 	  if (antiIso) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, infinity, infinity, true, true);// pt, eta, id, iso 
 
-	  // make three collection of muons for the synch exercise
+	  // make extra collection of muons for the synch exercise
 	  KynElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, false);// pt, eta
 	  KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, true);// pt, eta, id
-	  //	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
 
-
-
-	  selectedLooseElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso
-
-
-	  //	  selectedLooseIsoElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut true, true);// pt, eta, id, iso
-	  //selectedElectrons = init_electrons;
-	  //selectedElectrons = selection.GetSelectedDisplacedElectrons();// pt, eta
-	  //selectedElectrons = selection.GetSelectedElectrons();
 
 
 	  // loading mcparticles
@@ -1713,7 +1532,7 @@ int main (int argc, char *argv[])
 	      }
 	    }
 	    
-	    // remove isolate electrons
+	    // remove isolated electrons
 	    for (int i_el = selectedElectrons.size()-1 ; i_el >= 0 ; i_el-- ){
 	      float relIso = ElectronRelIso(selectedElectrons[i_el], rho);
 	      if ( relIso < 0.15 ){
@@ -1963,18 +1782,8 @@ int main (int argc, char *argv[])
 
 
 
-	  // bo assigning values to the e-mu tree 
 
-	  //////////////////////////                                                                                                                                            
-	  // jet Based Plots //
-	  //////////////////////////
-	  /*
-            for (Int_t seljet =0; seljet < selectedJets.size(); seljet++ )
-            {
-              
-            }
-	  */
-	    
+	  // bo assigning values for the main tree
 
 
 	  //////////////////////////
@@ -1986,17 +1795,22 @@ int main (int argc, char *argv[])
 	  nElectrons=0;
 	  for (Int_t selel =0; selel < selectedElectrons.size() && selel < 10; selel++ )
 	    {
+	      float relIso = ElectronRelIso(selectedElectrons[selel], rho);
+	      
 	      pt_electron[nElectrons]=selectedElectrons[selel]->Pt();
 	      phi_electron[nElectrons]=selectedElectrons[selel]->Phi();
 	      eta_electron[nElectrons]=selectedElectrons[selel]->Eta();
 	      eta_superCluster_electron[nElectrons]=selectedElectrons[selel]->superClusterEta();
 	      E_electron[nElectrons]=selectedElectrons[selel]->E();
+	      vz_electron[nElectrons]=selectedElectrons[selel]->vz();
+              v0_electron[nElectrons]=sqrt( pow(selectedElectrons[selel]->vx(), 2) + pow(selectedElectrons[selel]->vy(), 2) );
 	      d0_electron[nElectrons]=selectedElectrons[selel]->d0();
 	      d0BeamSpot_electron[nElectrons]=selectedElectrons[selel]->d0BeamSpot();
 	      chargedHadronIso_electron[nElectrons]=selectedElectrons[selel]->chargedHadronIso(3);
 	      neutralHadronIso_electron[nElectrons]=selectedElectrons[selel]->neutralHadronIso(3);
 	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);
 	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);
+	      relIso_electron[nElectrons_pc]=relIso;
 	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();
 	      sigmaIEtaIEta_electron[nElectrons]=selectedElectrons[selel]->sigmaIEtaIEta();
 	      deltaEtaIn_electron[nElectrons]=selectedElectrons[selel]->deltaEtaIn();
@@ -2049,6 +1863,46 @@ int main (int argc, char *argv[])
             }
 
 
+
+	  /////////////////////////
+	  // ElectronPairs Plots //
+	  /////////////////////////
+
+
+	  // to count distinguishable pairs of the same object we need the lowest pt to go from the last object to the second
+	  // then we compare the high pt object from the first to the second-1
+	  // example with 5 object "e"
+	  //  (e0;e4) (e1;e4) (e2;e4) (e3;e4)
+	  //  (e0;e3) (e1;e3) (e2;e3)
+	  //  (e0;e2) (e1;e2) 
+	  //  (e0;e1)
+	    
+
+	  nElectronPairs=0;
+	  for (Int_t secondEl = nElectrons-1; secondEl > 0; secondEl-- )
+	    {
+	      if (debug) cout << "secondEl is " << secondEl << endl;
+	      for (Int_t firstEl = 0; firstEl < secondEl ; firstEl++ )
+		{
+		  deltaVz_elel[nElectronPairs]=abs(vz_electron[firstEl]-vz_electron[secondEl]);
+		  deltaV0_elel[nElectronPairs]=abs(v0_electron[firstEl]-v0_electron[secondEl]);
+		  invMass_elel[nElectronPairs]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
+		  nElectronPairs++;
+		    
+		  // debug statement
+		  if (debug){
+		    cout << "firstEl is " << firstEl << endl;
+		    cout << "vz_electron[firstEl] is" << vz_electron[firstEl] << endl;
+		    cout << "vz_electron[secondEl] is" << vz_electron[secondEl] << endl;
+		    cout << "abs(vz_electron[firstEl]-vz_electron[secondEl] is" << abs(vz_electron[firstEl]-vz_electron[secondEl]) << endl;
+		  }
+		
+		}
+	    }
+
+
+
+
 	  //////////////////////
 	  // Muon Based Plots //
 	  //////////////////////
@@ -2060,6 +1914,8 @@ int main (int argc, char *argv[])
 	      phi_muon[nMuons]=selectedMuons[selmu]->Phi();
 	      eta_muon[nMuons]=selectedMuons[selmu]->Eta();
 	      E_muon[nMuons]=selectedMuons[selmu]->E();
+	      vz_muon[nMuons]=selectedMuons[selmu]->vz();
+	      v0_muon[nMuons]=sqrt( pow(selectedMuons[selmu]->vx(), 2) + pow(selectedMuons[selmu]->vy(), 2) ); 
 	      d0_muon[nMuons]=selectedMuons[selmu]->d0();
 	      d0BeamSpot_muon[nMuons]=selectedMuons[selmu]->d0BeamSpot();
 	      chargedHadronIso_muon[nMuons]=selectedMuons[selmu]->chargedHadronIso(4);
@@ -2086,7 +1942,93 @@ int main (int argc, char *argv[])
 
 	    }
 
-	  // eo assigning values to the e-mu tree 
+
+	  /////////////////////////
+	  // MuonPairs Plots //
+	  /////////////////////////
+	  nMuonPairs=0; 
+          for (Int_t secondMu = nMuons-1; secondMu > 0; secondMu-- ) 
+	    {
+	    if (debug) cout << "secondMu is " << secondMu << endl;
+              for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++ ) 
+		{
+		  deltaVz_mumu[nMuonPairs]=abs(vz_muon[firstMu]-vz_muon[secondMu]);
+		  deltaV0_mumu[nMuonPairs]=abs(v0_muon[firstMu]-v0_muon[secondMu]);
+                  invMass_mumu[nMuonPairs]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M(); 
+                  nMuonPairs++; 
+                                                                                                                                                                      
+                  // debug statement 
+                  if (debug){                                                                                                                                         
+                    cout << "firstMu is " << firstMu << endl;
+                    cout << "vz_muon[firstMu] is" << vz_muon[firstMu] << endl;
+                    cout << "vz_muon[secondMu] is" << vz_muon[secondMu] << endl;
+                    cout << "abs(vz_muon[firstMu]-vz_muon[secondMu] is" << abs(vz_muon[firstMu]-vz_muon[secondMu]) << endl;
+		  }
+		}
+	    }
+
+
+
+	  /////////////////////////////
+	  // Jets Based Plots /////////
+	  /////////////////////////////
+
+	  nJets = 0;
+	  for (Int_t seljet =0; seljet < selectedJets.size() && seljet < 10 ; seljet++ )
+	    {
+	      pt_jet[nJets] = selectedJets[seljet]->Pt();
+	      eta_jet[nJets] = selectedJets[seljet]->Eta();
+	      phi_jet[nJets] = selectedJets[seljet]->Phi();
+	      E_jet[nJets] = selectedJets[seljet]->E();
+	      CSV_jet[nJets] = selectedJets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+	      nJets++;
+	    }
+
+	  /////////////////////////////
+	  // Bjets Based Plots ////////
+	  /////////////////////////////
+
+	  nBjets = 0;
+	  for (Int_t seljet =0; seljet < selectedBjets.size() && seljet < 10 ; seljet++ )
+	    {
+	      pt_bjet[nBjets] = selectedBjets[seljet]->Pt();
+	      eta_bjet[nBjets] = selectedBjets[seljet]->Eta();
+	      phi_bjet[nBjets] = selectedBjets[seljet]->Phi();
+	      E_bjet[nBjets] = selectedBjets[seljet]->E();
+	      CSV_bjet[nBjets] = selectedBjets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+	      nBjets++;
+	    }
+
+
+
+	  /////////////////////////////
+	  // mcParticles Based Plots //
+	  /////////////////////////////
+
+	  nMcParticles = 0;
+	  for (unsigned int i = 0; i < mcParticles.size(); i++){
+	    if (mcParticles[i]->status() == 23) // check what it means!!
+	      {
+		pt_mcParticle[nMcParticles]=mcParticles[i]->Pt();
+		phi_mcParticle[nMcParticles]=mcParticles[i]->Phi();
+		eta_mcParticle[nMcParticles]=mcParticles[i]->Eta();
+		E_mcParticle[nMcParticles]=mcParticles[i]->E();
+		type_mcParticle[nMcParticles]=mcParticles[i]->type();
+		motherType_mcParticle[nMcParticles]=mcParticles[i]->motherType();
+		grannyType_mcParticle[nMcParticles]=mcParticles[i]->grannyType();
+		//	    d0_mcParticle[nMcParticles]=mcParticles[i]->d0();
+		//	    pt_mcParticle[nMcParticles]=mcParticles[i]->Pt();
+		
+		nMcParticles++;
+	      }
+	    //	    else cout << "mcParticles[i]->status() is " << mcParticles[i]->status() << endl;
+	  }
+
+
+	  // eo assigning values for the main tree
+
+
+
 
 
 
@@ -2117,6 +2059,8 @@ int main (int argc, char *argv[])
 	      eta_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->Eta();
 	      eta_superCluster_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->superClusterEta();
 	      E_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->E();
+	      vz_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->vz();
+              v0_electron_pc[nElectrons_pc]=sqrt( pow(selectedElectrons[i_el]->vx(), 2) + pow(selectedElectrons[i_el]->vy(), 2) );
 	      d0_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->d0();
 	      d0BeamSpot_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->d0BeamSpot();
 	      chargedHadronIso_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->chargedHadronIso(3);
@@ -2172,6 +2116,35 @@ int main (int argc, char *argv[])
             }
 
 
+
+	  ///////////////////////////
+	  // ElectronPairs Based Plots //
+	  ///////////////////////////
+
+	  nElectronPairs_pc=0;
+	  for (Int_t secondEl = nElectrons_pc-1; secondEl > 0; secondEl-- )
+	    {
+	      if (debug) cout << "secondEl is " << secondEl << endl;
+	      for (Int_t firstEl = 0; firstEl < secondEl ; firstEl++ )
+		{
+		  deltaVz_elel_pc[nElectronPairs_pc]=abs(vz_electron_pc[firstEl]-vz_electron_pc[secondEl]);
+		  deltaV0_elel_pc[nElectronPairs_pc]=abs(v0_electron_pc[firstEl]-v0_electron_pc[secondEl]);
+		  invMass_elel_pc[nElectronPairs_pc]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
+		  nElectronPairs_pc++;
+		    
+		  // debug statement
+		  if (debug){
+		    cout << "firstEl is " << firstEl << endl;
+		    cout << "vz_electron_pc[firstEl] is" << vz_electron_pc[firstEl] << endl;
+		    cout << "vz_electron_pc[secondEl] is" << vz_electron_pc[secondEl] << endl;
+		    cout << "abs(vz_electron_pc[firstEl]-vz_electron_pc[secondEl] is" << abs(vz_electron_pc[firstEl]-vz_electron_pc[secondEl]) << endl;
+		  }
+		
+		}
+	    }
+
+
+
 	  //////////////////////
 	  // Muon Based Plots //
 	  //////////////////////
@@ -2186,6 +2159,8 @@ int main (int argc, char *argv[])
 	      eta_muon_pc[nMuons_pc]=selectedMuons[i_muon]->Eta();
 	      E_muon_pc[nMuons_pc]=selectedMuons[i_muon]->E();
 	      d0_muon_pc[nMuons_pc]=selectedMuons[i_muon]->d0();
+	      vz_muon_pc[nMuons_pc]=selectedMuons[i_muon]->vz();
+	      v0_muon_pc[nMuons_pc]=sqrt( pow(selectedMuons[i_muon]->vx(), 2) + pow(selectedMuons[i_muon]->vy(), 2) ); 
 	      d0BeamSpot_muon_pc[nMuons_pc]=selectedMuons[i_muon]->d0BeamSpot();
 	      chargedHadronIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->chargedHadronIso(4);
 	      neutralHadronIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->neutralHadronIso(4);
@@ -2217,32 +2192,39 @@ int main (int argc, char *argv[])
 	      
 	    }
 
+	  ///////////////////////////
+	  // MuonPairs Based Plots //
+	  ///////////////////////////
+
+	  nMuonPairs_pc=0;
+	  for (Int_t secondMu = nMuons_pc-1; secondMu > 0; secondMu-- )
+	    {
+	      if (debug) cout << "secondMu is " << secondMu << endl;
+	      for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++ )
+		{
+		  deltaVz_mumu_pc[nMuonPairs_pc]=abs(vz_muon_pc[firstMu]-vz_muon_pc[secondMu]);
+		  deltaV0_mumu_pc[nMuonPairs_pc]=abs(v0_muon_pc[firstMu]-v0_muon_pc[secondMu]);
+		  invMass_mumu_pc[nMuonPairs_pc]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M();
+		  nMuonPairs_pc++;
+		    
+		  // debug statement
+		  if (debug){
+		    cout << "firstMu is " << firstMu << endl;
+		    cout << "vz_muon_pc[firstMu] is" << vz_muon_pc[firstMu] << endl;
+		    cout << "vz_muon_pc[secondMu] is" << vz_muon_pc[secondMu] << endl;
+		    cout << "abs(vz_muon_pc[firstMu]-vz_muon_pc[secondMu] is" << abs(vz_muon_pc[firstMu]-vz_muon_pc[secondMu]) << endl;
+		  }
+		
+		}
+	    }
+
+
 
 	  //////////////////////
 	  // Jets Based Plots //
 	  //////////////////////
 	  if (debug) cout << "before jets loop" << endl;
-	  
-	  
-	  // Choose wich collection to put in the tree. 
-	  // selected jets -> all jets that pass all the cuts
-	  // leadingCSVJets -> if multiple jets per event pick the one with the highest CSV value
-	  // most of the time these two collection will be the same (i guess)
 
-	  /*
-	  nJets_pc=0;
-	  for (Int_t seljet =0; seljet < leadingCSVJets.size() && seljet < 10 ; seljet++ )
-	    {
-	      pt_jet_pc[nJets_pc] = leadingCSVJets[seljet]->Pt();
-	      eta_jet_pc[nJets_pc] = leadingCSVJets[seljet]->Eta();
-	      phi_jet_pc[nJets_pc] = leadingCSVJets[seljet]->Phi();
-	      E_jet_pc[nJets_pc] = leadingCSVJets[seljet]->E();
-	      CSV_jet_pc[nJets_pc] = leadingCSVJets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
-	      nJets_pc++;
-	    }
-	  */
-
-	  //	  /*
 	  nJets_pc=0;
 	  for (Int_t seljet =0; seljet < selectedJets.size() && seljet < 10 ; seljet++ )
 	    {
@@ -2253,9 +2235,10 @@ int main (int argc, char *argv[])
 	      CSV_jet_pc[nJets_pc] = selectedJets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
 	      nJets_pc++;
 	    }
-	  //	  */
-	  //	  cout << "selectedJets.size() is " << selectedJets.size() << endl;
-	  //	  cout << "nJets_pc is " << nJets_pc << endl;
+
+	  ///////////////////////
+	  // Bjets Based Plots //
+	  ///////////////////////
 
 	  nBjets_pc=0;
 	  for (Int_t seljet =0; seljet < selectedBjets.size() && seljet < 10 ; seljet++ )
@@ -2267,7 +2250,6 @@ int main (int argc, char *argv[])
 	      CSV_bjet_pc[nBjets_pc] = selectedBjets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
 	      nBjets_pc++;
 	    }
-
 
 
 	  /////////////////////////////
@@ -2298,27 +2280,13 @@ int main (int argc, char *argv[])
 	  // eo  assigning values to the precut tree
 	    
 
-	    
-	  // bo assigning values to the elel tree
-
-	  //////////////////////////
-	  ///// jet Based Plots ////
-	  //////////////////////////
-	    
-	  /*
-            for (Int_t seljet =0; seljet < selectedJets.size(); seljet++ )
-            {
-              
-            }
-	  */
-	    
 
 	  //////////////////////////
 	  // Electron Based Plots //
 	  //////////////////////////
 	  if (debug) cout << "before electrons loop" << endl;
 
-	    
+	  /*	    
 	  nElectrons_elel=0;
 	  for (Int_t selel =0; selel < selectedLooseElectrons.size() && selel < 10; selel++ )
 	    {
@@ -2379,41 +2347,6 @@ int main (int argc, char *argv[])
 	      nElectrons_elel++;
             }
 
-	  /////////////////////////
-	  // ElectronPairs Plots //
-	  /////////////////////////
-	  // to count distinguishable pairs of the same object we need the lowest pt to go from the last object to the second
-	  // then we compare the high pt object from the first to the second-1
-	  // example with 5 object "e"
-	  //  (e0;e4) (e1;e4) (e2;e4) (e3;e4)
-	  //  (e0;e3) (e1;e3) (e2;e3)
-	  //  (e0;e2) (e1;e2) 
-	  //  (e0;e1)
-	    
-	    
-	  nElectronPairs_elel=0;
-	  for (Int_t secondEl = nElectrons_elel-1; secondEl > 0; secondEl-- )
-	    {
-	      if (debug) cout << "secondEl is " << secondEl << endl;
-	      for (Int_t firstEl = 0; firstEl < secondEl ; firstEl++ )
-		{
-		  deltaVz_elel[nElectronPairs_elel]=abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl]);
-		  deltaV0_elel[nElectronPairs_elel]=abs(v0_electron_elel[firstEl]-v0_electron_elel[secondEl]);
-		  //		  invMass_elel[nElectronPairs_elel]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
-		  nElectronPairs_elel++;
-		    
-		  // debug statement
-		  if (debug){
-		    cout << "firstEl is " << firstEl << endl;
-		    cout << "vz_electron_elel[firstEl] is" << vz_electron_elel[firstEl] << endl;
-		    cout << "vz_electron_elel[secondEl] is" << vz_electron_elel[secondEl] << endl;
-		    cout << "abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl] is" << abs(vz_electron_elel[firstEl]-vz_electron_elel[secondEl]) << endl;
-		  }
-		
-		}
-	    }
-
-
 
 	  //////////////////////
 	  // Muon Based Plots //
@@ -2451,6 +2384,8 @@ int main (int argc, char *argv[])
 	      nMuons_elel++;
 
 	    }
+	    
+	  */
 
 
 	  // eo assigning values to the elel tree
@@ -2458,25 +2393,9 @@ int main (int argc, char *argv[])
 
 
 	  // bo assigning values to the mumu tree
-
-	  //////////////////////////
-	  ///// jet Based Plots ////
-	  //////////////////////////
 	    
 	  /*
-            for (Int_t seljet =0; seljet < selectedJets.size(); seljet++ )
-            {
-              
-            }
-	  */
-	    
 
-	  //////////////////////////
-	  // Electron Based Plots //
-	  //////////////////////////
-	  if (debug) cout << "before electrons loop" << endl;
-
-	    
 	  nElectrons_mumu=0;
 	  for (Int_t selel =0; selel < selectedLooseElectrons.size() && selel < 10; selel++ )
 	    {
@@ -2531,12 +2450,14 @@ int main (int argc, char *argv[])
 		
 	      isEBEEGap_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->isEBEEGap();
 	      // following code found in http://cmslxr.fnal.gov/source/RecoEgamma/PhotonIdentification/src/PhotonIsolationCalculator.cc#0520
-	      /*
+	
+	      
+
 		isEBEEGap_mumu[nElectrons_mumu] = false;
 		Double_t eta =  eta_superCluster_electron_mumu[nElectrons_mumu];
 		Double_t feta = fabs(eta);
 		if (fabs(feta-1.479)<0.1) isEBEEGap_mumu[nElectrons_mumu] = true ;
-	      */
+
 	      sf_electron_mumu[nElectrons_mumu]=electronSFWeight_->at(selectedLooseElectrons[selel]->Eta(),selectedLooseElectrons[selel]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron_mumu[nElectrons_mumu] << endl;
 	      nElectrons_mumu++;
@@ -2583,70 +2504,18 @@ int main (int argc, char *argv[])
 	    }
 
 
-	  ///////////////////////////
-	  // MuonPairs Based Plots //
-	  ///////////////////////////
-
-	  nMuonPairs_mumu=0;
-	  for (Int_t secondMu = nMuons_mumu-1; secondMu > 0; secondMu-- )
-	    {
-	      if (debug) cout << "secondMu is " << secondMu << endl;
-	      for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++ )
-		{
-		  deltaVz_mumu[nMuonPairs_mumu]=abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu]);
-		  deltaV0_mumu[nMuonPairs_mumu]=abs(v0_muon_mumu[firstMu]-v0_muon_mumu[secondMu]);
-		  invMass_mumu[nMuonPairs_mumu]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M();
-		  nMuonPairs_mumu++;
-		    
-		  // debug statement
-		  if (debug){
-		    cout << "firstMu is " << firstMu << endl;
-		    cout << "vz_muon_mumu[firstMu] is" << vz_muon_mumu[firstMu] << endl;
-		    cout << "vz_muon_mumu[secondMu] is" << vz_muon_mumu[secondMu] << endl;
-		    cout << "abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu] is" << abs(vz_muon_mumu[firstMu]-vz_muon_mumu[secondMu]) << endl;
-		  }
-		
-		}
-	    }
 
 	    
-
-
+	  */
+	  
 	  // eo assigning values to the elel tree
 
+	  
 	    
 	    
 	  float nvertices = vertex.size();
 	  float normfactor = datasets[d]->NormFactor();
 	    
-	  ///////////////////
-	  //MET Based Plots//
-	  ///////////////////
-
-	  //            MSPlot["MET"]->Fill(mets[0]->Et(), datasets[d], true, Luminosity*globalScaleFactor);
-
-	  /*
-
-            if((dataSetName.find("Data")<=0 || dataSetName.find("data")<=0 || dataSetName.find("DATA")<=0) && Muon && Electron)
-            {
-	    cout <<"Data Event Passed Selection.  Run: "<< event->runId() << " LumiSection: " << event->lumiBlockId() << " Event: "<< event->eventId() <<endl;
-	    cout <<"Muon Eta: " << selectedMuons[0]->Eta() << " Muon Pt: " << selectedMuons[0]->Pt() << " Electron Eta: " << selectedElectrons[0]->Eta() << " Electron Pt: " << selectedElectrons[0]->Pt() << endl;
-            }
-
-            if((dataSetName.find("Data")<=0 || dataSetName.find("data")<=0 || dataSetName.find("DATA")<=0) && Muon && !Electron)
-            {
-	    cout <<"Data Event Passed Selection.  Run: "<< event->runId() << " LumiSection: " << event->lumiBlockId() << " Event: "<< event->eventId() << " HT: " << HT << " nMTags: " << nMtags <<endl;
-	    cout <<"Muon1 Eta: " << selectedMuons[0]->Eta() << " Muon1 Pt: " << selectedMuons[0]->Pt() << " Muon2 Eta: " << selectedMuons[1]->Eta() << " Muon2 Pt: " << selectedMuons[1]->Pt() << endl;
-            }
-            if((dataSetName.find("Data")<=0 || dataSetName.find("data")<=0 || dataSetName.find("DATA")<=0) && !Muon && Electron)
-            {
-	    cout <<"Data Event Passed Selection.  Run: "<< event->runId() << " LumiSection: " << event->lumiBlockId() << " Event: "<< event->eventId() << " HT: " << HT << " nMTags: " << nMtags <<endl;
-	    cout <<"Electron1 Eta: " << selectedElectrons[0]->Eta() << " Electron1 Pt: " << selectedElectrons[0]->Pt() << " Electron2 Eta: " << selectedElectrons[1]->Eta() << " Electron2 Pt: " << selectedElectrons[1]->Pt() << endl;
-            }
-	  */
-
-
-
 
 
 
@@ -3089,16 +2958,41 @@ int main (int argc, char *argv[])
 	  if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
 
 
-	  //	  if (nMuons_pc >= 1 && nElectrons_pc >=1){
+	  // Fill precutTree in any case
+	  myPreCutTree->Fill();
+	  passed_pc++;
 
-	  Int_t nLeptons = 0;
-	  if ( bbmu )nLeptons = nMuons_pc ;
-	  if ( bbel ) nLeptons = nElectrons_pc ;
 
-	  if ( nLeptons == 1 && nJets_pc >= 1 && nBjets_pc >= 1 ){
-	    myPreCutTree->Fill(); 
-	    passed_pc++;
+
+	  if (bbel || bbmu){
+	  
+	    Int_t nLeptons = 0;
+	    if ( bbmu ) nLeptons = nMuons ;
+	    if ( bbel ) nLeptons = nElectrons ;
+
+	    if ( nLeptons == 1 && nJets_pc >= 1 && nBjets_pc >= 1 ){
+	      myTree->Fill(); 
+	      passed++;
+	    }
 	  }
+
+	  if (elel || mumu || elmu){
+	    if (elel && nElectrons >= 2) {
+	      myTree->Fill();
+	      passed++;
+	    }
+	    else if (mumu && nMuons >= 2 ){
+	      myTree->Fill();
+	      passed++;
+	    }
+	    else if (elmu && nElectrons >= 1 && nMuons >= 1){
+	      myTree->Fill();
+	      passed++;
+	    }
+	      
+	      
+	  }
+
 
 	  else 
 	    //	    cout << "nMuons_pc is " << nMuons_pc << " nJets_pc is " << nJets_pc << " nBjets_pc is " << nBjets_pc << endl;
@@ -3117,6 +3011,8 @@ int main (int argc, char *argv[])
 	  Bool_t PassIsEBEEGap_elel = true;
 	  //	  debug=true; 
 
+
+	  /*
 	  // el el final state
 	  if (elel){
 	    
@@ -3126,7 +3022,7 @@ int main (int argc, char *argv[])
 	      if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
 	      
 	      // Remove the events were the D0 is too big
-	      for (Int_t selel =0; selel <= nElectrons_elel; selel++)
+	      for (Int_t selel =0; selel <= nElectrons; selel++)
 		{
 		  if (d0BeamSpot_electron_elel[selel] > 0.02){
 		    blindD0_elel=false;
@@ -3134,7 +3030,7 @@ int main (int argc, char *argv[])
 		}
 		 
 	      // Remove the events were the DeltaVz is too big
-	      for (Int_t selelPairs = 0; selelPairs <= nElectronPairs_elel; selelPairs++)
+	      for (Int_t selelPairs = 0; selelPairs <= nElectronPairs; selelPairs++)
 		{
 		  if (deltaVz_elel[selelPairs] > 0.2){
 		    blindDvz_elel=false;
@@ -3157,12 +3053,14 @@ int main (int argc, char *argv[])
 	    }
 
 	  }
+	  */
 	    
 
 	  Bool_t blindD0_mumu = true;
 	  Bool_t blindDvz_mumu = true;
 	  Bool_t blindDv0_mumu = true;
 
+	  /*
 	  // mu mu final state
 	  if (mumu){	  
 	    if (!isSignal){
@@ -3177,7 +3075,7 @@ int main (int argc, char *argv[])
 		}
 		 
 	      // Remove the events were the DeltaVz is too big
-	      for (Int_t selmuPairs = 0; selmuPairs <= nMuonPairs_mumu; selmuPairs++)
+	      for (Int_t selmuPairs = 0; selmuPairs <= nMuonPairs; selmuPairs++)
 		{
 		  if (deltaVz_mumu[selmuPairs] > 0.2){
 		    blindDvz_mumu=false;
@@ -3202,6 +3100,8 @@ int main (int argc, char *argv[])
 	  }
 	  //	  debug=false;
 	  
+	  */
+
 	    
 	  if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
 
@@ -3258,7 +3158,7 @@ int main (int argc, char *argv[])
 			    if (debug) {
 			      cout << "npu vtx " << nvtx << endl;
 			      cout << "npu is " << npu << endl;
-			      cout << "puSF is" << puSF << endl;
+			      cout << "evt_puSF is" << evt_puSF << endl;
 			    }
 			  }
 			}
@@ -3354,10 +3254,11 @@ int main (int argc, char *argv[])
       if (debug) cout << "Done writing the Tree" << endl;
       fout->Write();   
       fout->Close();
-      cout <<"n events having at least two leptons with no id and no iso requirement is  =  "<< passed_pc <<endl;
-      cout <<"n events after all the cuts for the e-mu final state is  =  "<< passed <<endl;
-      cout <<"n events with at least two id and iso electrons with pt > "+el_pt_cut_str+" GeV is  =  "<< passed_elel <<endl;
-      cout <<"n events with at least two id and iso muons with pt > "+mu_pt_cut_str+" GeV is  =  "<< passed_mumu <<endl;
+      cout <<"n events that just passed the trigger requirement   =  "<< passed_pc <<endl;
+      cout <<"n events after all the cuts  =  "<< passed <<endl;
+      cout << " the channel used was " << channel << endl;
+      //      cout <<"n events with at least two id and iso electrons with pt > "+el_pt_cut_str+" GeV is  =  "<< passed_elel <<endl;
+      //      cout <<"n events with at least two id and iso muons with pt > "+mu_pt_cut_str+" GeV is  =  "<< passed_mumu <<endl;
       cout << "Event Count: " << eventCount << endl;
       cout << "Number of event skipped because they failled the trigger requirement is " << skippedEvent << endl;
       cout << "The trigger efficiency is " << eventCount-skippedEvent << "/" << eventCount << " = "  << 100.0*(eventCount-skippedEvent)/eventCount << " % " << endl;
