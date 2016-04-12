@@ -884,6 +884,11 @@ int main (int argc, char *argv[])
       Double_t E_bjet[10];
       Double_t CSV_bjet[10];
 
+      // variables for bjetJetPairs
+      Int_t nBjetJetPairs;
+      Double_t deltaR_bjetJet[10];
+      Double_t deltaPhi_bjetJet[10];
+
       // variables for mcParticles 
       Int_t nMcParticles;
       Double_t pt_mcParticle[10];
@@ -1132,6 +1137,12 @@ int main (int argc, char *argv[])
       myTree->Branch("E_bjet",E_bjet,"E_bjet[nBjets]/D"); 
       myTree->Branch("CSV_bjet",CSV_bjet,"CSV_bjet[nBjets]/D"); 
       //      myTree->Branch("templatevar",templatevar,"templatevar[nBjets]/D"); 
+
+      // bjetjetPairs
+      //      myTree->Branch("templatevar",templatevar,"templatevar[nBjetjetPairs]/D");
+      myTree->Branch("nBjetJetPairs",&nBjetJetPairs, "nBjetJetPairs/I");
+      myTree->Branch("deltaR_bjetJet",deltaR_bjetJet,"deltaR_bjetJet[nBjetJetPairs]/D");
+      myTree->Branch("deltaPhi_bjetJet",deltaPhi_bjetJet,"deltaPhi_bjetJet[nBjetJetPairs]/D");
 
 
       // mcParticles
@@ -2010,15 +2021,32 @@ int main (int argc, char *argv[])
 	  /////////////////////////////
 
 	  nBjets = 0;
-	  for (Int_t seljet =0; seljet < selectedBjets.size() && seljet < 10 ; seljet++ )
+	  for (Int_t selbjet =0; selbjet < selectedBjets.size() && selbjet < 10 ; selbjet++ )
 	    {
-	      pt_bjet[nBjets] = selectedBjets[seljet]->Pt();
-	      eta_bjet[nBjets] = selectedBjets[seljet]->Eta();
-	      phi_bjet[nBjets] = selectedBjets[seljet]->Phi();
-	      E_bjet[nBjets] = selectedBjets[seljet]->E();
-	      CSV_bjet[nBjets] = selectedBjets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+	      pt_bjet[nBjets] = selectedBjets[selbjet]->Pt();
+	      eta_bjet[nBjets] = selectedBjets[selbjet]->Eta();
+	      phi_bjet[nBjets] = selectedBjets[selbjet]->Phi();
+	      E_bjet[nBjets] = selectedBjets[selbjet]->E();
+	      CSV_bjet[nBjets] = selectedBjets[selbjet]->btag_combinedInclusiveSecondaryVertexV2BJetTags();
 	      nBjets++;
 	    }
+
+
+	  ////////////////////////////////////
+	  // bjetJetPairs Based Plots ////////
+	  ////////////////////////////////////
+	  nBjetJetPairs = 0;
+	  for (Int_t selbjet =0; selbjet < selectedBjets.size() && selbjet < 10 ; selbjet++ ){
+	    for (Int_t seljet =0; seljet < selectedJets.size() && seljet < 10 ; seljet++ ){
+	      // remove combination where the bjet is the same as the jet
+	      if (selectedBjets[selbjet]->DeltaPhi(*(selectedJets[seljet])) > 0.0005){
+		deltaR_bjetJet[nBjetJetPairs]= selectedBjets[selbjet]->DeltaR(*(selectedJets[seljet]));
+		deltaPhi_bjetJet[nBjetJetPairs]= selectedBjets[selbjet]->DeltaPhi(*(selectedJets[seljet]));
+		nBjetJetPairs++;
+	      }
+	    }
+	  }
+	  
 
 
 
