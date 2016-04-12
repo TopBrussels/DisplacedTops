@@ -269,6 +269,7 @@ int main (int argc, char *argv[])
   string channelpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
+  bool applyBlinding = true;
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
   bool elel = false; // e-e final state
@@ -1649,30 +1650,6 @@ int main (int argc, char *argv[])
 	    keepBjet.clear();
 	    keepJet.clear();
 
-
-
-	      // 1) method one : use the fancy (complicated) "remove_if" function
-	      // http://stackoverflow.com/questions/25240953/removing-an-object-from-a-vector-based-on-a-member-function-from-the-object?rq=1
-	      /*
-	      selectedMuons.erase(std::remove_if(selectedMuons.begin(), selectedMuons.end(),[] (TRootMuon *p) {return p->relPfIso(4,0.5) < 0.15;}  ), selectedMuons.end());
-	      */
-
-	      // 2) method two : use a single erase (this only remove properly one element) BUG!!!
-	      // this will work only for the first object that will be erased. After that the iterator is not pointing the the desired element anymore !!!! 
-	      /*
-	      for (int i_mu = 0; i_mu < selectedMuons.size() ; i_mu++ ){
-		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15 ){
-		  selectedMuons.erase(selectedMuons.begin()+i_mu);
-		}
-	      }
-	      */
-
-	      // 3) method three : put the desire element at then end then use pop_back to remove it. This might destroy the ordering!? 
-	      // This method only work if you loop from the highest element to the lowest otherwise it has the same behaviour than method 1.
-	      // http://stackoverflow.com/questions/3487717/erasing-multiple-objects-from-a-stdvector
-	      // 
-
-	      //	      /*
 
 	    
 	    // bo of bbmu specific cut
@@ -3345,4 +3322,3 @@ int main (int argc, char *argv[])
 
   return 0;
 }
-
