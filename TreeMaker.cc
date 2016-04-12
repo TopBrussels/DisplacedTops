@@ -239,7 +239,7 @@ int main (int argc, char *argv[])
 
 
   bool bx25 = false; // faco
-
+\
   clock_t start = clock();
 
 
@@ -277,8 +277,8 @@ int main (int argc, char *argv[])
   bool bbel = false; // bbbar + el (Control region) 
 
   // Setting a extra bool for the iso requirement on the lepton. This can be cobined with the previous channels
-  bool antiIso = true;
-  bool looseIso = false;
+  bool antiIso = false; // 0.15 < iso < 1.5
+  bool looseIso = false; // iso < 1.5
 
 
 
@@ -836,6 +836,7 @@ int main (int argc, char *argv[])
       Int_t nElectronPairs; // if there is n electrons there is (n*n - n)/2 distinct pairs
       Double_t deltaVz_elel[10]; // max 5 electrons -> max (25 -5)/2 = 10 electronPairs
       Double_t deltaV0_elel[10];
+      Double_t deltaR_elel[10];
       Double_t invMass_elel[10];
 
       // variables for muons
@@ -862,6 +863,7 @@ int main (int argc, char *argv[])
       Int_t nMuonPairs; // if there is n muons there is (n*n - n)/2 distinct pairs                                             
       Double_t deltaVz_mumu[10]; // max 5 muons -> max (25 -5)/2 = 10 muonPairs                                                     
       Double_t deltaV0_mumu[10];
+      Double_t deltaR_mumu[10];
       Double_t invMass_mumu[10];
 
       // variables for jets 
@@ -942,9 +944,11 @@ int main (int argc, char *argv[])
       Double_t sf_electron_pc[10];	
 
       // variables for electronPairs 
-      Int_t nElectronPairs_pc; // if there is n electrons there is (n*n - n)/2 distinct pairs                                          
-      Double_t deltaVz_elel_pc[10]; // max 5 electrons -> max (25 -5)/2 = 10 electronPairs                                                  
+      Int_t nElectronPairs_pc; // if there is n electrons there is (n*n - n)/2 distinct pairs 
+      Double_t deltaVz_elel_pc[10]; // max 5 electrons -> max (25 -5)/2 = 10 electronPairs 
       Double_t deltaV0_elel_pc[10];
+      Double_t deltaR_elel_pc[10];
+      
       Double_t invMass_elel_pc[10];
 
       // variables for muons
@@ -971,6 +975,7 @@ int main (int argc, char *argv[])
       Int_t nMuonPairs_pc; // if there is n muons there is (n*n - n)/2 distinct pairs                                                  
       Double_t deltaVz_mumu_pc[10]; // max 5 muons -> max (25 -5)/2 = 10 muonPairs                                                          
       Double_t deltaV0_mumu_pc[10];
+      Double_t deltaR_mumu_pc[10];
       Double_t invMass_mumu_pc[10];
 
       // variables for jets
@@ -1070,6 +1075,7 @@ int main (int argc, char *argv[])
       myTree->Branch("nElectronPairs",&nElectronPairs, "nElectronPairs/I");
       myTree->Branch("deltaVz_elel",deltaVz_elel,"deltaVz_elel[nElectronPairs]/D");
       myTree->Branch("deltaV0_elel",deltaV0_elel,"deltaV0_elel[nElectronPairs]/D");
+      myTree->Branch("deltaR_elel",deltaR_elel,"deltaR_elel[nElectronPairs]/D");
       myTree->Branch("invMass_elel",invMass_elel,"invMass_elel[nElectronPairs]/D");
 	
 
@@ -1099,6 +1105,7 @@ int main (int argc, char *argv[])
       myTree->Branch("nMuonPairs",&nMuonPairs, "nMuonPairs/I");
       myTree->Branch("deltaVz_mumu",deltaVz_mumu,"deltaVz_mumu[nMuonPairs]/D");
       myTree->Branch("deltaV0_mumu",deltaV0_mumu,"deltaV0_mumu[nMuonPairs]/D");
+      myTree->Branch("deltaR_mumu",deltaR_mumu,"deltaR_mumu[nMuonPairs]/D");
       myTree->Branch("invMass_mumu",invMass_mumu,"invMass_mumu[nMuonPairs]/D");
 
 
@@ -1192,6 +1199,7 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("nElectronPairs_pc",&nElectronPairs_pc, "nElectronPairs_pc/I");
       myPreCutTree->Branch("deltaVz_elel_pc",deltaVz_elel_pc,"deltaVz_elel_pc[nElectronPairs_pc]/I"); 
       myPreCutTree->Branch("deltaV0_elel_pc",deltaV0_elel_pc,"deltaV0_elel_pc_elel_pc[nElectronPairs_pc]/I"); 
+      myPreCutTree->Branch("deltaR_elel_pc",deltaR_elel_pc,"deltaR_elel_pc_elel_pc[nElectronPairs_pc]/I"); 
       myPreCutTree->Branch("invMass_elel_pc",invMass_elel_pc,"invMass_elel_pc[nElectronPairs_pc]/I"); 
 
 
@@ -1221,6 +1229,7 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("nMuonPairs_pc",&nMuonPairs_pc, "nMuonPairs_pc/I");
       myPreCutTree->Branch("deltaVz_mumu_pc",deltaVz_mumu_pc,"deltaVz_mumu_pc[nMuonPairs_pc]/I");
       myPreCutTree->Branch("deltaV0_mumu_pc",deltaV0_mumu_pc,"deltaV0_mumu_pc[nMuonPairs_pc]/I");
+      myPreCutTree->Branch("deltaR_mumu_pc",deltaR_mumu_pc,"deltaR_mumu_pc[nMuonPairs_pc]/I");
       myPreCutTree->Branch("invMass_mumu_pc",invMass_mumu_pc,"invMass_mumu_pc[nMuonPairs_pc]/I");
 
 
@@ -1495,8 +1504,8 @@ int main (int argc, char *argv[])
 
 	  // different iso 
 	  selectedMuons = selection.GetSelectedDisplacedMuons(40, 2.4, mu_iso_cut, true, true); // id and iso 
-	  if (looseIso) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, 1.5, true, true); // id and iso
-	  if (antiIso) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, infinity, true, true); // id and iso
+	  if (looseIso && antiIso && bbmu) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, 1.5, true, true); // id and iso
+
 
 	  // make extra collections of muons for the synch exercise
 	  KynMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, false); // pt, eta, isocut, applyIso, applyID
@@ -1507,9 +1516,9 @@ int main (int argc, char *argv[])
 	  if (debug)cout<<"Getting Electrons"<<endl;
 
 	  // different iso 
-	  if (!looseIso && !antiIso)selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
-	  if (looseIso) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso 
-	  if (antiIso) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, infinity, infinity, true, true);// pt, eta, id, iso 
+	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
+	  if (looseIso && antiIso && bbel) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso 
+
 
 	  // make extra collection of muons for the synch exercise
 	  KynElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, false);// pt, eta
@@ -1522,16 +1531,8 @@ int main (int argc, char *argv[])
 	  sort(mcParticles.begin(),mcParticles.end(),HighestPt());
 
 	  // bo of antiIso
-	  if (antiIso){
-	    
-	    // remove isolated muons
-	    for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
-	      if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15  ){
-		selectedMuons[i_mu]= selectedMuons.back();
-		selectedMuons.pop_back();
-	      }
-	    }
-	    
+
+	  if (antiIso && bbel){
 	    // remove isolated electrons
 	    for (int i_el = selectedElectrons.size()-1 ; i_el >= 0 ; i_el-- ){
 	      float relIso = ElectronRelIso(selectedElectrons[i_el], rho);
@@ -1542,11 +1543,76 @@ int main (int argc, char *argv[])
 	    }
 
 	  }
-	  // eo of antiIso
 
+	  if (antiIso && bbmu){
+	    // remove isolated muons
+	    for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
+	      if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15  ){
+		selectedMuons[i_mu]= selectedMuons.back();
+		selectedMuons.pop_back();
+	      }
+	    }
+	  }
+
+	  // eo antiIso
+
+
+	  // bo cut for elel
+	  vector <bool> keepElectronDR(selectedElectrons.size(),true);
+
+	  // set the flags to get the new collection depending on the Delta R between two electrons
+	  for (Int_t secondEl = selectedElectrons.size()-1; secondEl > 0; secondEl-- ){
+	    for (Int_t firstEl = 0; firstEl < secondEl ; firstEl++){
+	      if (selectedElectrons[firstEl]->DeltaR(*(selectedElectrons[secondEl])) < 0.5) {
+		keepElectronDR[firstEl]=false;
+		keepElectronDR[secondEl]=false;
+	      }
+	    }
+	  }
+
+	  // reduce the electrons collection
+	  for (int i_el = selectedElectrons.size()-1 ; i_el >= 0 ; i_el-- ){
+	    if ( keepElectronDR[i_el]==false ){
+	      selectedElectrons[i_el] = selectedElectrons.back();
+	      selectedElectrons.pop_back();
+	    }
+	  }
+	  
+	  keepElectronDR.clear();
+
+	  // eo cut for el 
+
+
+	  // bo cut for mumu
+	  vector <bool> keepMuonDR(selectedMuons.size(),true);
+
+	  // set the flags to get the new collection depending on the Delta R between two muons
+	  for (Int_t secondMu = selectedMuons.size()-1; secondMu > 0; secondMu-- ){
+	    for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++){
+	      if (selectedMuons[firstMu]->DeltaR(*(selectedMuons[secondMu])) < 0.5) {
+		keepMuonDR[firstMu]=false;
+		keepMuonDR[secondMu]=false;
+	      }
+	    }
+	  }
+
+	  // reduce the muons collection
+	  for (int i_mu = selectedMuons.size()-1 ; i_mu >= 0 ; i_mu-- ){
+	    if ( keepMuonDR[i_mu]==false ){
+	      selectedMuons[i_mu] = selectedMuons.back();
+	      selectedMuons.pop_back();
+	    }
+	  }
+	  
+	  keepMuonDR.clear();
+
+	  // eo cut for mu 
+
+	  //faco
 
 	  
 	  // bo cut for bb+el or bb+mu final state
+
 	  if (bbmu || bbel){
 
 	    // vector of bool for each collection
@@ -1564,8 +1630,6 @@ int main (int argc, char *argv[])
 	      }
 	    }
 	  
-
-	    //	    /*
 	    // reduce the jet collection
 	    for (int i_jet = selectedJets.size()-1; i_jet >= 0  ; i_jet-- ){
 	      if (keepJet[i_jet] == false){
@@ -1573,7 +1637,6 @@ int main (int argc, char *argv[])
 		selectedJets.pop_back();
 	      }
 	    }
-
 
 	    // reduce the bjet collection
 	    for (int i_bjet = selectedBjets.size()-1 ; i_bjet >= 0  ; i_bjet-- ){
@@ -1584,14 +1647,8 @@ int main (int argc, char *argv[])
 	    }
 	    keepBjet.clear();
 	    keepJet.clear();
-//	    */
 
 
-	    
-	    // bo of bbmu specific cut
-	    if (bbmu){
-		    
-	      // anti iso muon (erase isolated muons)
 
 	      // 1) method one : use the fancy (complicated) "remove_if" function
 	      // http://stackoverflow.com/questions/25240953/removing-an-object-from-a-vector-based-on-a-member-function-from-the-object?rq=1
@@ -1615,15 +1672,11 @@ int main (int argc, char *argv[])
 	      // 
 
 	      //	      /*
-	      for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
-		if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15 ){ 
-		  selectedMuons[i_mu]= selectedMuons.back();
-		  selectedMuons.pop_back();
-		}
-	      }
-	      //	      */
 
-	      
+	    
+	    // bo of bbmu specific cut
+	    if (bbmu){
+
 	      vector <bool> keepMuon(selectedMuons.size(),false);
 	      vector <bool> keepJet2(selectedJets.size(),false);
 	      
@@ -1656,6 +1709,8 @@ int main (int argc, char *argv[])
 	      keepJet2.clear();
 
 	    }
+
+
 	    // eo of bbmu specific cut
 	    
 	  
@@ -1663,19 +1718,6 @@ int main (int argc, char *argv[])
 	    if (bbel){
 	      vector <bool> keepElectron(selectedElectrons.size(),false);
 	      vector <bool> keepJet2(selectedJets.size(),false);
-	      
-	      // anti iso electrons (erase isolated electrons)
-	      for (int i_el = selectedElectrons.size()-1 ; i_el >= 0 ; i_el-- ){
-		float relIso = ElectronRelIso(selectedElectrons[i_el], rho);
-		//		cout << "----------- ievt is " << ievt << "------------" << endl << endl;
-		//		cout << "i_el is " << i_el << endl;
-		//		cout << "relIso is " << relIso << endl;
-		//		cout << "rho is " << rho << endl;
-		if ( relIso < 0.15 ){
-		  selectedElectrons[i_el] = selectedElectrons.back();
-		  selectedElectrons.pop_back();
-		}
-	      }
 
 	      // set the flags to get the new collections of jets and electrons depending on their Delta R 
 	      for (int i_jet = 0; i_jet < selectedJets.size() ; i_jet++ ){
@@ -1687,8 +1729,6 @@ int main (int argc, char *argv[])
 		}
 	      }
 
-
-
 	      // reduce the electron collection
 	      for (int i_el = selectedElectrons.size()-1 ; i_el >= 0 ; i_el-- ){
 		if (keepElectron[i_el] == false){
@@ -1697,7 +1737,6 @@ int main (int argc, char *argv[])
 		}
 	      }
 	      keepElectron.clear();
-
 
 	      // reduce the jet collection 
 	      for (int i_jet = selectedJets.size()-1; i_jet >= 0  ; i_jet-- ){
@@ -1715,7 +1754,7 @@ int main (int argc, char *argv[])
 	    // sort from higest csv to lowest csv
 	    sort(selectedJets.begin(), selectedJets.end(), HighestCSVBtag());
 	  
-	    // get the leading csv one
+	    // get the leading csv one by removing all elements except the one with index 0
 	    for (int i_jet = selectedJets.size()-1 ; i_jet >= 0  ; i_jet-- ){
 	      if ( i_jet != 0 ){
 		selectedJets[i_jet] = selectedJets.back();
@@ -1886,6 +1925,7 @@ int main (int argc, char *argv[])
 		{
 		  deltaVz_elel[nElectronPairs]=abs(vz_electron[firstEl]-vz_electron[secondEl]);
 		  deltaV0_elel[nElectronPairs]=abs(v0_electron[firstEl]-v0_electron[secondEl]);
+		  deltaR_elel[nElectronPairs]=selectedElectrons[firstEl]->DeltaR(*(selectedElectrons[secondEl]));
 		  invMass_elel[nElectronPairs]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
 		  nElectronPairs++;
 		    
@@ -1956,6 +1996,7 @@ int main (int argc, char *argv[])
 		{
 		  deltaVz_mumu[nMuonPairs]=abs(vz_muon[firstMu]-vz_muon[secondMu]);
 		  deltaV0_mumu[nMuonPairs]=abs(v0_muon[firstMu]-v0_muon[secondMu]);
+		  deltaR_mumu[nMuonPairs]=selectedMuons[firstMu]->DeltaR(*(selectedMuons[secondMu]));
                   invMass_mumu[nMuonPairs]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M(); 
                   nMuonPairs++; 
                                                                                                                                                                       
@@ -2131,6 +2172,7 @@ int main (int argc, char *argv[])
 		{
 		  deltaVz_elel_pc[nElectronPairs_pc]=abs(vz_electron_pc[firstEl]-vz_electron_pc[secondEl]);
 		  deltaV0_elel_pc[nElectronPairs_pc]=abs(v0_electron_pc[firstEl]-v0_electron_pc[secondEl]);
+		  deltaR_elel_pc[nElectronPairs]=selectedElectrons[firstEl]->DeltaR(*(selectedElectrons[secondEl]));
 		  invMass_elel_pc[nElectronPairs_pc]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
 		  nElectronPairs_pc++;
 		    
@@ -2206,6 +2248,7 @@ int main (int argc, char *argv[])
 		{
 		  deltaVz_mumu_pc[nMuonPairs_pc]=abs(vz_muon_pc[firstMu]-vz_muon_pc[secondMu]);
 		  deltaV0_mumu_pc[nMuonPairs_pc]=abs(v0_muon_pc[firstMu]-v0_muon_pc[secondMu]);
+		  deltaR_mumu_pc[nMuonPairs]=selectedMuons[firstMu]->DeltaR(*(selectedMuons[secondMu]));
 		  invMass_mumu_pc[nMuonPairs_pc]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M();
 		  nMuonPairs_pc++;
 		    
@@ -2774,7 +2817,7 @@ int main (int argc, char *argv[])
 					  passedElMuOS=true;
 					  if(selectedElectrons[0]->DeltaR(*(selectedMuons[0])) > 0.5){ // only one el and mu in selected vector
 					    passedElMuNotOverlaping=true;
-					    passed++;
+					    //					    passed++;
 					    if (debug) cout << "About to fill the tree!! The number of event that have passed all the cuts is " << passed << endl;
 					    //					    myTree->Fill(); 
 					  }
