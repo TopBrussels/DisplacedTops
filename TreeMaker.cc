@@ -268,6 +268,7 @@ int main (int argc, char *argv[])
   bool applyTriggers = true;
   string channelpostfix = "";
   string xmlFileName = "";
+  bool writeTable = false;
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
   bool elel = false; // e-e final state
@@ -2996,9 +2997,6 @@ int main (int argc, char *argv[])
 	  //////////////////
 	  //Filling Trees//
 	  //////////////////
-	  //	    /*
-
-	  
 	  
 	  if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
 
@@ -3008,7 +3006,9 @@ int main (int argc, char *argv[])
 	  passed_pc++;
 
 
+	  // fill the main tree depending on the channel and its corresponding cuts.
 
+	  // bb+lepton CR
 	  if (bbel || bbmu){
 	  
 	    Int_t nLeptons = 0;
@@ -3021,15 +3021,80 @@ int main (int argc, char *argv[])
 	    }
 	  }
 
+
+	  // bo Signal-like regions
 	  if (elel || mumu || elmu){
-	    if (elel && nElectrons >= 2) {
+	    
+	    // bo elel case
+	    if (elel && selectedElectrons.size() >= 2) {
+	      Bool_t blindD0_elel = true;
+
+	      // bo blinding for non-signal
+	      if (!isSignal){
+		if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
+	      
+		// Remove the events were the D0 is too big
+		for (Int_t selel =0; selel <= selectedElectrons.size() ; selel++)
+		  {
+		    if (abs(d0BeamSpot_electron[selel]) > 0.02){
+		      blindD0_elel=false;
+		    }
+		  }
+		 
+		// fill if blinded
+		if (blindD0_elel==true){
+		  myTree->Fill();
+		  passed++;
+		  if (debug) cout << "Blinding conditions passed!" << endl;
+		}
+	      }
+	      // eo blinding for non-signal
+
+	      // if Signal fill it anyway
+	      if (isSignal) {
+		myTree->Fill();
+		passed++;
+	      }
+
+	    }
+	    // eo elel case
+
+
+	    // bo mumu case
+	    if (mumu && selectedMuons.size() >= 2 ){
+	      Bool_t blindD0_mumu = true;
+	      
+	      // bo signal
+	      if (!isSignal){
+		if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
+	      
+		// Remove the events were the D0 is too big
+		for (Int_t selmu =0; selmu <= selectedMuons.size() ; selmu++)
+		  {
+		    if (abs(d0BeamSpot_muon[selmu]) > 0.02){
+		      blindD0_mumu=false;
+		    }
+		  }
+		
+		// fill if blinded
+		if (blindD0_mumu==true){
+		  myTree->Fill();
+		  passed++;
+		  if (debug) cout << "Blinding conditions passed!" << endl;
+		}
+
+	      }
+	      // eo signal
+	      
+	      // if Signal fill it anyway
+	      if (isSignal) {
 	      myTree->Fill();
 	      passed++;
+	      }
+
 	    }
-	    if (mumu && nMuons >= 2 ){
-	      myTree->Fill();
-	      passed++;
-	    }
+	    // eo mumu case
+
 	    if (elmu && nElectrons >= 1 && nMuons >= 1){
 	      myTree->Fill();
 	      passed++;
@@ -3039,113 +3104,13 @@ int main (int argc, char *argv[])
 	  }
 
 
-	  else 
-	    //	    cout << "nMuons_pc is " << nMuons_pc << " nJets_pc is " << nJets_pc << " nBjets_pc is " << nBjets_pc << endl;
-
-	  if (testTree && (nElectrons >= 1 || nMuons >= 1 )){
-	    //	      cout << "nElectrons is " << nElectrons << endl;
-	    //	      cout << "nMuons is " << nMuons <<endl;
-	    myTree->Fill();
-	    passed++;
-	  }
 
 
-	  Bool_t blindD0_elel = true;
-	  Bool_t blindDvz_elel = true;
-	  Bool_t blindDv0_elel = true;
-	  Bool_t PassIsEBEEGap_elel = true;
+
 	  //	  debug=true; 
 
 
-	  /*
-	  // el el final state
-	  if (elel){
-	    
-	    // blind for bkgd MC and Data
-	    if (!isSignal){
 
-	      if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
-	      
-	      // Remove the events were the D0 is too big
-	      for (Int_t selel =0; selel <= nElectrons; selel++)
-		{
-		  if (d0BeamSpot_electron_elel[selel] > 0.02){
-		    blindD0_elel=false;
-		  }
-		}
-		 
-	      // Remove the events were the DeltaVz is too big
-	      for (Int_t selelPairs = 0; selelPairs <= nElectronPairs; selelPairs++)
-		{
-		  if (deltaVz_elel[selelPairs] > 0.2){
-		    blindDvz_elel=false;
-		  }			  
-		  if (deltaV0_elel[selelPairs] > 0.03){
-		    blindDv0_elel=false;
-		  }			  
-		}
-	      if (blindD0_elel && blindDvz_elel && blindDv0_elel){
-		myDoubleElTree->Fill();
-		passed_elel++;
-		if (debug) cout << "Blinding conditions passed!" << endl;
-	      }
-	      
-	    }
-	    // if not Data fill it anyway
-	    if (isSignal) {
-	      myDoubleElTree->Fill();
-	      passed_elel++;
-	    }
-
-	  }
-	  */
-	    
-
-	  Bool_t blindD0_mumu = true;
-	  Bool_t blindDvz_mumu = true;
-	  Bool_t blindDv0_mumu = true;
-
-	  /*
-	  // mu mu final state
-	  if (mumu){	  
-	    if (!isSignal){
-	      if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
-	      
-	      // Remove the events were the D0 is too big
-	      for (Int_t selmu =0; selmu <= nMuons_mumu; selmu++)
-		{
-		  if (d0BeamSpot_muon_mumu[selmu] > 0.02){
-		    blindD0_mumu=false;
-		  }
-		}
-		 
-	      // Remove the events were the DeltaVz is too big
-	      for (Int_t selmuPairs = 0; selmuPairs <= nMuonPairs; selmuPairs++)
-		{
-		  if (deltaVz_mumu[selmuPairs] > 0.2){
-		    blindDvz_mumu=false;
-		  }			  
-		  if (deltaV0_mumu[selmuPairs] > 0.03){
-		    blindDv0_mumu=false;
-		  }			  
-		}
-	      if (blindD0_mumu && blindDvz_mumu && blindDv0_mumu){
-		myDoubleMuTree->Fill();
-		passed_mumu++;
-		if (debug) cout << "Blinding conditions passed!" << endl;
-	      }
-
-	    }
-	      
-	    // if not Data fill it anyway
-	    if (isSignal) {
-	      myDoubleMuTree->Fill();
-	      passed_mumu++;
-	    }
-	  }
-	  //	  debug=false;
-	  
-	  */
 
 	    
 	  if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
@@ -3324,26 +3289,32 @@ int main (int argc, char *argv[])
   // Selection tables //
   //////////////////////
 
-  //(bool mergeTT, bool mergeQCD, bool mergeW, bool mergeZ, bool 
-  CutFlowPreselTable.TableCalculator(  true, true, true, true, true);
-  CutFlowTable.TableCalculator(  true, true, true, true, true);
-  CutFlow_oneElTable.TableCalculator(  true, true, true, true, true);
-  CutFlow_oneMuTable.TableCalculator(  true, true, true, true, true);
 
-  //    CutFlowExample.Write( filename, WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false) )
-  if (strJobNum != "0")
+
+  if (writeTable)
     {
-      //	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,false);
-      CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,false,false,false,false);
-      CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,false,false,false,false);
-      CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,false,false,false,false);
-    }
-  else 
-    {
-      //	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
-      CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
-      CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
-      CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
+        //(bool mergeTT, bool mergeQCD, bool mergeW, bool mergeZ, bool 
+      CutFlowPreselTable.TableCalculator(  true, true, true, true, true);
+      CutFlowTable.TableCalculator(  true, true, true, true, true);
+      CutFlow_oneElTable.TableCalculator(  true, true, true, true, true);
+      CutFlow_oneMuTable.TableCalculator(  true, true, true, true, true);
+
+      //    CutFlowExample.Write( filename, WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false) )
+
+      if (strJobNum != "0")
+	{
+	  //	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,true,false,false,false);
+	  CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,false,false,false,false);
+	  CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,false,false,false,false);
+	  CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+"_"+strJobNum+".tex",    false,true,true,false,false,false,false);
+	}
+      else 
+	{
+	  //	CutFlowPreselTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Presel_Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
+	  CutFlowTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
+	  CutFlow_oneElTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneEl_Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
+	  CutFlow_oneMuTable.Write(  outputDirectory+"/DisplacedTop"+postfix+"OneMu_Table"+channelpostfix+".tex",    false,true,true,false,false,false,false);
+	}
     }
 
 
