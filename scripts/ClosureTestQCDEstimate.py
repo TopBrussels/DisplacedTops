@@ -1,3 +1,4 @@
+
 ##############
 # Pyroot macro to calcultate the Yield for different Signal region and create a compilable tex file.
 # February 2016 by qpython@cern.ch
@@ -34,16 +35,49 @@ lve=rt.TLorentzVector()
 channels=["_ElEl"]
 #channels=["_ElEl","_MuMu"]
 
-# path to antiIso tree
-date="1_4_2016"
+# path to tree
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
+# 
+date="11_4_2016"
 
 
 # root file wit d0 distribution
-inputFile = rt.TFile("d0forTFs.root",'READ')
+inputFile = rt.TFile("rootFiles/d0forTFs.root",'READ')
 
 h_electrond0=inputFile.Get("electrond0")
 h_muond0=inputFile.Get("muond0")
+
+
+
+
+# checking input histoggram
+boundsLept1 = []
+
+print "printing histo .."
+for ibin in range (1,h_electrond0.GetNbinsX()+2):
+    print "ibin is  ", ibin , " and corresponding lowEdge is " , h_electrond0.GetBinLowEdge(ibin)
+    print "appending lowEdge value in a vector \n"
+    boundsLept1.append(h_electrond0.GetBinLowEdge(ibin))
+
+print "vector of bound is"
+print boundsLept1
+print "\n making a loop with this array"
+for boundLept1 in boundsLept1 :
+    ibin1 = h_electrond0.FindBin(boundLept1) -1 
+    
+    print "boundLept1 is ", boundLept1 , " annd ibin1  is ", ibin1 
+    
+
+
+boundsLept1P = [0.010,0.011,0.012, 0.013,0.014, 0.015, 0.016, 0.017, 0.018, 0.019, 0.020]
+print "using a hand defined array .."
+print boundsLept1P
+for boundLept1P in boundsLept1P :
+    ibin1 = h_electrond0.FindBin(boundLept1P) -1
+
+    print "boundLept1P is ", boundLept1P , " and ibin1  is ", ibin1
+
+
 
 
 
@@ -75,6 +109,7 @@ for boundLept1 in boundsLept1 :
         
         # loop over the channel (lepton in final state)
         for chan in channels:
+ 
         
             # loop over the low bounds
         #    for ilb in range (1,len(LowBounds)+1):
@@ -100,13 +135,13 @@ for boundLept1 in boundsLept1 :
             if "MuMu" in chan:
                 isMuMu=True
                 tree = ET.ElementTree(file='../config/Yield_FullSamplesMuMuV0.xml')
-                treeName="doubleMuTree"
+                treeName="tree"
                 FinalState="At least two muons"
                 print FinalState
             elif "ElEl" in chan:
                 isElEl=True
                 tree = ET.ElementTree(file='../config/Yield_FullSamplesElElV0.xml')
-                treeName="doubleElTree"
+                treeName="tree"
                 FinalState="At least two electrons"
                 print FinalState
             elif "ElMu" in chan:
@@ -157,6 +192,7 @@ for boundLept1 in boundsLept1 :
         
         
                     ch.Add(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
+                    print pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root"
                     Sum_SR1=Sum_SR2=Sum_SR3=0
                     
                     
@@ -182,9 +218,9 @@ for boundLept1 in boundsLept1 :
                     for iev in ch:
         
                         if isMuMu:
-                            PileUpWeight=iev.evt_puSF_mumu
+                            PileUpWeight=iev.evt_puSF
                         if isElEl:
-                            PileUpWeight=iev.evt_puSF_elel
+                            PileUpWeight=iev.evt_puSF
                         
                         LeptonWeight=1.0
         
@@ -203,16 +239,16 @@ for boundLept1 in boundsLept1 :
 
                         # define shorter variable depending on the channel
                         if (isElEl):
-                            d01=abs(iev.d0BeamSpot_electron_elel[0])
-                            d02=abs(iev.d0BeamSpot_electron_elel[1])
+                            d01=abs(iev.d0BeamSpot_electron[0])
+                            d02=abs(iev.d0BeamSpot_electron[1])
 
                         if (isMuMu):
-                            d01=abs(iev.d0BeamSpot_muon_mumu[0])
-                            d02=abs(iev.d0BeamSpot_muon_mumu[1])
+                            d01=abs(iev.d0BeamSpot_muon[0])
+                            d02=abs(iev.d0BeamSpot_muon[1])
 
                         if (isElMu):
-                            d01=abs(iev.d0BeamSpot_electron_elel[0])
-                            d02=abs(iev.d0BeamSpot_muon_mumu[0])
+                            d01=abs(iev.d0BeamSpot_electron[0])
+                            d02=abs(iev.d0BeamSpot_muon[0])
 
                             
                         # skip events outside range of interest
@@ -225,14 +261,14 @@ for boundLept1 in boundsLept1 :
                         # get the lepton scale factor depending on the channel
                         if isElEl:
                             for ilept in range (0,2):
-                                LeptonWeight *= iev.sf_electron_elel[ilept]         
+                                LeptonWeight *= iev.sf_electron[ilept]         
                
                         if isMuMu:
                             for ilept in range (0,2):
-                                LeptonWeight *= iev.sf_muon_mumu[ilept]
+                                LeptonWeight *= iev.sf_muon[ilept]
 
                         if isElMu:
-                            LeptonWeight= iev.sf_muon_mumu[0]*iev.sf_electron_elel[0]
+                            LeptonWeight= iev.sf_muon[0]*iev.sf_electron[0]
 
                                 
 
@@ -245,8 +281,8 @@ for boundLept1 in boundsLept1 :
                             if (debug):
         #                    if (True):
                                 print "Leptons entering Base"
-                                print "d0 muon[0] is " , iev.d0BeamSpot_muon_mumu[0]
-                                print "d0 muon[1] is " , iev.d0BeamSpot_muon_mumu[1]
+                                print "d0 muon[0] is " , iev.d0BeamSpot_muon[0]
+                                print "d0 muon[1] is " , iev.d0BeamSpot_muon[1]
                                     
         
                         # event in base if both lepton are bigger than previous bound but still in DCR
@@ -254,7 +290,7 @@ for boundLept1 in boundsLept1 :
                             isInTarget=True
                             if (debug):
                                 print "Lepton entering Target"
-                                print "d0 muon is " , iev.d0BeamSpot_muon_mumu[ilept]
+                                print "d0 muon is " , iev.d0BeamSpot_muon[ilept]
         
         
         
@@ -395,7 +431,8 @@ for i in range (0,len(doubleArray)):
 
 
 # get the info for the table
-headers=["bounds","DirectCount","Error","EstimatedCount","Error"]
+#headers=["bounds","DirectCount","Error","EstimatedCount","Error"]
+headers=["bounds","Direct Count", "Estimated Count"]
 print tabulate(doubleArray, headers, tablefmt="latex")
 
 # writing results in a tex file                                                                   
@@ -404,7 +441,7 @@ fout = open (outputFile, "w")
 fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
 fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
 fout.write("\\begin{table}"+newLine)
-fout.write("\\caption{ " + "QCD Closure Test"+chan+ "}"+newLine)
+fout.write("\\caption{ " + "QCD Closure Test"+chan.replace("_"," ")+ "}"+newLine)
 
 # the actual tabular
 fout.write(tabulate(doubleArray, headers, tablefmt="latex"))
