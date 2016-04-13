@@ -19,8 +19,10 @@ date = dd+"_"+mm+"_"+yyyy
 #usging argument to filter
 filterSample = sys.argv[1]
 
-channels = ["_bbMu"]
-#channels = ["_MuMu","_ElEl"]
+#channels= ["_bbMu","_bbEl"]
+#channels = ["_bbMu"]
+#channels = ["_bbEl"]
+channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
 #channels = ["_MuMu"]
 
@@ -103,14 +105,19 @@ for chan in channels:
         for zombie in listOfZombie:
             print >> outfile, zombie
     
-    mergeData=True
+    mergeData=False
     
     if (mergeData):
     # combining all the Data in one
         dataList=glob.glob(pathMerged+"*Data*.root")
     
-        cmd = "hadd " + pathMerged + "DisplacedTop_Run2_TopTree_Study_Data"+chan + ".root"
+        cmd = "hadd " + pathMerged + "DisplacedTop_Run2_TopTree_Study_Data"+chan + "*.root"
         for data in dataList:
             cmd = cmd + " " + data
         os.system(cmd)
             
+
+    mvData = True
+    # rename the data sample
+    if (mvData):
+        mv pathMerged+"DisplacedTop_Run2_TopTree_Study_DataRunD"+chan+".root pathMerged+"DisplacedTop_Run2_TopTree_Study_Data"+chan+".root
