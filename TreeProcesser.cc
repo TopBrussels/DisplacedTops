@@ -314,7 +314,8 @@ int main(int argc, char* argv[])
 
     }
     if (bbMu){
-      DatasetPlotter(50, -0.05, 0.05, "d0BeamSpot_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(50, -0.05, 0.05, "d0BeamSpot_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
+      DatasetPlotter(25, 0.0, 0.05, "d0BeamSpot_muon_pc[nMuons_pc]", xmlFileName,CraneenPath, true);
       //      DatasetPlotter(50, 0.0, 1.6, "pfIso_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
       DatasetPlotter(30, 0.05, 1.55, "relIso_muon_pc[nMuons_pc]", xmlFileName,CraneenPath);
       DatasetPlotter(50, 0, 1, "CSV_jet_pc[nJets_pc]", xmlFileName,CraneenPath);
@@ -439,9 +440,9 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
   // get the desired directory
 
-
-  //TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/24_3_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/24_3_2016/";
   TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/30_3_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/1_4_2016/";
 
 
   CraneenPath=CraneenPath+channelpostfix;
