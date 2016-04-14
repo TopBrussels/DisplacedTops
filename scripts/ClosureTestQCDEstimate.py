@@ -1,4 +1,3 @@
-
 ##############
 # Pyroot macro to calcultate the Yield for different Signal region and create a compilable tex file.
 # February 2016 by qpython@cern.ch
@@ -31,8 +30,8 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 #channel
-#channels=["_MuMu"]
-channels=["_ElEl"]
+channels=["_MuMu"]
+#channels=["_ElEl"]
 #channels=["_ElEl","_MuMu"]
 
 # path to tree
@@ -51,6 +50,7 @@ h_muond0=inputFile.Get("muond0")
 
 
 # checking input histoggram
+"""
 boundsLept1 = []
 
 print "printing histo .."
@@ -76,18 +76,29 @@ for boundLept1P in boundsLept1P :
     ibin1 = h_electrond0.FindBin(boundLept1P) -1
 
     print "boundLept1P is ", boundLept1P , " and ibin1  is ", ibin1
+"""
 
 
+# calculate TF(DCR-> SR) = N_SR / N_DCR
+TF_MuMu = (h_muond0.Integral(11,11)/h_muond0.Integral(1,10)) ** 2
+print "TF_MuMu(DCR->SR) is ", TF_MuMu
+
+# calculate TF(DCR-> SR) = N_SR / N_DCR 
+TF_ElEl = (h_muond0.Integral(11,11)/h_electrond0.Integral(1,10)) ** 2
+print "TF_ElEl(DCR->SR) is ", TF_ElEl
 
 
+TF_ElMu = h_muond0.Integral(11,11)/h_muond0.Integral(1,10) * (h_muond0.Integral(11,11)/h_electrond0.Integral(1,10))
+print "TF_ElMu(DCR->SR) is ", TF_ElMu , "\n\n"
 
 
 # Manage the number of print outs
 debug=False
 
 # define various bound on the first and second leptonn
-boundsLept1 = [0.012, 0.015, 0.018]
-boundsLept2 = [0.012, 0.015, 0.018]
+binsLept1 = [2, 5, 8]
+binsLept2 = [2, 5, 8]
+
 
 
 # random lumivalue
@@ -97,33 +108,28 @@ lumivalue = 3
 doubleArray = []
 
 i_lept1 = 0
-# loop over the bound of the first lepton
-for boundLept1 in boundsLept1 :
+# loop over some bins value of the first lepton
+for binLept1 in binsLept1 :
 
     i_lept2 = 0
-    # loop over the bound of the first lepton
-    for boundLept2 in boundsLept2 :
+    # loop over some bins value of the first lepton
+    for binLept2 in binsLept2 :
     
-        print "boundLept1 is" , boundLept1
-        print "boundLept2 is" , boundLept2
+        print "binLept1 is" , binLept1
+        print "binLept2 is" , binLept2
         
         # loop over the channel (lepton in final state)
         for chan in channels:
  
         
-            # loop over the low bounds
-        #    for ilb in range (1,len(LowBounds)+1):
-        #        dict = ('bgMCSum+')
-        #        bgMCSum
-            
             # Histogram containing the number of events
-            NonQCDBase=rt.TH1D("NonQCDBase"+chan+str(boundLept1)+str(boundLept2),"NonQCDBase",1,0,1)
-            DataBase=rt.TH1D("DataBase"+chan+str(boundLept1)+str(boundLept2),"DataBase",1,0,1)
-            QCDBase=rt.TH1D("QCDBase"+chan+str(boundLept1)+str(boundLept2),"QCDBase",1,0,1)
-            NonQCDTarget=rt.TH1D("NonQCDTarget"+chan+str(boundLept1)+str(boundLept2),"NonQCDTarget",1,0,1)
-            DataTarget=rt.TH1D("DataTarget"+chan+str(boundLept1)+str(boundLept2),"DataTarget",1,0,1)
-            QCDTarget=rt.TH1D("QCDTarget"+chan+str(boundLept1)+str(boundLept2),"QCDTarget",1,0,1)
-            EstimatedQCDTarget=rt.TH1D("EstimatedQCDTarget"+chan+str(boundLept1)+str(boundLept2),"EstimatedQCDTarget",1,0,1)
+            NonQCDBase=rt.TH1D("NonQCDBase"+chan+str(binLept1)+str(binLept2),"NonQCDBase",1,0,1)
+            DataBase=rt.TH1D("DataBase"+chan+str(binLept1)+str(binLept2),"DataBase",1,0,1)
+            QCDBase=rt.TH1D("QCDBase"+chan+str(binLept1)+str(binLept2),"QCDBase",1,0,1)
+            NonQCDTarget=rt.TH1D("NonQCDTarget"+chan+str(binLept1)+str(binLept2),"NonQCDTarget",1,0,1)
+            DataTarget=rt.TH1D("DataTarget"+chan+str(binLept1)+str(binLept2),"DataTarget",1,0,1)
+            QCDTarget=rt.TH1D("QCDTarget"+chan+str(binLept1)+str(binLept2),"QCDTarget",1,0,1)
+            EstimatedQCDTarget=rt.TH1D("EstimatedQCDTarget"+chan+str(binLept1)+str(binLept2),"EstimatedQCDTarget",1,0,1)
         
         
         
@@ -162,11 +168,6 @@ for boundLept1 in boundsLept1 :
             datasetNames = []
             idataset=0
         
-            # index to get the bin conten of the 3 different signal region
-        #    iSR1=10
-        #    iSR2=12
-        #    iSR3=14
-        
             # loop over datasets
             for d in datasets:
                 if d.attrib['add'] == '1' :
@@ -192,8 +193,7 @@ for boundLept1 in boundsLept1 :
         
         
                     ch.Add(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
-                    print pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root"
-                    Sum_SR1=Sum_SR2=Sum_SR3=0
+#                    print pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root"
                     
                     
                     # get number of events
@@ -216,15 +216,7 @@ for boundLept1 in boundsLept1 :
                     ii=0
                     # start of loop over events
                     for iev in ch:
-        
-                        if isMuMu:
-                            PileUpWeight=iev.evt_puSF
-                        if isElEl:
-                            PileUpWeight=iev.evt_puSF
-                        
-                        LeptonWeight=1.0
-        
-                        
+
         #                if ii % (nevents/50.) ==0 :
         
                         #  skip 99% of the events just to run faster                             
@@ -257,7 +249,11 @@ for boundLept1 in boundsLept1 :
                         if d02 < 0.01 or 0.02 < d02 :
                             continue
 
-            
+
+                        # get the various weight
+                        PileUpWeight=iev.evt_puSF
+
+                        LeptonWeight=1
                         # get the lepton scale factor depending on the channel
                         if isElEl:
                             for ilept in range (0,2):
@@ -270,7 +266,24 @@ for boundLept1 in boundsLept1 :
                         if isElMu:
                             LeptonWeight= iev.sf_muon[0]*iev.sf_electron[0]
 
-                                
+
+                        # get the correct histograms depending on the channel
+                        if (isElEl):
+                            lepton1=h_electrond0
+                            lepton2=h_electrond0
+
+                        if (isMuMu):
+                            lepton1=h_muond0
+                            lepton2=h_muond0
+
+                        if (isElMu):
+                            lepton1=h_electrond0
+                            lepton2=h_muond0
+            
+                
+                        # convert bin into bound
+                        boundLept1= lepton1.GetBinLowEdge(binLept1+1)
+                        boundLept2= lepton2.GetBinLowEdge(binLept2+1)
 
                             
                         
@@ -329,43 +342,22 @@ for boundLept1 in boundsLept1 :
             # Get the TFs
             
 
-            
-            # get the correct histograms depending on the channel
-            if (isElEl):
-                lepton1=h_electrond0
-                lepton2=h_electrond0
-
-            if (isMuMu):
-                lepton1=h_muond0
-                lepton2=h_muond0
-
-            if (isElMu):
-                lepton1=h_electrond0
-                lepton2=h_muond0
-            
-                
-            # convert cut into bin Number
-            ibin1 = lepton1.FindBin(boundLept1) - 1
-            ibin2 = lepton2.FindBin(boundLept2) - 1
-
-
-            # example to calculate error (looks like it is just the sqrt of the integral..)
-#            Base = lepton1.Integral(ibin1+1,10)
+#            Base = lepton1.Integral(binLept1+1,10)
 #            Base_err=rt.Double()
-#            lepton1.IntegralAndError(ibin1+1,10,Base_err)
+#            lepton1.IntegralAndError(binLept1+1,10,Base_err)
 #            print "Base is " , Base
 #            print "Base_err is ", Base_err
 
             TF = 0
 
-            TF1 = lepton1.Integral(ibin1+1,10)/ lepton1.Integral(1,ibin1)
-            TF1_err = TF1 * (1/math.sqrt(lepton1.Integral(ibin1+1,10)) + 1/math.sqrt(lepton1.Integral(1,ibin1)) )
+            TF1 = lepton1.Integral(binLept1+1,10)/ lepton1.Integral(1,binLept1)
+            TF1_err = TF1 * (1/math.sqrt(lepton1.Integral(binLept1+1,10)) + 1/math.sqrt(lepton1.Integral(1,binLept1)) )
             TF1_ = ufloat (TF1,TF1_err)
 #            print "TF1_err/TF1 is ", TF1_err/TF1
 
 
-            TF2 = lepton2.Integral(ibin2+1,10)/ lepton2.Integral(1,ibin2)
-            TF2_err =  TF2 * (1/math.sqrt(lepton2.Integral(ibin2+1,10)) + 1/math.sqrt(lepton2.Integral(1,ibin2)) )
+            TF2 = lepton2.Integral(binLept2+1,10)/ lepton2.Integral(1,binLept2)
+            TF2_err =  TF2 * (1/math.sqrt(lepton2.Integral(binLept2+1,10)) + 1/math.sqrt(lepton2.Integral(1,binLept2)) )
             TF2_ = ufloat (TF2, TF2_err)
             
             TF = TF1 * TF2
@@ -374,8 +366,8 @@ for boundLept1 in boundsLept1 :
             print "TF is ", TF
             print "TF_ is ", TF_
 
-            print "boundLept1 , ibin1 , TF1 , boundLept2, ibin2 , TF2 , TF are ..."
-            print boundLept1 , ibin1 , TF1 , boundLept2, ibin2 , TF2 , TF
+            print "boundLept1 , binLept1 , TF1 , boundLept2, binLept2 , TF2 , TF are ..."
+            print boundLept1 , binLept1 , TF1 , boundLept2, binLept2 , TF2 , TF
 
             
             NQCDBase = DataBase.GetBinContent(1) - NonQCDBase.GetBinContent(1)
@@ -402,10 +394,10 @@ for boundLept1 in boundsLept1 :
 
 
             
-                    # Fill the two D array for clearer output
-            singleArray = [str(boundLept1)+" ; "+str(boundLept2),DataTarget.GetBinContent(1),  DataTarget.GetBinError(1), EstimatedQCDTarget.GetBinContent(1), EstimatedQCDTarget.GetBinError(1) ] 
+            # Fill an array with the number gotten from the histogram (with the wrong error yet)
+            singleArray = [str(binLept1)+" ; "+str(binLept2),DataTarget.GetBinContent(1),  DataTarget.GetBinError(1), EstimatedQCDTarget.GetBinContent(1), EstimatedQCDTarget.GetBinError(1) ] 
 
-
+            # Fill the array out of which we want to make a table
             singleArray_ = [str(boundLept1)+" ; "+str(boundLept2), DirectQCDTarget_, EstimatedQCDTarget_ ] 
 
 
@@ -414,9 +406,6 @@ for boundLept1 in boundsLept1 :
 #            doubleArray[i_lept1].append(singleArray)
             print "doubleArray is " , doubleArray
     
-        i_lept2=i_lept2+1
-    i_lept1=i_lept1+1
-
 
 
             
@@ -432,7 +421,7 @@ for i in range (0,len(doubleArray)):
 
 # get the info for the table
 #headers=["bounds","DirectCount","Error","EstimatedCount","Error"]
-headers=["bounds","Direct Count", "Estimated Count"]
+headers=["bound1; bound2","Direct Count", "Estimated Count"]
 print tabulate(doubleArray, headers, tablefmt="latex")
 
 # writing results in a tex file                                                                   
