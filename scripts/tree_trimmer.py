@@ -35,7 +35,7 @@ ROOT.gROOT.SetBatch(True)
 
 # path to root trees                                                                          
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
-date="2_3_2016"
+date="15_4_2016"
 
 # debug                                                                                                                                                                            
 debug=False
@@ -44,8 +44,8 @@ debug=False
 
 
 # regions
-regions=["PCR", "DCR", "SR1","SR2", "SR3"]
-#regions=["PCR", "DCR"]
+#regions=["PCR", "DCR", "SR1","SR2", "SR3"]
+regions=["PCR"]
 # corresponding bounds
 bounds=[0., 0.01, 0.02 , 0.5, 0.1]
 # corresponding bool 
@@ -70,17 +70,16 @@ for chan in channels:
     isElEl=False
     isMuMu=False
 
+    treeName="tree"
     # getting the correct xml file depending on the final state
     if "MuMu" in chan:
         isMuMu=True
         tree = ET.ElementTree(file='../config/Yield_FullSamplesMuMuV0.xml')
-        treeName="doubleMuTree"
         FinalState="At least two muons"
         print FinalState
     elif "ElEl" in chan:
         isElEl=True
         tree = ET.ElementTree(file='../config/Yield_FullSamplesElElV0.xml')
-        treeName="doubleElTree"
         FinalState="At least two electrons"
         print FinalState
     elif "ElMu" in chan:
@@ -155,7 +154,7 @@ for chan in channels:
                     
                     # make the logic for the muon 
                     if isMuMu:
-    #                    LeptonWeight *= iev.sf_muon_mumu[ilept]
+    #                    LeptonWeight *= iev.sf_muon[ilept]
     
                         # if one of the leptons  is smaller than bound, the event fails                          
     
@@ -166,12 +165,12 @@ for chan in channels:
                                 print "bool is ", bools[i_reg]
                                 print "region is ", regions[i_reg]
                             
-                            if abs(ch_in.d0BeamSpot_muon_mumu[ilept]) <= bounds[i_reg]:
+                            if abs(ch_in.d0BeamSpot_muon[ilept]) <= bounds[i_reg]:
                                 bools[i_reg]=False
                             else :
                                 if (debug):
                                     print "one muon passed the cut to enter ", regions[i_reg]  
-                                    print "d0 muon is " , ch_in.d0BeamSpot_muon_mumu[ilept]
+                                    print "d0 muon is " , ch_in.d0BeamSpot_muon[ilept]
                     # eo the logic for the muon 
     
     
@@ -179,7 +178,7 @@ for chan in channels:
     
                     # make the logic for the electron 
                     if isElEl :
-    #                    LeptonWeight *= ch_in.sf_electron_elel[ilept]
+    #                    LeptonWeight *= ch_in.sf_electron[ilept]
     
                         # looping over all the regions
                         for i_reg in range(0,len(regions)):
@@ -188,12 +187,12 @@ for chan in channels:
                                 print "bool is ", bools[i_reg]
                                 print "region is ", regions[i_reg]
     
-                            if abs(ch_in.d0BeamSpot_electron_elel[ilept]) <= bounds[i_reg]:
+                            if abs(ch_in.d0BeamSpot_electron[ilept]) <= bounds[i_reg]:
                                 bools[i_reg]=False
                             else :
                                 if (debug):
                                     print "one electron passed the cut to enter ", regions[i_reg]
-                                    print "d0 electron is " , ch_in.d0BeamSpot_electron_elel[ilept]
+                                    print "d0 electron is " , ch_in.d0BeamSpot_electron[ilept]
                         # eo the logic for the electron
     
     
