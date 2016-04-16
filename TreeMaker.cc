@@ -286,7 +286,6 @@ int main (int argc, char *argv[])
 
 
 
-
   if(channel=="ElMu" || channel== "MuEl")
     {
       cout << " --> Using the Muon-Electron channel..." << endl;
@@ -360,7 +359,13 @@ int main (int argc, char *argv[])
   vector < Dataset* > datasets;
   cout << " - Creating Dataset ..." << endl;
   Dataset* theDataset = new Dataset(dName, dTitle, true, color, ls, lw, normf, xSect, vecfileNames);
-  datasets.push_back(theDataset);
+
+  // skip if data and no blinding
+  if ((isData && !applyBlinding)) cout << endl << "--------------------------------"  << endl 
+				       <<  "You are not applying the blinding cuts but you are trying to run over Data.\
+ You are a bad boy and all the data root file will be empty" << endl
+				       << "--------------------------------" <<  endl << endl;
+  else  datasets.push_back(theDataset);
 
 
   string dataSetName;
@@ -417,6 +422,7 @@ int main (int argc, char *argv[])
 
   if (antiIso) channelpostfix = channelpostfix+"_antiIso";
   if (looseIso) channelpostfix = channelpostfix+"_looseIso";
+  if (!applyBlinding) channelpostfix = channelpostfix+"_NoBlinding";
 
   string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+".root");
   if (strJobNum != "0")
@@ -1317,7 +1323,6 @@ int main (int argc, char *argv[])
 	
       for (unsigned int ievt = event_start; ievt < end_d; ievt++)
 	{
-
 	  if (debug) cout << "Event number is " << ievt << endl << endl;
 
 
