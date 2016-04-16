@@ -3031,7 +3031,7 @@ int main (int argc, char *argv[])
 	      Bool_t blindD0_elel = true;
 
 	      // bo blinding for non-signal
-	      if (!isSignal){
+	      if (applyBlinding && !isSignal){
 		if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
 	      
 		// Remove the events were the D0 is too big
@@ -3051,8 +3051,8 @@ int main (int argc, char *argv[])
 	      }
 	      // eo blinding for non-signal
 
-	      // if Signal fill it anyway
-	      if (isSignal) {
+	      // if not applyBlinding or if isSignal
+	      else {
 		myTree->Fill();
 		passed++;
 	      }
@@ -3066,7 +3066,7 @@ int main (int argc, char *argv[])
 	      Bool_t blindD0_mumu = true;
 	      
 	      // bo signal
-	      if (!isSignal){
+	      if (applyBlinding && !isSignal){
 		if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
 	      
 		// Remove the events were the D0 is too big
@@ -3086,9 +3086,9 @@ int main (int argc, char *argv[])
 
 	      }
 	      // eo signal
-	      
-	      // if Signal fill it anyway
-	      if (isSignal) {
+
+	      // if not applyBlinding or if isSignal  	      
+	      else {
 	      myTree->Fill();
 	      passed++;
 	      }
