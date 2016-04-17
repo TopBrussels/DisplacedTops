@@ -20,7 +20,7 @@ channels=["_ElEl","_MuMu"]
 #base of the path to the root file
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date
-date="16_4_2016"
+date="17_4_2016"
 
 # array with composite dataset and matching string
 dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll"]
