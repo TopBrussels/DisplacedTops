@@ -19,6 +19,8 @@ date = dd+"_"+mm+"_"+yyyy
 #usging argument to filter
 filterSample = sys.argv[1]
 
+#channels = ["_MuMu","_ElEl","_bbMu","_bbEl"]
+
 #channels= ["_bbMu","_bbEl"]
 #channels = ["_bbMu"]
 #channels = ["_bbEl"]
@@ -77,6 +79,11 @@ for chan in channels:
     # loop over data set to search root files
     for n in datasetNames:
         filenames = glob.glob(pathNonMerged + "/*" + n + chan + "*.root")
+        
+#        ext=""
+#        if "NoBlinding" in filenames[0]:
+#            ext="_NoBlinding"
+            
         hadd = "hadd " + pathMerged + "DisplacedTop_Run2_TopTree_Study_" + n + chan + ".root"
 
         if (len(filenames) == 0):
@@ -117,7 +124,9 @@ for chan in channels:
         os.system(cmd)
             
 
-    mvData = True
+    renameData = True
     # rename the data sample
-    if (mvData):
-        mv pathMerged+"DisplacedTop_Run2_TopTree_Study_DataRunD"+chan+".root pathMerged+"DisplacedTop_Run2_TopTree_Study_Data"+chan+".root
+    if (renameData):
+        mvcmd ="mv "+pathMerged+"DisplacedTop_Run2_TopTree_Study_DataRunD"+chan+".root"+" "+ pathMerged+"DisplacedTop_Run2_TopTree_Study_Data"+chan+".root"
+        os.system(mvcmd)
+

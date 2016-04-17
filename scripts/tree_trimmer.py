@@ -47,7 +47,7 @@ debug=False
 #regions=["PCR", "DCR", "SR1","SR2", "SR3"]
 regions=["PCR"]
 # corresponding bounds
-bounds=[0., 0.01, 0.02 , 0.5, 0.1]
+bounds=[0.01]
 # corresponding bool 
 bools=[True, True, True, True, True]
 # This defines 5 inclusive regions and exclusIve region can be defined by requiring to to pass cut x and failling cut x+1
@@ -165,7 +165,7 @@ for chan in channels:
                                 print "bool is ", bools[i_reg]
                                 print "region is ", regions[i_reg]
                             
-                            if abs(ch_in.d0BeamSpot_muon[ilept]) <= bounds[i_reg]:
+                            if abs(ch_in.d0BeamSpot_muon[ilept]) >= bounds[i_reg]:
                                 bools[i_reg]=False
                             else :
                                 if (debug):
@@ -187,7 +187,7 @@ for chan in channels:
                                 print "bool is ", bools[i_reg]
                                 print "region is ", regions[i_reg]
     
-                            if abs(ch_in.d0BeamSpot_electron[ilept]) <= bounds[i_reg]:
+                            if abs(ch_in.d0BeamSpot_electron[ilept]) >= bounds[i_reg]:
                                 bools[i_reg]=False
                             else :
                                 if (debug):
@@ -198,12 +198,15 @@ for chan in channels:
     
                                     
                 # filling the correct tree according the the vector of bools
-                for i_reg in range(0,len(regions)-1):
-                    if bools[i_reg] == True and bools[i_reg+1] == False:
+#                for i_reg in range(0,len(regions)-1):
+#                    if bools[i_reg] == True and bools[i_reg+1] == False:
+#                        trees[i_reg].Fill()
+#                        continue
+#                    else :
+#                        trees[i_reg+1].Fill()
+
+                    if bools[i_reg] == True:
                         trees[i_reg].Fill()
-                        continue
-                    else :
-                        trees[i_reg+1].Fill()
     
             # eo loop over the event 
     

@@ -92,7 +92,7 @@ for lepton in leptons:
                 lumivalue=float(d.attrib['EqLumi'])
                     
                 weight= lumivalue / float(d.attrib['EqLumi'])
-            if (1):
+            if (0):
                 print "lumivalue is " ,lumivalue
                 print " float(d.attrib['EqLumi']) is ",  float(d.attrib['EqLumi'])
                 print "weight is " , weight

@@ -269,7 +269,7 @@ int main (int argc, char *argv[])
   string channelpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
-  bool applyBlinding = true;
+  bool applyBlinding = false;
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
   bool elel = false; // e-e final state
