@@ -3,7 +3,7 @@
 # April 2016 by qpython@cern.ch 
 #############  
 
-
+from tabulate import tabulate
 import os, sys
 from array import array
 from ROOT import *
@@ -16,8 +16,13 @@ import numpy as n
 channels=["_ElEl","_MuMu"]
 
 # samples
-#dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll", "NonQCD"]
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll"]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll", "NonQCD"]
+dataSetColours=[38, 5, 46, 872, 30, 45]
+
+
+#dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll"]
+#dataSetColours=[38, 5, 46, 872, 30]
+
 inputFiles=[]
 
 for sample in dataSetTitles:
@@ -39,6 +44,9 @@ for chan in channels:
     if "MuMu" in chan:
         histo_index=0
         print "In MuMu final state!! \n"
+
+    # array for the yield 
+    yieldArray=[]
     
 
     # loop over samples
@@ -47,8 +55,11 @@ for chan in channels:
         
         # declare vector necessary for the 4 graps
         xValues=[]
+        xValues_error=[]
 
         yCut=[]
+        yCut_error=[]
+
         yFact=[]
         yFactUp=[]
         yFactDown=[]
@@ -127,12 +138,21 @@ for chan in channels:
             print "Nfact_ is ", Nfact_
     
             #Filling the vector for the 4 Graphs
-            xValues.append(ibin/100.)
+            xValues.append(ibin/1000.)
+            xValues_error.append(0.)
 
             yCut.append(Ncut)
+            yCut_error.append(Ncut_error)
+
             yFact.append(Nfact_.nominal_value)
             yFactUp.append(Nfact_.nominal_value + Nfact_.std_dev)
             yFactDown.append(Nfact_.nominal_value - Nfact_.std_dev)
+
+            # get the yield for the SR
+            if (ibin == 20 ):
+                singleArray=[sample,Nfact_]
+                yieldArray.append(singleArray)
+
 
     
             ####
@@ -144,38 +164,47 @@ for chan in channels:
 
         # convert into array of double to allow compability wiht TGraph
         xValuesDouble = array("d",xValues)
+        xValues_errorDouble = array("d",xValues_error)
 
         yCutDouble = array ("d",yCut)
+        yCut_errorDouble = array ("d",yCut_error)
+
         yFactDouble = array("d",yFact)
         yFactUpDouble = array("d",yFactUp)
         yFactDownDouble = array("d",yFactDown)            
         print xValuesDouble
 
-        sampleColour=3
 
         # defining the Graphs
-        gCut=rt.TGraph(len(xValuesDouble), xValuesDouble,yCutDouble)
+
+        # cut and count
+        gCut=rt.TGraphErrors(len(xValuesDouble), xValuesDouble,yCutDouble, xValues_errorDouble,yCut_errorDouble)
         gCut.SetTitle(sample)
         gCut.SetLineColor(kGray)
         gCut.SetMarkerStyle(21)
         gCut.SetMarkerColor(kGray)
-#        gCut.SetLineWidth(3.5)
+        gCut.SetLineWidth(1)
         
 
-        # Central value 
+        # Factorised Central value 
         gFact=rt.TGraph(len(xValuesDouble), xValuesDouble,yFactDouble)
         gFact.SetTitle(sample)
-        gFact.SetLineColor(sampleColour)
+        gFact.SetLineColor(dataSetColours[i_sam])
+        gFact.SetLineWidth(3)
 
-        # Up Value
+        # Factorised Up Value
         gFactUp=rt.TGraph(len(xValuesDouble), xValuesDouble,yFactUpDouble)
         gFactUp.SetTitle(sample)
-        gFactUp.SetLineColor(sampleColour)
+        gFactUp.SetLineColor(dataSetColours[i_sam])
+        gFactUp.SetLineStyle(2)
+        gFactUp.SetLineWidth(3)
 
-        # Down Value
+        # Factorised Down Value
         gFactDown=rt.TGraph(len(xValuesDouble), xValuesDouble,yFactDownDouble)
         gFactDown.SetTitle(sample)
-        gFactDown.SetLineColor(sampleColour)
+        gFactDown.SetLineColor(dataSetColours[i_sam])
+        gFactDown.SetLineStyle(2)
+        gFactDown.SetLineWidth(3)
         
         
 
@@ -189,16 +218,74 @@ for chan in channels:
         gFactDown.Draw("l0")
         gCut.Draw("p")
 
+        # 
+        line = rt.TLine(0.1,0.2,0.3,0.4)
+        line.SetLineStyle(2)
 
+        # make the legend box
+        leg = rt.TLegend(0.5,0.7,0.9,0.85)
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+
+        # add the entries
+        leg.AddEntry(gCut,sample+"MC from cut-and-count method","pl")
+        leg.AddEntry(gFact,sample+"MC from factorized method (#pm 1 #sigma)","l")
+        leg.AddEntry(line,"edges of signal/prompt regions","l")
+        leg.Draw("same")
         canv.SetLogy()
-        canv.Print("param"+sample+chan+".gif")
+
+        # fiddle with y range for appropriate display
+        gCut.GetHistogram().SetMaximum(2*gCut.GetHistogram().GetMaximum())
+        gCut.GetHistogram().SetMinimum(0.0005);
+        
+        # axis labels 
+        gCut.GetHistogram().GetXaxis().SetTitle("d_{0} > x cut value [cm]")
+        gCut.GetHistogram().GetYaxis().SetTitle("predicted events after d_{0} cut")
+
+        # add lines that define transition between regions
+        lowval =gCut.GetHistogram().GetMinimum()
+        highval =gCut.GetHistogram().GetMaximum()
+        line.DrawLine(0.01,lowval,0.01,highval)
+        line.DrawLine(0.02,lowval,0.02,highval)
+        leg.Draw("same")
+
+
+        # save the canva
+        canv.Modified()
+        canv.Print("plots/param"+sample+chan+".gif")
+        canv.Print("plots/param"+sample+chan+".pdf")
 
 
         i_sam=i_sam+1
         # eo loop over 
+
+
+        # usefull variables for writing a tex file 
+        hLine = "\\hline\n"
+        endLine = " \\\\ "
+        newLine = " \n"
+
+
+        # writing results in a tex file                                                       
+        outputFile = "tables/Parametrisation"+chan+".tex"
+        fout = open (outputFile, "w")
+        fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
+        fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
+        fout.write("\\begin{table}"+newLine)
+        fout.write("\\caption{ " + "Yield estimated in the SR (both lepton with d0 < 0.02 cm) in the "+chan.replace("_"," ")+ " channel." "}"+newLine)
+
+        # the actual tabular
+        headers=["background source","Yield +/- uncertainty"]
+        fout.write(tabulate(yieldArray, headers, tablefmt="latex"))
+
+        # end of table                                                                                           
+        fout.write("\\end{table}"+newLine)
+        fout.write("\\end{document}"+newLine)
+        fout.close()
+
     
 
     i_chan=i_chan+1
     #eo loop over channels
 
-    
+
