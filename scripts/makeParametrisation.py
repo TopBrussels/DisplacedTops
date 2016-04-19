@@ -64,6 +64,9 @@ for chan in channels:
         yCut=[]
         yCut_error=[]
 
+
+        yEff_y=[]
+        yEff_x=[]
         yFact=[]
         yFactUp=[]
         yFactDown=[]
@@ -152,6 +155,10 @@ for chan in channels:
             yFactUp.append(Nfact_.nominal_value + Nfact_.std_dev)
             yFactDown.append(Nfact_.nominal_value - Nfact_.std_dev)
 
+            # vector for efficiencies
+            yEff_x.append(eff_x)
+            yEff_y.append(eff_y)
+
             # get the yield for the SR
             if ibin == 20 and not dataSetTitles[i_sam] == "NonQCD":
                 singleArray=[sample,Nfact_]
@@ -159,8 +166,6 @@ for chan in channels:
                 Sum_=Sum_+Nfact_
             
 
-
-    
             ####
     
             
@@ -180,7 +185,9 @@ for chan in channels:
         yFactDownDouble = array("d",yFactDown)            
         print xValuesDouble
 
-
+        yEff_xDouble = array ("d",yEff_x)
+        yEff_yDouble = array ("d",yEff_y)
+        
         # defining the Graphs
 
         # cut and count
@@ -262,10 +269,39 @@ for chan in channels:
         canv.Print("plots/param"+sample+chan+".pdf")
 
 
+        # new graph 
+
+        # eff of first lepton
+        gEff_x=rt.TGraph(len(xValuesDouble), xValuesDouble,yEff_xDouble)
+        gEff_x.SetTitle(sample)
+        gEff_x.SetLineColor(dataSetColours[i_sam])
+        gEff_x.SetLineWidth(3)
+
+        # eff of second lepton
+        gEff_y=rt.TGraph(len(xValuesDouble), xValuesDouble,yEff_yDouble)
+        gEff_y.SetTitle(sample)
+        gEff_y.SetLineColor(dataSetColours[i_sam])
+        gEff_y.SetLineWidth(3)
+        
+         # define a Canvas
+        c2=rt.TCanvas("c2"+sample+chan)
+        
+        gEff_x.Draw("l0a")
+        gEff_y.Draw("l0")
+#        gEff_x.Draw("p")
+
+        gEff_x.GetHistogram().GetXaxis().SetTitle("d_{0} > x cut value [cm]")
+        gEff_x.GetHistogram().GetYaxis().SetTitle("efficiency")
+        
+        c2.SetLogy()
+        c2.Modified()
+        c2.Print("plots/eff"+sample+chan+".pdf")
+
+
         i_sam=i_sam+1
         # eo loop over sample
 
-        
+    # put the sum of all nonQCD sample in the array
     singleArray=["Sum of NonQCD background",Sum_]
     yieldArray.append(singleArray)
 
