@@ -12,6 +12,14 @@ from uncertainties import ufloat
 import numpy as n
 
 
+
+
+# usefull variables for writing a tex file 
+hLine = "\\hline\n"
+endLine = " \\\\ "
+newLine = " \n"
+
+
 #channel 
 channels=["_ElEl","_MuMu"]
 
@@ -20,18 +28,11 @@ dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll", "NonQCD"]
 dataSetColours=[38, 5, 46, 872, 30, 45]
 
 
-#dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll"]
-#dataSetColours=[38, 5, 46, 872, 30]
-
 inputFiles=[]
 
 for sample in dataSetTitles:
     inputFiles.append(TFile("rootFiles/"+sample+"2D.root"))
 
-
-
-# hadd all non QCD to make the sum
-"""cmd"""
 
 
 # loop over the channel (ee or mumu)
@@ -47,6 +48,9 @@ for chan in channels:
 
     # array for the yield 
     yieldArray=[]
+    Sum = 0
+    Sum_error = 0
+    Sum_ = ufloat (Sum, Sum_error)
     
 
     # loop over samples
@@ -149,9 +153,11 @@ for chan in channels:
             yFactDown.append(Nfact_.nominal_value - Nfact_.std_dev)
 
             # get the yield for the SR
-            if (ibin == 20 ):
+            if ibin == 20 and not dataSetTitles[i_sam] == "NonQCD":
                 singleArray=[sample,Nfact_]
                 yieldArray.append(singleArray)
+                Sum_=Sum_+Nfact_
+            
 
 
     
@@ -218,14 +224,14 @@ for chan in channels:
         gFactDown.Draw("l0")
         gCut.Draw("p")
 
-        # 
-        line = rt.TLine(0.1,0.2,0.3,0.4)
-        line.SetLineStyle(2)
-
         # make the legend box
         leg = rt.TLegend(0.5,0.7,0.9,0.85)
         leg.SetFillColor(kWhite)
         leg.SetBorderSize(0)
+        
+        # creates a line
+        line = rt.TLine(0.1,0.2,0.3,0.4)
+        line.SetLineStyle(2)
 
         # add the entries
         leg.AddEntry(gCut,sample+"MC from cut-and-count method","pl")
@@ -257,31 +263,30 @@ for chan in channels:
 
 
         i_sam=i_sam+1
-        # eo loop over 
+        # eo loop over sample
+
+        
+    singleArray=["Sum of NonQCD background",Sum_]
+    yieldArray.append(singleArray)
 
 
-        # usefull variables for writing a tex file 
-        hLine = "\\hline\n"
-        endLine = " \\\\ "
-        newLine = " \n"
 
+    # writing results in a tex file                                                       
+    outputFile = "tables/Parametrisation"+chan+".tex"
+    fout = open (outputFile, "w")
+    fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
+    fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
+    fout.write("\\begin{table}"+newLine)
+    fout.write("\\caption{ " + "Yield estimated in the SR (both lepton with d0 < 0.02 cm) in the "+chan.replace("_"," ")+ " channel." "}"+newLine)
 
-        # writing results in a tex file                                                       
-        outputFile = "tables/Parametrisation"+chan+".tex"
-        fout = open (outputFile, "w")
-        fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
-        fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
-        fout.write("\\begin{table}"+newLine)
-        fout.write("\\caption{ " + "Yield estimated in the SR (both lepton with d0 < 0.02 cm) in the "+chan.replace("_"," ")+ " channel." "}"+newLine)
+    # the actual tabular
+    headers=["background source","Yield +/- uncertainty"]
+    fout.write(tabulate(yieldArray, headers, tablefmt="latex"))
 
-        # the actual tabular
-        headers=["background source","Yield +/- uncertainty"]
-        fout.write(tabulate(yieldArray, headers, tablefmt="latex"))
-
-        # end of table                                                                                           
-        fout.write("\\end{table}"+newLine)
-        fout.write("\\end{document}"+newLine)
-        fout.close()
+    # end of table                                                                                           
+    fout.write("\\end{table}"+newLine)
+    fout.write("\\end{document}"+newLine)
+    fout.close()
 
     
 
