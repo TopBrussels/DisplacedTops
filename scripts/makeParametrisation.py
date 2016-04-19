@@ -271,8 +271,9 @@ for chan in channels:
 
 
 
-    # writing results in a tex file                                                       
-    outputFile = "tables/parametrisation"+chan+".tex"
+    # writing results in a tex file 
+    fileName="parametrisationTable"+chan
+    outputFile = "tables/"+fileName+".tex"
     fout = open (outputFile, "w")
     fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
     fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
@@ -289,25 +290,20 @@ for chan in channels:
     fout.close()
 
     # compile tex into pdf
-    cmd="pdflatex tables/parametrisation"+chan+".tex"
+    cmd="pdflatex tables/"+fileName+".tex"
     os.system(cmd)
     
     # mv table
-    cmd="mv parametrisation"+chan+".pdf"+" tables/"
+    cmd="mv "+fileName+".pdf"+" tables/"
     os.system(cmd)
     
-    # clean mess
-    cmd="rm parametrisation"+chan+".aux"
+    # clean the mess
+    cmd="rm "+fileName+".aux"
     os.system(cmd)
-    cmd="rm parametrisation"+chan+".log"
+    cmd="rm "+fileName+".log"
     os.system(cmd)
     
 
     i_chan=i_chan+1
     #eo loop over channels
-
-
-
-
-
 
