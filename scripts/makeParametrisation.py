@@ -272,12 +272,12 @@ for chan in channels:
 
 
     # writing results in a tex file                                                       
-    outputFile = "tables/Parametrisation"+chan+".tex"
+    outputFile = "tables/parametrisation"+chan+".tex"
     fout = open (outputFile, "w")
     fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
     fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
     fout.write("\\begin{table}"+newLine)
-    fout.write("\\caption{ " + "Yield estimated in the SR (both lepton with d0 < 0.02 cm) in the "+chan.replace("_"," ")+ " channel." "}"+newLine)
+    fout.write("\\caption{ " + "Yield estimated with the factorisation method in the SR (both lepton with d0 $<$ 0.02 cm) in the "+chan.replace("_"," ")+ " channel." "}"+newLine)
 
     # the actual tabular
     headers=["background source","Yield +/- uncertainty"]
@@ -288,9 +288,26 @@ for chan in channels:
     fout.write("\\end{document}"+newLine)
     fout.close()
 
+    # compile tex into pdf
+    cmd="pdflatex tables/parametrisation"+chan+".tex"
+    os.system(cmd)
+    
+    # mv table
+    cmd="mv parametrisation"+chan+".pdf"+" tables/"
+    os.system(cmd)
+    
+    # clean mess
+    cmd="rm parametrisation"+chan+".aux"
+    os.system(cmd)
+    cmd="rm parametrisation"+chan+".log"
+    os.system(cmd)
     
 
     i_chan=i_chan+1
     #eo loop over channels
+
+
+
+
 
 
