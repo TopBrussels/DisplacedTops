@@ -168,4 +168,7 @@ for compositeDataset in compositeDatasets:
     # end of loop over the comp dataset
 
 
+# create a new root file named NonQCD2D.root that contains the sum of all histograms
+cmd= "hadd rootFiles/NonQCD2D.root rootFiles/*2D.root"
+os.system(cmd)
 
