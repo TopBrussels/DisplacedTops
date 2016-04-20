@@ -1,5 +1,6 @@
 ##############                                                                         
 # pyroot macro to calcultate the Yield for different all the NonQCD sample. Compares yield when just cutting on the d0 and when using the parametrisation to extend the prediction
+# Also produces single letpon efficiencies on the same canva
 # April 2016 by qpython@cern.ch 
 #############  
 
@@ -94,7 +95,7 @@ for chan in channels:
     
         # NTot
         NTot_error=rt.Double()
-        NTot=histo.IntegralAndError(0,histo.GetXaxis().GetNbins()+2,0,histo.GetYaxis().GetNbins()+2,NTot_error);
+        NTot=histo.IntegralAndError(0, NbinsX+1, 0, NbinsY+1, NTot_error);
         NTot_ = ufloat (NTot, NTot_error)
     
         print "NTot_ is ", NTot_ , "\n"
@@ -104,13 +105,13 @@ for chan in channels:
     
         # loop over bins
     #    ibin = 0
-        for ibin in range (1,NbinsX+1):
+        for ibin in range (0,NbinsX+1):
             print "ibin is ", ibin
     
     
             # cut on X and Y and count
             Ncut_error=rt.Double()
-            Ncut=histo.IntegralAndError(ibin,histo.GetXaxis().GetNbins()+2,ibin,histo.GetYaxis().GetNbins()+2,Ncut_error);
+            Ncut=histo.IntegralAndError(ibin, NbinsX+1, ibin, NbinsY+1, Ncut_error);
             Ncut_ = ufloat (Ncut, Ncut_error)
             print "Ncut_ is " , Ncut_
     
@@ -119,7 +120,7 @@ for chan in channels:
 
             # cut on X and count
             Ncutx_error=rt.Double()
-            Ncutx = histo.IntegralAndError(ibin,histo.GetXaxis().GetNbins()+2,0,histo.GetYaxis().GetNbins()+2,Ncutx_error);
+            Ncutx = histo.IntegralAndError(ibin, NbinsX+1, 0, NbinsY+1, Ncutx_error);
             Ncutx_ = ufloat (Ncutx, Ncutx_error)
             print "Ncutx is ", Ncutx
             
@@ -131,7 +132,7 @@ for chan in channels:
 
             # cut on Y and count
             Ncuty_error=rt.Double()
-            Ncuty = histo.IntegralAndError(0,histo.GetXaxis().GetNbins()+2,ibin,histo.GetYaxis().GetNbins()+2,Ncuty_error);
+            Ncuty = histo.IntegralAndError(0, NbinsX+1, ibin, NbinsY+1, Ncuty_error);
             Ncuty_ = ufloat(Ncuty, Ncuty_error)
             print "Ncuty is ", Ncuty
     
@@ -192,7 +193,7 @@ for chan in channels:
 
         # cut and count
         gCut=rt.TGraphErrors(len(xValuesDouble), xValuesDouble,yCutDouble, xValues_errorDouble,yCut_errorDouble)
-        gCut.SetTitle(sample)
+        gCut.SetTitle(sample+chan)
         gCut.SetLineColor(kGray)
         gCut.SetMarkerStyle(21)
         gCut.SetMarkerColor(kGray)
@@ -201,20 +202,20 @@ for chan in channels:
 
         # Factorised Central value 
         gFact=rt.TGraph(len(xValuesDouble), xValuesDouble,yFactDouble)
-        gFact.SetTitle(sample)
+        gFact.SetTitle(sample+chan)
         gFact.SetLineColor(dataSetColours[i_sam])
         gFact.SetLineWidth(3)
 
         # Factorised Up Value
         gFactUp=rt.TGraph(len(xValuesDouble), xValuesDouble,yFactUpDouble)
-        gFactUp.SetTitle(sample)
+        gFactUp.SetTitle(sample+chan)
         gFactUp.SetLineColor(dataSetColours[i_sam])
         gFactUp.SetLineStyle(2)
         gFactUp.SetLineWidth(3)
 
         # Factorised Down Value
         gFactDown=rt.TGraph(len(xValuesDouble), xValuesDouble,yFactDownDouble)
-        gFactDown.SetTitle(sample)
+        gFactDown.SetTitle(sample+chan)
         gFactDown.SetLineColor(dataSetColours[i_sam])
         gFactDown.SetLineStyle(2)
         gFactDown.SetLineWidth(3)
@@ -269,33 +270,54 @@ for chan in channels:
         canv.Print("plots/param"+sample+chan+".pdf")
 
 
-        # new graph 
+        ##############################################
+        # bo new graph with the single lepton efficiencies
+
 
         # eff of first lepton
         gEff_x=rt.TGraph(len(xValuesDouble), xValuesDouble,yEff_xDouble)
-        gEff_x.SetTitle(sample)
+        gEff_x.SetTitle(sample+chan)
         gEff_x.SetLineColor(dataSetColours[i_sam])
+        gEff_x.SetLineStyle(2)
         gEff_x.SetLineWidth(3)
+
 
         # eff of second lepton
         gEff_y=rt.TGraph(len(xValuesDouble), xValuesDouble,yEff_yDouble)
-        gEff_y.SetTitle(sample)
+        gEff_y.SetTitle(sample+chan)
         gEff_y.SetLineColor(dataSetColours[i_sam])
         gEff_y.SetLineWidth(3)
         
          # define a Canvas
         c2=rt.TCanvas("c2"+sample+chan)
-        
+
+        # draw the graphs
         gEff_x.Draw("l0a")
         gEff_y.Draw("l0")
-#        gEff_x.Draw("p")
 
+
+        # make the legend box
+        leg2 = rt.TLegend(0.5,0.7,0.9,0.85)
+        leg2.SetFillColor(kWhite)
+        leg2.SetBorderSize(0)
+        
+        # add entries to the legend
+        leg2.AddEntry(gEff_x,"efficiency of the first lepton","l")
+        leg2.AddEntry(gEff_y,"efficiency of the second lepton","l")
+        leg2.Draw()
+        
+        # set axis title
         gEff_x.GetHistogram().GetXaxis().SetTitle("d_{0} > x cut value [cm]")
         gEff_x.GetHistogram().GetYaxis().SetTitle("efficiency")
         
+        # save canva
         c2.SetLogy()
         c2.Modified()
         c2.Print("plots/eff"+sample+chan+".pdf")
+
+
+        # eo new graph with the single lepton efficiencies
+        ##############################################
 
 
         i_sam=i_sam+1
