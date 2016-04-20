@@ -34,6 +34,9 @@ inputFiles=[]
 for sample in dataSetTitles:
     inputFiles.append(TFile("rootFiles/"+sample+"2D.root"))
 
+# bool to select upper Edge of the integrals
+includeOverFlowBin=True
+
 
 
 # loop over the channel (ee or mumu)
@@ -80,10 +83,15 @@ for chan in channels:
     
         histo=inputFiles[i_sam].Get(histnames[histo_index])
         print histo
+
+
+        # check correlation
+        histo.GetCorrelationFactor()
+        print "sample is ", sample , " ,channel is ", chan , " ,CorrelationFactor is ", histo.GetCorrelationFactor()
+
     
         
         # set some usefull varibles
-    
         #Nbin
         NbinsX=histo.GetXaxis().GetNbins()
         NbinsY=histo.GetYaxis().GetNbins()
@@ -91,11 +99,18 @@ for chan in channels:
             print "the number of bin in the x-axis (", NbinsX, ") and the number of the bin in the y-axis (", NbinsY, ") is different!!!"
         else:
             print "NbinsX=NbinsY=",NbinsX
+
+        # Upper edge for the integral
+        MaxX=NbinsX
+        MaxY=NbinsY
+        if (includeOverFlowBin):
+            MaxX=NbinsX+1
+            MaxY=NbinsY+1
         
     
         # NTot
         NTot_error=rt.Double()
-        NTot=histo.IntegralAndError(0, NbinsX+1, 0, NbinsY+1, NTot_error);
+        NTot=histo.IntegralAndError(0, MaxX, 0, MaxY, NTot_error);
         NTot_ = ufloat (NTot, NTot_error)
     
         print "NTot_ is ", NTot_ , "\n"
@@ -106,48 +121,48 @@ for chan in channels:
         # loop over bins
     #    ibin = 0
         for ibin in range (0,NbinsX+1):
-            print "ibin is ", ibin
+#            print "ibin is ", ibin
     
     
             # cut on X and Y and count
             Ncut_error=rt.Double()
-            Ncut=histo.IntegralAndError(ibin, NbinsX+1, ibin, NbinsY+1, Ncut_error);
+            Ncut=histo.IntegralAndError(ibin, MaxX, ibin, MaxY, Ncut_error);
             Ncut_ = ufloat (Ncut, Ncut_error)
-            print "Ncut_ is " , Ncut_
+#            print "Ncut_ is " , Ncut_
     
     
             ##### 
 
             # cut on X and count
             Ncutx_error=rt.Double()
-            Ncutx = histo.IntegralAndError(ibin, NbinsX+1, 0, NbinsY+1, Ncutx_error);
+            Ncutx = histo.IntegralAndError(ibin, MaxX, 0, MaxY, Ncutx_error);
             Ncutx_ = ufloat (Ncutx, Ncutx_error)
-            print "Ncutx is ", Ncutx
+#            print "Ncutx is ", Ncutx
             
             #  efficiency of first lepton (X)
             eff_x = Ncutx/NTot
-            print "eff_x is ", eff_x
+#            print "eff_x is ", eff_x
     
     
 
             # cut on Y and count
             Ncuty_error=rt.Double()
-            Ncuty = histo.IntegralAndError(0, NbinsX+1, ibin, NbinsY+1, Ncuty_error);
+            Ncuty = histo.IntegralAndError(0, MaxX, ibin, MaxY, Ncuty_error);
             Ncuty_ = ufloat(Ncuty, Ncuty_error)
-            print "Ncuty is ", Ncuty
+#            print "Ncuty is ", Ncuty
     
             #  efficiency of first lepton (Y)
             eff_y = Ncuty/NTot
-            print "eff_y is ", eff_y
+#            print "eff_y is ", eff_y
     
     
             # get the yield with the factorisation Nfact = NTot * effx * effy = Ncutx * Ncuty / NTot
             Nfact_ = Ncutx_ * Ncuty_ / NTot_
-            print "Nfact_ is ", Nfact_
+#            print "Nfact_ is ", Nfact_
     
             #Filling the vector for the 4 Graphs
             xValues.append(ibin/1000.)
-            xValues_error.append(0.)
+            xValues_error.append(0.001)
 
             yCut.append(Ncut)
             yCut_error.append(Ncut_error)
@@ -184,7 +199,7 @@ for chan in channels:
         yFactDouble = array("d",yFact)
         yFactUpDouble = array("d",yFactUp)
         yFactDownDouble = array("d",yFactDown)            
-        print xValuesDouble
+#        print xValuesDouble
 
         yEff_xDouble = array ("d",yEff_x)
         yEff_yDouble = array ("d",yEff_y)
@@ -250,7 +265,7 @@ for chan in channels:
 
         # fiddle with y range for appropriate display
         gCut.GetHistogram().SetMaximum(2*gCut.GetHistogram().GetMaximum())
-        gCut.GetHistogram().SetMinimum(0.0005);
+        gCut.GetHistogram().SetMinimum(0.000005);
         
         # axis labels 
         gCut.GetHistogram().GetXaxis().SetTitle("d_{0} > x cut value [cm]")
@@ -266,13 +281,14 @@ for chan in channels:
 
         # save the canva
         canv.Modified()
-        canv.Print("plots/param"+sample+chan+".gif")
+#        canv.Print("plots/param"+sample+chan+".gif")
         canv.Print("plots/param"+sample+chan+".pdf")
+
 
 
         ##############################################
         # bo new graph with the single lepton efficiencies
-
+        #
 
         # eff of first lepton
         gEff_x=rt.TGraph(len(xValuesDouble), xValuesDouble,yEff_xDouble)
@@ -305,6 +321,8 @@ for chan in channels:
         leg2.AddEntry(gEff_x,"efficiency of the first lepton","l")
         leg2.AddEntry(gEff_y,"efficiency of the second lepton","l")
         leg2.Draw()
+
+        gEff_x.GetHistogram().SetMinimum(0.0001);
         
         # set axis title
         gEff_x.GetHistogram().GetXaxis().SetTitle("d_{0} > x cut value [cm]")
@@ -315,7 +333,7 @@ for chan in channels:
         c2.Modified()
         c2.Print("plots/eff"+sample+chan+".pdf")
 
-
+        #
         # eo new graph with the single lepton efficiencies
         ##############################################
 
