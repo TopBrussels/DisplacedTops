@@ -50,7 +50,7 @@ fout.write("")
 
 
 
-
+# loop over all the plots
 for file in files:
     # apply a certain filter (to be tuned)
     if ".pdf" in file:
