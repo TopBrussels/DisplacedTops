@@ -271,6 +271,7 @@ int main (int argc, char *argv[])
   string xmlFileName = "";
   bool writeTable = false;
   bool applyBlinding = true;
+  bool saveRawCollection = false; // fill the pc tree
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
   bool elel = false; // e-e final state
@@ -3010,9 +3011,11 @@ int main (int argc, char *argv[])
 	  if (debug) cout << "filling the tree, sum of leptons equals to " << nElectrons + nMuons << endl;
 
 
-	  // Fill precutTree in any case
-	  myPreCutTree->Fill();
-	  passed_pc++;
+	  // Fill precutTree only if necessary. The files get a factor 10 bigger if so
+	  if (saveRawCollection){
+	    myPreCutTree->Fill();
+	    passed_pc++;
+	  }
 
 
 	  // fill the main tree depending on the channel and its corresponding cuts.
@@ -3273,7 +3276,8 @@ int main (int argc, char *argv[])
       if (debug) cout << "Done writing the Tree" << endl;
       fout->Write();   
       fout->Close();
-      cout <<"n events that just passed the trigger requirement   =  "<< passed_pc <<endl;
+
+      if (saveRawCollection)  cout <<"n events that just passed the trigger requirement   =  "<< passed_pc <<endl;
       cout <<"n events after all the cuts  =  "<< passed <<endl;
       cout << " the channel used was " << channel << endl;
       //      cout <<"n events with at least two id and iso electrons with pt > "+el_pt_cut_str+" GeV is  =  "<< passed_elel <<endl;
