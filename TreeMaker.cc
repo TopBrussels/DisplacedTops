@@ -1,6 +1,7 @@
-//////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 ////         Analysis code for search for Displaced letpton.              ////
 //////////////////////////////////////////////////////////////////////////////
+
 
 // ttbar @ NLO 13 TeV:
 //all-had ->679 * .46 = 312.34
@@ -269,7 +270,7 @@ int main (int argc, char *argv[])
   string channelpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
-  bool applyBlinding = false;
+  bool applyBlinding = true;
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
   bool elel = false; // e-e final state
@@ -1004,11 +1005,13 @@ int main (int argc, char *argv[])
       Double_t phi_mcParticle_pc[10];
       Double_t eta_mcParticle_pc[10];
       Double_t E_mcParticle_pc[10];
+      Double_t vz_mcParticle_pc[10];
+      Double_t v0_mcParticle_pc[10];
       Int_t type_mcParticle_pc[10];
       Int_t motherType_mcParticle_pc[10];
       Int_t grannyType_mcParticle_pc[10];
-      Double_t d0_mcParticle_pc[10];
       Double_t d0BeamSpot_mcParticle_pc[10];
+      Double_t d0_mcParticle_pc[10];
 
       // event related variables
       Int_t run_num_pc;
@@ -1272,8 +1275,10 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("phi_mcParticle_pc",phi_mcParticle_pc,"phi_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("eta_mcParticle_pc",eta_mcParticle_pc,"eta_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("E_mcParticle_pc",E_mcParticle_pc,"E_mcParticle_pc[nMcParticles_pc]/D");
-      myPreCutTree->Branch("d0_mcParticle_pc",d0_mcParticle_pc,"d0_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("vz_mcParticle_pc",vz_mcParticle_pc,"vz_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("v0_mcParticle_pc",v0_mcParticle_pc,"v0_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("d0BeamSpot_mcParticle_pc",d0BeamSpot_mcParticle_pc,"d0BeamSpot_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("d0_mcParticle_pc",d0_mcParticle_pc,"d0_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("type_mcParticle_pc",type_mcParticle_pc,"type_mcParticle_pc[nMcParticles_pc]/I");
       myPreCutTree->Branch("motherType_mcParticle_pc",motherType_mcParticle_pc,"motherType_mcParticle_pc[nMcParticles_pc]/I");
       myPreCutTree->Branch("grannyType_mcParticle_pc",grannyType_mcParticle_pc,"grannyType_mcParticle_pc[nMcParticles_pc]/I");
@@ -1834,7 +1839,7 @@ int main (int argc, char *argv[])
 	      neutralHadronIso_electron[nElectrons]=selectedElectrons[selel]->neutralHadronIso(3);
 	      photonIso_electron[nElectrons]=selectedElectrons[selel]->photonIso(3);
 	      pfIso_electron[nElectrons]=selectedElectrons[selel]->relPfIso(3,0);
-	      relIso_electron[nElectrons_pc]=relIso;
+	      relIso_electron[nElectrons]=relIso;
 	      charge_electron[nElectrons]=selectedElectrons[selel]->charge();
 	      sigmaIEtaIEta_electron[nElectrons]=selectedElectrons[selel]->sigmaIEtaIEta();
 	      deltaEtaIn_electron[nElectrons]=selectedElectrons[selel]->deltaEtaIn();
@@ -1867,10 +1872,10 @@ int main (int argc, char *argv[])
 	      // iso 
 	      isIso_electron[nElectrons]=false;
 	      if( fabs(selectedElectrons[selel]->superClusterEta()) <= 1.479){
-		if(selectedElectrons[selel]->relPfIso(3,0) < 0.0354) isIso_electron[nElectrons]=true;
+		if(relIso < 0.0354) isIso_electron[nElectrons]=true;
 	      }
 	      else if (fabs(selectedElectrons[selel]->superClusterEta()) < 2.5){
-		if(selectedElectrons[selel]->relPfIso(3,0) < 0.0646) isIso_electron[nElectrons]=true;
+		if(relIso < 0.0646) isIso_electron[nElectrons]=true;
 	      }
 		
 	      isEBEEGap[nElectrons]=selectedElectrons[selel]->isEBEEGap();
@@ -1911,7 +1916,7 @@ int main (int argc, char *argv[])
 		  deltaVz_elel[nElectronPairs]=abs(vz_electron[firstEl]-vz_electron[secondEl]);
 		  deltaV0_elel[nElectronPairs]=abs(v0_electron[firstEl]-v0_electron[secondEl]);
 		  deltaR_elel[nElectronPairs]=selectedElectrons[firstEl]->DeltaR(*(selectedElectrons[secondEl]));
-		  invMass_elel[nElectronPairs]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
+		  //		  invMass_elel[nElectronPairs]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
 		  nElectronPairs++;
 		    
 		  // debug statement
@@ -1982,7 +1987,7 @@ int main (int argc, char *argv[])
 		  deltaVz_mumu[nMuonPairs]=abs(vz_muon[firstMu]-vz_muon[secondMu]);
 		  deltaV0_mumu[nMuonPairs]=abs(v0_muon[firstMu]-v0_muon[secondMu]);
 		  deltaR_mumu[nMuonPairs]=selectedMuons[firstMu]->DeltaR(*(selectedMuons[secondMu]));
-                  invMass_mumu[nMuonPairs]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M(); 
+		  //                  invMass_mumu[nMuonPairs]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M(); 
                   nMuonPairs++; 
                                                                                                                                                                       
                   // debug statement 
@@ -2090,72 +2095,72 @@ int main (int argc, char *argv[])
 
 	    
 	  nElectrons_pc=0;
-	  for (Int_t i_el =0; i_el < selectedElectrons.size() && i_el < 10; i_el++ )
+	  for (Int_t i_el =0; i_el < init_electrons.size() && i_el < 10; i_el++ )
 	    {
-	      float relIso = ElectronRelIso(selectedElectrons[i_el], rho); 
+	      float relIso = ElectronRelIso(init_electrons[i_el], rho); 
 	      //	      cout << "----------- ievt is " << ievt << "------------" << endl << endl;
 	      //	      cout << "Filling the tree! " << endl;
 	      //	      cout << "i_el is " << i_el << endl;
 	      //	      cout << "relIso is " << relIso << endl;
 	      //	      cout << "rho is " << rho << endl;
 
-	      pt_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->Pt();
-	      phi_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->Phi();
-	      eta_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->Eta();
-	      eta_superCluster_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->superClusterEta();
-	      E_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->E();
-	      vz_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->vz();
-              v0_electron_pc[nElectrons_pc]=sqrt( pow(selectedElectrons[i_el]->vx(), 2) + pow(selectedElectrons[i_el]->vy(), 2) );
-	      d0_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->d0();
-	      d0BeamSpot_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->d0BeamSpot();
-	      chargedHadronIso_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->chargedHadronIso(3);
-	      neutralHadronIso_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->neutralHadronIso(3);
-	      photonIso_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->photonIso(3);
-	      pfIso_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->relPfIso(3,0);
+	      pt_electron_pc[nElectrons_pc]=init_electrons[i_el]->Pt();
+	      phi_electron_pc[nElectrons_pc]=init_electrons[i_el]->Phi();
+	      eta_electron_pc[nElectrons_pc]=init_electrons[i_el]->Eta();
+	      eta_superCluster_electron_pc[nElectrons_pc]=init_electrons[i_el]->superClusterEta();
+	      E_electron_pc[nElectrons_pc]=init_electrons[i_el]->E();
+	      vz_electron_pc[nElectrons_pc]=init_electrons[i_el]->vz();
+              v0_electron_pc[nElectrons_pc]=sqrt( pow(init_electrons[i_el]->vx(), 2) + pow(init_electrons[i_el]->vy(), 2) );
+	      d0_electron_pc[nElectrons_pc]=init_electrons[i_el]->d0();
+	      d0BeamSpot_electron_pc[nElectrons_pc]=init_electrons[i_el]->d0BeamSpot();
+	      chargedHadronIso_electron_pc[nElectrons_pc]=init_electrons[i_el]->chargedHadronIso(3);
+	      neutralHadronIso_electron_pc[nElectrons_pc]=init_electrons[i_el]->neutralHadronIso(3);
+	      photonIso_electron_pc[nElectrons_pc]=init_electrons[i_el]->photonIso(3);
+	      pfIso_electron_pc[nElectrons_pc]=init_electrons[i_el]->relPfIso(3,0);
 	      relIso_electron_pc[nElectrons_pc]=relIso;
-	      charge_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->charge();
-	      sigmaIEtaIEta_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->sigmaIEtaIEta();
-	      deltaEtaIn_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->deltaEtaIn();
-	      deltaPhiIn_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->deltaPhiIn();
-	      hadronicOverEm_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->hadronicOverEm();
-	      missingHits_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->missingHits();
-	      passConversion_electron_pc[nElectrons_pc]=selectedElectrons[i_el]->passConversion();
-	      isEBEEGap_pc[nElectrons_pc]=selectedElectrons[i_el]->isEBEEGap();
+	      charge_electron_pc[nElectrons_pc]=init_electrons[i_el]->charge();
+	      sigmaIEtaIEta_electron_pc[nElectrons_pc]=init_electrons[i_el]->sigmaIEtaIEta();
+	      deltaEtaIn_electron_pc[nElectrons_pc]=init_electrons[i_el]->deltaEtaIn();
+	      deltaPhiIn_electron_pc[nElectrons_pc]=init_electrons[i_el]->deltaPhiIn();
+	      hadronicOverEm_electron_pc[nElectrons_pc]=init_electrons[i_el]->hadronicOverEm();
+	      missingHits_electron_pc[nElectrons_pc]=init_electrons[i_el]->missingHits();
+	      passConversion_electron_pc[nElectrons_pc]=init_electrons[i_el]->passConversion();
+	      isEBEEGap_pc[nElectrons_pc]=init_electrons[i_el]->isEBEEGap();
 
 	      // id
 	      isId_electron_pc[nElectrons_pc]=false;
-	      if( fabs(selectedElectrons[i_el]->superClusterEta()) <= 1.479){
-		if (selectedElectrons[i_el]->sigmaIEtaIEta() < 0.0101
-		    && fabs(selectedElectrons[i_el]->deltaEtaIn()) < 0.00926
-		    && fabs(selectedElectrons[i_el]->deltaPhiIn()) < 0.0336
-		    && selectedElectrons[i_el]->hadronicOverEm() < 0.0597
-		    && fabs(1/selectedElectrons[i_el]->E() - 1/selectedElectrons[i_el]->P()) < 0.012
-		    && selectedElectrons[i_el]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
-		    && selectedElectrons[i_el]->passConversion()){
+	      if( fabs(init_electrons[i_el]->superClusterEta()) <= 1.479){
+		if (init_electrons[i_el]->sigmaIEtaIEta() < 0.0101
+		    && fabs(init_electrons[i_el]->deltaEtaIn()) < 0.00926
+		    && fabs(init_electrons[i_el]->deltaPhiIn()) < 0.0336
+		    && init_electrons[i_el]->hadronicOverEm() < 0.0597
+		    && fabs(1/init_electrons[i_el]->E() - 1/init_electrons[i_el]->P()) < 0.012
+		    && init_electrons[i_el]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
+		    && init_electrons[i_el]->passConversion()){
 		  isId_electron_pc[nElectrons_pc]=true;
 		}
 	      }
-	      else if (fabs(selectedElectrons[i_el]->superClusterEta()) < 2.5){
-		if ( selectedElectrons[i_el]->sigmaIEtaIEta() < 0.0279
-		     && fabs(selectedElectrons[i_el]->deltaEtaIn()) < 0.00724
-		     && fabs(selectedElectrons[i_el]->deltaPhiIn()) < 0.0918
-		     && selectedElectrons[i_el]->hadronicOverEm() < 0.0615
-		     && fabs(1/selectedElectrons[i_el]->E() - 1/selectedElectrons[i_el]->P()) < 0.00999
-		     && selectedElectrons[i_el]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
-		     && selectedElectrons[i_el]->passConversion()){
+	      else if (fabs(init_electrons[i_el]->superClusterEta()) < 2.5){
+		if ( init_electrons[i_el]->sigmaIEtaIEta() < 0.0279
+		     && fabs(init_electrons[i_el]->deltaEtaIn()) < 0.00724
+		     && fabs(init_electrons[i_el]->deltaPhiIn()) < 0.0918
+		     && init_electrons[i_el]->hadronicOverEm() < 0.0615
+		     && fabs(1/init_electrons[i_el]->E() - 1/init_electrons[i_el]->P()) < 0.00999
+		     && init_electrons[i_el]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
+		     && init_electrons[i_el]->passConversion()){
 		  isId_electron_pc[nElectrons_pc]=true;
 		}
 	      }
 	      // iso to be checked!!! Make sure what is this function getting! faco
 	      isIso_electron_pc[nElectrons_pc]=false;
-	      if( fabs(selectedElectrons[i_el]->superClusterEta()) <= 1.479){
+	      if( fabs(init_electrons[i_el]->superClusterEta()) <= 1.479){
 		if(relIso < 0.0354) isIso_electron_pc[nElectrons_pc]=true;// wrong iso!!!! faco
 	      }
-	      else if (fabs(selectedElectrons[i_el]->superClusterEta()) < 2.5){
+	      else if (fabs(init_electrons[i_el]->superClusterEta()) < 2.5){
 		if(relIso < 0.0646) isIso_electron_pc[nElectrons_pc]=true; // wrong iso!!! faco
 	      }
 		
-	      sf_electron_pc[nElectrons_pc]=electronSFWeight_->at(selectedElectrons[i_el]->Eta(),selectedElectrons[i_el]->Pt(),0);
+	      sf_electron_pc[nElectrons_pc]=electronSFWeight_->at(init_electrons[i_el]->Eta(),init_electrons[i_el]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons_pc << " and pt equals to " << pt_electron_pc[nElectrons_pc] << endl;
 	      nElectrons_pc++;
             }
@@ -2174,8 +2179,8 @@ int main (int argc, char *argv[])
 		{
 		  deltaVz_elel_pc[nElectronPairs_pc]=abs(vz_electron_pc[firstEl]-vz_electron_pc[secondEl]);
 		  deltaV0_elel_pc[nElectronPairs_pc]=abs(v0_electron_pc[firstEl]-v0_electron_pc[secondEl]);
-		  deltaR_elel_pc[nElectronPairs]=selectedElectrons[firstEl]->DeltaR(*(selectedElectrons[secondEl]));
-		  invMass_elel_pc[nElectronPairs_pc]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
+		  deltaR_elel_pc[nElectronPairs]=init_electrons[firstEl]->DeltaR(*(init_electrons[secondEl]));
+		  //		  invMass_elel_pc[nElectronPairs_pc]=(init_electronsTLV[firstEl] + init_electronsTLV[secondEl]).M();
 		  nElectronPairs_pc++;
 		    
 		  // debug statement
@@ -2197,39 +2202,39 @@ int main (int argc, char *argv[])
 	  //	  selectedLooseIsoMuons
 
 	  nMuons_pc=0;
-	  for (Int_t i_muon =0; i_muon < selectedMuons.size() && i_muon < 10; i_muon++ )
+	  for (Int_t i_muon =0; i_muon < init_muons.size() && i_muon < 10; i_muon++ )
             { 
 
-	      pt_muon_pc[nMuons_pc]=selectedMuons[i_muon]->Pt();
-	      phi_muon_pc[nMuons_pc]=selectedMuons[i_muon]->Phi();
-	      eta_muon_pc[nMuons_pc]=selectedMuons[i_muon]->Eta();
-	      E_muon_pc[nMuons_pc]=selectedMuons[i_muon]->E();
-	      d0_muon_pc[nMuons_pc]=selectedMuons[i_muon]->d0();
-	      vz_muon_pc[nMuons_pc]=selectedMuons[i_muon]->vz();
-	      v0_muon_pc[nMuons_pc]=sqrt( pow(selectedMuons[i_muon]->vx(), 2) + pow(selectedMuons[i_muon]->vy(), 2) ); 
-	      d0BeamSpot_muon_pc[nMuons_pc]=selectedMuons[i_muon]->d0BeamSpot();
-	      chargedHadronIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->chargedHadronIso(4);
-	      neutralHadronIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->neutralHadronIso(4);
-	      photonIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->photonIso(4);
-	      pfIso_muon_pc[nMuons_pc]=selectedMuons[i_muon]->relPfIso(4,0.5);
-	      relIso_muon_pc[nMuons_pc]=(selectedMuons[i_muon]->chargedHadronIso(4) + max( 0.0, selectedMuons[i_muon]->neutralHadronIso(4) + selectedMuons[i_muon]->photonIso(4) - 0.5*selectedMuons[i_muon]->puChargedHadronIso(4) ) ) / selectedMuons[i_muon]->Pt();
-	      charge_muon_pc[nMuons_pc]=selectedMuons[i_muon]->charge(); 
+	      pt_muon_pc[nMuons_pc]=init_muons[i_muon]->Pt();
+	      phi_muon_pc[nMuons_pc]=init_muons[i_muon]->Phi();
+	      eta_muon_pc[nMuons_pc]=init_muons[i_muon]->Eta();
+	      E_muon_pc[nMuons_pc]=init_muons[i_muon]->E();
+	      d0_muon_pc[nMuons_pc]=init_muons[i_muon]->d0();
+	      vz_muon_pc[nMuons_pc]=init_muons[i_muon]->vz();
+	      v0_muon_pc[nMuons_pc]=sqrt( pow(init_muons[i_muon]->vx(), 2) + pow(init_muons[i_muon]->vy(), 2) ); 
+	      d0BeamSpot_muon_pc[nMuons_pc]=init_muons[i_muon]->d0BeamSpot();
+	      chargedHadronIso_muon_pc[nMuons_pc]=init_muons[i_muon]->chargedHadronIso(4);
+	      neutralHadronIso_muon_pc[nMuons_pc]=init_muons[i_muon]->neutralHadronIso(4);
+	      photonIso_muon_pc[nMuons_pc]=init_muons[i_muon]->photonIso(4);
+	      pfIso_muon_pc[nMuons_pc]=init_muons[i_muon]->relPfIso(4,0.5);
+	      relIso_muon_pc[nMuons_pc]=(init_muons[i_muon]->chargedHadronIso(4) + max( 0.0, init_muons[i_muon]->neutralHadronIso(4) + init_muons[i_muon]->photonIso(4) - 0.5*init_muons[i_muon]->puChargedHadronIso(4) ) ) / init_muons[i_muon]->Pt();
+	      charge_muon_pc[nMuons_pc]=init_muons[i_muon]->charge(); 
 	      // id
 	      isId_muon_pc[nMuons_pc]=false;
-	      if( selectedMuons[i_muon]->isGlobalMuon() && selectedMuons[i_muon]->isPFMuon()
-		  && selectedMuons[i_muon]->chi2() < 10
-		  && selectedMuons[i_muon]->nofTrackerLayersWithMeasurement() > 5
-		  &&  selectedMuons[i_muon]->nofValidMuHits() > 0
-		  && selectedMuons[i_muon]->nofValidPixelHits() > 0 
-		  && selectedMuons[i_muon]->nofMatchedStations()> 1){
+	      if( init_muons[i_muon]->isGlobalMuon() && init_muons[i_muon]->isPFMuon()
+		  && init_muons[i_muon]->chi2() < 10
+		  && init_muons[i_muon]->nofTrackerLayersWithMeasurement() > 5
+		  &&  init_muons[i_muon]->nofValidMuHits() > 0
+		  && init_muons[i_muon]->nofValidPixelHits() > 0 
+		  && init_muons[i_muon]->nofMatchedStations()> 1){
 		isId_muon_pc[nMuons_pc]=true;
 	      }
 	      //iso
 	      isIso_muon_pc[nMuons_pc]=false;
-	      if ( (selectedMuons[i_muon]->chargedHadronIso(4) + max( 0.0, selectedMuons[i_muon]->neutralHadronIso(4) + selectedMuons[i_muon]->photonIso(4) - 0.5*selectedMuons[i_muon]->puChargedHadronIso(4) ) ) / selectedMuons[i_muon]->Pt() < mu_iso_cut ) isIso_muon_pc[nMuons_pc]=true;
+	      if ( (init_muons[i_muon]->chargedHadronIso(4) + max( 0.0, init_muons[i_muon]->neutralHadronIso(4) + init_muons[i_muon]->photonIso(4) - 0.5*init_muons[i_muon]->puChargedHadronIso(4) ) ) / init_muons[i_muon]->Pt() < mu_iso_cut ) isIso_muon_pc[nMuons_pc]=true;
 
-	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedMuons[i_muon]->Eta(), selectedMuons[i_muon]->Pt(), 0)* muonSFWeightIso_TT->at(selectedMuons[i_muon]->Eta(), selectedMuons[i_muon]->Pt(), 0);
-	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(selectedMuons[i_muon]->Eta(), selectedMuons[i_muon]->Pt(), 0);//* muonSFWeightIso_TT->at(selectedMuons[i_muon]->Eta(), selectedMuons[i_muon]->Pt(), 0);
+	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(init_muons[i_muon]->Eta(), init_muons[i_muon]->Pt(), 0)* muonSFWeightIso_TT->at(init_muons[i_muon]->Eta(), init_muons[i_muon]->Pt(), 0);
+	      //	      sf_muon_pc[nMuons_pc]=muonSFWeightID_T->at(init_muons[i_muon]->Eta(), init_muons[i_muon]->Pt(), 0);//* muonSFWeightIso_TT->at(init_muons[i_muon]->Eta(), init_muons[i_muon]->Pt(), 0);
 	      
 
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons_pc << " and pt equals to " << pt_muon_pc[nMuons_pc] << endl;
@@ -2250,8 +2255,8 @@ int main (int argc, char *argv[])
 		{
 		  deltaVz_mumu_pc[nMuonPairs_pc]=abs(vz_muon_pc[firstMu]-vz_muon_pc[secondMu]);
 		  deltaV0_mumu_pc[nMuonPairs_pc]=abs(v0_muon_pc[firstMu]-v0_muon_pc[secondMu]);
-		  deltaR_mumu_pc[nMuonPairs]=selectedMuons[firstMu]->DeltaR(*(selectedMuons[secondMu]));
-		  invMass_mumu_pc[nMuonPairs_pc]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M();
+		  deltaR_mumu_pc[nMuonPairs]=init_muons[firstMu]->DeltaR(*(init_muons[secondMu]));
+		  //		  invMass_mumu_pc[nMuonPairs_pc]=(init_muonsTLV[firstMu] + init_muonsTLV[secondMu]).M();
 		  nMuonPairs_pc++;
 		    
 		  // debug statement
@@ -2303,6 +2308,8 @@ int main (int argc, char *argv[])
 	  // mcParticles Based Plots //
 	  /////////////////////////////
 
+	  //	http://cmslxr.fnal.gov/source/DataFormats/TrackReco/interface/TrackBase.h#0585
+
 	  nMcParticles_pc=0;
 	  for (unsigned int i = 0; i < mcParticles.size(); i++){
 	    if (mcParticles[i]->status() == 23) // check what it means!!
@@ -2311,10 +2318,12 @@ int main (int argc, char *argv[])
 		phi_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->Phi();
 		eta_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->Eta();
 		E_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->E();
+		vz_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->vz();
+		v0_mcParticle_pc[nMcParticles_pc]=sqrt( pow(mcParticles[i]->vx(),2) + pow(mcParticles[i]->vy(),2) );
+		d0_mcParticle_pc[nMcParticles_pc]=( -mcParticles[i]->vx() * mcParticles[i]->Py() + mcParticles[i]->vy() * mcParticles[i]->Px() ) / mcParticles[i]->Pt();
 		type_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->type();
 		motherType_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->motherType();
 		grannyType_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->grannyType();
-		//	    d0_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->d0();
 		//	    pt_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->Pt();
 		
 		nMcParticles_pc++;
