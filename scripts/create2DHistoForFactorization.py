@@ -20,7 +20,7 @@ channels=["_ElEl","_MuMu"]
 #base of the path to the root file
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date
-date="17_4_2016"
+date="20_4_2016"
 
 # array with composite dataset and matching string
 dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll"]
@@ -36,6 +36,11 @@ debug = False
 electrond0VsElectronsd0=rt.TH2D("electrond0VsElectronsd0","electrond0VsElectronsd0", 50, 0.0, 0.05, 50, 0.0, 0.05)
 muond0VsMuond0=rt.TH2D("muond0VsMuond0","muond0VsMuond0",50, 0.0, 0.05, 50, 0.0, 0.05)
 muond0VsElectrond0=rt.TH2D("muond0VsElectrond0","muond0VsElectrond0",50, 0.0, 0.05, 50, 0.0, 0.05)
+
+
+# remove low d0 part of the histo
+#muond0VsMuond0=rt.TH2D("muond0VsMuond0","muond0VsMuond0",35, 0.0015, 0.05, 35, 0.015, 0.05)
+#muond0VsElectrond0=rt.TH2D("muond0VsElectrond0","muond0VsElectrond0",35, 0.0015, 0.05, 35, 0.0015, 0.05)
 
 
 # name of the tree in the root file

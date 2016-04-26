@@ -162,7 +162,7 @@ for chan in channels:
     
             #Filling the vector for the 4 Graphs
             xValues.append(ibin/1000.)
-            xValues_error.append(0.001)
+            xValues_error.append(0.)
 
             yCut.append(Ncut)
             yCut_error.append(Ncut_error)
