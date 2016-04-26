@@ -1916,7 +1916,7 @@ int main (int argc, char *argv[])
 		  deltaVz_elel[nElectronPairs]=abs(vz_electron[firstEl]-vz_electron[secondEl]);
 		  deltaV0_elel[nElectronPairs]=abs(v0_electron[firstEl]-v0_electron[secondEl]);
 		  deltaR_elel[nElectronPairs]=selectedElectrons[firstEl]->DeltaR(*(selectedElectrons[secondEl]));
-		  //		  invMass_elel[nElectronPairs]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
+		  invMass_elel[nElectronPairs]=(selectedElectronsTLV[firstEl] + selectedElectronsTLV[secondEl]).M();
 		  nElectronPairs++;
 		    
 		  // debug statement
@@ -1987,9 +1987,9 @@ int main (int argc, char *argv[])
 		  deltaVz_mumu[nMuonPairs]=abs(vz_muon[firstMu]-vz_muon[secondMu]);
 		  deltaV0_mumu[nMuonPairs]=abs(v0_muon[firstMu]-v0_muon[secondMu]);
 		  deltaR_mumu[nMuonPairs]=selectedMuons[firstMu]->DeltaR(*(selectedMuons[secondMu]));
-		  //                  invMass_mumu[nMuonPairs]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M(); 
+		  invMass_mumu[nMuonPairs]=(selectedMuonsTLV[firstMu] + selectedMuonsTLV[secondMu]).M(); 
                   nMuonPairs++; 
-                                                                                                                                                                      
+
                   // debug statement 
                   if (debug){                                                                                                                                         
                     cout << "firstMu is " << firstMu << endl;
