@@ -488,10 +488,10 @@ int main (int argc, char *argv[])
   //    histo2D["HTLepSep"] = new TH2F("HTLepSep","dR_{ll}:HT",50,0,1000, 20, 0,4);
 
   //Plots
-  string pathPNG = "MSPlots_FourTop"+postfix+channelpostfix;
-  pathPNG += "_MSPlots/";
-  //pathPNG = pathPNG +"/";
-  mkdir(pathPNG.c_str(),0777);
+  //string pathPNG = "MSPlots_FourTop"+postfix+channelpostfix;
+  //  pathPNG += "_MSPlots/";
+  //  pathPNG = pathPNG +"/";
+  //  mkdir(pathPNG.c_str(),0777);
 
 
 
@@ -566,7 +566,6 @@ int main (int argc, char *argv[])
 
     
   // check
-  cout <<"Making directory :"<< pathPNG  <<endl;
   vector<string> CutFlowPresel;
     
   CutFlowPresel.push_back(string("initial"));
@@ -3330,8 +3329,6 @@ int main (int argc, char *argv[])
 
   cout <<" after cd .."<<endl;
 
-  string pathPNGJetCombi = pathPNG + "JetCombination/";
-  mkdir(pathPNGJetCombi.c_str(),0777);
 
   //Output ROOT file
   for(map<string,MultiSamplePlot*>::const_iterator it = MSPlot.begin();
@@ -3341,7 +3338,7 @@ int main (int argc, char *argv[])
       string name = it->first;
       MultiSamplePlot *temp = it->second;
       temp->Draw(name.c_str(), 0, false, false, false, 1);
-      temp->Write(fout, name, false, pathPNG, "pdf");
+      //      temp->Write(fout, name, false, pathPNG, "pdf");
     }
 
 
