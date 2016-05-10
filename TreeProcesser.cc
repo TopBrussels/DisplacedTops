@@ -122,6 +122,8 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Electron-Electron channel..." << endl;
       channelpostfix = "_ElEl";
+      //      channelpostfix += "/unskimmed";
+      
       xmlFileName = "config/TreeProc_FullSamplesElElV0.xml";
       DileptonElEl=true;
     }
@@ -154,7 +156,7 @@ int main(int argc, char* argv[])
 
     // only few plots!
     if (DileptonMuMu) {
-      xmlFileName = "config/TreeProc_FullSamplesMuMuV0.xml";
+      //      xmlFileName = "config/TreeProc_FullSamplesMuMuV0.xml";
       //      DatasetPlotter(5, -0.5, 4.5, "nMuons", xmlFileName,CraneenPath);
       DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon[nMuons]", xmlFileName,CraneenPath);
@@ -162,9 +164,10 @@ int main(int argc, char* argv[])
       DatasetPlotter(40, 0, 800, "evt_met", xmlFileName,CraneenPath);
     }
     if (DileptonElEl){
-      xmlFileName = "config/TreeProc_FullSamplesElElV0.xml";
-      //      DatasetPlotter(5, -0.5, 4.5, "nElectrons", xmlFileName,CraneenPath);
+      //      xmlFileName = "config/TreeProc_FullSamplesElElV0.xml";
+      DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_electron[nElectrons]", xmlFileName,CraneenPath);
+      
     }
 
   }
@@ -286,10 +289,12 @@ int main(int argc, char* argv[])
       DatasetPlotter(30, -3.15, 3.15, "phi_electron[nElectrons]", xmlFileName,CraneenPath);
       //      DatasetPlotter(100, 0.0, 0.2, "pfIso_electron[nElectrons]", xmlFileName,CraneenPath);
       //      DatasetPlotter(100, -0.015, 0.015, "d0_electron[nElectrons]", xmlFileName,CraneenPath);
-      DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron[nElectrons]", xmlFileName,CraneenPath);
+
       //      DatasetPlotter(100, -10, 10, "vz_electron[nElectrons]", xmlFileName,CraneenPath);
       //      DatasetPlotter(100, 0, 0.5, "v0_electron[nElectrons]", xmlFileName,CraneenPath);
 
+      DatasetPlotter(100, -0.015, 0.015, "d0BeamSpot_electron[nElectrons]", xmlFileName,CraneenPath);
+      //      DatasetPlotter(100, -0.009, 0.009, "d0BeamSpot_electron[nElectrons]", xmlFileName,CraneenPath);
       
       // Dielectron plots
       DatasetPlotter(100, 0.0, 1000, "invMass_elel[nElectronPairs]", xmlFileName,CraneenPath);
@@ -443,7 +448,8 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/24_3_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/30_3_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/1_4_2016/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/15_4_2016/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/15_4_2016/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/NoDisplacedTrigger/";
 
 
   CraneenPath=CraneenPath+channelpostfix;
@@ -455,7 +461,9 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       dataSetName = datasets[d]->Name();
       cout << " sVarofinterest is "  << sVarofinterest << endl;
       cout<<"Dataset:  :"<<dataSetName<<endl;
+
       filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + ".root";  
+
       //filepath = CraneenPath+dataSetName+ ".root";
       if (debug) cout<<"filepath: "<<filepath<<endl;
 	
@@ -464,18 +472,19 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       stree = "tree";
 
 
-      bool useTrimmedTree =false;
+      // get different root file and tree name if using the trimmed trees.
+      bool useTrimmedTree = true;
       if (useTrimmedTree)
 	{
-
-	  filepath = CraneenPath+"/"+dataSetName + channelpostfix + "Skimmed.root";
+	  filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + "Skimmed.root";  
 
 	  // add the correct suffix to select the corresponding region. (PCR, DCR, SR1, SR2, SR3)
-	  //      prefix=stree+"PCR/";
+	  //	  string prefix=stree+"PCR/";
 	  //      string prefix=stree+"DCR/";
-	  string prefix=stree+"OnZ/";
+	  //string prefix=stree+"OnZ/";
 	  
-	  stree = prefix+stree;
+	  //	  stree = prefix+stree;
+	  //	  stree = "treePCR/tree";
 	}
 
 		  
@@ -622,6 +631,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
       // bo loop over the entries
       for (int j = 0; j<nEntries; j++)
+      //      for (int j = 0; j<100; j++)
         {
 
 	  ttree[(dataSetName).c_str()]->GetEntry(j);
