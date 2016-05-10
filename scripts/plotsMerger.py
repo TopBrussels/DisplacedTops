@@ -53,7 +53,8 @@ fout.write("")
 # loop over all the plots
 for file in files:
     # apply a certain filter (to be tuned)
-    if "StackLogY.png" in file and "nvtx" not in file:
+#    if "StackLogY.png" in file and "nvtx" not in file:
+    if ".pdf" in file and "merge" not in file:
         print(file)
         
         # for each file create a new frame and put the figure
