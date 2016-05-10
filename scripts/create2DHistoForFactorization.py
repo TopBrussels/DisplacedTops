@@ -20,7 +20,7 @@ channels=["_ElEl","_MuMu"]
 #base of the path to the root file
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date
-date="20_4_2016"
+date="NoDisplacedTriggerNoBlinding"
 
 # array with composite dataset and matching string
 dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll"]
@@ -174,6 +174,6 @@ for compositeDataset in compositeDatasets:
 
 
 # create a new root file named NonQCD2D.root that contains the sum of all histograms
-cmd= "hadd rootFiles/NonQCD2D.root rootFiles/*2D.root"
-os.system(cmd)
+#cmd= "hadd rootFiles/NonQCD2D.root rootFiles/*2D.root"
+#os.system(cmd)
 

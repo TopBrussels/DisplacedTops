@@ -26,6 +26,7 @@ channels=["_ElEl","_MuMu"]
 
 # samples
 dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll", "NonQCD"]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll"]
 dataSetColours=[38, 5, 46, 872, 30, 45]
 
 
