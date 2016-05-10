@@ -13,8 +13,8 @@ dd = str(now.day)
 mm = str(now.month)
 yyyy = str(now.year)
 # pick one of the two above
-date = dd+"_"+mm+"_"+yyyy
-#date = "17_1_2016"
+#date = dd+"_"+mm+"_"+yyyy
+date = "NoDisplacedTriggerNoBlinding"
 
 #usging argument to filter
 filterSample = sys.argv[1]
@@ -80,9 +80,12 @@ for chan in channels:
     for n in datasetNames:
         filenames = glob.glob(pathNonMerged + "/*" + n + chan + "*.root")
         
-#        ext=""
-#        if "NoBlinding" in filenames[0]:
-#            ext="_NoBlinding"
+#        print filenames
+        
+ #       ext=""
+ #       if "NoBlinding" in filenames[1]:
+  #          ext="_NoBlinding"
+  #          print ext
             
         hadd = "hadd " + pathMerged + "DisplacedTop_Run2_TopTree_Study_" + n + chan + ".root"
 
