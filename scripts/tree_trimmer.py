@@ -112,7 +112,7 @@ for chan in channels:
     
     
             # start new file for each sample and each channel
-            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"Skimmed.root", 'RECREATE')
+            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"SkimmedHighPtInvMassd0.root", 'RECREATE')
     
             # create one tree per regions in the current file
             
@@ -164,8 +164,11 @@ for chan in channels:
     
                         # if one of the leptons  is smaller than bound, the event fails                          
                         if abs(ch_in.d0BeamSpot_muon[ilept])> 0.01:
-#                            bools[i_reg]=False
                             bools[0]=False
+                            continue
+                        if abs(ch_in.pt_muon[ilept]) < 60:
+                            bools[0]=False
+                            continue
                     # eo the logic for the muon 
     
     
@@ -174,9 +177,12 @@ for chan in channels:
                     # make the logic for the electron 
                     if isElEl :
                         if abs(ch_in.d0BeamSpot_electron[ilept]) > 0.01:
-#                            print "d0BeamSpot_electron[ilept] is " , ch_in.d0BeamSpot_electron[ilept]
-#                            bools[i_reg]=False
                             bools[0]=False
+                            continue
+                        if abs(ch_in.pt_electron[ilept]) < 60 :
+                            bools[0]=False
+                            continue
+                            
                     # eo the logic for the electron
 
 
@@ -189,10 +195,14 @@ for chan in channels:
                     if isMuMu :
                         if  ch_in.invMass_mumu[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_mumu[ileptPair] :
                             bools[0]=False
+                            continue
     
                     if isElEl :
                         if  ch_in.invMass_elel[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_elel[ileptPair] :
                             bools[0]=False
+                            continue
+
+
     
                                     
                 # fill the tree if the condition is passed
