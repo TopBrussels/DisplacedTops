@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 
+
 <!--
 All the xsect can be found on the following twiki:
 https://twiki.cern.ch/twiki/bin/view/LHCPhysics/SUSYCrossSections13TeVstopsbottom
@@ -10,14 +11,51 @@ https://twiki.cern.ch/twiki/bin/view/LHCPhysics/SUSYCrossSections13TeVstopsbotto
 
 <!--Signal -->
 
+<!-- M 500 ctau 1 -->
+
+<d name="stopTobl_m500_Ctau1" title="stopTobl_m500_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.51848" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-500_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_M500CTau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152654/0000/*.root"/>
+
 <!-- M 500 ctau 10 -->
-<d name="stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="173584.323407" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_74X_v8/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_LM500CTau10TuneCUETP8M113TeVpythia8RunIISpring15MiniAODv274XmcRun2asymptoticv2v1CMSSW74Xv8MCRUN274V9/151210_100305/0000/*.root"/>
+<d name="stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_M500CTau1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152646/0000/*.root"/>
 
 <!-- M 500 ctau 100 -->
-<d name="stopTobl_m500_Ctau100" title="stopTobl_m500_Ctau100" add="0" color="500" ls="1" lw="2" normf="1" xsection="0.51848" EqLumi="1" PreselEff="0.0" filenames=""/>
+<d name="stopTobl_m500_Ctau100" title="stopTobl_m500_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.51848" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-500_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_M500CTau10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152638/0000/*.root"/>
 
-<!-- M 500 ctau 1000 -->
-<d name="stopTobl_m500_Ctau1000" title="stopTobl_m500_Ctau1000" add="0" color="600" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="171975.775343" PreselEff="0.0" filenames=""/>
+<!-- M 200 ctau 1 -->
+
+<d name="stopTobl_m200_Ctau1" title="stopTobl_m200_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="64.5085" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-200_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_M200CTau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152537/0000//*.root"/>
+
+<!-- M 200 ctau 10 -->
+
+<d name="stopTobl_m200_Ctau10" title="stopTobl_m200_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="64.5085" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-200_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_M200CTau1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152530/0000/*.root"/>
+
+<!-- M 200 ctau 100 -->
+
+<d name="stopTobl_m200_Ctau100" title="stopTobl_m200_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="64.5085" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-200_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_M200CTau10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152522/0000/*.root"/>
+
+<!-- M 800 ctau 1 -->
+
+<d name="stopTobl_m800_Ctau1" title="stopTobl_m800_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0283338" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-800_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_M800CTau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152832/0000/*.root"/>
+
+<!-- M 800 ctau 10 -->
+
+<d name="stopTobl_m800_Ctau10" title="stopTobl_m800_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0283338" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-800_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_M800CTau1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152823/0000/*.root"/>
+
+<!-- M 800 ctau 100 -->
+
+<d name="stopTobl_m800_Ctau100" title="stopTobl_m800_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0283338" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-800_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_M800CTau10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152816/0000/*.root"/>
+
+<!-- M 1100 ctau 1 -->
+
+<d name="stopTobl_m1100_Ctau1" title="stopTobl_m1100_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-1100_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_M1100CTau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152445/0000/*.root"/>
+
+<!-- M 1100 ctau 10 -->
+
+<d name="stopTobl_m1100_Ctau10" title="stopTobl_m1100_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-1100_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_M1100CTau1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152438/0000/*.root"/>
+
+<!-- M 1100 ctau 100 -->
+
+<d name="stopTobl_m1100_Ctau100" title="stopTobl_m1100_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DisplacedSUSY_StopToBL_M-1100_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_M1100CTau10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152430/0000/*.root"/>
 
 
 </datasets>
