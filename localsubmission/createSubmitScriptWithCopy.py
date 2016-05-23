@@ -27,7 +27,9 @@ date = dd+"_"+mm+"_"+yyyy
 #channels = ["bbMu"] 
 #channels = ["bbEl"] 
 #channels = ["bbEl","bbMu"]
-channels = ["MuMu","ElEl"] 
+#channels = ["MuMu","ElEl"] 
+channels = ["ElMu"] 
+
 #channels = ["MuMu"] 
 #channels = ["ElEl"] 
 #channels=["test"]
@@ -42,7 +44,9 @@ for chan in channels:
     elif "ElEl" in chan:
         tree = ET.ElementTree(file='../config/FullSamplesElElV0.xml')
     elif "ElMu" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
+#        tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
+        tree = ET.ElementTree(file='../config/DisplacedTopsSignal.xml')
+        
     elif "bbMu" in chan:
         tree = ET.ElementTree(file='../config/FullSamplesbbMuV0.xml')
     elif "bbEl" in chan:
