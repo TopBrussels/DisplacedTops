@@ -64,12 +64,12 @@
 
 
 <!-- W-> l+nu -->
-<d name="WJetsToLNu" title="W\rightarrow l+\Nu" add="1" color="852"  ls="1" lw="2" normf="1" EqLumi="1" xsection="61526.7" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_etsToLNu13TeVamcatnloFXFXpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160205_155839/0000/*.root"/>
+<d name="WJetsToLNu" title="WJets" add="1" color="852"  ls="1" lw="2" normf="1" EqLumi="1" xsection="61526.7" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_etsToLNu13TeVamcatnloFXFXpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160205_155839/0000/*.root"/>
 
-<d name="W1JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
-<d name="W2JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
-<d name="W3JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
-<d name="W4JetsToLNu" title="W\rightarrow l+\nu" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W1JetsToLNu" title="WJets" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W2JetsToLNu" title="WJets" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W3JetsToLNu" title="WJets" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W4JetsToLNu" title="WJets" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
 
 
 <!-- Diboson -->
@@ -104,9 +104,9 @@
 
 <!-- Single t -->
 <!-- ********* -->
-<d name="SingleTop_tW" title="SingletTop" add="1" color="909"  ls="1"  lw="2" normf="1" EqLumi="28089.8876404" xsection="35.6" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_tWtop5f13TeVpowhegpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_153348/0000/*.root"/>
+<d name="SingleTop_tW" title="Singletop" add="1" color="909"  ls="1"  lw="2" normf="1" EqLumi="28089.8876404" xsection="35.6" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_tWtop5f13TeVpowhegpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_153348/0000/*.root"/>
 
-<d name="SingleTop_tbarW" title="SingletTop" add="1" color="910"  ls="1"  lw="2" normf="1" EqLumi="28073.0337079" xsection="35.6" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_tWantitop5f13TeVpowhegpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_153301/0000/*.root"/>
+<d name="SingleTop_tbarW" title="SingleTop" add="1" color="910"  ls="1"  lw="2" normf="1" EqLumi="28073.0337079" xsection="35.6" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_tWantitop5f13TeVpowhegpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_153301/0000/*.root"/>
 
 <d name="SingleTop_s_channel" title="SingleTop" add="0" color="905"  ls="1"  lw="2" normf="1" EqLumi="296939.59492" xsection="3.3623" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/crab_leptonDecays13TeVamcatnlopythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v276XmcRun2asymptoticv12/160201_153201/0000/*.root"/>
 
@@ -184,13 +184,13 @@
 
 
 <!-- Z->ll -->
-<d name="DYJetsToLL_M-50toInf_Madgraph" title="Z/\gamma^{*}\rightarrow ll" add="1" color="410"  ls="1"  lw="2" normf="1" EqLumi="1494.44466574" xsection="6025.2" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_tsToLLM5013TeVmadgraphMLMpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152356/0000/*.root"/>
+<d name="DYJetsToLL_M-50toInf_Madgraph" title="DrellYann" add="1" color="410"  ls="1"  lw="2" normf="1" EqLumi="1494.44466574" xsection="6025.2" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_tsToLLM5013TeVmadgraphMLMpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_152356/0000/*.root"/>
 
 
-<d name="DYJetsToll_M-10to50" title="Z/\gamma^{*}\rightarrowllM10to50" add="1" color="430"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="18610" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_to5013TeVamcatnloFXFXpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12ext1v176XmcRun2asymptoticv12/160201_152313/0000/*.root"/>
+<d name="DYJetsToll_M-10to50" title="DrellYann M < 50" add="1" color="430"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="18610" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_to5013TeVamcatnloFXFXpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12ext1v176XmcRun2asymptoticv12/160201_152313/0000/*.root"/>
 
 
-<d name="DYJetsToLL_M-50toInf_amc" title="Z/\gamma^{*}\rightarrow ll" add="0" color="410"  ls="1"  lw="2" normf="1" EqLumi="" xsection="6025.2" PreselEff="0.0"   filenames="*.root"/>
+<d name="DYJetsToLL_M-50toInf_amc" title="DrellYann" add="0" color="410"  ls="1"  lw="2" normf="1" EqLumi="" xsection="6025.2" PreselEff="0.0"   filenames="*.root"/>
 
 
 
