@@ -112,7 +112,7 @@ for chan in channels:
     
     
             # start new file for each sample and each channel
-            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"SkimmedHighPtInvMassd0.root", 'RECREATE')
+            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"SkimmedHighPt_OnZ_Lowd0.root", 'RECREATE')
     
             # create one tree per regions in the current file
             
@@ -194,11 +194,13 @@ for chan in channels:
 
                     if isMuMu :
                         if  ch_in.invMass_mumu[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_mumu[ileptPair] :
+#                        if  81.2 <= ch_in.invMass_mumu[ileptPair] and ch_in.invMass_mumu[ileptPair] <= 101.2  :
                             bools[0]=False
                             continue
     
                     if isElEl :
                         if  ch_in.invMass_elel[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_elel[ileptPair] :
+#                        if  81.2 <= ch_in.invMass_elel[ileptPair] and ch_in.invMass_elel[ileptPair] <= 101.2  :
                             bools[0]=False
                             continue
 
