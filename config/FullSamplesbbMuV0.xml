@@ -130,9 +130,9 @@
 <!-- ****** -->
 
 <!-- hadronic -->
-<d name="TTJets_Madgrap" title="TTJets_Madgraph" add="1" color="872"  ls="1"  lw="2" normf="1" EqLumi="12281.3443782" xsection="831.76" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_TTJets13TeVmadgraphMLMpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_153523/0000/*.root"/>
+<d name="TTJets_Madgrap" title="TTJets" add="1" color="872"  ls="1"  lw="2" normf="1" EqLumi="12281.3443782" xsection="831.76" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_TTJets13TeVmadgraphMLMpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_153523/0000/*.root"/>
 
-<d name="TTJets_amc" title="TTJets_Madgraph" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="831.76" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-scaledown-pythia8/crab_3TeVamcatnloFXFXscaledownpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_153514/0000/*.root"/>
+<d name="TTJets_amc" title="TTJets" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="831.76" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-scaledown-pythia8/crab_3TeVamcatnloFXFXscaledownpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_153514/0000/*.root"/>
 
 <!-- leptonic -->
 <d name="TTJets_Dilept" title="TTJets_Dilept" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="88.288" PreselEff="0.0"   filenames=""/>
