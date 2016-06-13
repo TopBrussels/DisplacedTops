@@ -270,7 +270,8 @@ int main (int argc, char *argv[])
   string channelpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
-  bool applyBlinding = true;
+  bool applyBlinding = false;
+  bool selectOnZPeak = true;
   bool saveRawCollection = false; // fill the pc tree
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
@@ -283,6 +284,10 @@ int main (int argc, char *argv[])
   // Setting a extra bool for the iso requirement on the lepton. This can be cobined with the previous channels
   bool antiIso = false; // 0.15 < iso < 1.5
   bool looseIso = false; // iso < 1.5
+
+
+  // extra bool for ttbar enriching cut (one b-jet)
+  bool ttbarEnriched = true;
 
 
 
@@ -363,7 +368,7 @@ int main (int argc, char *argv[])
   Dataset* theDataset = new Dataset(dName, dTitle, true, color, ls, lw, normf, xSect, vecfileNames);
 
   // skip if data and no blinding
-  if ((isData && !applyBlinding)) cout << endl << "--------------------------------"  << endl 
+  if ((isData && !applyBlinding && !selectOnZPeak)) cout << endl << "--------------------------------"  << endl 
 				       <<  "You are not applying the blinding cuts but you are trying to run over Data.\
  You are a bad boy and all the data root file will be empty" << endl
 				       << "--------------------------------" <<  endl << endl;
@@ -425,6 +430,7 @@ int main (int argc, char *argv[])
   if (antiIso) channelpostfix = channelpostfix+"_antiIso";
   if (looseIso) channelpostfix = channelpostfix+"_looseIso";
   if (!applyBlinding) channelpostfix = channelpostfix+"_NoBlinding";
+  if (selectOnZPeak) channelpostfix = channelpostfix+"_ZPeak";
 
   string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+".root");
   if (strJobNum != "0")
@@ -2134,7 +2140,7 @@ int main (int argc, char *argv[])
 		    && fabs(init_electrons[i_el]->deltaEtaIn()) < 0.00926
 		    && fabs(init_electrons[i_el]->deltaPhiIn()) < 0.0336
 		    && init_electrons[i_el]->hadronicOverEm() < 0.0597
-		    && fabs(1/init_electrons[i_el]->E() - 1/init_electrons[i_el]->P()) < 0.012
+		    && fabs(1/init_electrons[i_el]->E() - 1/init_electrons[i_el]->P()) < 0.012 // use ioEmIoP()
 		    && init_electrons[i_el]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
 		    && init_electrons[i_el]->passConversion()){
 		  isId_electron_pc[nElectrons_pc]=true;
@@ -2145,7 +2151,7 @@ int main (int argc, char *argv[])
 		     && fabs(init_electrons[i_el]->deltaEtaIn()) < 0.00724
 		     && fabs(init_electrons[i_el]->deltaPhiIn()) < 0.0918
 		     && init_electrons[i_el]->hadronicOverEm() < 0.0615
-		     && fabs(1/init_electrons[i_el]->E() - 1/init_electrons[i_el]->P()) < 0.00999
+		     && fabs(1/init_electrons[i_el]->E() - 1/init_electrons[i_el]->P()) < 0.00999 // use ioEmIoP() !!! faco
 		     && init_electrons[i_el]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
 		     && init_electrons[i_el]->passConversion()){
 		  isId_electron_pc[nElectrons_pc]=true;
@@ -3027,15 +3033,37 @@ int main (int argc, char *argv[])
 	    if ( bbmu ) nLeptons = nMuons ;
 	    if ( bbel ) nLeptons = nElectrons ;
 
-	    if ( nLeptons == 1 && nJets_pc >= 1 && nBjets_pc >= 1 ){
+	    if ( nLeptons == 1 && nJets_pc >= 1 && nBjets_pc >= 1 ){ // TO BE CHECKED!!! IS THAT THE RIGHT COLLECTION???
 	      myTree->Fill(); 
 	      passed++;
 	    }
 	  }
 
+	  
+	  // ttbar enriched region for trigger SF
+
+	  if ( elel && ttbarEnriched  ){
+	    if (elel && selectedElectrons.size() >= 2 && nBjets_pc >= 1 ){
+	      myTree->Fill();
+	      passed++;
+	    }
+	  }
+	  
+	  // ttbar
+	  if (mumu && ttbarEnriched ){
+	    if (mumu && selectedMuons.size() >= 2 && nBjets_pc >= 1 ){
+	      myTree->Fill();
+              passed++;
+	    }
+	  }
+	    
+	    
+	    
+
+
 
 	  // bo Signal-like regions
-	  if (elel || mumu || elmu){
+	  if ( (elel || mumu || elmu) && !ttbarEnriched){
 	    
 	    // bo elel case
 	    if (elel && selectedElectrons.size() >= 2) {
