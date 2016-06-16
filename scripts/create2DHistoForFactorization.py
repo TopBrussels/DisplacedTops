@@ -182,20 +182,7 @@ for compositeDataset in compositeDatasets:
     electrond0VsElectronsd0.Write()
     outfile.Close()
 
-    # create a canvas and save the histograms
-    c_mumu = rt.TCanvas("c_mumu"+dataSetTitles[i_comp])
-    c_mumu.cd()
-    muond0VsMuond0.SetMarkerStyle(4)
-    muond0VsMuond0.Draw()
-    
-    
     
 
     i_comp=i_comp+1
     # end of loop over the comp dataset
-
-
-# create a new root file named NonQCD2D.root that contains the sum of all histograms
-cmd= "hadd -f rootFiles/NonQCD2D.root rootFiles/*2D.root"
-os.system(cmd)
-
