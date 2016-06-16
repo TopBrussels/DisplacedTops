@@ -25,8 +25,8 @@ newLine = " \n"
 channels=["_ElEl","_MuMu"]
 
 # samples
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll", "NonQCD"]
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll"]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann", "NonQCD"]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann"]
 dataSetColours=[38, 5, 46, 872, 30, 45]
 
 
