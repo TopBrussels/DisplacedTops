@@ -23,19 +23,21 @@ pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
 date="NoDisplacedTriggerNoBlinding"
 
 # array with composite dataset and matching string
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "ZToll"]
-compositeDatasets= ["rightarrow l+", "Diboson", "SingletTop", "TTJets_Madgraph", "gamma^{*}"]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann"]
+compositeDatasets= ["WJets", "Diboson", "SingleTop", "TTJets_Madgraph", "DrellYann"] # title in the xml config
 
 
 # verbosity
 debug = False
 
+# fast run
+fastRun = True
 
-# FACO NEED TO BE DECLARED INSIDE THE LOOP WIth name inside the histo
-# define do histograms
-electrond0VsElectronsd0=rt.TH2D("electrond0VsElectronsd0","electrond0VsElectronsd0", 50, 0.0, 0.05, 50, 0.0, 0.05)
-muond0VsMuond0=rt.TH2D("muond0VsMuond0","muond0VsMuond0",50, 0.0, 0.05, 50, 0.0, 0.05)
-muond0VsElectrond0=rt.TH2D("muond0VsElectrond0","muond0VsElectrond0",50, 0.0, 0.05, 50, 0.0, 0.05)
+
+
+electrond0VsElectronsd0Sum=rt.TH2D("electrond0VsElectronsd0Sum","electrond0VsElectronsd0", 50, 0.0, 0.05, 50, 0.0, 0.05)
+muond0VsMuond0Sum=rt.TH2D("muond0VsMuond0Sum","muond0VsMuond0",50, 0.0, 0.05, 50, 0.0, 0.05)
+muond0VsElectrond0Sum=rt.TH2D("muond0VsElectrond0Sum","muond0VsElectrond0",50, 0.0, 0.05, 50, 0.0, 0.05)
 
 
 # remove low d0 part of the histo
@@ -50,7 +52,14 @@ treeName="tree"
 i_comp=0
 for compositeDataset in compositeDatasets:
     print "\n", "compositeDataset is " , dataSetTitles[i_comp] , ":"
+
+
+    # define d0 histograms, one per composite dataset
+    electrond0VsElectronsd0=rt.TH2D("electrond0VsElectronsd0"+dataSetTitles[i_comp],"electrond0VsElectronsd0", 50, 0.0, 0.05, 50, 0.0, 0.05)
+    muond0VsMuond0=rt.TH2D("muond0VsMuond0"+dataSetTitles[i_comp],"muond0VsMuond0",50, 0.0, 0.05, 50, 0.0, 0.05)
+    muond0VsElectrond0=rt.TH2D("muond0VsElectrond0"+dataSetTitles[i_comp],"muond0VsElectrond0",50, 0.0, 0.05, 50, 0.0, 0.05)
           
+    
     FilterString=compositeDatasets[i_comp]
     outfile = rt.TFile("rootFiles/"+dataSetTitles[i_comp]+"2D.root",'RECREATE')
 
@@ -123,7 +132,13 @@ for compositeDataset in compositeDatasets:
                 # start of loop over events 
                 ii=0
                 for iev in ch:
-    
+                    
+                    ii=ii+1
+                    if fastRun and 100 < ii :
+                        continue
+
+
+
                     # PU weight
                     if isMuMu:
                         PileUpWeight=iev.evt_puSF
@@ -155,7 +170,7 @@ for compositeDataset in compositeDatasets:
                         d02el=abs(iev.d0BeamSpot_electron[1])
                         electrond0VsElectronsd0.Fill(d01el,d02el,weight*PileUpWeight*LeptonWeight)
         
-                    # eo loop over the vent
+                    # eo loop over the event
 
             # eo loop over the dataset
 
@@ -166,14 +181,21 @@ for compositeDataset in compositeDatasets:
     muond0VsMuond0.Write()
     electrond0VsElectronsd0.Write()
     outfile.Close()
+
+    # create a canvas and save the histograms
+    c_mumu = rt.TCanvas("c_mumu"+dataSetTitles[i_comp])
+    c_mumu.cd()
+    muond0VsMuond0.SetMarkerStyle(4)
+    muond0VsMuond0.Draw()
+    
+    
+    
+
     i_comp=i_comp+1
-
-
-
     # end of loop over the comp dataset
 
 
 # create a new root file named NonQCD2D.root that contains the sum of all histograms
-#cmd= "hadd rootFiles/NonQCD2D.root rootFiles/*2D.root"
-#os.system(cmd)
+cmd= "hadd -f rootFiles/NonQCD2D.root rootFiles/*2D.root"
+os.system(cmd)
 
