@@ -28,11 +28,14 @@ lve=rt.TLorentzVector()
 channels=["_ElEl","_MuMu"]
 
 # path to tree
-date="2_3_2016"
+folderName="NoDisplacedTrigger"
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 
 # debug
 debug=False
+
+treeName="tree"
+
 
 # define the bound of the Signal region
 #LowBounds=[0.001,0.02,0.05]
@@ -68,13 +71,11 @@ for chan in channels:
     if "MuMu" in chan:
         isMuMu=True
         tree = ET.ElementTree(file='../config/Yield_FullSamplesMuMuV0.xml')
-        treeName="doubleMuTree"
         FinalState="At least two muons"
         print FinalState
     elif "ElEl" in chan:
         isElEl=True
         tree = ET.ElementTree(file='../config/Yield_FullSamplesElElV0.xml')
-        treeName="doubleElTree"
         FinalState="At least two electrons"
         print FinalState
     elif "ElMu" in chan:
@@ -120,7 +121,7 @@ for chan in channels:
                 isData = True
 
 
-            ch.Add(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
+            ch.Add(pathTrunc+folderName+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
             Sum_SR1=Sum_SR2=Sum_SR3=0
             
             # define 3 histograms containing inclusive yields
@@ -161,9 +162,9 @@ for chan in channels:
             for iev in ch:
 
                 if isMuMu:
-                    PileUpWeight=iev.evt_puSF_mumu
+                    PileUpWeight=iev.evt_puSF
                 if isElEl:
-                    PileUpWeight=iev.evt_puSF_elel
+                    PileUpWeight=iev.evt_puSF
                 
                 LeptonWeight=1.0
 
@@ -180,56 +181,56 @@ for chan in channels:
 
                     # make the logic for the muon
                     if isMuMu:
-                        LeptonWeight *= iev.sf_muon_mumu[ilept]                        
+                        LeptonWeight *= iev.sf_muon[ilept]                        
 
                     # if one of the leptons  is smaller than bound, the event fails
-                        if abs(iev.d0BeamSpot_muon_mumu[ilept]) < bound1:
+                        if abs(iev.d0BeamSpot_muon[ilept]) < bound1:
                             passed1=False
                             if (debug):
                                 print "Electron and muon entering N1"
-                                print "d0 muon is " , iev.d0BeamSpot_muon_mumu[ilept]
+                                print "d0 muon is " , iev.d0BeamSpot_muon[ilept]
                             
 
-                        if abs(iev.d0BeamSpot_muon_mumu[ilept]) < bound2:
+                        if abs(iev.d0BeamSpot_muon[ilept]) < bound2:
                             passed2=False
                             if (debug):
                                 print "Electron and muon entering N2"
-                                print "d0 muon is " , iev.d0BeamSpot_muon_mumu[ilept]
+                                print "d0 muon is " , iev.d0BeamSpot_muon[ilept]
 
-                        if abs(iev.d0BeamSpot_muon_mumu[ilept]) < bound3:
+                        if abs(iev.d0BeamSpot_muon[ilept]) < bound3:
                             passed3=False
                             if (debug):
                                 print "Electron and muon entering N3"
-                                print "d0 muon is " , iev.d0BeamSpot_muon_mumu[ilept]
+                                print "d0 muon is " , iev.d0BeamSpot_muon[ilept]
                     # eo the logic for the muon 
 
 
                                 
                     # make the logic for the electron
                     if isElEl :
-                        LeptonWeight *= iev.sf_electron_elel[ilept]
+                        LeptonWeight *= iev.sf_electron[ilept]
                         #for bound in range(0,len(SRxBounds)):                                                                                                                                          
 
 
                         # if one of the leptons  is smaller than bound, the event fails
-                        if abs(iev.d0BeamSpot_electron_elel[ilept]) < bound1:
+                        if abs(iev.d0BeamSpot_electron[ilept]) < bound1:
                             passed1=False
                             if (debug):
                                 print "Electron and muon entering N1"
-                                print "d0 electron is " , iev.d0BeamSpot_electron_elel[ilept]
+                                print "d0 electron is " , iev.d0BeamSpot_electron[ilept]
 
 
-                        if abs(iev.d0BeamSpot_electron_elel[ilept]) < bound2:
+                        if abs(iev.d0BeamSpot_electron[ilept]) < bound2:
                             passed2=False
                             if (debug):
                                 print "Electron and muon entering N2"
-                                print "d0 electron is " , iev.d0BeamSpot_electron_elel[ilept]
+                                print "d0 electron is " , iev.d0BeamSpot_electron[ilept]
 
-                        if abs(iev.d0BeamSpot_electron_elel[ilept]) < bound3:
+                        if abs(iev.d0BeamSpot_electron[ilept]) < bound3:
                             passed3=False
                             if (debug):
                                 print "Electron and muon entering N3"
-                                print "d0 electron is " , iev.d0BeamSpot_electron_elel[ilept]
+                                print "d0 electron is " , iev.d0BeamSpot_electron[ilept]
                     # eo the logic for the electron
 
 
