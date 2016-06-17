@@ -116,6 +116,7 @@ for chan in channels:
         histo.SetMarkerColor(dataSetColours[i_sam])
         histo.SetXTitle(leptonStr+"1 d_{0} [cm]")
         histo.SetYTitle(leptonStr+"2 d_{0} [cm]")
+        histo.GetYaxis().SetTitleOffset(1.4)
 
         # draw signal and then all bkgd 
         if (i_sam == 0):
