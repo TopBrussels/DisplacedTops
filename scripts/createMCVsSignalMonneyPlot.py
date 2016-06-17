@@ -82,9 +82,11 @@ i_chan = 0
 for chan in channels:
     if "ElEl" in chan:
         histo_index=1
+        leptonStr="electron"
         print "In ElEl final state!! \n"
     if "MuMu" in chan:
         histo_index=0
+        leptonStr="muon"
         print "In MuMu final state!! \n"
 
     # declare one 2D histo per channel (final state)
@@ -112,7 +114,8 @@ for chan in channels:
 
         # set the colour
         histo.SetMarkerColor(dataSetColours[i_sam])
-
+        histo.SetXTitle(leptonStr+"1 d_{0} [cm]")
+        histo.SetYTitle(leptonStr+"2 d_{0} [cm]")
 
         # draw signal and then all bkgd 
         if (i_sam == 0):
