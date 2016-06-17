@@ -3,6 +3,7 @@ import ROOT as rt
 # CMS_lumi
 #   Initiated by: Gautier Hamel de Monchenault (Saclay)
 #   Translated in Python by: Joshua Hardenbrook (Princeton)
+#   Updated by:   Dinko Ferencek (Rutgers)
 #
 
 cmsText     = "CMS";
@@ -24,9 +25,10 @@ relExtraDY = 1.2
 
 extraOverCmsTextSize  = 0.76
 
-lumi_13TeV = "20.1 fb^{-1}"
+lumi_13TeV = "2.63 fb^{-1}"
 lumi_8TeV  = "19.7 fb^{-1}" 
 lumi_7TeV  = "5.1 fb^{-1}"
+lumi_sqrtS = ""
 
 drawLogo      = False
 
@@ -83,6 +85,8 @@ def CMS_lumi(pad,  iPeriod,  iPosX ):
         if( outOfFrame): lumiText += "}"
     elif ( iPeriod==12 ):
         lumiText += "8 TeV"
+    elif ( iPeriod==0 ):
+        lumiText += lumi_sqrtS
             
     print lumiText
 
