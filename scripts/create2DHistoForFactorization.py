@@ -23,15 +23,15 @@ pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
 date="NoDisplacedTriggerNoBlinding"
 
 # array with composite dataset and matching string
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann"]
-compositeDatasets= ["WJets", "Diboson", "SingleTop", "TTJets_Madgraph", "DrellYann"] # title in the xml config
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann","Signal"]
+compositeDatasets= ["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann","stopTobl_m500_Ctau10"] # title in the xml config
 
 
 # verbosity
 debug = False
 
 # fast run
-fastRun = True
+fastRun = False
 
 
 
@@ -98,7 +98,7 @@ for compositeDataset in compositeDatasets:
                 lumivalue=float(d.attrib['EqLumi'])
 
             # check if in the right composite dataset
-            if d.attrib['add'] == '1' and FilterString in  str(d.attrib['title']): 
+            if d.attrib['add'] == '1' and FilterString ==  str(d.attrib['title']): 
                 datasetNames.append(str(d.attrib['name']))
                 print str(d.attrib['name'])
                 ch = rt.TChain(treeName,treeName)
@@ -137,8 +137,11 @@ for compositeDataset in compositeDatasets:
                     if fastRun and 100 < ii :
                         continue
 
-
-
+#                    # just pick few points for signal
+#                    if isSignal and 900 < ii:
+#                        continue
+                    
+                    
                     # PU weight
                     if isMuMu:
                         PileUpWeight=iev.evt_puSF
