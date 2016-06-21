@@ -37,7 +37,7 @@ channels=["_MuMu"]
 # path to tree
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 # 
-date="11_4_2016"
+folderName="NoDisplacedTrigger"
 
 
 # root file wit d0 distribution
@@ -192,8 +192,8 @@ for binLept1 in binsLept1 :
                         isData = True
         
         
-                    ch.Add(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
-#                    print pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root"
+                    ch.Add(pathTrunc+folderName+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
+#                    print pathTrunc+folderName+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root"
                     
                     
                     # get number of events
@@ -395,10 +395,10 @@ for binLept1 in binsLept1 :
 
             
             # Fill an array with the number gotten from the histogram (with the wrong error yet)
-            singleArray = [str(binLept1)+" ; "+str(binLept2),DataTarget.GetBinContent(1),  DataTarget.GetBinError(1), EstimatedQCDTarget.GetBinContent(1), EstimatedQCDTarget.GetBinError(1) ] 
+            singleArray = [str(binLept1), str(binLept2), DataTarget.GetBinContent(1),  DataTarget.GetBinError(1), EstimatedQCDTarget.GetBinContent(1), EstimatedQCDTarget.GetBinError(1) ] 
 
             # Fill the array out of which we want to make a table
-            singleArray_ = [str(boundLept1)+" ; "+str(boundLept2), DirectQCDTarget_, EstimatedQCDTarget_ ] 
+            singleArray_ = [str(boundLept1), str(boundLept2), DirectQCDTarget_, EstimatedQCDTarget_ ] 
 
 
             
@@ -421,7 +421,7 @@ for i in range (0,len(doubleArray)):
 
 # get the info for the table
 #headers=["bounds","DirectCount","Error","EstimatedCount","Error"]
-headers=["bound1; bound2","Direct Count", "Estimated Count"]
+headers=["bound1", "bound2","Direct Count", "Estimated Count"]
 print tabulate(doubleArray, headers, tablefmt="latex")
 
 # writing results in a tex file                                                                   
