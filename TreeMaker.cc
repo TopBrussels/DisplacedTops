@@ -287,7 +287,7 @@ int main (int argc, char *argv[])
 
 
   // extra bool for ttbar enriching cut (one b-jet)
-  bool ttbarEnriched = true;
+  bool ttbarEnriched = false;
 
 
 
@@ -687,6 +687,10 @@ int main (int argc, char *argv[])
   else if (channel=="bbMu"){
     trigger = new Trigger(1, 0 , 1, 0);
   }
+  else if (channel=="ttMuMu" || channel=="ttElEl"){
+    trigger = new Trigger(0, 0 , 0, 0);
+  }
+    
   else cout << "Wrong chanel name" << endl;
   
   
@@ -3043,7 +3047,7 @@ int main (int argc, char *argv[])
 	  // ttbar enriched region for trigger SF
 
 	  if ( elel && ttbarEnriched  ){
-	    if (elel && selectedElectrons.size() >= 2 && nBjets_pc >= 1 ){
+	    if (elel && selectedElectrons.size() >= 2 && nBjets_pc >= 1 && nJets_pc >= 2 ){
 	      myTree->Fill();
 	      passed++;
 	    }
@@ -3051,7 +3055,7 @@ int main (int argc, char *argv[])
 	  
 	  // ttbar
 	  if (mumu && ttbarEnriched ){
-	    if (mumu && selectedMuons.size() >= 2 && nBjets_pc >= 1 ){
+	    if (mumu && selectedMuons.size() >= 2 && nBjets_pc >= 1  && nJets_pc >= 2 ){
 	      myTree->Fill();
               passed++;
 	    }
