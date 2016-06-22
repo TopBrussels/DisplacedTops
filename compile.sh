@@ -21,6 +21,3 @@ else
     done
 fi
 
-cp ~/lib/libTopTreeAnaContent76.so /localgrid/qpython/lib/
-cp ~/lib/libTopTreeAna76.so /localgrid/qpython/lib/
-cp ~/lib/Dict_rdict.pcm /localgrid/qpython/lib/
