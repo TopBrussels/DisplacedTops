@@ -271,8 +271,8 @@ int main (int argc, char *argv[])
   string xmlFileName = "";
   bool writeTable = false;
   bool applyBlinding = false;
-  bool selectOnZPeak = true;
-  bool saveRawCollection = false; // fill the pc tree
+  bool selectOnZPeak = false;
+  bool saveRawCollection = true; // fill the pc tree
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
   bool elel = false; // e-e final state
@@ -2066,8 +2066,8 @@ int main (int argc, char *argv[])
 	  /////////////////////////////
 
 	  nMcParticles = 0;
-	  for (unsigned int i = 0; i < mcParticles.size(); i++){
-	    if (mcParticles[i]->status() == 23) // check what it means!!
+	  for (unsigned int i = 0; i < mcParticles.size() && i < 10; i++){
+	    if (mcParticles[i]->status() == 23 || abs(mcParticles[i]->type()) == 1000006) // check what it means!!
 	      {
 		pt_mcParticle[nMcParticles]=mcParticles[i]->Pt();
 		phi_mcParticle[nMcParticles]=mcParticles[i]->Phi();
@@ -2321,8 +2321,8 @@ int main (int argc, char *argv[])
 	  //	http://cmslxr.fnal.gov/source/DataFormats/TrackReco/interface/TrackBase.h#0585
 
 	  nMcParticles_pc=0;
-	  for (unsigned int i = 0; i < mcParticles.size(); i++){
-	    if (mcParticles[i]->status() == 23) // check what it means!!
+	  for (unsigned int i = 0; i < mcParticles.size() && i < 10; i++){
+	    if (mcParticles[i]->status() == 23 || abs(mcParticles[i]->type()) == 1000006 ) // check what it means!!
 	      {
 		pt_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->Pt();
 		phi_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->Phi();
