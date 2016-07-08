@@ -69,14 +69,17 @@ cd localsubmission
 
 // edit the createSubmitScriptWithCopy.py and edit the "channels" array to choose the decay channel you want to rune over
 // make sure that the correct xml file will be loaded. This will select the list of the samples to run over. 
- emacs createSubmitScriptWithCopy.py
+
+emacs createSubmitScriptWithCopy.py
 
 // create all the jobs 
  python createSubmitScriptWithCopy.py
 
 // launch the jobs 
- cd SubmitScripts/date/channel
- source SubmitAll.sh
+
+cd SubmitScripts/date/channel
+
+source SubmitAll.sh
 
 
 
@@ -84,6 +87,7 @@ cd localsubmission
 ./TreeProcesser channel debug debugplot electronSF muonSf puSf globalSF 
 
 // for example do:
+
 ./TreeProcesser ElEl 0 0 1 1 1 1
 
 
