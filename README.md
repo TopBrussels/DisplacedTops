@@ -68,15 +68,15 @@ source compile.sh TreeMaker.cc
 cd localsubmission
 
 // edit the createSubmitScriptWithCopy.py and edit the "channels" array to choose the decay channel you want to rune over
-// make sure that the correct xml file will be loaded. This will select the list of the samples to run over.
-emacs createSubmitScriptWithCopy.py
+// make sure that the correct xml file will be loaded. This will select the list of the samples to run over. 
+ emacs createSubmitScriptWithCopy.py
 
-// create all the jobs
-python createSubmitScriptWithCopy.py
+// create all the jobs 
+ python createSubmitScriptWithCopy.py
 
-// launch the jobs
-cd SubmitScripts/date/channel
-source SubmitAll.sh
+// launch the jobs 
+ cd SubmitScripts/date/channel
+ source SubmitAll.sh
 
 
 
