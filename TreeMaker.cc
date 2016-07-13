@@ -291,6 +291,12 @@ int main (int argc, char *argv[])
 
 
 
+  // Beam spot hard coded values!! This needs to be improved!!!
+  Double_t BSx = 0.104823;
+  Double_t BSy = 0.168665;
+  Double_t BSz = -1.07339;
+
+
 
 
   if(channel=="ElMu" || channel== "MuEl")
@@ -1287,8 +1293,8 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("E_mcParticle_pc",E_mcParticle_pc,"E_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("vz_mcParticle_pc",vz_mcParticle_pc,"vz_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("v0_mcParticle_pc",v0_mcParticle_pc,"v0_mcParticle_pc[nMcParticles_pc]/D");
-      myPreCutTree->Branch("d0BeamSpot_mcParticle_pc",d0BeamSpot_mcParticle_pc,"d0BeamSpot_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("d0_mcParticle_pc",d0_mcParticle_pc,"d0_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("d0BeamSpot_mcParticle_pc",d0BeamSpot_mcParticle_pc,"d0BeamSpot_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("type_mcParticle_pc",type_mcParticle_pc,"type_mcParticle_pc[nMcParticles_pc]/I");
       myPreCutTree->Branch("motherType_mcParticle_pc",motherType_mcParticle_pc,"motherType_mcParticle_pc[nMcParticles_pc]/I");
       myPreCutTree->Branch("grannyType_mcParticle_pc",grannyType_mcParticle_pc,"grannyType_mcParticle_pc[nMcParticles_pc]/I");
@@ -2331,6 +2337,7 @@ int main (int argc, char *argv[])
 		vz_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->vz();
 		v0_mcParticle_pc[nMcParticles_pc]=sqrt( pow(mcParticles[i]->vx(),2) + pow(mcParticles[i]->vy(),2) );
 		d0_mcParticle_pc[nMcParticles_pc]=( -mcParticles[i]->vx() * mcParticles[i]->Py() + mcParticles[i]->vy() * mcParticles[i]->Px() ) / mcParticles[i]->Pt();
+		d0BeamSpot_mcParticle_pc[nMcParticles_pc]=( - (mcParticles[i]->vx() - BSx )* mcParticles[i]->Py() + (mcParticles[i]->vy() -BSy ) * mcParticles[i]->Px() ) / mcParticles[i]->Pt(); //faco
 		type_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->type();
 		motherType_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->motherType();
 		grannyType_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->grannyType();
