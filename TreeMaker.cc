@@ -539,7 +539,7 @@ int main (int argc, char *argv[])
   }
   else if (elmu){
     mu_pt_cut=40;
-    el_pt_cut=40;
+    el_pt_cut=42;
   }
   else if (bbel){
     el_pt_cut=42;
@@ -3146,7 +3146,7 @@ int main (int argc, char *argv[])
 	    }
 	    // eo mumu case
 
-	    if (elmu && nElectrons >= 1 && nMuons >= 1){
+	    if (elmu && nElectrons == 1 && nMuons == 1){
 	      myTree->Fill();
 	      passed++;
 	    }
