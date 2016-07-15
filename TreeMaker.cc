@@ -2082,6 +2082,8 @@ int main (int argc, char *argv[])
 		type_mcParticle[nMcParticles]=mcParticles[i]->type();
 		motherType_mcParticle[nMcParticles]=mcParticles[i]->motherType();
 		grannyType_mcParticle[nMcParticles]=mcParticles[i]->grannyType();
+		d0_mcParticle[nMcParticles]=( -mcParticles[i]->vx() * mcParticles[i]->Py() + mcParticles[i]->vy() * mcParticles[i]->Px() ) / mcParticles[i]->Pt();
+		d0BeamSpot_mcParticle[nMcParticles]=( - (mcParticles[i]->vx() - BSx )* mcParticles[i]->Py() + (mcParticles[i]->vy() -BSy ) * mcParticles[i]->Px() ) / mcParticles[i]->Pt(); //faco
 		//	    d0_mcParticle[nMcParticles]=mcParticles[i]->d0();
 		//	    pt_mcParticle[nMcParticles]=mcParticles[i]->Pt();
 		
