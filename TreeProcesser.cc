@@ -473,10 +473,10 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
 
       // get different root file and tree name if using the trimmed trees.
-      bool useTrimmedTree = true;
+      bool useTrimmedTree = false;
       if (useTrimmedTree)
 	{
-	  filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + "SkimmedHighPtInvMassd0.root";  
+	  filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + "SkimmedHighPt_OnZ_Lowd0.root";  
 
 	  // add the correct suffix to select the corresponding region. (PCR, DCR, SR1, SR2, SR3)
 	  //	  string prefix=stree+"PCR/";
