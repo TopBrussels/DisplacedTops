@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
+
 ////         Analysis code for search for Displaced letpton.              ////
 //////////////////////////////////////////////////////////////////////////////
 
@@ -910,6 +910,7 @@ int main (int argc, char *argv[])
       Double_t eta_mcParticle[10];
       Double_t E_mcParticle[10];
       Int_t type_mcParticle[10];
+      Int_t status_mcParticle[10];
       Int_t motherType_mcParticle[10];
       Int_t grannyType_mcParticle[10];
       Double_t d0_mcParticle[10];
@@ -918,7 +919,7 @@ int main (int argc, char *argv[])
 
       // event related variables
       Int_t run_num;
-      Int_t event_num;
+      Long64_t event_num;
       Int_t lumi_num;
       Int_t nvtx;
       Int_t npu;
@@ -1024,6 +1025,7 @@ int main (int argc, char *argv[])
       Double_t vz_mcParticle_pc[10];
       Double_t v0_mcParticle_pc[10];
       Int_t type_mcParticle_pc[10];
+      Int_t status_mcParticle_pc[10];
       Int_t motherType_mcParticle_pc[10];
       Int_t grannyType_mcParticle_pc[10];
       Double_t d0BeamSpot_mcParticle_pc[10];
@@ -1031,7 +1033,7 @@ int main (int argc, char *argv[])
 
       // event related variables
       Int_t run_num_pc;
-      Int_t event_num_pc;
+      Long64_t event_num_pc;
       Int_t lumi_num_pc;
       Int_t nvtx_pc;
       Int_t npu_pc;
@@ -1170,6 +1172,7 @@ int main (int argc, char *argv[])
       myTree->Branch("E_mcParticle",E_mcParticle,"E_mcParticle[nMcParticles]/D");
       myTree->Branch("d0_mcParticle",d0_mcParticle,"d0_mcParticle[nMcParticles]/D");
       myTree->Branch("d0BeamSpot_mcParticle",d0BeamSpot_mcParticle,"d0BeamSpot_mcParticle[nMcParticles]/D");
+      myTree->Branch("status_mcParticle",status_mcParticle,"status_mcParticle[nMcParticles]/I");
       myTree->Branch("type_mcParticle",type_mcParticle,"type_mcParticle[nMcParticles]/I");
       myTree->Branch("motherType_mcParticle",motherType_mcParticle,"motherType_mcParticle[nMcParticles]/I");
       myTree->Branch("grannyType_mcParticle",grannyType_mcParticle,"grannyType_mcParticle[nMcParticles]/I");
@@ -1177,7 +1180,7 @@ int main (int argc, char *argv[])
 
       // event related variables
       myTree->Branch("run_num",&run_num,"run_num/I");
-      myTree->Branch("event_num",&event_num,"event_num/I");
+      myTree->Branch("event_num",&event_num,"event_num/L");
       myTree->Branch("lumi_num",&lumi_num,"lumi_num/I");
       myTree->Branch("nvtx",&nvtx,"nvtx/I");
       myTree->Branch("npu",&npu,"npu/I");
@@ -1295,6 +1298,7 @@ int main (int argc, char *argv[])
       myPreCutTree->Branch("v0_mcParticle_pc",v0_mcParticle_pc,"v0_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("d0_mcParticle_pc",d0_mcParticle_pc,"d0_mcParticle_pc[nMcParticles_pc]/D");
       myPreCutTree->Branch("d0BeamSpot_mcParticle_pc",d0BeamSpot_mcParticle_pc,"d0BeamSpot_mcParticle_pc[nMcParticles_pc]/D");
+      myPreCutTree->Branch("status_mcParticle_pc",status_mcParticle_pc,"status_mcParticle_pc[nMcParticles_pc]/I");
       myPreCutTree->Branch("type_mcParticle_pc",type_mcParticle_pc,"type_mcParticle_pc[nMcParticles_pc]/I");
       myPreCutTree->Branch("motherType_mcParticle_pc",motherType_mcParticle_pc,"motherType_mcParticle_pc[nMcParticles_pc]/I");
       myPreCutTree->Branch("grannyType_mcParticle_pc",grannyType_mcParticle_pc,"grannyType_mcParticle_pc[nMcParticles_pc]/I");
@@ -2079,6 +2083,7 @@ int main (int argc, char *argv[])
 		phi_mcParticle[nMcParticles]=mcParticles[i]->Phi();
 		eta_mcParticle[nMcParticles]=mcParticles[i]->Eta();
 		E_mcParticle[nMcParticles]=mcParticles[i]->E();
+		status_mcParticle[nMcParticles]=mcParticles[i]->status();
 		type_mcParticle[nMcParticles]=mcParticles[i]->type();
 		motherType_mcParticle[nMcParticles]=mcParticles[i]->motherType();
 		grannyType_mcParticle[nMcParticles]=mcParticles[i]->grannyType();
@@ -2340,6 +2345,7 @@ int main (int argc, char *argv[])
 		v0_mcParticle_pc[nMcParticles_pc]=sqrt( pow(mcParticles[i]->vx(),2) + pow(mcParticles[i]->vy(),2) );
 		d0_mcParticle_pc[nMcParticles_pc]=( -mcParticles[i]->vx() * mcParticles[i]->Py() + mcParticles[i]->vy() * mcParticles[i]->Px() ) / mcParticles[i]->Pt();
 		d0BeamSpot_mcParticle_pc[nMcParticles_pc]=( - (mcParticles[i]->vx() - BSx )* mcParticles[i]->Py() + (mcParticles[i]->vy() -BSy ) * mcParticles[i]->Px() ) / mcParticles[i]->Pt(); //faco
+		status_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->status();
 		type_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->type();
 		motherType_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->motherType();
 		grannyType_mcParticle_pc[nMcParticles_pc]=mcParticles[i]->grannyType();
