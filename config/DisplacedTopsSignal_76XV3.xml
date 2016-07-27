@@ -9,7 +9,6 @@ https://twiki.cern.ch/twiki/bin/view/LHCPhysics/SUSYCrossSections13TeVstopsbotto
 <data>
 <datasets>
 
-<d name="stopTobl_mxxMass_CtauxxxCtau" title="stopTobl_mxxMass_CtauxxxCtau" add="1" color="500" ls="1" lw="2" normf="1" xsection="xxx" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v3/xxx/*.root"/>
 
 <!--Signal -->
 
