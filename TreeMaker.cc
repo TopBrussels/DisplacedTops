@@ -1913,7 +1913,7 @@ int main (int argc, char *argv[])
 		Double_t feta = fabs(eta);
 		if (fabs(feta-1.479)<0.1) isEBEEGap[nElectrons] = true ;
 	      */
-	      sf_electron[nElectrons]=electronSFWeightReco_->at(selectedElectrons[selel]->superClusterEta(),selectedElectrons[selel]->Pt(),0) * electronSFWeightId_T_->at(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),0);
+	      sf_electron[nElectrons]=electronSFWeightReco_->at(selectedElectrons[selel]->superClusterEta(),selectedElectrons[selel]->Pt(),0) * electronSFWeightId_T_->at(selectedElectrons[selel]->superClusterEta(),selectedElectrons[selel]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron[nElectrons] << endl;
 	      nElectrons++;
             }
