@@ -266,7 +266,7 @@ int main (int argc, char *argv[])
   ///////////////////////////////////////
 
   bool printTriggers = false;
-  bool applyTriggers = true;
+  bool applyTriggers = false;
   string channelpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
@@ -396,18 +396,25 @@ int main (int argc, char *argv[])
   double muonSFID, muonSFIso;
 
   // Muon ID SF
-  MuonSFWeight *muonSFWeightID_T = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);
+  MuonSFWeight *muonSFWeightID_T_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);
   
   // Muon Iso SF depending on the WP of the muon ID SF
-  MuonSFWeight *muonSFWeightIso_TT = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);  // Tight RelIso, Tight ID
+  MuonSFWeight *muonSFWeightIso_TT_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);  // Tight RelIso, Tight ID
 
   // eo  Muon SF
 
   // Electron SF
-  string electronFile= "CutBasedID_TightWP_76X_18Feb.txt_SF2D.root";
-  ElectronSFWeight *electronSFWeight_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+electronFile,"EGamma_SF2D",true, false, false);
-  // (... , ... , extendRange , debug, print warning)
 
+  // Electron reco SF
+  ElectronSFWeight *electronSFWeightReco_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+"eleRECO.txt.egamma_SF2D.root","EGamma_SF2D",true, false, false);   // (... , ... , extendRange , debug, print warning)
+  
+
+  // Electron ID SF
+  string electronIdSFFile= "CutBasedID_TightWP_76X_18Feb.txt_SF2D.root";
+  ElectronSFWeight *electronSFWeightId_T_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+electronIdSFFile,"EGamma_SF2D",true, false, false);
+
+
+  // eo  Electron SF
   
 
   // PU SF
@@ -1345,7 +1352,7 @@ int main (int argc, char *argv[])
       //////////////////////////////////////
       // Begin Event Loop
       //////////////////////////////////////
-	
+      
       for (unsigned int ievt = event_start; ievt < end_d; ievt++)
 	{
 	  if (debug) cout << "Event number is " << ievt << endl << endl;
@@ -1906,7 +1913,7 @@ int main (int argc, char *argv[])
 		Double_t feta = fabs(eta);
 		if (fabs(feta-1.479)<0.1) isEBEEGap[nElectrons] = true ;
 	      */
-	      sf_electron[nElectrons]=electronSFWeight_->at(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),0);
+	      sf_electron[nElectrons]=electronSFWeightReco_->at(selectedElectrons[selel]->superClusterEta(),selectedElectrons[selel]->Pt(),0) * electronSFWeightId_T_->at(selectedElectrons[selel]->Eta(),selectedElectrons[selel]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron[nElectrons] << endl;
 	      nElectrons++;
             }
@@ -1988,7 +1995,7 @@ int main (int argc, char *argv[])
 	      relIso_muon[nMuons]=(selectedMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedMuons[selmu]->neutralHadronIso(4) + selectedMuons[selmu]->photonIso(4) - 0.5*selectedMuons[selmu]->puChargedHadronIso(4) ) ) / selectedMuons[selmu]->Pt();
 	      //	      relIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0.5)
 	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
-	      sf_muon[nMuons]=muonSFWeightIso_TT->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0)* muonSFWeightID_T->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
+	      sf_muon[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0)* muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
 	      nMuons++;
 
@@ -2183,7 +2190,7 @@ int main (int argc, char *argv[])
 		if(relIso < 0.0646) isIso_electron_pc[nElectrons_pc]=true; // wrong iso!!! faco
 	      }
 		
-	      sf_electron_pc[nElectrons_pc]=electronSFWeight_->at(init_electrons[i_el]->Eta(),init_electrons[i_el]->Pt(),0);
+	      sf_electron_pc[nElectrons_pc]=electronSFWeightReco_->at(init_electrons[i_el]->Eta(),init_electrons[i_el]->Pt(),0) * electronSFWeightId_T_->at(init_electrons[i_el]->Eta(),init_electrons[i_el]->Pt(),0);
 	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons_pc << " and pt equals to " << pt_electron_pc[nElectrons_pc] << endl;
 	      nElectrons_pc++;
             }
