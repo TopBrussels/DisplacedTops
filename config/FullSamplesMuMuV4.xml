@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+
+<!--add="1" means run on the sample -->
+<!-- add="0" means do not run on the sample -->
+<!-- ex with eqlumi <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" EqLumi="2287."/> -->
+<!-- ex with NofEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" NofEvts="946644"/> -->
+<!-- ex with PreselEff NofPSEvts <d name="TTJets" add="1" color="4" ls="1" lw="1" normf="0.000437334" EqLumi="1" xsection="414" filenames="/user/echabert/TopTree_Prod229/TopTree_TTJets.root" PreselEff="0.2307" NofPSEvts="218404"/> -->
+
+<!-- all cross sections come from https://twiki.cern.ch/twiki/bin/view/CMS/SummaryTable1G25ns -->
+
+
+<data>
+<datasets>
+
+
+<!-- Data -->
+<!-- *** -->
+<!-- *** -->
+
+<!-- bo DoubleEG -->
+<!-- ********* -->
+
+<!-- Data RunC -->
+<!-- Lumi = 17.225  pb-1 -->
+<d name="DataRunC"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="17.225" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4-SILVER/DoubleEG/crab_DoubleEG-Run2015C_25ns-16Dec2015-v1crab6/160727_032530/0000/*.root"/>
+
+<!-- Data RunD -->
+<!-- Lumi = 2610.486  pb-1 -->
+<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="2610.486" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4-SILVER/DoubleEG/crab_DoubleEG-Run2015D-16Dec2015-v2crab7/160727_032605/000*/*.root"/>
+
+
+<!-- Data Combined -->
+<!-- Lumi = 2627.711  pb-1 -->
+<d name="Data"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DoubleEG/crab_DoubleEG-Run2015D-16Dec2015-v2-76X_dataRun2_v15/160201_152918/000*/*.root"/>
+
+<!-- ********* -->
+<!-- eo DoubleEG -->
+
+<!-- ******* -->
+<!-- ******* -->
+<!-- eo Data -->
+
+
+
+
+<!--ALL the MC -->
+
+<!-- bo Signal -->
+<!-- ********* -->
+
+
+
+<!-- M 500 ctau 1 -->
+<d name="NP_overlay_stopTobl_m500_Ctau1" title="stopTobl_m500_Ctau1" add="0" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="170941.984262" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v3/DisplacedSUSY_StopToBL_M-500_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab170/160531_181458/0000/*.root"/>
+
+<!-- M 500 ctau 10 -->
+<d name="NP_overlay_stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="170941.984262" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v3/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab169/160531_181452/0000/*.root"/>
+
+<!-- M 500 ctau 100 -->
+<d name="NP_overlay_stopTobl_m500_Ctau100" title="stopTobl_m500_Ctau100" add="0" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="170941.984262" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v3/DisplacedSUSY_StopToBL_M-500_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab168/160531_181443/0000/*.root"/>
+
+<!-- ********* -->
+<!-- eo Signal -->
+
+
+
+<!-- W-> l+nu -->
+<d name="WJetsToLNu" title="WJets" add="1" color="852"  ls="1" lw="2" normf="1" EqLumi="1" xsection="61526.7" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_oFXFXpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12ext4v176XmcRun2asymptoticFall15DR76v1crab82/160727_041519/0000/*.root"/>
+
+<d name="W1JetsToLNu" title="WJets" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W2JetsToLNu" title="WJets" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W3JetsToLNu" title="WJets" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+<d name="W4JetsToLNu" title="WJets" add="0" color="858"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1" PreselEff="0.0"   filenames=""/>
+
+
+<!-- Diboson -->
+<!-- ****** -->
+<d name="WWToLNuQQ" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="139928.395704" xsection="49.997" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/WWToLNuQQ_13TeV-powheg/crab_Q13TeVpowhegFall15PU25nsData2015v176XmcRun2asymptoticv12ext1v176XmcRun2asymptoticFall15DR76v1crab89/160727_041707/0000/*.root"/>
+
+<d name="WWTo2l2Nu" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="162587.288553" xsection="12.178" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/WWTo2L2Nu_13TeV-powheg/crab_2L2Nu13TeVpowhegFall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab87/160727_041642/0000/*.root"/>
+
+<d name="WZJets" title="Diboson" add="0" color="390"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="5.26" PreselEff="0.0"   filenames=""/>
+
+<d name="WZTo3LNu" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="451502.940413" xsection="4.42965" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8/crab_TeVpowhegpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab106/160727_041854/0000/*.root"/>
+
+<d name="ZZ" title="Diboson" add="0" color="390"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="16.523" PreselEff="0.0"   filenames=""/>
+
+<d name="ZZTo2L2Nu" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="14550088.6525" xsection="0.564" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/ZZTo2L2Nu_13TeV_powheg_pythia8/crab_TeVpowhegpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab93/160727_042048/0000/*.root"/>
+
+
+<d name="ZZTo4Lpowheg" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="5502630.36304" xsection="1.212" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/ZZTo4L_13TeV_powheg_pythia8/crab_ZZTo4L13TeVpowhegpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticv12/160201_153943/0000/*.root"/>
+
+
+<d name="ZZTo4Lamc" title="Diboson" add="0" color="390"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="1.212" PreselEff="0.0"   filenames=""/>
+
+
+<d name="ZG" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="35688.8297014" xsection="123.9" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_atnloFXFXpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab98/160727_042014/0000/*.root"/>
+
+<d name="WGToLNuG" title="Diboson" add="1" color="390"  ls="1"  lw="2" normf="1" EqLumi="13197.5176537" xsection="461.66" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_dgraphMLMpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab102/160727_041342/0000/*.root"/>
+
+
+<!-- ********** -->
+<!-- eo Diboson -->
+
+
+<!-- Single t -->
+<!-- ********* -->
+<d name="SingleTop_tW" title="SingleTop" add="1" color="909"  ls="1"  lw="2" normf="1" EqLumi="28089.8876404" xsection="35.6" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_TeVpowhegpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab71/160727_040410/0000/*.root"/>
+
+<d name="SingleTop_tbarW" title="SingleTop" add="1" color="910"  ls="1"  lw="2" normf="1" EqLumi="28073.0337079" xsection="35.6" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/crab_TeVpowhegpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab64/160727_040253/0000/*.root"/>
+
+<d name="SingleTop_s_channel" title="SingleTop" add="0" color="905"  ls="1"  lw="2" normf="1" EqLumi="296939.59492" xsection="3.3623" PreselEff="0.0"   filenames=""/>
+
+<d name="SingleTop_t_channel_top" title="SingleTop" add="0" color="907"  ls="1"  lw="2" normf="1" EqLumi="449768.328446" xsection="44.33" PreselEff="0.0"   filenames=""/>
+
+<d name="SingleTop_t_channel_antitop" title="SingleTop" add="0" color="907"  ls="1"  lw="2" normf="1" EqLumi="61823.3510235" xsection="26.38" PreselEff="0.0"   filenames=""/>
+
+
+<!-- *********** -->
+<!-- eo Single t -->
+
+
+<!-- t tbar -->
+<!-- ****** -->
+
+<!-- hadronic -->
+<d name="TTJets_Madgrap" title="TTJets" add="1" color="872"  ls="1"  lw="2" normf="1" EqLumi="12281.3443782" xsection="831.76" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_dgraphMLMpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab20/160727_040733/0000/*.root"/>
+
+<d name="TTJets_amc" title="TTJets" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="" xsection="831.76" PreselEff="0.0"   filenames=""/>
+
+<!-- leptonic -->
+<d name="TTJets_Dilept" title="TTJets_Dilept" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="" xsection="88.288" PreselEff="0.0"   filenames=""/>
+
+<d name="TTJets_SingleLeptFromT" title="TTJets_SingleLeptFromT" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="" xsection="365.4" PreselEff="0.0"   filenames=""/>
+
+<d name="TTJets_SingleLeptFromTbar" title="TTJets_SingleLeptFromTbar" add="0" color="872"  ls="1"  lw="2" normf="1" EqLumi="" xsection="365.4" PreselEff="0.0"   filenames=""/>
+
+<d name="TTTo2L2Nu" title="TTTo2L2Nu" add="0" color="872" ls="1" lw="2" normf="1" EqLumi="57216.8136525" xsection="87.31" PreselEff="0.0" filenames=""/>
+
+
+<!-- bo QCD EM enriched -->
+<!-- ****************** -->
+
+
+
+<!-- ****************** -->
+<!-- eo QCD EM enriched -->
+
+
+<!-- Z->ll -->
+<d name="DYJetsToLL_M-50toInf_Madgraph" title="DrellYann" add="1" color="410"  ls="1"  lw="2" normf="1" EqLumi="1494.44466574" xsection="6025.2" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_phMLMpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12ext1v176XmcRun2asymptoticFall15DR76v1crab129/160727_034509/000*/*.root"/>
+
+
+<d name="DYJetsToll_M-10to50" title="DrellYann M10-50" add="1" color="430"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="18610" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_oFXFXpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12ext1v176XmcRun2asymptoticFall15DR76v1crab112/160727_034317/0000/*.root"/>
+
+
+<d name="DYJetsToLL_M-50toInf_amc" title="DrellYann" add="0" color="410"  ls="1"  lw="2" normf="1" EqLumi="" xsection="6025.2" PreselEff="0.0"   filenames="*.root"/>
+
+
+
+
+</datasets>
+
+
+<!-- All parameters needed for the selection and the bkg estimation methods -->
+<analysis>
+<!-- JetType: 0=TRootJet - 1=TRootCaloJet - 2=TRootPFJet -->
+<a type="Collections" PVCollection="PrimaryVertex" JetType="2" JetCollection="PFJets_slimmedJets" METType="2" METCollection="PFMET_slimmedMETs" MuonCollection="Muons_slimmedMuons" ElectronCollection="Electrons_slimmedElectrons" loadGenJetCollection="0" GenJetCollection="GenJets_slimmedGenJets" loadGenEventCollection="0" GenEventCollection="GenEvent" loadNPGenEventCollection="0" NPGenEventCollection="NPGenEvent" loadMCParticles="1" MCParticlesCollection="MCParticles" TrackMETCollection="" loadTrackMET="0"/>
+<!-- LuminosityError has to be relative [0-1], ex  0p1 means 10% uncertainty on luminosity -->
+<!-- other errors should be absolute -->
+</analysis>
+</data>
