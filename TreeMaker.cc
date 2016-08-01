@@ -240,7 +240,6 @@ int main (int argc, char *argv[])
 
 
   bool bx25 = false; // faco
-\
   clock_t start = clock();
 
 
@@ -266,13 +265,13 @@ int main (int argc, char *argv[])
   ///////////////////////////////////////
 
   bool printTriggers = false;
-  bool applyTriggers = false;
+  bool applyTriggers = true;
   string channelpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
-  bool applyBlinding = false;
+  bool applyBlinding = true;
   bool selectOnZPeak = false;
-  bool saveRawCollection = true; // fill the pc tree
+  bool saveRawCollection = false; // fill the pc tree
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
   bool elel = false; // e-e final state

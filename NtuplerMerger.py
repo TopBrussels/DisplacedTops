@@ -14,7 +14,7 @@ mm = str(now.month)
 yyyy = str(now.year)
 # pick one of the two above
 #date = dd+"_"+mm+"_"+yyyy
-date = "NoDisplacedTriggerNoBlinding"
+date = "CMSSW76V4"
 
 #usging argument to filter
 filterSample = sys.argv[1]
