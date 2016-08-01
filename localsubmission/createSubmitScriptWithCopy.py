@@ -28,9 +28,9 @@ date = dd+"_"+mm+"_"+yyyy
 #channels = ["bbEl"] 
 #channels = ["bbEl","bbMu"]
 #channels = ["MuMu","ElEl"] 
-channels = ["ElMu"] 
+#channels = ["ElMu"] 
 
-#channels = ["MuMu"] 
+channels = ["MuMu"] 
 #channels = ["ElEl"] 
 #channels=["test"]
 
@@ -40,12 +40,13 @@ for chan in channels:
     print "\nSearching list of sample used for ", chan, " channel!"
     # getting the appropriate xml file
     if "MuMu" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesMuMuV0.xml')
+        tree = ET.ElementTree(file='../config/FullSamplesMuMuV4.xml')
     elif "ElEl" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElElV0.xml')
+        tree = ET.ElementTree(file='../config/FullSamplesElElV4.xml')
     elif "ElMu" in chan:
 #        tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
-        tree = ET.ElementTree(file='../config/DisplacedTopsSignal.xml')
+#        tree = ET.ElementTree(file='../config/DisplacedTopsSignal.xml')
+        tree = ET.ElementTree(file='../config/DisplacedTopsSignal_76XV3.xml')
         
     elif "bbMu" in chan:
         tree = ET.ElementTree(file='../config/FullSamplesbbMuV0.xml')
@@ -99,9 +100,9 @@ for chan in channels:
             # setting the number of file per job depending whether it is data sample or not
             # this ca be tweaked
             if "Data" in str(d.attrib['name']):
-                FilePerJob=20
+                FilePerJob=25
             else:
-                FilePerJob=2
+                FilePerJob=3
 
             # create a test job for each dataset
             # create a file for this job 
