@@ -3091,7 +3091,7 @@ int main (int argc, char *argv[])
 	  if ( (elel || mumu || elmu) && !ttbarEnriched){
 	    
 	    // bo elel case
-	    if (elel && selectedElectrons.size() >= 2) {
+	    if (elel && selectedElectrons.size() == 2) {
 	      Bool_t blindD0_elel = true;
 
 	      // bo blinding for non-signal
@@ -3106,7 +3106,7 @@ int main (int argc, char *argv[])
 		    }
 		  }
 		 
-		// fill if blinded
+		// fill if blinded condition is passed
 		if (blindD0_elel==true){
 		  myTree->Fill();
 		  passed++;
@@ -3126,7 +3126,7 @@ int main (int argc, char *argv[])
 
 
 	    // bo mumu case
-	    if (mumu && selectedMuons.size() >= 2 ){
+	    if (mumu && selectedMuons.size() == 2 ){
 	      Bool_t blindD0_mumu = true;
 	      
 	      // bo signal
@@ -3141,7 +3141,7 @@ int main (int argc, char *argv[])
 		    }
 		  }
 		
-		// fill if blinded
+		// fill if blinded condition is passed
 		if (blindD0_mumu==true){
 		  myTree->Fill();
 		  passed++;
