@@ -698,10 +698,12 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	  }
 	  //	  */
 
+	  // eo of event SF
+	  // -----------
+	  
 
 	  // -----------
-	  // eo of event SF
-
+	  // bo making MS plots
 
 	  // make MS plot for single value
 	  if (v.size() == 1){
@@ -751,6 +753,11 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 	      }
 
 	  }
+
+
+	  // eo making MS plots
+	  // -----------
+
 
 	}
       // eo loop over the entries
