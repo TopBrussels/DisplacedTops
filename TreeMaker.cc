@@ -1356,6 +1356,8 @@ int main (int argc, char *argv[])
 	{
 	  if (debug) cout << "Event number is " << ievt << endl << endl;
 
+	  // initial number
+	  histo1D["h_cutFlow"]->Fill(0., 1);
 
 	  //define object containers
 
@@ -1484,6 +1486,8 @@ int main (int argc, char *argv[])
 	      trigged = trigger->checkIfFired();
         
 	      if (trigged) {
+		// trigged
+		histo1D["h_cutFlow"]->Fill(1., 1);
 		if (debug)cout << "event " << ievt << " was Trigged!!" << endl;
 	      }
 	      else {
@@ -1596,59 +1600,6 @@ int main (int argc, char *argv[])
 
 	  // eo antiIso
 
-
-	  // bo cut for elel
-	  vector <bool> keepElectronDR(selectedElectrons.size(),true);
-
-	  // set the flags to get the new collection depending on the Delta R between two electrons
-	  for (Int_t secondEl = selectedElectrons.size()-1; secondEl > 0; secondEl-- ){
-	    for (Int_t firstEl = 0; firstEl < secondEl ; firstEl++){
-	      if (selectedElectrons[firstEl]->DeltaR(*(selectedElectrons[secondEl])) < 0.5) {
-		keepElectronDR[firstEl]=false;
-		keepElectronDR[secondEl]=false;
-	      }
-	    }
-	  }
-
-	  // reduce the electrons collection
-	  for (int i_el = selectedElectrons.size()-1 ; i_el >= 0 ; i_el-- ){
-	    if ( keepElectronDR[i_el]==false ){
-	      selectedElectrons[i_el] = selectedElectrons.back();
-	      selectedElectrons.pop_back();
-	    }
-	  }
-	  
-	  keepElectronDR.clear();
-
-	  // eo cut for el 
-
-
-	  // bo cut for mumu
-	  vector <bool> keepMuonDR(selectedMuons.size(),true);
-
-	  // set the flags to get the new collection depending on the Delta R between two muons
-	  for (Int_t secondMu = selectedMuons.size()-1; secondMu > 0; secondMu-- ){
-	    for (Int_t firstMu = 0; firstMu < secondMu ; firstMu++){
-	      if (selectedMuons[firstMu]->DeltaR(*(selectedMuons[secondMu])) < 0.5) {
-		keepMuonDR[firstMu]=false;
-		keepMuonDR[secondMu]=false;
-	      }
-	    }
-	  }
-
-	  // reduce the muons collection
-	  for (int i_mu = selectedMuons.size()-1 ; i_mu >= 0 ; i_mu-- ){
-	    if ( keepMuonDR[i_mu]==false ){
-	      selectedMuons[i_mu] = selectedMuons.back();
-	      selectedMuons.pop_back();
-	    }
-	  }
-	  
-	  keepMuonDR.clear();
-
-	  // eo cut for mu 
-
-	  //faco
 
 	  
 	  // bo cut for bb+el or bb+mu final state
@@ -3095,45 +3046,67 @@ int main (int argc, char *argv[])
 	    // event with exactly two electrons
 	    if (elel && selectedElectrons.size() == 2 ) {
 
+	      // exactly two good electrons
+	      histo1D["h_cutFlow"]->Fill(2., 1);
 
-	      // debug cout
-	      if (debug && charge_electron[0] * charge_electron[1] != -1){
-		cout << "charger req failled!!! Charge product = " << charge_electron[0] * charge_electron[1] << endl;
-	      }
-
-	      // event with OS leptons
-	      if (charge_electron[0] * charge_electron[1] == -1){
-
-
-		Bool_t blindD0_elel = true;
-		// bo blinding for non-signal
-		if (applyBlinding && !isSignal){
-		  if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
 	      
-		  // Remove the events were the D0 is too big
-		  for (Int_t selel =0; selel <= selectedElectrons.size() ; selel++)
-		    {
-		      if (abs(d0BeamSpot_electron[selel]) > 0.02){
-			blindD0_elel=false;
+
+	      if (selectedElectrons[0]->DeltaR(* (selectedElectrons[1]) ) > 0.5 ){
+		
+		// Not overlapping electrons
+		histo1D["h_cutFlow"]->Fill(3., 1);
+		
+
+
+		// debug cout
+		if (debug && charge_electron[0] * charge_electron[1] != -1){
+		  cout << "charger req failled!!! Charge product = " << charge_electron[0] * charge_electron[1] << endl;
+		}
+
+		// event with OS leptons
+		if (charge_electron[0] * charge_electron[1] == -1){
+
+		  // OS letpons
+		  histo1D["h_cutFlow"]->Fill(4., 1);
+
+
+		  Bool_t blindD0_elel = true;
+		  // bo blinding for non-signal
+		  if (applyBlinding && !isSignal){
+		    if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
+	      
+		    // Remove the events were the D0 is too big
+		    for (Int_t selel =0; selel <= selectedElectrons.size() ; selel++)
+		      {
+			if (abs(d0BeamSpot_electron[selel]) > 0.02){
+			  blindD0_elel=false;
+			}
 		      }
-		    }
 		 
-		  // fill if blinded condition is passed
-		  if (blindD0_elel==true){
+		    // fill if blinded condition is passed
+		    if (blindD0_elel==true){
+		      
+		      // OS letpons
+		      histo1D["h_cutFlow"]->Fill(5., 1);
+
+		      myTree->Fill();
+		      passed++;
+		      if (debug) cout << "Blinding conditions passed!" << endl;
+		    }
+		  }
+		  // eo blinding for non-signal
+
+		  // if not applyBlinding or if isSignal
+		  else {
+		    
+		    // OS letpons
+		    //		    histo1D["h_cutFlow"]->Fill(4., 1);
+
 		    myTree->Fill();
 		    passed++;
-		    if (debug) cout << "Blinding conditions passed!" << endl;
 		  }
 		}
-		// eo blinding for non-signal
-
-		// if not applyBlinding or if isSignal
-		else {
-		  myTree->Fill();
-		  passed++;
-		}
 	      }
-
 	    }
 	    // eo elel case
 
@@ -3206,6 +3179,7 @@ int main (int argc, char *argv[])
 	    
 	  if (debug) cout << " DONE filling the tree, sum of leptons equals to " <<nElectrons + nMuons << endl;
 
+	  /*
 
 	  // filling the cutflow and the histo 1 D
 
@@ -3271,7 +3245,7 @@ int main (int argc, char *argv[])
 	    }
 	  }
 
-
+	  */
 
 
 	  /*
