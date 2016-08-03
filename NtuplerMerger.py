@@ -12,9 +12,11 @@ now = datetime.now()
 dd = str(now.day)
 mm = str(now.month)
 yyyy = str(now.year)
-# pick one of the two above
-#date = dd+"_"+mm+"_"+yyyy
-date = "CMSSW76V4"
+date = dd+"_"+mm+"_"+yyyy
+
+#directory name
+directory = "CMSSW76V4"
+#directory = date
 
 #usging argument to filter
 filterSample = sys.argv[1]
@@ -32,7 +34,7 @@ for chan in channels:
     
     #Define path where ntuples are stored
     pathNonMerged = "MACRO_Output"+chan+"/"  
-    pathMerged = "MergedTrees/"+date+"/"+chan+"/"
+    pathMerged = "MergedTrees/"+directory+"/"+chan+"/"
     
     if not os.path.exists(pathMerged):
         os.makedirs(pathMerged)
