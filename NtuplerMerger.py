@@ -24,9 +24,9 @@ filterSample = sys.argv[1]
 #channels= ["_bbMu","_bbEl"]
 #channels = ["_bbMu"]
 #channels = ["_bbEl"]
-channels = ["_MuMu","_ElEl"]
+#channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
-#channels = ["_MuMu"]
+channels = ["_MuMu"]
 
 for chan in channels:
     
@@ -39,15 +39,15 @@ for chan in channels:
     
     # get filenames from the xml!!!    
     if "MuMu" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesMuMuV0.xml')
+        tree = ET.ElementTree(file='config/FullSamplesMuMuV4.xml')
     elif "ElEl" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesElElV0.xml')
+        tree = ET.ElementTree(file='config/FullSamplesElElV4.xml')
     elif "ElMu" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesElMuV0.xml')
+        tree = ET.ElementTree(file='config/FullSamplesElMuV4.xml')
     elif "bbMu" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesbbMuV0.xml')
+        tree = ET.ElementTree(file='config/FullSamplesbbMuV4.xml')
     elif "bbEl" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesbbElV0.xml')
+        tree = ET.ElementTree(file='config/FullSamplesbbElV4.xml')
     else:
         print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
         sys.exit()

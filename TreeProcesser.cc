@@ -108,14 +108,14 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Muon-Electron channel..." << endl;
       channelpostfix = "_MuEl";
-      xmlFileName = "config/TreeProc_FullSamplesElMuV0.xml";
+      xmlFileName = "config/TreeProc_FullSamplesElMuV4.xml";
       DileptonElMu=true;
     }
   else if(channel=="MuMu")
     {
       cout << " --> Using the Muon-Muon channel..." << endl;
       channelpostfix = "_MuMu";
-      xmlFileName = "config/TreeProc_FullSamplesMuMuV0.xml";
+      xmlFileName = "config/TreeProc_FullSamplesMuMuV4.xml";
       DileptonMuMu=true;
     }
   else if(channel=="ElEl")
@@ -124,21 +124,21 @@ int main(int argc, char* argv[])
       channelpostfix = "_ElEl";
       //      channelpostfix += "/unskimmed";
       
-      xmlFileName = "config/TreeProc_FullSamplesElElV0.xml";
+      xmlFileName = "config/TreeProc_FullSamplesElElV4.xml";
       DileptonElEl=true;
     }
   else if(channel=="bbMu")
     {
       cout << " --> Using the bbar+Muon control region..." << endl;
       channelpostfix = "_bbMu";
-      xmlFileName = "config/TreeProc_FullSamplesbbMuV0.xml";
+      xmlFileName = "config/TreeProc_FullSamplesbbMuV4.xml";
       bbMu=true;
     }
   else if(channel=="bbEl")
     {
       cout << " --> Using the bbar+Electron control region..." << endl;
       channelpostfix = "_bbEl";
-      xmlFileName = "config/TreeProc_FullSamplesbbElV0.xml";
+      xmlFileName = "config/TreeProc_FullSamplesbbElV4.xml";
       bbEl=true;
     }
   else
