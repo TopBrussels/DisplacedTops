@@ -3141,10 +3141,10 @@ int main (int argc, char *argv[])
 	    // bo mumu case
 	    
 	    // event with exactly two muons
-	    if (mumu && selectedMuons.size() == 2 && charge_muon[0] * charge_muon[1] == -1 ){
+	    if (mumu && selectedMuons.size() == 2 ){
 
 	      // debug cout
-	      if (true && charge_muon[0] * charge_muon[1] != -1){
+	      if (debug && charge_muon[0] * charge_muon[1] != -1){
 		cout << "charge requirement failled!!! Charge product = " << charge_muon[0] * charge_muon[1] << endl;
 	      }
 	      
