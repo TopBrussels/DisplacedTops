@@ -138,13 +138,40 @@
 <d name="TTTo2L2Nu" title="TTTo2L2Nu" add="0" color="872" ls="1" lw="2" normf="1" EqLumi="57216.8136525" xsection="87.31" PreselEff="0.0" filenames=""/>
 
 
-<!-- bo QCD EM enriched -->
+<!-- bo QCD Mu enriched -->
 <!-- ****************** -->
 
+<!-- 
+
+<d name="QCD_MuEnriched_15to20" title="QCDMuEnriched" add="0" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="3819570" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_20to30" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="1.26482282604" xsection="2960198" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_30to50" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="2.34773136715" xsection="1652471" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_50to80" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="11.2477437354" xsection="437504.1" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_80to120" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="36.6018728008" xsection="106033.7" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_120to170" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="100.223179196" xsection="25190.52" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_170to300" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="455.559903971" xsection="8654.493" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_300to470" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="4630.36621059" xsection="797.3527" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_470to600" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="18672.5709182" xsection="79.02554" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_600to800" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="79034.0011142" xsection="25.09506" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_800to1000" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="332958.035148" xsection="4.707368" PreselEff="0.0"   filenames=""/>
+
+<d name="QCD_MuEnriched_1000toInf" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="945931.60992" xsection="1.621317" PreselEff="0.0"   filenames=""/>
+
+-->
 
 
 <!-- ****************** -->
-<!-- eo QCD EM enriched -->
+<!-- eo QCD Mu enriched -->
 
 
 <!-- Z->ll -->
