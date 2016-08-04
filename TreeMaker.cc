@@ -3045,29 +3045,21 @@ int main (int argc, char *argv[])
 	    
 	    // event with exactly two electrons
 	    if (elel && selectedElectrons.size() == 2 ) {
-
-	      // exactly two good electrons
 	      histo1D["h_cutFlow"]->Fill(2., 1);
 
-	      
-
+	      // Not overlapping electrons
 	      if (selectedElectrons[0]->DeltaR(* (selectedElectrons[1]) ) > 0.5 ){
-		
-		// Not overlapping electrons
 		histo1D["h_cutFlow"]->Fill(3., 1);
 		
 
-
-		// debug cout
-		if (debug && charge_electron[0] * charge_electron[1] != -1){
-		  cout << "charger req failled!!! Charge product = " << charge_electron[0] * charge_electron[1] << endl;
-		}
-
 		// event with OS leptons
 		if (charge_electron[0] * charge_electron[1] == -1){
-
-		  // OS letpons
 		  histo1D["h_cutFlow"]->Fill(4., 1);
+		  
+		  // debug cout
+		  if ( debug && charge_electron[0] * charge_electron[1] != -1){
+		    cout << "charger requirement failled!!! Charge product = " << charge_electron[0] * charge_electron[1] << endl;
+		  }
 
 
 		  Bool_t blindD0_elel = true;
@@ -3086,7 +3078,7 @@ int main (int argc, char *argv[])
 		    // fill if blinded condition is passed
 		    if (blindD0_elel==true){
 		      
-		      // OS letpons
+		      // low d0 electrons
 		      histo1D["h_cutFlow"]->Fill(5., 1);
 
 		      myTree->Fill();
@@ -3098,10 +3090,6 @@ int main (int argc, char *argv[])
 
 		  // if not applyBlinding or if isSignal
 		  else {
-		    
-		    // OS letpons
-		    //		    histo1D["h_cutFlow"]->Fill(4., 1);
-
 		    myTree->Fill();
 		    passed++;
 		  }
@@ -3115,44 +3103,56 @@ int main (int argc, char *argv[])
 	    
 	    // event with exactly two muons
 	    if (mumu && selectedMuons.size() == 2 ){
+              histo1D["h_cutFlow"]->Fill(2., 1);
 
-	      // debug cout
-	      if (debug && charge_muon[0] * charge_muon[1] != -1){
-		cout << "charge requirement failled!!! Charge product = " << charge_muon[0] * charge_muon[1] << endl;
-	      }
-	      
-	      // event with OS leptons
-	      if (charge_electron[0] * charge_electron[1] == -1){
 
+	      // Not overlapping muons
+              if (selectedMuons[0]->DeltaR(* (selectedMuons[1]) ) > 0.5 ){
+		histo1D["h_cutFlow"]->Fill(3., 1);
 	      
-		Bool_t blindD0_mumu = true;
 	      
-		// bo signal
-		if (applyBlinding && !isSignal){
-		  if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
-	      
-		  // Remove the events were the D0 is too big
-		  for (Int_t selmu =0; selmu <= selectedMuons.size() ; selmu++)
-		    {
-		      if (abs(d0BeamSpot_muon[selmu]) > 0.02){
-			blindD0_mumu=false;
-		      }
-		    }
+		// event with OS leptons
+		if (charge_muon[0] * charge_muon[1] == -1){
+		  histo1D["h_cutFlow"]->Fill(4., 1);
 		
-		  // fill if blinded condition is passed
-		  if (blindD0_mumu==true){
+		  // debug cout
+		  if (debug && charge_muon[0] * charge_muon[1] != -1){
+		    cout << "charge requirement failled!!! Charge product = " << charge_muon[0] * charge_muon[1] << endl;
+		  }
+		
+		
+		  Bool_t blindD0_mumu = true;
+	      
+		  // bo signal
+		  if (applyBlinding && !isSignal){
+		    if (debug) cout << "Trying to pass blinding condition for data and Background MC" << endl;
+	      
+		    // Remove the events were the D0 is too big
+		    for (Int_t selmu =0; selmu <= selectedMuons.size() ; selmu++)
+		      {
+			if (abs(d0BeamSpot_muon[selmu]) > 0.02){
+			  blindD0_mumu=false;
+			}
+		      }
+		
+		    // fill if blinded condition is passed
+		    if (blindD0_mumu==true){
+		      // low d0 muons
+		      histo1D["h_cutFlow"]->Fill(5., 1);
+		      
+		      myTree->Fill();
+		      passed++;
+		      if (debug) cout << "Blinding conditions passed!" << endl;
+		    }
+
+		  }
+		  // eo signal
+
+		  // if not applyBlinding or if isSignal  	      
+		  else {
 		    myTree->Fill();
 		    passed++;
-		    if (debug) cout << "Blinding conditions passed!" << endl;
 		  }
-
-		}
-		// eo signal
-
-		// if not applyBlinding or if isSignal  	      
-		else {
-		  myTree->Fill();
-		  passed++;
 		}
 	      }
 
