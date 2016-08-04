@@ -15,7 +15,7 @@ yyyy = str(now.year)
 date = dd+"_"+mm+"_"+yyyy
 
 #directory name
-directory = "CMSSW76V4"
+directory = "CMSSW76V4_NewCutFlow"
 #directory = date
 
 #usging argument to filter

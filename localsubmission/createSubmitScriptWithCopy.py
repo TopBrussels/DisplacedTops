@@ -27,10 +27,10 @@ date = dd+"_"+mm+"_"+yyyy
 #channels = ["bbMu"] 
 #channels = ["bbEl"] 
 #channels = ["bbEl","bbMu"]
-#channels = ["MuMu","ElEl"] 
+channels = ["MuMu","ElEl"] 
 #channels = ["ElMu"] 
 
-channels = ["MuMu"] 
+#channels = ["MuMu"] 
 #channels = ["ElEl"] 
 #channels=["test"]
 
