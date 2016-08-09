@@ -24,10 +24,12 @@ date = dd+"_"+mm+"_"+yyyy
 
 
 # pick one of the following
-#channels = ["bbMu"] 
+#channels = ["ttElEl","ttMuMu"]
+#channels = ["ttMuMu"]
 #channels = ["bbEl"] 
+#channels = ["bbMu"] 
 #channels = ["bbEl","bbMu"]
-channels = ["MuMu","ElEl"] 
+#channels = ["MuMu","ElEl"] 
 #channels = ["ElMu"] 
 
 #channels = ["MuMu"] 
@@ -35,28 +37,36 @@ channels = ["MuMu","ElEl"]
 #channels=["test"]
 
 
+channels = ["MuMu","ElEl","bbEl","bbMu","ttElEl","ttMuMu"]
+
+
+
 # loop over channels
 for chan in channels:
     print "\nSearching list of sample used for ", chan, " channel!"
     # getting the appropriate xml file
-    if "MuMu" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesMuMuV4.xml')
-    elif "ElEl" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesElElV4.xml')
-    elif "ElMu" in chan:
-#        tree = ET.ElementTree(file='../config/FullSamplesElMuV0.xml')
+    if chan == "MuMu":
+        tree = ET.ElementTree(file='../config/MuMuV4.xml')
+    elif chan == "ElEl":
+        tree = ET.ElementTree(file='../config/ElElV4.xml')
+    elif chan == "ElMu":
+#        tree = ET.ElementTree(file='../config/ElMuV0.xml')
 #        tree = ET.ElementTree(file='../config/DisplacedTopsSignal.xml')
         tree = ET.ElementTree(file='../config/DisplacedTopsSignal_76XV3.xml')
-        
-    elif "bbMu" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesbbMuV0.xml')
-    elif "bbEl" in chan:
-        tree = ET.ElementTree(file='../config/FullSamplesbbElV0.xml')
-    elif "test" in chan:
+    elif chan ==  "bbEl":
+        tree = ET.ElementTree(file='../config/bbElV4.xml')
+    elif chan == "bbMu":
+        tree = ET.ElementTree(file='../config/bbMuV4.xml')
+    elif chan == "ttElEl" or chan == "ttMuMu" : # same list of samples for two different channels
+#        print "using config ../config/ttLeptonsV4.xml"
+        tree = ET.ElementTree(file='../config/ttLeptonsV4.xml')
+    elif chan == "test" :
         tree = ET.ElementTree(file='../config/test.xml')
     else:
         print "Channel '", chan , "' is not a correct channel name. No tree has been loaded!"
         sys.exit()
+
+    
 
     root = tree.getroot()
     datasets = root.find('datasets')
@@ -86,8 +96,8 @@ for chan in channels:
     files_str=""
     scractFiles_str=""
     tmpdirFiles_str=""
-    FilePerJob=0 # add dccap...
-    addPrefix=True
+    FilePerJob=0 
+    addPrefix=True # add dccap...
     N_processed=0
     
     # loop over all the dataset with add="1"
@@ -149,7 +159,7 @@ for chan in channels:
                     for fpj in range (0,len(listOfFiles)):
 #                        print listOfFiles[fpj]
                         
-                        # add prefix if need
+                        # add prefix if needed
                         if (addPrefix == True):
                             listOfFiles[fpj]="dcap://maite.iihe.ac.be"+listOfFiles[fpj]
                         # string contain the list of files separated by a space
