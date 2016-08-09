@@ -3,21 +3,23 @@
 """
 python script to make multiple xml config out of the main xml config which contains all the samples.
 This allow to run only on a subset of the samples without having to recalculate the Eq lumi and makes sure that everything is in synch.
-We want to make one xml per channel (bbEl, bbMu, ElEl, MuMu).
+We want to make one xml per channel (bbEl, bbMu, ElEl, MuMu) and one common xml for the channel ttElEl and ttMuMu.
 """
 
 
 Version = "V4"
+#inputFile = "Filled_FullSamples"+Version+".xml"
 inputFile = "FullSamples"+Version+".xml"
 
 
 
-channels= ["ElEl","MuMu","bbEl","bbMu"]
+channels= ["ElEl","MuMu","bbEl","bbMu","ttLeptons"]
 dataSetTitleList=[
-     ["DoubleEG","500_CTau-10","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Dilept","DrellYann"],
-     ["DoubleMuon","500_CTau-10","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Dilept","DrellYann"],
-     ["SingleElectron","500_CTau-10","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Dilept","DrellYann"],
-     ["SingleMuon","500_CTau-10","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Dilept","DrellYann"]
+     ["DoubleEG","500_CTau-10_","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Lept","DrellYann"],
+     ["DoubleMuon","500_CTau-10_","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Lept","DrellYann"],
+     ["SingleElectron","500_CTau-10_","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Lept","DrellYann"],
+     ["SingleMuon","500_CTau-10_","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Lept","DrellYann"],
+     ["MET","TTJets_Lept"],
      ]
 
 
@@ -27,7 +29,7 @@ i_chan=0
 for chan in channels:
      
      # setting outfile name
-     outFileYield="Yield_"+chan+Version+".xml"
+     outFileYield=chan+Version+".xml"
      outFileTreeProc="TreeProc_"+chan+Version+".xml"
 
      # open input file and outputfile
