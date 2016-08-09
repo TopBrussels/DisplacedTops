@@ -31,7 +31,7 @@
 
 <!-- Data Combined -->
 <!-- Lumi = 2627.711  pb-1 -->
-<d name="Data"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v0/DoubleEG/crab_DoubleEG-Run2015D-16Dec2015-v2-76X_dataRun2_v15/160201_152918/000*/*.root"/>
+<d name="Data"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="1" PreselEff="0.0" filenames=""/>
 <!-- fix path for combined -->
 
 <!-- ********* -->
