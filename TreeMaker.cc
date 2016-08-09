@@ -277,8 +277,10 @@ int main (int argc, char *argv[])
   bool elel = false; // e-e final state
   bool elmu = false; // e-mu final state
   bool mumu = false; // mu-mu final state
-  bool bbmu = false; // bbbar + mu (Control region)
   bool bbel = false; // bbbar + el (Control region) 
+  bool bbmu = false; // bbbar + mu (Control region)
+  //  bool ttel = false; // ttbar + el 
+  //  bool ttmu = false; // ttbar + mu 
 
   // Setting a extra bool for the iso requirement on the lepton. This can be cobined with the previous channels
   bool antiIso = false; // 0.15 < iso < 1.5
@@ -327,6 +329,20 @@ int main (int argc, char *argv[])
       cout << " --> Using the bbar+electron control region..." << endl;
       bbel=true;
       channelpostfix = "_bbEl";
+    }
+  else if(channel=="ttMuMu")
+    {
+      cout << " --> Using the ttbar+muons selection..." << endl;
+      mumu=true;
+      ttbarEnriched=true
+      channelpostfix = "_ttMuMu";
+    }
+  else if(channel=="ttElEl")
+    {
+      cout << " --> Using the ttbar+electrons selection..." << endl;
+      elel=true;
+      ttbarEnriched=true
+      channelpostfix = "_ttElEl";
     }
   else
     {
@@ -685,22 +701,22 @@ int main (int argc, char *argv[])
   Trigger * trigger;
 
   if (channel=="ElEl"){
-    trigger = new Trigger(0, 1 , 0, 1);
+    trigger = new Trigger(0, 1, 0, 1);
   }  
   else if (channel=="MuMu"){
-    trigger = new Trigger(1, 0 , 0, 1);
+    trigger = new Trigger(1, 0, 0, 1);
   }
   else if (channel=="ElMu"){
     trigger = new Trigger(1, 1, 0, 1);
   }
   else if (channel=="bbEl"){
-    trigger = new Trigger(0, 1 , 1, 0);
+    trigger = new Trigger(0, 1, 1, 0);
   }
   else if (channel=="bbMu"){
-    trigger = new Trigger(1, 0 , 1, 0);
+    trigger = new Trigger(1, 0, 1, 0);
   }
-  else if (channel=="ttMuMu" || channel=="ttElEl"){
-    trigger = new Trigger(0, 0 , 0, 0);
+  else if (channel=="ttEl" || channel=="ttMu"){
+    trigger = new Trigger(0, 0, 0, 0);
   }
     
   else cout << "Wrong chanel name" << endl;
@@ -1535,7 +1551,7 @@ int main (int argc, char *argv[])
 	  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation76X
 	  if (debug)cout<<"Getting Bjets"<<endl;
 	  Int_t btagAlgo = 1; // btag_combinedInclusiveSecondaryVertexV2BJetTags
-	  Float_t discirminantCut = 0.935; // 0.460, 0.800, 0.935 -> L, M, T
+	  Float_t discirminantCut = 0.800; // 0.460, 0.800, 0.935 -> L, M, T
 	  selectedBjets = selection.GetSelectedBJets(selectedJets, btagAlgo, discirminantCut ); // jet collection, btagAlgo, discriminant cut
 
 
@@ -3009,29 +3025,33 @@ int main (int argc, char *argv[])
 	    if ( bbmu ) nLeptons = nMuons ;
 	    if ( bbel ) nLeptons = nElectrons ;
 
-	    if ( nLeptons == 1 && nJets_pc >= 1 && nBjets_pc >= 1 ){ // TO BE CHECKED!!! IS THAT THE RIGHT COLLECTION???
+	    if ( nLeptons == 1 && nJets_pc >= 1 && nBjets_pc >= 1 ){ // TO BE CHECKED!!! Q: IS THAT THE RIGHT COLLECTION??? A:Should be the same!
 	      myTree->Fill(); 
 	      passed++;
 	    }
 	  }
 
 	  
-	  // ttbar enriched region for trigger SF
+	  // bo ttbar enriched region for trigger SF
 
+	  // tt+el
 	  if ( elel && ttbarEnriched  ){
-	    if (elel && selectedElectrons.size() >= 2 && nBjets_pc >= 1 && nJets_pc >= 2 ){
+	    if (selectedElectrons.size() == 2 && nBjets >= 1 && nJets >= 2 ){
 	      myTree->Fill();
 	      passed++;
 	    }
 	  }
 	  
-	  // ttbar
+	  // tt+mu
 	  if (mumu && ttbarEnriched ){
-	    if (mumu && selectedMuons.size() >= 2 && nBjets_pc >= 1  && nJets_pc >= 2 ){
+	    if (selectedMuons.size() == 2 && nBjets >= 1  && nJets >= 2 ){
 	      myTree->Fill();
               passed++;
 	    }
 	  }
+
+	  // eo ttbar enriched region for trigger SF
+	  
 	    
 	    
 	    
