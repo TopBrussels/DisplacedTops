@@ -12,22 +12,48 @@ inputFile = "FullSamples"+Version+".xml"
 
 
 
-chanString= "testFaco"
-outFile=chanString+Version+".xml"
-dataSetTitleList=["Data ","WJets","Diboson","Singletop","TTJets_Dilept"]
+channels= ["ElEl","MuMu","bbEl","bbMu"]
+dataSetTitleList=[
+     ["DoubleEG","500_CTau-10","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Dilept","DrellYann"],
+     ["DoubleMuon","500_CTau-10","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Dilept","DrellYann"],
+     ["SingleElectron","500_CTau-10","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Dilept","DrellYann"],
+     ["SingleMuon","500_CTau-10","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Dilept","DrellYann"]
+     ]
 
 
-with open(inputFile,"r") as input:
-     with open(outFile,"wb") as output:
-          # loop over the lines
-         for line in input:
-              # write all empty line and comments
-              if "name" not in line:
-                   output.write(line)
-              if "name" in line:
-                   # loop over the dataset
-                   for dataSet in dataSetTitleList:
-                        # write only the line matching with one of the dataset in the dataset list
-                        if dataSet in line :
-                             output.write(line)
-                             continue
+
+i_chan=0
+# loop over the channels
+for chan in channels:
+     
+     # setting outfile name
+     outFileYield="Yield_"+chan+Version+".xml"
+     outFileTreeProc="TreeProc_"+chan+Version+".xml"
+
+     # open input file and outputfile
+     with open(inputFile,"r") as input:
+          with open(outFileYield,"wb") as output:
+               # loop over the lines of the input file
+               for line in input:
+                    # write all empty line and comments
+                    if "name" not in line:
+                         output.write(line)
+                    if "name" in line:
+                         # loop over the dataset
+                         for dataSet in dataSetTitleList[i_chan]:
+                              # write only the line matching with one of the dataset in the dataset list
+                              if dataSet in line :
+                                   output.write(line)
+                                   continue
+                              
+     # removes the <data> from the file to have the treeproc file
+     with open(outFileYield,"r") as input:
+          with open(outFileTreeProc,"wb") as output:
+               for line in input:
+                    if "data>" not in line:
+                         output.write(line)
+
+
+
+     i_chan+=1
+# eo loop over the channels 
