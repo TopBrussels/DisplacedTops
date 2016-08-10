@@ -334,14 +334,14 @@ int main (int argc, char *argv[])
     {
       cout << " --> Using the ttbar+muons selection..." << endl;
       mumu=true;
-      ttbarEnriched=true
+      ttbarEnriched=true;
       channelpostfix = "_ttMuMu";
     }
   else if(channel=="ttElEl")
     {
       cout << " --> Using the ttbar+electrons selection..." << endl;
       elel=true;
-      ttbarEnriched=true
+      ttbarEnriched=true;
       channelpostfix = "_ttElEl";
     }
   else
