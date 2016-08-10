@@ -22,7 +22,9 @@
 
 <!-- Data RunC -->
 <!-- Lumi = 17.225  pb-1 -->
+<!--
 <d name="DataRunC"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="17.225" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4-SILVER/DoubleEG/crab_DoubleEG-Run2015C_25ns-16Dec2015-v1crab6/160727_032530/0000/*.root"/>
+-->
 
 <!-- Data RunD -->
 <!-- Lumi = 2610.486  pb-1 -->
@@ -42,7 +44,9 @@
 
 <!-- Data RunC -->
 <!-- Lumi = 17.225  pb-1 -->
+<!--
 <d name="DataRunC"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="17.225" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4-SILVER/DoubleMuon/crab_DoubleMuon-Run2015C_25ns-16Dec2015-v1crab2/160727_032656/0000/*.root"/>
+-->
 
 <!-- Data RunD -->
 <!-- Lumi = 2610.486  pb-1 -->
@@ -227,23 +231,23 @@
 
 <!-- bo QCD EM enriched -->
 <!-- ****************** -->
-<!--
-<d name="QCD_EmEnriched_15to20" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="2302200" PreselEff="0.0"   filenames=""/>
 
-<d name="QCD_EmEnriched_20to30" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="535296.0" PreselEff="0.0"   filenames=""/>
+<d name="QCD_EmEnriched_15to20" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="2302200" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-15to20_EMEnriched_TuneCUETP8M1_13TeV_pythia8/crab_ched13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab1/160809_214400/0000/*.root"/>
 
-<d name="QCD_EmEnriched_30to50" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="9928000" PreselEff="0.0"   filenames=""/>
+<d name="QCD_EmEnriched_20to30" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="535296.0" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-20to30_EMEnriched_TuneCUETP8M1_13TeV_pythia8/crab_ched13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab2/160809_214343/0000/*.root"/>
 
-<d name="QCD_EmEnriched_50to80" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="2890800" PreselEff="0.0"   filenames=""/>
+<d name="QCD_EmEnriched_30to50" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="9928000" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-30to50_EMEnriched_TuneCUETP8M1_13TeV_pythia8/crab_ched13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab3/160809_214322/0000/*.root"/>
 
-<d name="QCD_EmEnriched_80to120" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="350000.0" PreselEff="0.0"   filenames=""/>
+<d name="QCD_EmEnriched_50to80" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="2890800" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-50to80_EMEnriched_TuneCUETP8M1_13TeV_pythia8/crab_ched13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab4/160809_213558/0000/*.root"/>
 
-<d name="QCD_EmEnriched_120to170" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="62964.00" PreselEff="0.0"   filenames=""/>
+<d name="QCD_EmEnriched_80to120" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="350000.0" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8/crab_ched13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab5/160809_214305/0000/*.root"/>
 
-<d name="QCD_EmEnriched_170to300" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="18810.00" PreselEff="0.0"   filenames=""/>
+<d name="QCD_EmEnriched_120to170" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="62964.00" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/crab_ched13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab6/160809_214247/0000/*.root"/>
 
-<d name="QCD_EmEnriched_300toInf" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="1350.000" PreselEff="0.0"   filenames=""/>
--->
+<d name="QCD_EmEnriched_170to300" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="18810.00" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-170to300_EMEnriched_TuneCUETP8M1_13TeV_pythia8/crab_ched13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab7/160809_214229/0000/*.root"/>
+
+<d name="QCD_EmEnriched_300toInf" title="QCDEMEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="1350.000" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-300toInf_EMEnriched_TuneCUETP8M1_13TeV_pythia8/crab_ched13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab8/160809_214210/0000/*.root"/>
+
 
 <!-- ****************** -->
 <!-- eo QCD EM enriched -->
@@ -253,19 +257,23 @@
 <!-- bo QCD bcToE -->
 <!-- ************ -->
 
-<!-- <d name="QCD_bcToE_15to20" title="QCDbcToE" add="0" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="254596.0" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/"/> -->
+<d name="QCD_bcToE_15to20" title="QCDbcToE" add="0" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="254596.0" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt_15to20_bcToE_TuneCUETP8M1_13TeV_pythia8/crab_cToE13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab10/160809_214151/0000/*.root"/>
+
+<d name="QCD_bcToE_20to30" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="328999.9" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt_20to30_bcToE_TuneCUETP8M1_13TeV_pythia8/crab_cToE13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab11/160809_214136/0000/*.root"/>
 
 <!--
-<d name="QCD_bcToE_20to30" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="328999.9" PreselEff="0.0"   filenames=""/>
-
 <d name="QCD_bcToE_30to80" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="405623.4" PreselEff="0.0"   filenames=""/>
+-->
 
-<d name="QCD_bcToE_80to170" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="38104.43" PreselEff="0.0"   filenames=""/>
+<d name="QCD_bcToE_80to170" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="38104.43" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt_80to170_bcToE_TuneCUETP8M1_13TeV_pythia8/crab_cToE13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab12/160809_214120/0000/*.root"/>
 
-<d name="QCD_bcToE_170to250" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="2635.813" PreselEff="0.0"   filenames=""/>
+<d name="QCD_bcToE_170to250" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="2635.813" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt_170to250_bcToE_TuneCUETP8M1_13TeV_pythia8/crab_cToE13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab13/160809_214101/0000/*.root"/>
 
+<!--
 <d name="QCD_bcToE_250toInf" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="711.9259" PreselEff="0.0"   filenames=""/>
 -->
+
+
 
 
 <!-- ************ -->
@@ -275,32 +283,32 @@
 <!-- bo QCD Mu enriched -->
 <!-- ****************** -->
 
-<!-- 
-<d name="QCD_MuEnriched_15to20" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="3819570" PreselEff="0.0"   filenames=""/>
 
-<d name="QCD_MuEnriched_20to30" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="1.26482282604" xsection="2960198" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_15to20" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="0.617718224826" xsection="3819570" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab16/160809_214010/0000/*.root"/>
 
-<d name="QCD_MuEnriched_30to50" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="2.34773136715" xsection="1652471" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_20to30" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="1.26482282604" xsection="2960198" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab17/160809_213947/0000/*.root"/>
 
-<d name="QCD_MuEnriched_50to80" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="11.2477437354" xsection="437504.1" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_30to50" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="2.34773136715" xsection="1652471" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab18/160809_213931/0000/*.root"/>
 
-<d name="QCD_MuEnriched_80to120" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="36.6018728008" xsection="106033.7" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_50to80" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="11.2477437354" xsection="437504.1" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab19/160809_213912/0000/*.root"/>
 
-<d name="QCD_MuEnriched_120to170" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="100.223179196" xsection="25190.52" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_80to120" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="36.6018728008" xsection="106033.7" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-80to120_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab20/160809_213855/0000/*.root"/>
 
-<d name="QCD_MuEnriched_170to300" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="455.559903971" xsection="8654.493" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_120to170" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="100.223179196" xsection="25190.52" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-120to170_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab21/160809_213839/0000/*.root"/>
 
-<d name="QCD_MuEnriched_300to470" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="4630.36621059" xsection="797.3527" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_170to300" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="455.559903971" xsection="8654.493" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-170to300_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab22/160809_213821/0000/*.root"/>
 
-<d name="QCD_MuEnriched_470to600" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="18672.5709182" xsection="79.02554" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_300to470" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="4630.36621059" xsection="797.3527" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-300to470_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab23/160809_213803/0000/*.root"/>
 
-<d name="QCD_MuEnriched_600to800" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="79034.0011142" xsection="25.09506" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_470to600" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="18672.5709182" xsection="79.02554" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-470to600_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab24/160809_213747/0000/*.root"/>
 
-<d name="QCD_MuEnriched_800to1000" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="332958.035148" xsection="4.707368" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_600to800" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="79034.0011142" xsection="25.09506" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-600to800_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v376XmcRun2asymptoticFall15DR76v1crab25/160809_213731/0000/*.root"/>
 
-<d name="QCD_MuEnriched_1000toInf" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="945931.60992" xsection="1.621317" PreselEff="0.0"   filenames=""/>
+<d name="QCD_MuEnriched_800to1000" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="332958.035148" xsection="4.707368" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-800to1000_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab26/160809_213716/0000/*.root"/>
 
--->
+<d name="QCD_MuEnriched_1000toInf" title="QCDMuEnriched" add="1" color="623"  ls="1"  lw="2" normf="1" EqLumi="945931.60992" xsection="1.621317" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/crab_dPt513TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v376XmcRun2asymptoticFall15DR76v1crab27/160809_213702/0000/*.root"/>
+
+
 <!-- ****************** -->
 <!-- eo QCD Mu enriched -->
 
