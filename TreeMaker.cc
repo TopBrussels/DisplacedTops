@@ -719,7 +719,11 @@ int main (int argc, char *argv[])
     trigger = new Trigger(0, 0, 0, 0);
   }
     
-  else cout << "Wrong chanel name" << endl;
+  else {
+    cout << endl << "------------------------------" << endl;
+    cout << "No triggger was booked because the channel provided (" << channel << ") does not match any of the expected channel!" << endl;
+    cout << "------------------------------" << endl << endl;
+  }
   
   
 
