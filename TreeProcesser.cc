@@ -34,16 +34,29 @@ map<string,TNtuple*> nTuple;
 map<string,TTree*> ttree;
 map<string,MultiSamplePlot*> MSPlot;
 
+// ---------------------
+// bo functions prototype
 
-// functions prototype
-std::string intToStr (int number);
+// make MSPlots for each datasets 
 void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinterest, string xmlNom, string TreePath, bool plotAbs = false);
+
+// draw the MSPlots
 void MSPCreator ();
 
+// make TH2F histo for multiple dataset
 void TH2FPlotter (int nBinsX,float lowX, float highX, string sVarofinterestX, int nBinsY, float lowY, float highY, string sVarofinterestY, string xmlNom, string TreePath );
 
+// convert int to string
+std::string intToStr (int number);
 
-// faco TO BE CHANGED
+// make cutflow table for each dataset
+void CutFlowMaker (string xmlNom, string TreePath);
+
+// eo functions prototype
+// ---------------------
+
+// List of bools that are set to fault as default
+// These bools are overwritten depending on the arguments of the main
 Bool_t debug = false;
 Bool_t debug_plot = false;
 bool DileptonElMu = false;
@@ -52,6 +65,7 @@ bool DileptonElEl = false;
 bool bbMu = false;
 bool bbEl = false;
 
+// string prefix/sufix
 string channelpostfix = "";
 string regSuf = "";
 
@@ -108,14 +122,14 @@ int main(int argc, char* argv[])
     {
       cout << " --> Using the Muon-Electron channel..." << endl;
       channelpostfix = "_MuEl";
-      xmlFileName = "config/TreeProc_FullSamplesElMuV4.xml";
+      xmlFileName = "config/TreeProc_ElMuV4.xml";
       DileptonElMu=true;
     }
   else if(channel=="MuMu")
     {
       cout << " --> Using the Muon-Muon channel..." << endl;
       channelpostfix = "_MuMu";
-      xmlFileName = "config/TreeProc_FullSamplesMuMuV4.xml";
+      xmlFileName = "config/TreeProc_MuMuV4.xml";
       DileptonMuMu=true;
     }
   else if(channel=="ElEl")
@@ -124,21 +138,21 @@ int main(int argc, char* argv[])
       channelpostfix = "_ElEl";
       //      channelpostfix += "/unskimmed";
       
-      xmlFileName = "config/TreeProc_FullSamplesElElV4.xml";
+      xmlFileName = "config/TreeProc_ElElV4.xml";
       DileptonElEl=true;
     }
   else if(channel=="bbMu")
     {
       cout << " --> Using the bbar+Muon control region..." << endl;
       channelpostfix = "_bbMu";
-      xmlFileName = "config/TreeProc_FullSamplesbbMuV4.xml";
+      xmlFileName = "config/TreeProc_bbMuV4.xml";
       bbMu=true;
     }
   else if(channel=="bbEl")
     {
       cout << " --> Using the bbar+Electron control region..." << endl;
       channelpostfix = "_bbEl";
-      xmlFileName = "config/TreeProc_FullSamplesbbElV4.xml";
+      xmlFileName = "config/TreeProc_bbElV4.xml";
       bbEl=true;
     }
   else
@@ -156,7 +170,7 @@ int main(int argc, char* argv[])
 
     // only few plots!
     if (DileptonMuMu) {
-      //      xmlFileName = "config/TreeProc_FullSamplesMuMuV0.xml";
+      //      xmlFileName = "config/TreeProc_MuMuV0.xml";
       //      DatasetPlotter(5, -0.5, 4.5, "nMuons", xmlFileName,CraneenPath);
       DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_muon[nMuons]", xmlFileName,CraneenPath);
@@ -164,7 +178,7 @@ int main(int argc, char* argv[])
       DatasetPlotter(40, 0, 800, "evt_met", xmlFileName,CraneenPath);
     }
     if (DileptonElEl){
-      //      xmlFileName = "config/TreeProc_FullSamplesElElV0.xml";
+      //      xmlFileName = "config/TreeProc_ElElV0.xml";
       DatasetPlotter(70, -0.5, 69.5, "nvtx", xmlFileName,CraneenPath);
       DatasetPlotter(30, -3.15, 3.15, "phi_electron[nElectrons]", xmlFileName,CraneenPath);
       
@@ -339,6 +353,26 @@ int main(int argc, char* argv[])
   }
 
 
+  // Making cut flow table
+
+  /*
+  
+  // vector of string
+  vector<string> CutFlowPresel;
+  CutFlowPresel.push_back("initial");
+  CutFlowPresel.push_back("trigger");
+  CutFlowPresel.push_back("faco");
+
+  
+  SelectionTable CutFlowPreselTable(CutFlowPresel, datasets);
+  //    CutFlowPreselTable.SetLuminosity(Luminosity);
+  CutFlowPreselTable.SetPrecision(1);
+
+
+  */
+  
+
+
   // eo selecting the right plots and/or variables depending on the final state  
 
   // making 2D histograms
@@ -450,7 +484,9 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/1_4_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/15_4_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/NoDisplacedTrigger/";
-  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/CMSSW76V4/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/CMSSW76V4/";
+  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/CMSSW76V4_NewCutFlow/";
+  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/CMSSW76V4_TTLetp_10_8_2016/";
 
 
   CraneenPath=CraneenPath+channelpostfix;
