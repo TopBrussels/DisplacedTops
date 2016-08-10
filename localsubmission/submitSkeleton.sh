@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #PBS -q localgrid
-#PBS -l walltime=00:30:00
+#PBS -l walltime=00:45:00
 
 # setting up your code and your env
 cd /user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
