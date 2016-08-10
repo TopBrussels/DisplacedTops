@@ -715,7 +715,7 @@ int main (int argc, char *argv[])
   else if (channel=="bbMu"){
     trigger = new Trigger(1, 0, 1, 0);
   }
-  else if (channel=="ttEl" || channel=="ttMu"){
+  else if (channel=="ttElEl" || channel=="ttMuMu"){
     trigger = new Trigger(0, 0, 0, 0);
   }
     
