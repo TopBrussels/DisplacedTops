@@ -15,43 +15,51 @@ yyyy = str(now.year)
 date = dd+"_"+mm+"_"+yyyy
 
 #directory name
-directory = "CMSSW76V4_NewCutFlow"
-#directory = date
+directory = "CMSSW76V4_TTLetp"+"_"+date
+
 
 #usging argument to filter
 filterSample = sys.argv[1]
 
-#channels = ["_MuMu","_ElEl","_bbMu","_bbEl"]
 
+
+# config
+sampleVersion="V4"
+
+
+# pick the list of channels to be merged
+channels = ["_MuMu","_ElEl","_bbMu","_bbEl","_ttElEl","_ttMuMu"]
 #channels= ["_bbMu","_bbEl"]
 #channels = ["_bbMu"]
 #channels = ["_bbEl"]
 #channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
-channels = ["_MuMu"]
+#channels = ["_MuMu"]
+#channels = ["_ttElEl"] 
+#channels = ["_Fail"]
 
 for chan in channels:
+    
     
     #Define path where ntuples are stored
     pathNonMerged = "MACRO_Output"+chan+"/"  
     pathMerged = "MergedTrees/"+directory+"/"+chan+"/"
     
+    # create dir if not existing yet
     if not os.path.exists(pathMerged):
         os.makedirs(pathMerged)
     
-    # get filenames from the xml!!!    
-    if "MuMu" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesMuMuV4.xml')
-    elif "ElEl" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesElElV4.xml')
-    elif "ElMu" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesElMuV4.xml')
-    elif "bbMu" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesbbMuV4.xml')
-    elif "bbEl" in chan:
-        tree = ET.ElementTree(file='config/FullSamplesbbElV4.xml')
+    # remove "_" from the chann string
+    chanStrip=chan.replace("_","")
+
+    # get the correct xml file !!!    
+    if "ElEl" == chanStrip or "MuMu" == chanStrip or "ElMu" == chanStrip or "bbEl" == chanStrip or "bbMu" == chanStrip:
+        tree = ET.ElementTree(file='config/'+chanStrip+sampleVersion+'.xml')
+    elif "ttElEl" in chanStrip or "ttMuMu" in chanStrip:
+        tree = ET.ElementTree(file='config/'+'ttLeptons'+sampleVersion+'.xml')
     else:
         print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
+        print "you have tried to load the config ",  "config/'+chanStrip+sampleVersion+'.xml"
         sys.exit()
 
     #tree = ET.ElementTree(file='config/FullMcBkgdSamplesV9.xml')
@@ -129,9 +137,11 @@ for chan in channels:
         os.system(cmd)
             
 
-    renameData = True
+    renameData = False
     # rename the data sample
     if (renameData):
         mvcmd ="mv "+pathMerged+"DisplacedTop_Run2_TopTree_Study_DataRunD"+chan+".root"+" "+ pathMerged+"DisplacedTop_Run2_TopTree_Study_Data"+chan+".root"
         os.system(mvcmd)
 
+
+#  LocalWords:  chan
