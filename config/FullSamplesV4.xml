@@ -257,7 +257,7 @@
 <!-- bo QCD bcToE -->
 <!-- ************ -->
 
-<d name="QCD_bcToE_15to20" title="QCDbcToE" add="0" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="254596.0" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt_15to20_bcToE_TuneCUETP8M1_13TeV_pythia8/crab_cToE13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab10/160809_214151/0000/*.root"/>
+<d name="QCD_bcToE_15to20" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="254596.0" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt_15to20_bcToE_TuneCUETP8M1_13TeV_pythia8/crab_cToE13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab10/160809_214151/0000/*.root"/>
 
 <d name="QCD_bcToE_20to30" title="QCDbcToE" add="1" color="700"  ls="1"  lw="2" normf="1" EqLumi="1" xsection="328999.9" PreselEff="0.0"   filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/QCD_Pt_20to30_bcToE_TuneCUETP8M1_13TeV_pythia8/crab_cToE13TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab11/160809_214136/0000/*.root"/>
 
