@@ -237,6 +237,7 @@ int main (int argc, char *argv[])
   float weightCount = 0.0;
   int eventCount = 0;
   int skippedEvent =0;
+  int passedBothTrig = 0;
 
 
   bool bx25 = false; // faco
@@ -699,6 +700,7 @@ int main (int argc, char *argv[])
   //Trigger* trigger = new Trigger(hasMuon, hasElectron, trigSingleLep, trigDoubleLep);
 
   Trigger * trigger;
+  Trigger * crossTrigger;
 
   if (channel=="ElEl"){
     trigger = new Trigger(0, 1, 0, 1);
@@ -715,10 +717,14 @@ int main (int argc, char *argv[])
   else if (channel=="bbMu"){
     trigger = new Trigger(1, 0, 1, 0);
   }
-  else if (channel=="ttElEl" || channel=="ttMuMu"){
+  else if (channel=="ttElEl"){
     trigger = new Trigger(0, 0, 0, 0);
+    crossTrigger = new Trigger (0, 1, 0, 1);
   }
-    
+  else if(channel=="ttMuMu"){
+    trigger = new Trigger(0, 0, 0, 0);
+    crossTrigger = new Trigger (1, 0, 0, 1);
+  }
   else {
     cout << endl << "------------------------------" << endl;
     cout << "No triggger was booked because the channel provided (" << channel << ") does not match any of the expected channel!" << endl;
@@ -760,6 +766,9 @@ int main (int argc, char *argv[])
       /// book triggers
       if (applyTriggers) {
 	trigger->bookTriggers(isData);
+
+	// only if ttbarenriched we had the cross trigger
+	if (ttbarEnriched) crossTrigger->bookTriggers(isData);
       }
       
       // Lumi scale
@@ -953,6 +962,7 @@ int main (int argc, char *argv[])
       // non integer event related variables starts with "evt_"
       Double_t evt_puSF;
       Double_t evt_met; 
+      Bool_t crossTrigged = false;
 
       // eo the main Tree
 
@@ -1063,6 +1073,7 @@ int main (int argc, char *argv[])
       Int_t lumi_num_pc;
       Int_t nvtx_pc;
       Int_t npu_pc;
+      
 
       // non integer event related variables starts with "evt_"                                                                     
       Double_t evt_puSF_pc;
@@ -1214,6 +1225,7 @@ int main (int argc, char *argv[])
       // non integer event related variables starts with "evt_" 
       myTree->Branch("evt_puSF",&evt_puSF,"evt_puSF/D");
       myTree->Branch("evt_met",&evt_met,"evt_met/D");
+      myTree->Branch("crossTrigged",&crossTrigged,"crossTrigged/O");
 	
       // eo the main tree
 
@@ -1491,7 +1503,6 @@ int main (int argc, char *argv[])
 	  bool runChanged = false;
 
 
-	  
 	  if ( ! applyTriggers && previousFilename != currentFilename )
 	    {
 	      fileChanged = true;
@@ -1504,11 +1515,21 @@ int main (int argc, char *argv[])
 	    {
 	      trigger->checkAvail(currentRun, datasets, d, &treeLoader, event, printTriggers);
 	      trigged = trigger->checkIfFired();
+
+	      // only if ttbarenriched we had the cross trigger
+	      if (ttbarEnriched){
+		crossTrigger->checkAvail(currentRun, datasets, d, &treeLoader, event, printTriggers);
+		crossTrigged = crossTrigger->checkIfFired();
+	      }
         
 	      if (trigged) {
 		// trigged
 		histo1D["h_cutFlow"]->Fill(1., 1);
 		if (debug)cout << "event " << ievt << " was Trigged!!" << endl;
+		if (crossTrigged){
+		  //		  cout << "both trigger passed!!!!" << endl;
+		  passedBothTrig++;
+		}
 	      }
 	      else {
 		if (debug) cout << "event " << ievt << " was not trigged. Skiping event.." << endl;
@@ -3362,6 +3383,9 @@ int main (int argc, char *argv[])
       cout << "Event Count: " << eventCount << endl;
       cout << "Number of event skipped because they failled the trigger requirement is " << skippedEvent << endl;
       cout << "The trigger efficiency is " << eventCount-skippedEvent << "/" << eventCount << " = "  << 100.0*(eventCount-skippedEvent)/eventCount << " % " << endl;
+      if (ttbarEnriched){
+	cout << "The number of events that pass both triggers is " << passedBothTrig << "/" << eventCount << " = "  << 100.0*(passedBothTrig)/eventCount << " % " << endl;
+      }
       cout << "Weight Count: " << weightCount << endl;
       //important: free memory
       treeLoader.UnLoadDataset();
