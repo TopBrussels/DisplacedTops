@@ -280,8 +280,8 @@ int main (int argc, char *argv[])
   bool mumu = false; // mu-mu final state
   bool bbel = false; // bbbar + el (Control region) 
   bool bbmu = false; // bbbar + mu (Control region)
-  //  bool ttel = false; // ttbar + el 
-  //  bool ttmu = false; // ttbar + mu 
+  bool ttelel = false; // ttbar + elel 
+  bool ttmumu = false; // ttbar + mumu 
 
   // Setting a extra bool for the iso requirement on the lepton. This can be cobined with the previous channels
   bool antiIso = false; // 0.15 < iso < 1.5
@@ -334,14 +334,14 @@ int main (int argc, char *argv[])
   else if(channel=="ttMuMu")
     {
       cout << " --> Using the ttbar+muons selection..." << endl;
-      mumu=true;
+      ttmumu=true;
       ttbarEnriched=true;
       channelpostfix = "_ttMuMu";
     }
   else if(channel=="ttElEl")
     {
       cout << " --> Using the ttbar+electrons selection..." << endl;
-      elel=true;
+      ttelel=true;
       ttbarEnriched=true;
       channelpostfix = "_ttElEl";
     }
@@ -555,21 +555,32 @@ int main (int argc, char *argv[])
 
   // change value depending on the trigger
   if (elel){
-    el_pt_cut=42;
+    el_pt_cut=42.;
   }
   else if (mumu){
-    mu_pt_cut=35;
+    mu_pt_cut=35.;
   }
   else if (elmu){
-    mu_pt_cut=40;
-    el_pt_cut=42;
+    mu_pt_cut=40.;
+    el_pt_cut=42.;
   }
   else if (bbel){
-    el_pt_cut=42;
+    el_pt_cut=42.;
   }
   else if (bbmu){
-    mu_pt_cut=35;
+    mu_pt_cut=35.;
   }
+  else if (ttelel){
+    el_pt_cut=0.1;
+  }
+  else if (ttmumu){
+    mu_pt_cut=0.1;
+  }
+  else{
+    cerr << "None of the channel bool was set to true!!! Exiting ... " << endl;
+    exit(1);
+  }
+    
   
   
   
@@ -3060,7 +3071,7 @@ int main (int argc, char *argv[])
 	  // bo ttbar enriched region for trigger SF
 
 	  // tt+el
-	  if ( elel && ttbarEnriched  ){
+	  if ( ttelel ){
 	    if (selectedElectrons.size() == 2 && nBjets >= 1 && nJets >= 2 ){
 	      myTree->Fill();
 	      passed++;
@@ -3068,7 +3079,7 @@ int main (int argc, char *argv[])
 	  }
 	  
 	  // tt+mu
-	  if (mumu && ttbarEnriched ){
+	  if ( ttmumu ){
 	    if (selectedMuons.size() == 2 && nBjets >= 1  && nJets >= 2 ){
 	      myTree->Fill();
               passed++;
