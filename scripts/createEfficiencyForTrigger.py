@@ -278,7 +278,7 @@ for chan in channels :
         c_pt.cd()
         
 #        c_ptComp.cd(canvaIndex)
-        ptEffs[0].Draw("APE")
+        ptEffs[0].Draw("AP")
         ptEffs[1].SetLineColor(8)
         ptEffs[1].Draw("Same")
         rt.gPad.SetGridy()
@@ -296,7 +296,7 @@ for chan in channels :
 
 
         # add entries
-        leg.AddEntry(ptEffs[0], "Data" , "p")
+        leg.AddEntry(ptEffs[0], "Data" , "l")
         leg.AddEntry(ptEffs[1], sampleName , "l")
 
         
@@ -334,12 +334,12 @@ for chan in channels :
             
 
         # make legend 
-        leg = rt.TLegend(0.7,0.4,0.9,0.5)
+        leg = rt.TLegend(0.1,0.3,0.1,0.3)
         leg.SetBorderSize(1)
 
 
         # add entries
-        leg.AddEntry(etaEffs[0], "Data" , "p")
+        leg.AddEntry(etaEffs[0], "Data" , "l")
         leg.AddEntry(etaEffs[1], sampleName , "l")
 
     
