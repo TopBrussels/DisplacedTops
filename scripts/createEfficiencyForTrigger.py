@@ -21,11 +21,15 @@ sampleNames=["DataRunD","TTJets_Dilept"]
 # list of indices
 indices=["0","1"]
 
+
+
+
+
 #base of the path to the root file
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 
 #directory
-directory="CMSSW76V4_TTLetp_10_8_2016"
+directory="CMSSW76V4_TTLetp_11_8_2016"
 
 # verbosity
 debug = False
@@ -39,6 +43,17 @@ treeName="tree"
 # root output
 outfile = rt.TFile("rootFiles/TriggerSF.root",'RECREATE')
 
+
+
+# Make the plot comparison
+c_ptComp=rt.TCanvas("Pt")
+c_ptComp.Divide(2,2)
+
+c_etaComp=rt.TCanvas("Eta")
+c_etaComp.Divide(2,2)
+
+
+canvaIndex=1
 # loop over the different channels
 for chan in channels :
     print "chan is ", chan
@@ -62,34 +77,37 @@ for chan in channels :
     datasets = root.find('datasets')
     if (debug):
         print "found  "  + str(len(datasets)) + " datasets"
-        
 
-    # TTBar or Data
-    for sampleName in sampleNames:
-        print "sampleName is ", sampleName
 
-        ch = rt.TChain(treeName,treeName)
-        ch.Add(pathTrunc+directory+"/_"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+"_"+chan+".root")
 
-        
-        for index in indices :
-            print "index is ", index
-    
+    # loop over the indices
+    for index in indices :
+        print "index is ", index        
+
+        # list of all the efficiencies
+        ptEffs=[]
+        etaEffs=[]
+
+        # TTBar or Data
+        for sampleName in sampleNames:
+            print "sampleName is ", sampleName
+
             
+            ch = rt.TChain(treeName,treeName)
+            ch.Add(pathTrunc+directory+"/_"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+"_"+chan+".root")
+
             # string of the histo depending on the lepton (channel), the index and the samples name
-            histStr=lepton+index+sampleName
+            histStr=lepton+index
     
             # tot histo
-            totPtLeptonIndexSample=rt.TH1D("totPt"+histStr,"totPt"+histStr, 8, 0.0, 200)
-            totEtaLeptonIndexSample=rt.TH1D("totEta"+histStr,"totEta"+histStr, 6, 0.0, 2.4)
+            totPtLeptonIndexSample=rt.TH1D("totPt"+histStr+sampleName,"totPt"+histStr+sampleName, 8, 0.0, 200)
+            totEtaLeptonIndexSample=rt.TH1D("totEta"+histStr+sampleName,"totEta"+histStr+sampleName, 6, 0.0, 2.4)
             
             # pass histo clone from tot to ensure bin consistency
-            passPtLeptonIndexSample=totPtLeptonIndexSample.Clone("passPt"+histStr)
-            passEtaLeptonIndexSample=totEtaLeptonIndexSample.Clone("passEta"+histStr)
+            passPtLeptonIndexSample=totPtLeptonIndexSample.Clone("passPt"+histStr+sampleName)
+            passEtaLeptonIndexSample=totEtaLeptonIndexSample.Clone("passEta"+histStr+sampleName)
     
-    
-            
-    
+        
             #TH2D 
             #passElectronPtVsElectronPt=rt.TH2D("passElectronPtVsElectronPt","passElectronPtVsElectronPt", 8, 0.0, 200, 8, 0.0, 200)
             #passElectronEtaVsElectronEta=rt.TH2D("passElectronEtaVsElectronEta","passElectronEtaVsElectronEta", 6, 0.0, 2.4, 6, 0.0, 2.4)
@@ -98,9 +116,7 @@ for chan in channels :
             #Clone 
             #MuonPtVsMuonPt=passElectronPtVsElectronPt.Clone("MuonPtVsMuonPt")
             # MuonEtaVsMuonEta=passElectronEtaVsElectronEta.Clone("MuonEtaVsMuonEta")
-    
-    
-                
+                    
         
             # start of loop over events 
             ii=0
@@ -135,6 +151,7 @@ for chan in channels :
                 # fill tot histo
                 totPtLeptonIndexSample.Fill(ptIndexlept)
                 totEtaLeptonIndexSample.Fill(etaIndexlept)
+
                 
                 # fill pass histo
                 if (iev.crossTrigged):
@@ -147,35 +164,224 @@ for chan in channels :
 
 
             # make the efficiency with the properly filled histograms
-            effPt=rt.TEfficiency(passPtLeptonIndexSample,totPtLeptonIndexSample)
-#            effPt.Draw()
-    
-            effEta=rt.TEfficiency(passEtaLeptonIndexSample,totEtaLeptonIndexSample)
-#            effEta.Draw()
-    
 
-            # write the histo on the output file
+                    
+            # pt eff
+
+            effPt=rt.TEfficiency(passPtLeptonIndexSample,totPtLeptonIndexSample)
+            ptEffs.append(effPt)
+            
+
+            """
+            # draw Eff on the canva
+#            if sampleName != "TTJets_Dilept":
+            canvPt=rt.TCanvas("Pt"+histStr)
+            canvPt.cd()
+            rt.gPad.SetGridy()
+            effPt.Draw("AP")
+            rt.gPad.Update()
+            Pg_effPt = effPt.GetPaintedGraph()
+            effPt.SetTitle("trigger efficiency;"+lepton+" "+index+" p_{T} [GeV]; #epsilon")
+            Pg_effPt.SetMaximum(1.05)
+            Pg_effPt.SetMinimum(0)
+            
+
+            # make legend 
+            leg = rt.TLegend(0.7,0.4,0.9,0.5)
+            leg.SetBorderSize(1)
+
+#            else :
+#                effPt.Draw("SAME")
+
+
+            # add entries
+            leg.AddEntry(effPt, sampleName , "l")
+
+ #           if sampleName == "TTJets_Dilept":
+            leg.Draw()            
+            rt.gPad.Update()
+            canvPt.Print("plots/EffPt"+histStr+sampleName+".pdf")
+            print "saving histo"
+            """
+
+
+
+
+            # do it the dirty way
+#            ratioPtLeptonIndexSample=passPtLeptonIndexSample.Clone("ratioPt"+histStr)
+#            ratioPtLeptonIndexSample.Divide(totPtLeptonIndexSample)
+#            ratioPtLeptonIndexSample.Write()
+
+
+    
+            # eta eff
+            effEta=rt.TEfficiency(passEtaLeptonIndexSample,totEtaLeptonIndexSample)
+            etaEffs.append(effEta)
+
+            
+            """
+            # canva
+            canvEta=rt.TCanvas("Eta"+histStr)
+            canvEta.cd()
+            rt.gPad.SetGridy()
+            effEta.Draw("AP")
+            rt.gPad.Update()
+            Pg_effEta = effEta.GetPaintedGraph()
+            effEta.SetTitle("trigger efficiency;"+lepton+" "+index+" #eta; #epsilon")
+            Pg_effEta.SetMaximum(1.05)
+            Pg_effEta.SetMinimum(0)
+
+
+            # make legend
+            leg = rt.TLegend(0.1,0.1,0.3,0.3)
+            leg.SetBorderSize(1)
+
+
+            # add entries
+            leg.AddEntry(effEta, sampleName , "l")
+
+            # draw the legend
+            leg.Draw()
+
+            # save plot
+            rt.gPad.Update()
+            canvEta.Print("plots/EffEta"+histStr+sampleName+".pdf")
+            print "saving histo"
+            """
+
+
+            # write the histo and the canvas on the output root file
             outfile.cd()
             totPtLeptonIndexSample.Write()
             passPtLeptonIndexSample.Write()
-            effPt.Write()
+#            canvPt.Write()
+
     
             totEtaLeptonIndexSample.Write()
             passEtaLeptonIndexSample.Write()
-            effEta.Write()
+#            canvEta.Write()
 
-        # eo loop over the indices
+
+        # do the SF using the efficiency of Data and TTJets
+
+        if sampleName == "Data":
+            gr_num=effPt.CreateGraph()
+            gr_num.Write()
+
+
+
+        
+
+        #eo loop over the sampleName
+
+        c_pt=rt.TCanvas(histStr)
+        c_pt.cd()
+        
+#        c_ptComp.cd(canvaIndex)
+        ptEffs[0].Draw("APE")
+        ptEffs[1].SetLineColor(8)
+        ptEffs[1].Draw("Same")
+        rt.gPad.SetGridy()
+
+        rt.gPad.Update()
+        Pg_effPt = ptEffs[0].GetPaintedGraph()
+        ptEffs[0].SetTitle("trigger efficiency;"+lepton+" "+index+" p_{T} [GeV]; #epsilon")
+        Pg_effPt.SetMaximum(1.05)
+        Pg_effPt.SetMinimum(0)
+            
+
+        # make legend 
+        leg = rt.TLegend(0.7,0.4,0.9,0.5)
+        leg.SetBorderSize(1)
+
+
+        # add entries
+        leg.AddEntry(ptEffs[0], "Data" , "p")
+        leg.AddEntry(ptEffs[1], sampleName , "l")
+
+        
+        leg.Draw()            
+        rt.gPad.Update()
+        c_ptComp.Update()
+
+
+        c_pt.Update
+        c_pt.Print("plots/EffPtComp"+histStr+".pdf")
+
+
+        c_ptComp.Draw()
+        print "YES???"
+        print "canvaIndex is ", canvaIndex
+        
+        canvaIndex+=1
+
+
+        # eta plots
+        c_eta=rt.TCanvas(histStr)
+        c_eta.cd()
+        
+#        c_etaComp.cd(canvaIndex)
+        etaEffs[0].Draw("APE")
+        etaEffs[1].SetLineColor(8)
+        etaEffs[1].Draw("Same")
+        rt.gPad.SetGridy()
+
+        rt.gPad.Update()
+        Pg_effEta = etaEffs[0].GetPaintedGraph()
+        etaEffs[0].SetTitle("trigger efficiency;"+lepton+" "+index+" #eta; #epsilon")
+        Pg_effEta.SetMaximum(1.05)
+        Pg_effEta.SetMinimum(0)
+            
+
+        # make legend 
+        leg = rt.TLegend(0.7,0.4,0.9,0.5)
+        leg.SetBorderSize(1)
+
+
+        # add entries
+        leg.AddEntry(etaEffs[0], "Data" , "p")
+        leg.AddEntry(etaEffs[1], sampleName , "l")
 
     
-    #eo loop over the sampleName
-    
+        leg.Draw()            
+        rt.gPad.Update()
+        c_etaComp.Update()
+
+
+        c_eta.Update
+        c_eta.Print("plots/EffEtaComp"+histStr+".pdf")
+
+
+        c_etaComp.Draw()
+        
+
+
+
+
+
+    # eo loop over the indices
+
+
+# save the comparison plot!
+#c_ptComp.Print("plots/EffPtComp.pdf")
 
 #eo loop over the channnel
-
 
 outfile.Close()
 
 
+"""
+superCanva=rt.TCanvas()
+superCanva.Divide(2,2)
+superCanva.cd(1)
+efficiencies[0].Draw()
+efficiencies[1].SetLineColor(8)
+efficiencies[1].Draw("Same")
+
+
+superCanva.Update()
+superCanva.Print("plots/faco.pdf")
+"""
 
 
 
