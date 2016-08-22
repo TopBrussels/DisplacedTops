@@ -16,7 +16,7 @@ channels=["ttElEl","ttMuMu"]
 #channels=["ttElEl"] 
 
 # list of samples
-sampleNames=["DataRunD","TTJets_Dilept"]
+sampleNames=["DataRunD","TTJets_Dilept","DYJetsToLL_M-50toInf_Madgraph"]
 
 # list of lepton indices (first pt or second pt)
 indices=["0","1"]
@@ -29,7 +29,7 @@ indices=["0","1"]
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 
 #directory
-directory="CMSSW76V4_TTLetp_11_8_2016"
+directory="LetponSF_noTTbarEnrichingCuts_22_8_2016"
 
 # verbosity
 debug = False
@@ -281,8 +281,10 @@ for chan in channels :
         
 #        c_ptComp.cd(canvaIndex)
         ptEffs[0].Draw("AP")
-        ptEffs[1].SetLineColor(8)
+        ptEffs[1].SetLineColor(6)
         ptEffs[1].Draw("Same")
+        ptEffs[2].SetLineColor(8)
+        ptEffs[2].Draw("Same")
         rt.gPad.SetGridy()
 
         rt.gPad.Update()
@@ -299,7 +301,8 @@ for chan in channels :
 
         # add entries
         leg.AddEntry(ptEffs[0], "Data" , "l")
-        leg.AddEntry(ptEffs[1], sampleName , "l")
+        leg.AddEntry(ptEffs[1], "TTDilept" , "l")
+        leg.AddEntry(ptEffs[2], "DrellYann" , "l")
 
         
         leg.Draw()            
@@ -323,9 +326,11 @@ for chan in channels :
         c_eta.cd()
         
 #        c_etaComp.cd(canvaIndex)
-        etaEffs[0].Draw("APE")
-        etaEffs[1].SetLineColor(8)
+        etaEffs[0].Draw("AP")
+        etaEffs[1].SetLineColor(6)
         etaEffs[1].Draw("Same")
+        etaEffs[2].SetLineColor(8)
+        etaEffs[2].Draw("Same")
         rt.gPad.SetGridy()
 
         rt.gPad.Update()
@@ -336,16 +341,18 @@ for chan in channels :
             
 
         # make legend 
-        leg = rt.TLegend(0.1,0.3,0.1,0.3)
-        leg.SetBorderSize(1)
+#        leg_eta = rt.TLegend(0.1,0.3,0.1,0.3)
+        leg_eta = rt.TLegend(0.7,0.4,0.9,0.5)
+        leg_eta.SetBorderSize(1)
 
 
         # add entries
-        leg.AddEntry(etaEffs[0], "Data" , "l")
-        leg.AddEntry(etaEffs[1], sampleName , "l")
+        leg_eta.AddEntry(etaEffs[0], "Data" , "l")
+        leg_eta.AddEntry(etaEffs[1], "TTDilept" , "l")
+        leg_eta.AddEntry(etaEffs[2], "DrellYann" , "l")
 
     
-        leg.Draw()            
+        leg_eta.Draw()            
         rt.gPad.Update()
         c_etaComp.Update()
 
