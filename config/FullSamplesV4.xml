@@ -114,6 +114,29 @@
 
 <!--Data RunD -->
 <!-- Lumi = 2611.501  pb-1 -->
+<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="2611.501" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4-SILVER/JetHT/crab_JetHT-Run2015D-16Dec2015-v1crab44/160819_141643/00*/*.root"/>
+
+
+
+<!--Data Combined -->
+<!-- Lumi = 2629.405  pb-1 -->
+<d name="Data"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="2629.405" PreselEff="0.0" filenames=""/>
+
+
+<!-- *********** -->
+<!-- eo MET -->
+
+
+<!-- bo MET -->
+<!-- *********** -->
+
+<!-- Data RunC -->
+<!-- Lumi =  pb-1 -->
+
+<d name="DataRunC"     title="Data"    add="0"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="0" PreselEff="0.0" filenames=""/>
+
+<!--Data RunD -->
+<!-- Lumi = 2611.501  pb-1 -->
 <d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="2611.501" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4-SILVER/MET/crab_MET-Run2015D-16Dec2015-v1crab42/160727_032810/00*/*.root"/>
 
 
