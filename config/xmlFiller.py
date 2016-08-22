@@ -23,17 +23,6 @@ datasets = root.find('datasets')
 for d in datasets:
     if d.attrib['add'] == 1:
         continue
-    # calculate the sum of the lumi for the different data run 
-    if 'data' in d.attrib['title'].lower() and 'run' in d.attrib['name'].lower():
-        print "Eqlumi is " , d.attrib['EqLumi']
-        LumiTot=LumiTot+float(d.attrib['EqLumi'])
-        d.set('add','0')
-        continue
-    # run only on the merged data dataset with the sum of the lumi
-    if 'data' in d.attrib['title'].lower() and not 'run' in d.attrib['name'].lower():
-        d.set('EqLumi',str(LumiTot)) 
-        d.set('add','1')
-        continue
     xsec = float(d.attrib['xsection'])
     files = glob.glob(d.attrib['filenames'])
     root_files = []
@@ -50,6 +39,20 @@ print 'filled xml with eqlumis!'
 tree.write(output)
 
 
+
+"""
+    # calculate the sum of the lumi for the different data run 
+    if 'data' in d.attrib['title'].lower() and 'run' in d.attrib['name'].lower():
+        print "Eqlumi is " , d.attrib['EqLumi']
+        LumiTot=LumiTot+float(d.attrib['EqLumi'])
+        d.set('add','0')
+        continue
+    # run only on the merged data dataset with the sum of the lumi
+    if 'data' in d.attrib['title'].lower() and not 'run' in d.attrib['name'].lower():
+        d.set('EqLumi',str(LumiTot)) 
+        d.set('add','1')
+        continue
+"""
 # removes the <data> from the file
 #with open(tempOutputFileName,"r") as input:
 #    with open(outputFileName,"wb") as output:
