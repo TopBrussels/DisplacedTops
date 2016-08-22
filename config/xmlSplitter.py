@@ -19,7 +19,7 @@ dataSetTitleList=[
      ["DoubleMuon","500_CTau-10_","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Lept","DrellYann"],
      ["SingleElectron","500_CTau-10_","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Lept","DrellYann"],
      ["SingleMuon","500_CTau-10_","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Lept","DrellYann"],
-     ["MET","TTJets_Lept"],
+     ["JetHT","MET","TTJets_Lept","DrellYann"],
      ]
 
 
