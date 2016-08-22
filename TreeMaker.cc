@@ -3072,7 +3072,8 @@ int main (int argc, char *argv[])
 
 	  // tt+el
 	  if ( ttelel ){
-	    if (selectedElectrons.size() == 2 && nBjets >= 1 && nJets >= 2 ){
+	    //	    if (selectedElectrons.size() == 2 && nBjets >= 1 && nJets >= 2 ){
+	    if (selectedElectrons.size() == 2){
 	      myTree->Fill();
 	      passed++;
 	    }
@@ -3080,7 +3081,8 @@ int main (int argc, char *argv[])
 	  
 	  // tt+mu
 	  if ( ttmumu ){
-	    if (selectedMuons.size() == 2 && nBjets >= 1  && nJets >= 2 ){
+	    //	    if (selectedMuons.size() == 2 && nBjets >= 1  && nJets >= 2 ){
+	    if (selectedMuons.size() == 2 ){
 	      myTree->Fill();
               passed++;
 	    }
