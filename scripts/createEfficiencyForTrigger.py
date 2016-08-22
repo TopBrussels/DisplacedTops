@@ -18,7 +18,7 @@ channels=["ttElEl","ttMuMu"]
 # list of samples
 sampleNames=["DataRunD","TTJets_Dilept"]
 
-# list of indices
+# list of lepton indices (first pt or second pt)
 indices=["0","1"]
 
 
@@ -437,56 +437,3 @@ for chan in channels :
 #eo loop over the channnel
 
 outfile.Close()
-
-
-"""
-superCanva=rt.TCanvas()
-superCanva.Divide(2,2)
-superCanva.cd(1)
-efficiencies[0].Draw()
-efficiencies[1].SetLineColor(8)
-efficiencies[1].Draw("Same")
-
-
-superCanva.Update()
-superCanva.Print("plots/faco.pdf")
-"""
-
-
-
-"""
-                # get the lumi from the Data
-                if d.attrib['add'] == '1' and "Data" in str(d.attrib['name']):
-                    lumivalue=float(d.attrib['EqLumi'])
-    
-                # check if in the right composite dataset
-                if d.attrib['add'] == '1' and FilterString ==  str(d.attrib['title']): 
-                    datasetNames.append(str(d.attrib['name']))
-                    print str(d.attrib['name'])
-                    ch = rt.TChain(treeName,treeName)
-                    sampleName=d.attrib['name']
-    
-    
-                    # fix the type of dataset (bgMC, signal or data)                           
-                    isBgMC = False
-                    isSignal = False
-                    isData = False
-"""
-                    
-
-"""
-                
-            if isMuMu:
-                pt1lept=iev.pt_muon[0]
-                pt2lept=iev.pt_muon[1]
-    
-    #            muond0VsMuond0.Fill(d01mu,d02mu,weight*PileUpWeight*LeptonWeight)
-                if (debug):
-                    print "d0 is " , d0mu
-                    print "weight is ", weight
-                    print "PileUpWeight is ", PileUpWeight
-                    print "LeptonWeight is ", LeptonWeight
-"""   
-
-
-    
