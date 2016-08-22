@@ -274,6 +274,8 @@ for chan in channels :
 
         #eo loop over the sampleName
 
+
+        # make the plots comparison for each index, lepton pair
         c_pt=rt.TCanvas(histStr)
         c_pt.cd()
         
@@ -353,6 +355,73 @@ for chan in channels :
 
 
         c_etaComp.Draw()
+        
+
+
+
+        ### make the SF for each index and lepton pair
+        
+        # data pt eff hist from TEff
+        Data_pt = totPtLeptonIndexSample.Clone("Data_pt"+histStr)
+        for i_bin in range (0,ptEffs[0].GetPassedHistogram().GetNbinsX()):
+            Data_pt.SetBinContent(i_bin,ptEffs[0].GetEfficiency(i_bin))
+            print i_bin, " " , ptEffs[0].GetEfficiency(i_bin)
+#        Data_pt.Sumw2()
+
+        # MC pt eff hist from TEff   
+        MC_pt = totPtLeptonIndexSample.Clone("MC_pt"+histStr)
+        for i_bin in range (0,ptEffs[1].GetPassedHistogram().GetNbinsX()):
+            MC_pt.SetBinContent(i_bin,ptEffs[1].GetEfficiency(i_bin))
+            print i_bin, " " , ptEffs[1].GetEfficiency(i_bin)
+ #       MC_pt.Sumw2()
+
+        # SF pt hist
+        SF_pt = Data_pt.Clone("SF_pt"+histStr)
+        # Data/MC
+        SF_pt.Divide(MC_pt)
+        
+
+        # Draw TH1D
+        c_sf=rt.TCanvas("c_sf"+histStr)
+        c_sf.cd()
+        SF_pt.Draw("PE")
+        SF_pt.SetMaximum(3)
+        SF_pt.SetMinimum(0)
+        c_sf.Print("plots/SFPt"+histStr+".pdf")
+        
+
+
+
+        # data eta eff hist from TEff                                                                                                                                             
+        Data_eta = totEtaLeptonIndexSample.Clone("Data_eta"+histStr)
+        for i_bin in range (0,etaEffs[0].GetPassedHistogram().GetNbinsX()):
+            Data_eta.SetBinContent(i_bin,etaEffs[0].GetEfficiency(i_bin))
+            print i_bin, " " , etaEffs[0].GetEfficiency(i_bin)
+#        Data_eta.Sumw2()                                                                                                                                                         
+
+        # MC eta eff hist from TEff                                                                                                                                               
+        MC_eta = totEtaLeptonIndexSample.Clone("MC_eta"+histStr)
+        for i_bin in range (0,etaEffs[1].GetPassedHistogram().GetNbinsX()):
+            MC_eta.SetBinContent(i_bin,etaEffs[1].GetEfficiency(i_bin))
+            print i_bin, " " , etaEffs[1].GetEfficiency(i_bin)
+ #       MC_eta.Sumw2()                                                                                                                                                           
+
+        # SF eta hist                                                                                                                                                             
+        SF_eta = Data_eta.Clone("SF_eta"+histStr)
+        # Data/MC                                                                                                                                                                
+        SF_eta.Divide(MC_eta)
+
+
+        # Draw TH1D                                                                                                                                                              
+        c_sf=rt.TCanvas("c_sf"+histStr)
+        c_sf.cd()
+        SF_eta.Draw("PE")
+        SF_eta.SetMaximum(3)
+        SF_eta.SetMinimum(0)
+        c_sf.Print("plots/SFEta"+histStr+".pdf")
+
+        
+        
         
 
 
