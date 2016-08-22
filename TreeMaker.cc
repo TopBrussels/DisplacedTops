@@ -1599,7 +1599,7 @@ int main (int argc, char *argv[])
 	  if (debug)cout<<"Getting Muons"<<endl;
 
 	  // different iso 
-	  selectedMuons = selection.GetSelectedDisplacedMuons(40, 2.4, mu_iso_cut, true, true); // id and iso 
+	  selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso 
 	  if (looseIso && antiIso && bbmu) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, 1.5, true, true); // id and iso
 
 
