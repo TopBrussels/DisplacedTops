@@ -24,7 +24,7 @@ date = dd+"_"+mm+"_"+yyyy
 
 
 # pick one of the following
-#channels = ["ttElEl","ttMuMu"]
+channels = ["ttElEl","ttMuMu"]
 #channels = ["ttMuMu"]
 #channels = ["bbEl"] 
 #channels = ["bbMu"] 
@@ -37,7 +37,7 @@ date = dd+"_"+mm+"_"+yyyy
 #channels=["test"]
 
 
-channels = ["MuMu","ElEl","bbEl","bbMu","ttElEl","ttMuMu"]
+#channels = ["MuMu","ElEl","bbEl","bbMu","ttElEl","ttMuMu"]
 
 
 

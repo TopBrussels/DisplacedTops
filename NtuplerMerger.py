@@ -13,9 +13,10 @@ dd = str(now.day)
 mm = str(now.month)
 yyyy = str(now.year)
 date = dd+"_"+mm+"_"+yyyy
+#date = "10_8_2016"
 
 #directory name
-directory = "CMSSW76V4_TTLetp"+"_"+date
+directory = "LetponSF_noTTbarEnrichingCuts"+"_"+date
 
 
 #usging argument to filter
@@ -28,14 +29,15 @@ sampleVersion="V4"
 
 
 # pick the list of channels to be merged
-channels = ["_MuMu","_ElEl","_bbMu","_bbEl","_ttElEl","_ttMuMu"]
+#channels = ["_MuMu","_ElEl","_bbMu","_bbEl","_ttElEl","_ttMuMu"]
 #channels= ["_bbMu","_bbEl"]
 #channels = ["_bbMu"]
 #channels = ["_bbEl"]
 #channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
 #channels = ["_MuMu"]
-#channels = ["_ttElEl"] 
+#channels = ["_ttElEl","_ttMuMu"] 
+channels = ["_ttMuMu"] 
 #channels = ["_Fail"]
 
 for chan in channels:
