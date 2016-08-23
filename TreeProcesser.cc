@@ -513,8 +513,10 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
       bool useTrimmedTree = false;
       if (useTrimmedTree)
 	{
-	  filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + "SkimmedHighPt_OnZ_Lowd0.root";  
-
+	  filepath = CraneenPath+"/DisplacedTop_Run2_TopTree_Study_"+dataSetName + channelpostfix + "SkimmedLowd0.root";  
+	  cout << "using trimmed root file!!! " << endl;
+	  cout << "filepath is " << filepath << endl;
+	  
 	  // add the correct suffix to select the corresponding region. (PCR, DCR, SR1, SR2, SR3)
 	  //	  string prefix=stree+"PCR/";
 	  //      string prefix=stree+"DCR/";
@@ -668,7 +670,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
 
       // bo loop over the entries
       for (int j = 0; j<nEntries; j++)
-      //      for (int j = 0; j<100; j++)
+	//	for (int j = 0; j<100; j++)
         {
 
 	  ttree[(dataSetName).c_str()]->GetEntry(j);

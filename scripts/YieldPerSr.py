@@ -23,12 +23,12 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 #channel
-#channels=["_MuMu"]
+channels=["_MuMu"]
 #channels=["_ElEl"]
-channels=["_ElEl","_MuMu"]
+#channels=["_ElEl","_MuMu"]
 
 # path to tree
-folderName="NoDisplacedTrigger"
+folderName="CMSSW76V4_NewCutFlow"
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 
 # debug
@@ -161,20 +161,21 @@ for chan in channels:
             # start of loop over events
             for iev in ch:
 
+                #                if ii % (nevents/50.) ==0 :
+                #                print  d.attrib['title']," ", ii, "/", nevents, " ,", (100*ii)/nevents, "%"
+                ii+=1
+                passed1= True
+                passed2= True
+                passed3= True
+
                 if isMuMu:
                     PileUpWeight=iev.evt_puSF
                 if isElEl:
                     PileUpWeight=iev.evt_puSF
                 
                 LeptonWeight=1.0
-
                 
-#                if ii % (nevents/50.) ==0 :
-#                print  d.attrib['title']," ", ii, "/", nevents, " ,", (100*ii)/nevents, "%"
-                ii+=1
-                passed1= True
-                passed2= True
-                passed3= True
+
     
                 # loop over the 2 highest pt letpon
                 for ilept in range (0,2):
