@@ -919,6 +919,12 @@ int main (int argc, char *argv[])
       Int_t charge_muon[10];
       Bool_t isId_muon[10];
       Bool_t isIso_muon[10];
+      Double_t sf_iso_muon_down[10];
+      Double_t sf_iso_muon[10];
+      Double_t sf_iso_muon_up[10];
+      Double_t sf_id_muon_down[10];
+      Double_t sf_id_muon[10];
+      Double_t sf_id_muon_up[10];
       Double_t sf_muon[10];
 
       // variables for muonPairs                                                                                                    
@@ -1171,6 +1177,12 @@ int main (int argc, char *argv[])
       myTree->Branch("charge_muon",charge_muon,"charge_muon[nMuons]/I");
       myTree->Branch("d0_muon",d0_muon,"d0_muon[nMuons]/D");
       myTree->Branch("d0BeamSpot_muon",d0BeamSpot_muon,"d0BeamSpot_muon[nMuons]/D");
+      myTree->Branch("sf_iso_muon_down",sf_iso_muon_down,"sf_iso_muon_down[nMuons]/D");
+      myTree->Branch("sf_iso_muon",sf_iso_muon,"sf_iso_muon[nMuons]/D");
+      myTree->Branch("sf_iso_muon_up",sf_iso_muon_up,"sf_iso_muon_up[nMuons]/D");
+      myTree->Branch("sf_id_muon_down",sf_id_muon_down,"sf_id_muon_down[nMuons]/D");
+      myTree->Branch("sf_id_muon",sf_id_muon,"sf_id_muon[nMuons]/D");
+      myTree->Branch("sf_id_muon_up",sf_id_muon_up,"sf_id_muon_up[nMuons]/D");
       myTree->Branch("sf_muon",sf_muon,"sf_muon[nMuons]/D");
       
       // muonPairs 
@@ -1997,7 +2009,14 @@ int main (int argc, char *argv[])
 	      relIso_muon[nMuons]=(selectedMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedMuons[selmu]->neutralHadronIso(4) + selectedMuons[selmu]->photonIso(4) - 0.5*selectedMuons[selmu]->puChargedHadronIso(4) ) ) / selectedMuons[selmu]->Pt();
 	      //	      relIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0.5)
 	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
-	      sf_muon[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0)* muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
+	      sf_iso_muon_down[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), -1.);
+	      sf_iso_muon[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
+	      sf_iso_muon_up[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 1.);
+	      sf_id_muon_down[nMuons]= muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), -1.);
+	      sf_id_muon[nMuons]= muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
+	      sf_id_muon_up[nMuons]= muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 1.);
+	      // global sf
+	      sf_muon[nMuons]= sf_iso_muon[nMuons] * sf_id_muon[nMuons];
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
 	      nMuons++;
 
