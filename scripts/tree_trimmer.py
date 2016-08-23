@@ -36,7 +36,7 @@ ROOT.gROOT.SetBatch(True)
 # path to root trees                                                                          
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date="15_4_2016"
-date="NoDisplacedTrigger"
+date="CMSSW76V4_TTLetp_10_8_2016"
 
 # debug                                                                                                                                                                            
 debug=False
@@ -60,8 +60,8 @@ isMuMu=True
 # loading the xml
 datasetNames = []
 
-channels=["_ElEl","_MuMu"]
-#channels=["_MuMu"]
+#channels=["_ElEl","_MuMu"]
+channels=["_MuMu"]
 
 # loop over the channel (lepton in final statue)                                       
 for chan in channels:
@@ -74,16 +74,16 @@ for chan in channels:
     # getting the correct xml file depending on the final state
     if "MuMu" in chan:
         isMuMu=True
-        tree = ET.ElementTree(file='../config/Yield_FullSamplesMuMuV0.xml')
+        tree = ET.ElementTree(file='../config/MuMuV4.xml')
         FinalState="At least two muons"
         print FinalState
     elif "ElEl" in chan:
         isElEl=True
-        tree = ET.ElementTree(file='../config/Yield_FullSamplesElElV0.xml')
+        tree = ET.ElementTree(file='../config/ElElV4.xml')
         FinalState="At least two electrons"
         print FinalState
     elif "ElMu" in chan:
-        tree = ET.ElementTree(file='../config/Yield_FullSamplesElMuV0.xml')
+        tree = ET.ElementTree(file='../config/ElMuV4.xml')
     else:
         print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
         sys.exit()
@@ -112,7 +112,8 @@ for chan in channels:
     
     
             # start new file for each sample and each channel
-            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"SkimmedHighPt_OnZ_Lowd0.root", 'RECREATE')
+#            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"SkimmedHighPt_OnZ_Lowd0.root", 'RECREATE')
+            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"SkimmedLowd0.root", 'RECREATE')
     
             # create one tree per regions in the current file
             
@@ -166,9 +167,9 @@ for chan in channels:
                         if abs(ch_in.d0BeamSpot_muon[ilept])> 0.01:
                             bools[0]=False
                             continue
-                        if abs(ch_in.pt_muon[ilept]) < 60:
-                            bools[0]=False
-                            continue
+#                        if abs(ch_in.pt_muon[ilept]) < 60:
+#                            bools[0]=False
+#                            continue
                     # eo the logic for the muon 
     
     
@@ -179,14 +180,14 @@ for chan in channels:
                         if abs(ch_in.d0BeamSpot_electron[ilept]) > 0.01:
                             bools[0]=False
                             continue
-                        if abs(ch_in.pt_electron[ilept]) < 60 :
-                            bools[0]=False
-                            continue
+#                        if abs(ch_in.pt_electron[ilept]) < 60 :
+#                            bools[0]=False
+#                            continue
                             
                     # eo the logic for the electron
 
 
-                
+                """               
 
                 # loop over all the lepton pairs and check the invmass
                 for ileptPair in range (0,nLeptPair):
@@ -203,7 +204,7 @@ for chan in channels:
 #                        if  81.2 <= ch_in.invMass_elel[ileptPair] and ch_in.invMass_elel[ileptPair] <= 101.2  :
                             bools[0]=False
                             continue
-
+                 """
 
     
                                     
