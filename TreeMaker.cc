@@ -434,7 +434,9 @@ int main (int argc, char *argv[])
   
 
   // PU SF
-  LumiReWeighting LumiWeights(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIIFall15DR76-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data76X_25ns-Run246908-260627Cert_Silver.root","pileup","pileup");
+  LumiReWeighting LumiWeights_down_(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIIFall15DR76-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data76X_25ns-Run246908-260627Cert_Silver_down.root","pileup","pileup");
+  LumiReWeighting LumiWeights_(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIIFall15DR76-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data76X_25ns-Run246908-260627Cert_Silver.root","pileup","pileup");
+  LumiReWeighting LumiWeights_up_(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIIFall15DR76-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data76X_25ns-Run246908-260627Cert_Silver_up.root","pileup","pileup");
 
   /////////////////////////////////
   //  Loop over Datasets
@@ -984,7 +986,9 @@ int main (int argc, char *argv[])
       Int_t npu;
 
       // non integer event related variables starts with "evt_"
+      Double_t evt_puSF_down;
       Double_t evt_puSF;
+      Double_t evt_puSF_up;
       Double_t evt_met; 
       Bool_t crossTrigged = false;
 
@@ -1259,7 +1263,9 @@ int main (int argc, char *argv[])
       myTree->Branch("npu",&npu,"npu/I");
 
       // non integer event related variables starts with "evt_" 
+      myTree->Branch("evt_puSF_down",&evt_puSF_down,"evt_puSF_down/D");
       myTree->Branch("evt_puSF",&evt_puSF,"evt_puSF/D");
+      myTree->Branch("evt_puSF_up",&evt_puSF_up,"evt_puSF_up/D");
       myTree->Branch("evt_met",&evt_met,"evt_met/D");
       myTree->Branch("crossTrigged",&crossTrigged,"crossTrigged/O");
 	
@@ -1583,10 +1589,29 @@ int main (int argc, char *argv[])
 	  //  Pile up Scale Factor
 	  ///////////////////////////////////////////
 
-	  double lumiWeight = LumiWeights.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
+
+	  
+
+	  double lumiWeight_down = LumiWeights_down_.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
+	  double lumiWeight = LumiWeights_.ITweight( npu ); 
+	  double lumiWeight_up = LumiWeights_up_.ITweight( npu ); 
+
+	  evt_puSF_down = lumiWeight_down;
 	  evt_puSF = evt_puSF_pc = lumiWeight;
+	  evt_puSF_up = lumiWeight_up;
+	  
 	  if (isData) evt_puSF = evt_puSF_pc = 1;
 
+
+
+	  if (false){
+	    double shiftValue = 11.4 * 0.05 ;
+	    PoissonMeanShifter * myShift = new PoissonMeanShifter (-1. * shiftValue);
+	    double WeightValue = myShift->ShiftWeight(npu);
+	    cout << "ShiftWeight is " << WeightValue << endl;
+	    cout <<  "Checking the pile up stuff .... " << endl;
+	    cout << "npu is " << npu << " lumiWeight is " << lumiWeight << " WeightValue is " << WeightValue << endl;
+	  }
 
 	  ///////////////////////
 	  // JER smearing
