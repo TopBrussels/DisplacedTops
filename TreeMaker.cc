@@ -1612,8 +1612,10 @@ int main (int argc, char *argv[])
 	  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation76X
 	  if (debug)cout<<"Getting Bjets"<<endl;
 	  Int_t btagAlgo = 1; // btag_combinedInclusiveSecondaryVertexV2BJetTags
-	  Float_t discirminantCut = 0.800; // 0.460, 0.800, 0.935 -> L, M, T
-	  selectedBjets = selection.GetSelectedBJets(selectedJets, btagAlgo, discirminantCut ); // jet collection, btagAlgo, discriminant cut
+	  Float_t LooseWP = 0.460;
+	  Float_t MewdiumWP = 0.800;
+	  Float_t TightWP = 0.935;
+	  selectedBjets = selection.GetSelectedBJets(selectedJets, btagAlgo, MewdiumWP ); // jet collection, btagAlgo, discriminant cut
 
 
 
