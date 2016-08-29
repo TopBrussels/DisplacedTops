@@ -11,11 +11,10 @@ import ROOT as rt
 
 
 
-# list of systematics
-systematicUncertainties=["sf_id_electron","sf_reco_electron","sf_iso_muon","sf_id_muon","evt_puSF"]
+# dictionary that connect the systematics type string to the systematic shit string
+systematicUncertainties_dict={"sf_id_electron":"central","sf_reco_electron":"central","sf_iso_muon":"central","sf_id_muon":"central","evt_puSF":"central"}
 
-# create an dictionary that will connect the name of the systematics to the correct reweighting
-my_dict = {}
+
 
 # usefull variables for writing a tex file
 hLine = "\\hline\n"
@@ -29,8 +28,8 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 #channel
-#channels=["_MuMu"]
-channels=["_ElEl"]
+channels=["_MuMu"]
+#channels=["_ElEl"]
 #channels=["_ElEl","_MuMu"]
 
 # path to tree
@@ -89,7 +88,12 @@ for chan in channels:
     datasetNames = []
     idataset=0
 
-    SystType="sf_reco_electron"
+#    SystType="sf_reco_electron"
+#    SystType="sf_id_electron"
+#    SystType="evt_puSF"
+#    SystType="sf_iso_muon"
+#    SystType="sf_id_muon"
+    SystType="Central"
 
     # create one root file per systType.
     outfile = rt.TFile("rootFiles/"+"Systematics/"+SystType+".root",'RECREATE')
@@ -144,10 +148,16 @@ for chan in channels:
                 print " float(d.attrib['EqLumi']) is ",  float(d.attrib['EqLumi'])
                 print "weight is " , weight
 
-            # loop over the systematics shif:
+            # loop over the systematics shift:
             for systShift in ["down","up"]:
+
+                # modify the main dictionary for the current systTyp:
+                systematicUncertainties_dict[SystType]=systShift
+                print systematicUncertainties_dict
                 
-                # one histo per sample X systtype
+
+                
+                # one histo per (samples X systTypes)
                 N1=rt.TH1D(sampleName+"_"+systShift,"N1",1,0,1)
 
                 
@@ -163,29 +173,22 @@ for chan in channels:
                         continue
                         
     
-                    if isMuMu:
-                        PileUpWeight=iev.evt_puSF
-                    if isElEl:
-                        PileUpWeight=iev.evt_puSF
+                    evt_puSF_dict={'down':iev.evt_puSF_down, 'central':iev.evt_puSF, 'up':iev.evt_puSF_up}
+                    PileUpWeight=evt_puSF_dict[systematicUncertainties_dict["evt_puSF"]]
                     
                     LeptonWeight = 1
                     
         
                     # loop over the 2 highest pt letpon
                     for ilept in range (0,2):
-    #                    x=str(ilept)
-    #                    my_dict[x] = iev.sf_muon[ilept]
-    #                    print my_dict
-    
-    #                    print "my_dict[x] is ", my_dict[x]
-    
-                        
     
                         # make the logic for the muon
                         if isMuMu:
-                            sf_iso_muon = iev.sf_iso_up_muon[ilept] 
+                            sf_iso_muon_dict={'down':iev.sf_iso_down_muon[ilept], 'central':iev.sf_iso_muon[ilept], 'up':iev.sf_iso_up_muon[ilept]}
+                            sf_iso_muon = sf_iso_muon_dict[systematicUncertainties_dict["sf_iso_muon"]]
+                            sf_id_muon_dict={'down':iev.sf_id_down_muon[ilept], 'central':iev.sf_id_muon[ilept], 'up':iev.sf_id_up_muon[ilept]}
+                            sf_id_muon = sf_id_muon_dict[systematicUncertainties_dict["sf_id_muon"]]
                             #print "sf_iso_muon is " ,sf_iso_muon
-                            sf_id_muon = iev.sf_id_muon[ilept]
                             #print "sf_id_muon is ", sf_id_muon
     
                             LeptonWeight *= sf_iso_muon * sf_id_muon
@@ -204,12 +207,13 @@ for chan in channels:
                         # make the logic for the electron
                         if isElEl :
     
-                            sf_reco_electron_dict={'down':iev.sf_reco_down_electron[ilept], 'up':iev.sf_reco_up_electron[ilept]}
-    
-                            sf_reco_electron = sf_reco_electron_dict[systShift] 
+                            sf_reco_electron_dict={'down':iev.sf_reco_down_electron[ilept], 'central':iev.sf_reco_electron[ilept], 'up':iev.sf_reco_up_electron[ilept]}
+                            sf_reco_electron = sf_reco_electron_dict[systematicUncertainties_dict["sf_reco_electron"]] 
+                            sf_id_electron_dict={'down':iev.sf_id_down_electron[ilept], 'central':iev.sf_id_electron[ilept], 'up':iev.sf_id_up_electron[ilept]}
+                            sf_id_electron = sf_id_electron_dict[systematicUncertainties_dict["sf_id_electron"]] 
                             #print "sf_reco_electron is " ,sf_reco_electron
-                            sf_id_electron = iev.sf_id_electron[ilept]
                             #print "sf_id_electron is ", sf_id_electron
+
                             LeptonWeight *= sf_reco_electron * sf_id_electron
                             #for bound in range(0,len(SRxBounds)): 
     
@@ -232,7 +236,7 @@ for chan in channels:
                                 
     
                     # print info
-    #                print "weight  is ", weight 
+#                    print "weight  is ", weight 
 #                    print " PileUpWeight is ", PileUpWeight
 #                    print "LeptonWeight is ", LeptonWeight
                     
@@ -251,13 +255,12 @@ for chan in channels:
                 print "systShift is ", systShift
                 print "Yield is ", Yield
             # end of systematics shift
-            idataset=idataset+1    
-    
-    
+
+        # enf of if add = 1
 
 
     # end of sample loop
-
+        
 
 # end of the channel loop
 
