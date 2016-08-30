@@ -15,6 +15,7 @@ import ROOT as rt
 
 # list of all syst type
 systTypes=["sf_reco_electron","sf_id_electron","evt_puSF","sf_iso_muon","sf_id_muon","Central"]
+sampleNames=[]
 
 # usefull variables for writing a tex file
 hLine = "\\hline\n"
@@ -113,12 +114,16 @@ for chan in channels:
     #        if d.attrib['add'] == '1' :
     #        if d.attrib['add'] == '1' and "QCD_" in str(d.attrib['name']):
             if d.attrib['add'] == '1' and "DYJets" not in str(d.attrib['name']) and "QCD" not in str(d.attrib['name']): 
+#            if d.attrib['add'] == '1' and "ZG" in str(d.attrib['name']):
     #            print "found dataset to be added..." + str(d.attrib['name'])
                 datasetNames.append(str(d.attrib['name']))
                 print str(d.attrib['name'])
                 # one array per dataset [name, title, Eqlumi, N1, N2, N3, SR1, SR2, SR3]
                 ch = rt.TChain(treeName,treeName)
                 sampleName=d.attrib['name']
+                # add it to the list if not already there
+                if sampleName not in sampleNames:
+                    sampleNames.append(sampleName)
     
     
                 # fix the type of dataset (bgMC, signal or data)
@@ -285,11 +290,7 @@ for chan in channels:
 
 
 
-# write the textable
-
-# header
-#...
-
+### write the textable
 # format
 # sampleName , max uncertainty between up and down (systType_1) , ... , max uncertainty between up and down (systType_n),  tot uncertainty
 
@@ -297,19 +298,19 @@ for chan in channels:
 # double array for table writting                                                                                                                           
 doubleArray = []
 singleArray = []
+headers=["Dataset"]
 
-headers=["sample name"]
 
+# loop over the samples
+for sampleName in sampleNames:
 
-for d in datasets:
-    if d.attrib['add'] == '1' and "DYJets" not in str(d.attrib['name']) and "QCD" not in str(d.attrib['name']):
-        datasetNames.append(str(d.attrib['name']))
-        print str(d.attrib['name'])
-        sampleName=d.attrib['name']
-
+        singleArray = [sampleName]
+        
+        # loop over the systematics types
         for systType in systTypes :
-#za            headers.append[systType]
+            headers.append(systType)
 
+            
             YieldDown= Yield_dict[sampleName+systType+"down"]
             YieldUp= Yield_dict[sampleName+systType+"up"]
             YieldCentral =  Yield_dict[sampleName+"Centralup"]
@@ -322,10 +323,14 @@ for d in datasets:
             uncertaintyMax=  max(diffDown,diffUp)
             uncertaintyMaxPercent = str(100*uncertaintyMax)+" %"
             
-            singleArray= [sampleName,uncertaintyMaxPercent]
-            doubleArray.append(singleArray)
-        
+            singleArray.append(uncertaintyMaxPercent)
 
+        
+        # eo systType loop
+
+        doubleArray.append(singleArray)
+
+# eo loop over the samples
         
         
 
@@ -335,7 +340,7 @@ for d in datasets:
 
 print tabulate(doubleArray, headers, tablefmt="latex")
 
-# writing results in a tex file                                                                                                                             
+# writing results in a tex file 
 outputFile = "tables/SystematicsTable"+chan+".tex"
 fout = open (outputFile, "w")
 fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
@@ -343,11 +348,11 @@ fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
 fout.write("\\begin{table}"+newLine)
 fout.write("\\caption{ " + "Systematic Uncertainty"+chan.replace("_"," ")+ "}"+newLine)
 
-# the actual tabular                                                                                                                                        
+# the actual tabular 
 fout.write(tabulate(doubleArray, headers, tablefmt="latex"))
 
 
-# end of table                                                                                                                                              
+# end of table 
 fout.write("\\end{table}"+newLine)
 fout.write("\\end{document}"+newLine)
 fout.close()
