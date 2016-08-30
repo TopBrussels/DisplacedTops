@@ -6,6 +6,7 @@
 from tabulate import tabulate
 import xml.etree.cElementTree as ET
 import os, sys
+import json
 from array import array
 import ROOT as rt
 
@@ -14,7 +15,9 @@ import ROOT as rt
 # dictionary that connect the systematics type string to the systematic shit string
 
 # list of all syst type
-systTypes=["sf_reco_electron","sf_id_electron","evt_puSF","sf_iso_muon","sf_id_muon","Central"]
+muonSystTypes=["Cross-section","evt_puSF","sf_iso_muon","sf_id_muon","Central"]
+electronSystTypes=["Cross-section","evt_puSF","sf_reco_electron","sf_id_electron","Central"]
+systTypes=[]
 sampleNames=[]
 
 # usefull variables for writing a tex file
@@ -80,12 +83,14 @@ for chan in channels:
         isMuMu=True
         tree = ET.ElementTree(file='../config/MuMuV4.xml')
         FinalState="At least two muons"
+        systTypes=list(muonSystTypes)
         print FinalState
     elif "ElEl" in chan:
         isElEl=True
         tree = ET.ElementTree(file='../config/ElElV4.xml')
         FinalState="At least two electrons"
         print FinalState
+        systTypes=list(electronSystTypes)
     elif "ElMu" in chan:
         tree = ET.ElementTree(file='../config/ElMuV4.xml')
     else:
@@ -100,8 +105,10 @@ for chan in channels:
     datasetNames = []
     idataset=0
 
-
+    # loop over the systematics types
     for systType in systTypes:
+
+        # reset to central value of all systematics types
         systematicUncertainties_dict={"sf_id_electron":"central","sf_reco_electron":"central","sf_iso_muon":"central","sf_id_muon":"central","evt_puSF":"central"}
 
 
@@ -112,9 +119,9 @@ for chan in channels:
         # loop over datasets
         for d in datasets:
     #        if d.attrib['add'] == '1' :
-    #        if d.attrib['add'] == '1' and "QCD_" in str(d.attrib['name']):
-            if d.attrib['add'] == '1' and "DYJets" not in str(d.attrib['name']) and "QCD" not in str(d.attrib['name']): 
-#            if d.attrib['add'] == '1' and "ZG" in str(d.attrib['name']):
+#            if d.attrib['add'] == '1' and "QCD_" not in str(d.attrib['name']):
+            if d.attrib['add'] == '1' and "Data" not in str(d.attrib['name']) and "QCD" not in str(d.attrib['name']): 
+#            if d.attrib['add'] == '1' and "WW" in str(d.attrib['name']):
     #            print "found dataset to be added..." + str(d.attrib['name'])
                 datasetNames.append(str(d.attrib['name']))
                 print str(d.attrib['name'])
@@ -138,7 +145,7 @@ for chan in channels:
                 if "Data" in sampleName:
                     isData = True
     
-    
+                #file to be read
                 ch.Add(pathTrunc+folderName+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
     
     
@@ -185,6 +192,8 @@ for chan in channels:
                         #                print  d.attrib['title']," ", ii, "/", nevents, " ,", (100*ii)/nevents, "%"
                         ii+=1
                         if (FastRun and ii > 100):
+                            continue
+                        if sampleName == "DYJetsToLL_M-50toInf_Madgraph" and ii%500 != 0 :
                             continue
                             
         
@@ -288,6 +297,10 @@ for chan in channels:
 # end of the channel loop
 
 
+
+# save to file:
+with open("jsonFiles/"+sampleName+'.json', 'w') as f:
+    json.dump(Yield_dict, f)
 
 
 ### write the textable
