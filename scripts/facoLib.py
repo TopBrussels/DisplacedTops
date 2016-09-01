@@ -1,7 +1,8 @@
 """
 This file contains various functions that are frequently used.
 They are sorted by alphabetic order.
-In oder to used them put "import <path>/facoLib as fl" in the desired python file.
+In oder to used them put "import <path>/facoLib as fl"
+in the desired python file.
 Then you can use fl.<anyfucntion> to get the desired function.
 All these functions are tested in testFacoLib.py
 
@@ -21,9 +22,11 @@ endLine = " \\\\ "
 newLine = " \n"
 
 
-# function that calculate the combined uncertainty of uncorelated
-# uncertainties given in an array
 def combinedUncertainty(array, debug=False):
+    # type: (list[float], bool) -> float
+    """ Function that calculates the combined uncertainty of uncorelated
+    uncertainties given in an array.
+    """
     SumSquare = 0
     for element in array:
         SumSquare = SumSquare + element**2
@@ -35,9 +38,11 @@ def combinedUncertainty(array, debug=False):
     return sqrt(SumSquare)
 
 
-# function that calculate the combined uncertainty (relative to a central
-# value) of uncorelated uncertainties given in an array
 def combinedRelUncertainty(central, array, debug=False):
+    # type: (float, list[float], bool) -> float
+    """Function that calculates the combined uncertainty (relative to a central
+    value) of uncorelated uncertainties given in an array.
+    """
     SumSquare = 0
     for element in array:
         SumSquare = SumSquare + element**2
@@ -49,10 +54,13 @@ def combinedRelUncertainty(central, array, debug=False):
     return sqrt(SumSquare / central**2)
 
 
-# function that convert a double array into a latex table with possibility
-# to save it as pdf
 def makeTable(fileName, doubleArray, header, savePDF=False,
               caption="nice caption bro!!", debug=False):
+    # type: (str, list[list[float]], str, bool,
+    #       str, bool) -> None
+    """Function that convert a array of array into a latex table with the
+    possibility to compile it it directly to get the pdf output
+    """
 
     # open the output file
     outputfile = "tables/" + fileName + ".tex"
@@ -89,9 +97,11 @@ def makeTable(fileName, doubleArray, header, savePDF=False,
         os.system(cmd)
 
 
-# function that returns a dictionary gotten from the merging of multiple
-# json files
 def getDictFromJson(matchingPattern, vetoPattern="", debug=False):
+    # type: (str, str, bool) -> dict
+    """Function that returns a dictionary gotten from the
+    merging of multiple json files.
+    """
 
     # json file list
     os.chdir("jsonFiles")
