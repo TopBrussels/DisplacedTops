@@ -1,7 +1,7 @@
 """
 This script aims at testing each funtion of the facoLib.py file.
 
-qpython 30.08.2016
+qpython 31.08.2016
 """
 import facoLib as fl
 
@@ -22,3 +22,7 @@ z=2.1
 myDoubleArray=[[0,1,2],[x,y,z]]
 myHeader=["this","stuff","is great"]
 print fl.makeTable("testOutput", myDoubleArray, myHeader, True, "any caption", True)
+
+
+print msg
+print fl.getDictFromJson ("WW","Nu",True)
