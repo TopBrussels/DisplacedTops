@@ -1,11 +1,11 @@
 """
 This file contains various functions that are frequently used.
 They are sorted by alphabetic order.
-in oder to used them put "import <path>/facoLib as fl" in the desired python file.
+In oder to used them put "import <path>/facoLib as fl" in the desired python file.
 Then you can use fl.<anyfucntion> to get the desired function.
-All these functions are tested in testFacoLib.py 
+All these functions are tested in testFacoLib.py
 
-qpython 31.08.2016 
+qpython 31.08.2016
 """
 
 
@@ -51,7 +51,8 @@ def combinedRelUncertainty(central, array, debug=False):
 
 # function that convert a double array into a latex table with possibility
 # to save it as pdf
-def makeTable(fileName, doubleArray, header, savePDF=False, caption="nice caption bro!!", debug=False):
+def makeTable(fileName, doubleArray, header, savePDF=False,
+              caption="nice caption bro!!", debug=False):
 
     # open the output file
     outputfile = "tables/" + fileName + ".tex"
