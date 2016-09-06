@@ -26,3 +26,7 @@ print fl.makeTable("testOutput", myDoubleArray, myHeader, True, "any caption", T
 
 print msg
 print fl.getDictFromJson("WW", "Nu", True)
+
+
+print msg
+print fl.floatToPercent(0.12)
