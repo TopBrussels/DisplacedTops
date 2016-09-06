@@ -13,6 +13,7 @@ qpython 31.08.2016
 import json
 from math import sqrt
 import os
+import ROOT as rt
 from tabulate import tabulate
 
 
@@ -136,3 +137,53 @@ def getDictFromJson(matchingPattern, vetoPattern="", debug=False):
 
     # return the dict
     return Yield_dict
+
+
+def floatToPercent(value):
+    # type (float) -> str
+    """ Converts a value into a string in percentage."""
+    if value > 1:
+        raise ValueError("Value is bigger than 1!")
+    else:
+        return str(100.0 * value) + " %"
+
+
+def makeEffienciency(hist1, hist2, ymin=False, ymax=False, norm=False):
+    # type: (rt.TH1D, rt.TH1D, bool, bool, bool) -> None
+    """ Makes a good looking efficiency plots with
+    the possibility to show the ratio plots.
+    """
+    if norm:
+        print 'scaling!'
+        try:
+            print 'scale 1: ', 1 / hist1.Integral()
+            print 'scale 2: ', 1 / hist2.Integral()
+            hist1.Scale(1 / hist1.Integral())
+            hist2.Scale(1 / hist2.Integral())
+        except(ZeroDivisionError):
+            pass
+    retH = hist1.Clone()
+    try:
+        retH.Divide(hist2)
+    except(TypeError):
+        # this is the error you get if hist2 is a stack
+        hList = hist2.GetHists()
+        sumHist = hist1.Clone("sumHist")
+        sumHist.Reset()
+        for h in hList:
+            sumHist.Add(h)
+        retH.Divide(sumHist)
+    except(AttributeError):
+        # this is the error you get if hist1 is a stack
+        print "Did you use a stack as argument 1? please use stack as argument 2!"
+        raise AttributeError
+    if ymax or ymin:
+        retH.GetYaxis().SetRangeUser(0.5, 1.5)
+        retH.SetLineColor(hist2.GetLineColor())
+
+    retH.GetAxisX().SetLabelSize(hist1.GetHistogram().GetAxisX().GetLabelSize())
+    retH.GetAxisX().SetLabelOffset(hist1.GetHistogram().GetAxisX().GetLabelOffset())
+    retH.GetAxisX().SetTitleSize(hist1.GetHistogram().GetAxisX().GetTitleSize())
+    retH.GetAxisX().GetTitleOffset(hist1.GetHistogram().GetAxisX().GetTitleOffset())
+    ROOT.SetOwnership(retH, 0)
+    return retH
