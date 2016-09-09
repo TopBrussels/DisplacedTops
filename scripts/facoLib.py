@@ -129,14 +129,14 @@ def getDictFromJson(matchingPattern, vetoPattern="", debug=False):
                 print "error!!!"
 
     # declare new dictionary
-    Yield_dict = {}
+    my_dict = {}
 
     # merge all the elements in the merged_dict
     for i in dic_list:
-        Yield_dict.update(i)
+        my_dict.update(i)
 
     # return the dict
-    return Yield_dict
+    return my_dict
 
 
 def floatToPercent(value):
