@@ -1,10 +1,11 @@
 """
 Script that combines various cross section systematic uncertainties into a single one.
 These uncertainties are, pdf, scale, and mass assumption.
-There are mostly gotten from two tiwki pages:
+They are gotten from the following tiwki pages:
 1)https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat13TeV 
 2)https://twiki.cern.ch/twiki/bin/view/LHCPhysics/SingleTopRefXsec
 3)https://twiki.cern.ch/twiki/bin/view/LHCPhysics/TtbarNNLO
+4)https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns
 The output is a sinlge dictionary writen in a json file and that will be used in the UpDownYieldsCalculator.py script.
 
 qpython 06 09 2016
@@ -12,6 +13,7 @@ qpython 06 09 2016
 """
 
 # standard import
+import json
 import xml.etree.cElementTree as ET
 
 
@@ -280,6 +282,8 @@ for d in datasets:
         
 
 print CrossSection_dict
-            
+# save dict in json
+with open("jsonFiles/"+"CrossSection"+'.json', 'w') as f:
+    json.dump(CrossSection_dict, f)            
                 
                         
