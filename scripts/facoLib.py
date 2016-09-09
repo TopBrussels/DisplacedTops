@@ -115,6 +115,7 @@ def getDictFromJson(matchingPattern, vetoPattern="", debug=False):
             elif vetoPattern not in fn:
                 jsonFiles.append(fn)
 
+
     print "the list of json files to be use is \n", jsonFiles
 
     # list of dictionaries. (one element per json file/ dictrionary)
@@ -127,6 +128,9 @@ def getDictFromJson(matchingPattern, vetoPattern="", debug=False):
                 dic_list.append(json.load(f))
             except ValueError:
                 print "error!!!"
+
+    os.chdir("..")
+
 
     # declare new dictionary
     my_dict = {}
