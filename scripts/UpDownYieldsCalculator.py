@@ -3,6 +3,8 @@
 # February 2016 by qpython@cern.ch
 #############
 
+
+# general import
 from tabulate import tabulate
 import xml.etree.cElementTree as ET
 import os, sys
@@ -11,12 +13,15 @@ from array import array
 import ROOT as rt
 
 
+# my import
+import facoLib as fl
+
 
 # dictionary that connect the systematics type string to the systematic shit string
 
 # list of all syst type
-muonSystTypes=["Cross-section","evt_puSF","sf_iso_muon","sf_id_muon","Central"]
-electronSystTypes=["Cross-section","evt_puSF","sf_reco_electron","sf_id_electron","Central"]
+muonSystTypes=["XSWeight","evt_puSF","sf_iso_muon","sf_id_muon","Central"]
+electronSystTypes=["XSWeight","evt_puSF","sf_reco_electron","sf_id_electron","Central"]
 systTypes=[]
 sampleNames=[]
 
@@ -32,8 +37,8 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 #channel
-channels=["_MuMu"]
-#channels=["_ElEl"]
+#channels=["_MuMu"]
+channels=["_ElEl"]
 #channels=["_ElEl","_MuMu"]
 
 # path to tree
@@ -44,7 +49,7 @@ pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
 debug=False
 
 # run faster
-FastRun=True
+FastRun=False
 
 #root file postfix
 postfix=""
@@ -69,6 +74,10 @@ hist=rt.TH1D("template","template",1,0,1,)
 
 lumivalue = 3
 
+
+# dictionary for the cross section which depends on the samples and on the systShift
+XSWeight_dict = fl.getDictFromJson("CrossSection", "", True)
+samples_dict={'NP_overlay_stopTobl_m500_Ctau10': 'central', 'TTJets_SingleLeptFromT': 'central', 'ZZTo2L2Nu': 'central', 'TTJets_Dilept': 'central', 'SingleTop_tW': 'central', 'TTJets_SingleLeptFromTbar': 'central', 'ZG': 'central', 'WJetsToLNu': 'central', 'SingleTop_tbarW': 'central', 'WGToLNuG': 'central', 'ZZTo4Lpowheg': 'central', 'WZTo3LNu': 'central', 'WWTo2l2Nu': 'central', 'WWToLNuQQ': 'central'}
 
 # loop over the channel (lepton in final statue)
 for chan in channels:
@@ -109,7 +118,8 @@ for chan in channels:
     for systType in systTypes:
 
         # reset to central value of all systematics types
-        systematicUncertainties_dict={"sf_id_electron":"central","sf_reco_electron":"central","sf_iso_muon":"central","sf_id_muon":"central","evt_puSF":"central"}
+        systematicUncertainties_dict={"sf_id_electron":"central","sf_reco_electron":"central","sf_iso_muon":"central","sf_id_muon":"central","evt_puSF":"central", "XSWeight":"central"}
+
 
 
         # create one root file per systType.
@@ -118,16 +128,23 @@ for chan in channels:
     
         # loop over datasets
         for d in datasets:
+
+            
     #        if d.attrib['add'] == '1' :
 #            if d.attrib['add'] == '1' and "QCD_" not in str(d.attrib['name']):
-            if d.attrib['add'] == '1' and "Data" not in str(d.attrib['name']) and "QCD" not in str(d.attrib['name']): 
+#            if d.attrib['add'] == '1' and "Data" not in str(d.attrib['name']) and "QCD" not in str(d.attrib['name']) and "DY" not in str(d.attrib['name']): 
+            if d.attrib['add'] == '1' and "Data" not in str(d.attrib['name']) and "QCD" not in str(d.attrib['name']) : 
 #            if d.attrib['add'] == '1' and "WW" in str(d.attrib['name']):
     #            print "found dataset to be added..." + str(d.attrib['name'])
+                dataSetName = str(d.attrib['name'])
                 datasetNames.append(str(d.attrib['name']))
                 print str(d.attrib['name'])
                 # one array per dataset [name, title, Eqlumi, N1, N2, N3, SR1, SR2, SR3]
                 ch = rt.TChain(treeName,treeName)
                 sampleName=d.attrib['name']
+#                samples_dict[sampleName]="central"
+
+                print samples_dict
                 # add it to the list if not already there
                 if sampleName not in sampleNames:
                     sampleNames.append(sampleName)
@@ -185,7 +202,7 @@ for chan in channels:
                     
                     Yield=0
                     ii=0
-                    # start of loop over events
+                    # start of the loop over the events
                     for iev in ch:
         
                         #                if ii % (nevents/50.) ==0 :
@@ -196,9 +213,18 @@ for chan in channels:
                         if sampleName == "DYJetsToLL_M-50toInf_Madgraph" and ii%500 != 0 :
                             continue
                             
-        
+                        # pile up Weight
                         evt_puSF_dict={'down':iev.evt_puSF_down, 'central':iev.evt_puSF, 'up':iev.evt_puSF_up}
                         PileUpWeight=evt_puSF_dict[systematicUncertainties_dict["evt_puSF"]]
+                        
+                        # lumi weight (uncertainty off the lumi is 5%)
+#                        lumiWeight_dict = {'down': 0.95, 'central': 1., 'up': 1.05}
+#                       lumiWeight = evt_puSF_dict[systematicUncertainties_dict["lumiWeight"]]
+                        
+                        XSWeight = 1.
+                        XSWeight = XSWeight_dict[sampleName + "_" + systematicUncertainties_dict["XSWeight"]]
+                        
+                        evtWeight =  PileUpWeight  * XSWeight
                         
                         LeptonWeight = 1
                         
@@ -267,7 +293,7 @@ for chan in channels:
     
                         
     
-                        Yield = Yield + PileUpWeight*LeptonWeight
+                        Yield = Yield + evtWeight * LeptonWeight
     #                    print Yield
         
                         N1.Fill(0.5,PileUpWeight*LeptonWeight)
@@ -299,7 +325,7 @@ for chan in channels:
 
 
 # save to file:
-with open("jsonFiles/"+sampleName+'.json', 'w') as f:
+with open("jsonFiles/"+chan+'.json', 'w') as f:
     json.dump(Yield_dict, f)
 
 
