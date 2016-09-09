@@ -37,8 +37,8 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 #channel
-#channels=["_MuMu"]
-channels=["_ElEl"]
+channels=["_MuMu"]
+#channels=["_ElEl"]
 #channels=["_ElEl","_MuMu"]
 
 # path to tree

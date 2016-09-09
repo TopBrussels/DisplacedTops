@@ -16,7 +16,7 @@ date = dd+"_"+mm+"_"+yyyy
 #date = "10_8_2016"
 
 #directory name
-directory = "LetponSF_noTTbarEnrichingCuts"+"_"+date
+directory = "Systematics"+"_"+date
 
 
 #usging argument to filter
@@ -35,9 +35,9 @@ sampleVersion="V4"
 #channels = ["_bbEl"]
 #channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
-#channels = ["_MuMu"]
+channels = ["_MuMu"]
 #channels = ["_ttElEl","_ttMuMu"] 
-channels = ["_ttMuMu"] 
+#channels = ["_ttMuMu"] 
 #channels = ["_Fail"]
 
 for chan in channels:

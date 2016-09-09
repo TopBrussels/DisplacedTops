@@ -24,12 +24,12 @@ date = dd+"_"+mm+"_"+yyyy
 
 
 # pick one of the following
-channels = ["ttElEl","ttMuMu"]
+#channels = ["ttElEl","ttMuMu"]
 #channels = ["ttMuMu"]
 #channels = ["bbEl"] 
 #channels = ["bbMu"] 
 #channels = ["bbEl","bbMu"]
-#channels = ["MuMu","ElEl"] 
+channels = ["MuMu","ElEl"] 
 #channels = ["ElMu"] 
 
 #channels = ["MuMu"] 
