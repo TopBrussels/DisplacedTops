@@ -20,18 +20,18 @@ channels=["_ElEl","_MuMu"]
 #base of the path to the root file
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date
-date="NoDisplacedTriggerNoBlinding"
+date="Systematics_29_8_2016"
 
 # array with composite dataset and matching string
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann","Signal"]
-compositeDatasets= ["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann","stopTobl_m500_Ctau10"] # title in the xml config
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","Signal"]
+compositeDatasets= ["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","stopTobl_m500_Ctau10"] # title in the xml config
 
 
 # verbosity
 debug = False
 
 # fast run
-fastRun = False
+fastRun = True
 
 
 
@@ -75,9 +75,9 @@ for compositeDataset in compositeDatasets:
             isMuMu = True
     
         if isElEl:
-            tree = ET.ElementTree(file='../config/Yield_FullSamplesElElV0.xml')    
+            tree = ET.ElementTree(file='../config/ElElV4.xml')    
         if isMuMu:
-            tree = ET.ElementTree(file='../config/Yield_FullSamplesMuMuV0.xml')
+            tree = ET.ElementTree(file='../config/MuMuV4.xml')
 
 
         root =  tree.getroot()
