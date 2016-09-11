@@ -8,8 +8,8 @@ We want to make one xml per channel (bbEl, bbMu, ElEl, MuMu) and one common xml 
 
 
 Version = "V4"
-#inputFile = "Filled_FullSamples"+Version+".xml"
-inputFile = "FullSamples"+Version+".xml"
+inputFile = "Filled_FullSamples"+Version+".xml"
+#inputFile = "FullSamples"+Version+".xml"
 
 
 
