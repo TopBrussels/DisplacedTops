@@ -49,7 +49,7 @@ pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
 debug=False
 
 # run faster
-FastRun=False
+FastRun=True
 
 #root file postfix
 postfix=""
@@ -72,7 +72,9 @@ bound1 = 0.01
 # template histogram that contains one single bin
 hist=rt.TH1D("template","template",1,0,1,)
 
-lumivalue = 3
+
+# hard coded lumi taken from doubleEG. Note that the exact value does not influence the results as we are calculating ratio.
+lumivalue = 2610.486
 
 
 # dictionary for the cross section which depends on the samples and on the systShift
@@ -178,10 +180,10 @@ for chan in channels:
         
                 # calculate weight
                 if isData :
-                    lumivalue=float(d.attrib['EqLumi'])
+                    lumivalue = float(d.attrib['EqLumi'] # Will never get here for now! FIXME
                     
                 weight= lumivalue / float(d.attrib['EqLumi'])
-                if False:
+                if debug:
                     print "lumivalue is " ,lumivalue
                     print " float(d.attrib['EqLumi']) is ",  float(d.attrib['EqLumi'])
                     print "weight is " , weight
