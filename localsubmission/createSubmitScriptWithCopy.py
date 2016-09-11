@@ -65,8 +65,8 @@ for chan in channels:
     else:
         print "Channel '", chan , "' is not a correct channel name. No tree has been loaded!"
         sys.exit()
-
-    
+        
+    btagWP = "Loose"
 
     root = tree.getroot()
     datasets = root.find('datasets')
@@ -122,7 +122,7 @@ for chan in channels:
             # append to the file the actual command 
             outfileTest = open (filenameTest, 'a')
             if not len(topTrees) == 0:
-                print >> outfileTest, commandString, topTrees[0], " ", chan , " " , 1 , " 0" , " 10000"
+                print >> outfileTest, commandString, topTrees[0], " ", chan , " " , btagWP, " ", 1 , " 0" , " 10000"
                 
             N_job = 0
             N_file = 1
@@ -177,7 +177,7 @@ for chan in channels:
 
                     # run on the files
                     print >> outfile, "# now run on the file copied under /$TMPDIR/ "
-                    print >> outfile, commandString, scractFiles_str , " ", chan , " " , str(N_job+1) , " 0" , " 2000000" 
+                    print >> outfile, commandString, scractFiles_str , " ", chan , " " , btagWP, " ",  str(N_job+1) , " 0" , " 2000000" 
 
                     # cleaning
                     listOfFiles=[]
