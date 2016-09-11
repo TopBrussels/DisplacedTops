@@ -150,7 +150,7 @@ int main (int argc, char *argv[])
     
 
 
-  if(argc < 14 )
+  if(argc < 16 )
     {
       std::cerr << "TOO FEW INPUTs FROM XMLFILE.  CHECK XML INPUT FROM SCRIPT.  " << argc << " ARGUMENTS HAVE BEEN PASSED." << std::endl;
       for (int n_arg=1; n_arg<argc; n_arg++)
@@ -183,7 +183,7 @@ int main (int argc, char *argv[])
 
   // all the files are stored from arg 11 to argc-4
   vector<string> vecfileNames;
-  for(int args = 11; args < argc-4; args++) 
+  for(int args = 11; args < argc-5; args++) 
     {
       vecfileNames.push_back(argv[args]);
     }
