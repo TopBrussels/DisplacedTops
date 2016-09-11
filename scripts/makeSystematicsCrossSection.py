@@ -40,7 +40,7 @@ idataset=0
 # loop over the dataset with add=1
 for d in datasets:
     name = str(d.attrib['name'])
-    if d.attrib['add'] == '1' and "Data" not in name and "QCD" not in name and "DY" not in name:
+    if d.attrib['add'] == '1' and "Data" not in name and "QCD" not in name :
         datasetNames.append(name)
         
         print name
@@ -54,6 +54,15 @@ for d in datasets:
 
             if systShift == "central" :
                 value = 1.0
+
+            # DYJets
+            elif "DYJets" in name:
+                if systShift == "down" :
+                    value = 1 - fl.combinedRelUncertainty(1921.8,[0.6, 33.2], False)
+                elif systShift == "up":
+                    value = 1 + fl.combinedRelUncertainty(1921.8,[0.6, 33.2], False)
+                else:
+                    print "error!! ", systShift, "not in ", systShifts
 
             # TTjets
             elif "TTJets" in name:
