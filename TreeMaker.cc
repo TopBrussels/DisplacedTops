@@ -174,7 +174,8 @@ int main (int argc, char *argv[])
   const float PreselEff           = strtod(argv[10], NULL);
   string fileName                 = argv[11];
   // if there only two arguments after the fileName, the jobNum will be set to 0 by default as an integer is expected and it will get a string (lastfile of the list) 
-  const string channel            = argv[argc-4];
+  const string channel            = argv[argc-5];
+  const string btagWP             = argv[argc-4];
   const int JobNum                = strtol(argv[argc-3], NULL, 10);
   const int startEvent            = strtol(argv[argc-2], NULL, 10);
   const int endEvent              = strtol(argv[argc-1], NULL, 10);
@@ -208,6 +209,7 @@ int main (int argc, char *argv[])
   cout << "Dataset EqLumi: " << EqLumi << endl;
   cout << "Dataset xSect: " << xSect << endl;
   cout << "Dataset File Name: " << vecfileNames[0] << endl;
+  cout << "Btag working point is " << btagWP << endl;
   cout << "Channel is " << channel << endl;
   cout << "Beginning Event: " << startEvent << endl;
   cout << "Ending Event: " << endEvent << endl;
@@ -300,7 +302,7 @@ int main (int argc, char *argv[])
 
 
 
-
+  // bo the logic for the channels
   if(channel=="ElMu" || channel== "MuEl")
     {
       cout << " --> Using the Muon-Electron channel..." << endl;
@@ -347,10 +349,40 @@ int main (int argc, char *argv[])
     }
   else
     {
-      cerr << "The channel --" << channel << "-- is not in the list of authorised channels !!"<<endl;
+      cerr << "The channel --" << channel << "-- is not in the list of allowed channels !!"<<endl;
       exit(1);
     }
+  // eo the logic for the channels
 
+
+  
+  // bo the logic for the btagWP
+  Float_t bTagDiscriminantCut = 0.0 ;
+
+  if (bbel || bbmu){
+    if(btagWP == "Loose")
+      {
+	cout << "btagWP is " << btagWP << endl;
+	bTagDiscriminantCut = 0.460;
+      }
+    else if(btagWP == "Medium")
+      {
+	cout << "btagWP is " << btagWP << endl;
+	bTagDiscriminantCut = 0.800;
+      }
+    else if(btagWP == "Tight")
+      {
+	cout << "btagWP is " << btagWP << endl;
+	bTagDiscriminantCut = 0.935;
+      }
+    else
+      {
+	cerr << "btagWP is " << btagWP << "and this is not in the list of allowed working points" << endl;
+      }
+    channelpostfix += "_" + btagWP;
+  }
+  // eo the logic for the btagWP
+  
 
 
   const char *xmlfile = xmlFileName.c_str();
@@ -1637,10 +1669,7 @@ int main (int argc, char *argv[])
 	  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation76X
 	  if (debug)cout<<"Getting Bjets"<<endl;
 	  Int_t btagAlgo = 1; // btag_combinedInclusiveSecondaryVertexV2BJetTags
-	  Float_t LooseWP = 0.460;
-	  Float_t MewdiumWP = 0.800;
-	  Float_t TightWP = 0.935;
-	  selectedBjets = selection.GetSelectedBJets(selectedJets, btagAlgo, MewdiumWP ); // jet collection, btagAlgo, discriminant cut
+	  selectedBjets = selection.GetSelectedBJets(selectedJets, btagAlgo, bTagDiscriminantCut); // jet collection, btagAlgo, discriminant cut
 
 
 
