@@ -149,14 +149,3 @@ with open('merged.json', 'w') as f:
 
 
 
-# simple test
-"""
-t = [{'ComSMS': 'true'}, {'ComMail': 'true'}, {'PName': 'riyaas'}, {'phone': '1', 'phaco':'awesome'}]
-
-fat_big_dict={}
-
-for i in t:
-    fat_big_dict.update(i)
-
-print fat_big_dict
-"""
