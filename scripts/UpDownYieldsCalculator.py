@@ -180,7 +180,7 @@ for chan in channels:
                 if isData :
                     lumivalue=float(d.attrib['EqLumi'])
                     
-    #            weight= lumivalue / float(d.attrib['EqLumi'])
+                weight= lumivalue / float(d.attrib['EqLumi'])
                 if False:
                     print "lumivalue is " ,lumivalue
                     print " float(d.attrib['EqLumi']) is ",  float(d.attrib['EqLumi'])
@@ -219,12 +219,12 @@ for chan in channels:
                         
                         # lumi weight (uncertainty off the lumi is 5%)
 #                        lumiWeight_dict = {'down': 0.95, 'central': 1., 'up': 1.05}
-#                       lumiWeight = evt_puSF_dict[systematicUncertainties_dict["lumiWeight"]]
+#                        lumiWeight = evt_puSF_dict[systematicUncertainties_dict["lumiWeight"]]
                         
                         XSWeight = 1.
                         XSWeight = XSWeight_dict[sampleName + "_" + systematicUncertainties_dict["XSWeight"]]
                         
-                        evtWeight =  PileUpWeight  * XSWeight
+                        evtWeight =  PileUpWeight  * XSWeight * weight
                         
                         LeptonWeight = 1
                         
