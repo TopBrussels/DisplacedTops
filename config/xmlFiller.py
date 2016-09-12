@@ -33,7 +33,8 @@ for d in datasets:
         chain.Add(rf)
     nEntries = chain.GetEntries()
     equivLumi = nEntries/xsec
-    d.set('EqLumi',str(equivLumi))
+    if 'data' not in d.attrib['title'].lower():
+        d.set('EqLumi',str(equivLumi))
     print d.attrib['name']
 print 'filled xml with eqlumis!'
 tree.write(output)
