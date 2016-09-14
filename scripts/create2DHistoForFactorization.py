@@ -35,9 +35,9 @@ fastRun = False
 
 
 
-electrond0VsElectronsd0Sum=rt.TH2D("electrond0VsElectronsd0Sum","electrond0VsElectronsd0", 50, 0.0, 0.05, 50, 0.0, 0.05)
-muond0VsMuond0Sum=rt.TH2D("muond0VsMuond0Sum","muond0VsMuond0",50, 0.0, 0.05, 50, 0.0, 0.05)
-muond0VsElectrond0Sum=rt.TH2D("muond0VsElectrond0Sum","muond0VsElectrond0",50, 0.0, 0.05, 50, 0.0, 0.05)
+electrond0VsElectronsd0Sum=rt.TH2D("electrond0VsElectronsd0Sum","electrond0VsElectronsd0", 100, 0.0, 0.10, 100, 0.0, 0.10)
+muond0VsMuond0Sum=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0Sum")
+muond0VsElectrond0Sum=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0Sum")
 
 
 # remove low d0 part of the histo
@@ -55,9 +55,9 @@ for compositeDataset in compositeDatasets:
 
 
     # define d0 histograms, one per composite dataset
-    electrond0VsElectronsd0=rt.TH2D("electrond0VsElectronsd0"+dataSetTitles[i_comp],"electrond0VsElectronsd0", 50, 0.0, 0.05, 50, 0.0, 0.05)
-    muond0VsMuond0=rt.TH2D("muond0VsMuond0"+dataSetTitles[i_comp],"muond0VsMuond0",50, 0.0, 0.05, 50, 0.0, 0.05)
-    muond0VsElectrond0=rt.TH2D("muond0VsElectrond0"+dataSetTitles[i_comp],"muond0VsElectrond0",50, 0.0, 0.05, 50, 0.0, 0.05)
+    electrond0VsElectronsd0=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0"+dataSetTitles[i_comp])
+    muond0VsMuond0=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0"+dataSetTitles[i_comp])
+    muond0VsElectrond0=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0"+dataSetTitles[i_comp])
           
     
     FilterString=compositeDatasets[i_comp]
@@ -191,6 +191,3 @@ for compositeDataset in compositeDatasets:
     # end of loop over the comp dataset
 
 
-os.chdir("rootFiles")
-hadd -f NonQCD2D.root WJets2D.root Diboson2D.root SingleTop2D.root TTJets_Lept2D.root DrellYann2D.root
-os.chdir("-")
