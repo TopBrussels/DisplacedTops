@@ -20,7 +20,7 @@ channels=["_ElEl","_MuMu"]
 #base of the path to the root file
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date
-date="Systematics_29_8_2016"
+date="NoBlinding_12_9_2016"
 
 # array with composite dataset and matching string
 dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","Signal"]
@@ -31,7 +31,7 @@ compositeDatasets= ["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann",
 debug = False
 
 # fast run
-fastRun = True
+fastRun = False
 
 
 
@@ -189,3 +189,8 @@ for compositeDataset in compositeDatasets:
 
     i_comp=i_comp+1
     # end of loop over the comp dataset
+
+
+os.chdir("rootFiles")
+hadd -f NonQCD2D.root WJets2D.root Diboson2D.root SingleTop2D.root TTJets_Lept2D.root DrellYann2D.root
+os.chdir("-")
