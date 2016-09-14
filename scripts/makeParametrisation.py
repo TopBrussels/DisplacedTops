@@ -1,6 +1,6 @@
 ##############                                                                         
-# pyroot macro to calcultate the Yield for different all the NonQCD sample. Compares yield when just cutting on the d0 and when using the parametrisation to extend the prediction
-# Also produces single letpon efficiencies on the same canva
+# pyroot macro to calcultate the Yield for all the non-QCD sample. Compares yield when just cutting on the d0 and when using the parametrisation.
+# Also produces single letpon efficiencies on the same canva.
 # April 2016 by qpython@cern.ch 
 #############  
 
@@ -25,8 +25,8 @@ newLine = " \n"
 channels=["_ElEl","_MuMu"]
 
 # samples
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann", "NonQCD"]
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets", "DrellYann"]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann", "NonQCD"]
+#dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann"]
 dataSetColours=[38, 5, 46, 872, 30, 45]
 
 
@@ -176,11 +176,25 @@ for chan in channels:
             yEff_x.append(eff_x)
             yEff_y.append(eff_y)
 
-            # get the yield for the SR
+            # get the yield for the SRs
             if ibin == 20 and not dataSetTitles[i_sam] == "NonQCD":
                 singleArray=[sample,Nfact_]
                 yieldArray.append(singleArray)
                 Sum_=Sum_+Nfact_
+
+            """
+            if ibin == 50 and not dataSetTitles[i_sam] == "NonQCD":
+                singleArray.append(Nfact_)
+                yieldArray.append(singleArray)
+                Sum_=Sum_+Nfact_
+
+
+            if ibin == 100 and not dataSetTitles[i_sam] == "NonQCD":
+                singleArray.append(Nfact)
+                yieldArray.append(singleArray)
+                Sum_=Sum_+Nfact_
+            """
+            
             
 
             ####
