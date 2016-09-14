@@ -25,9 +25,11 @@ newLine = " \n"
 channels=["_ElEl","_MuMu"]
 
 # samples
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann", "NonQCD"]
-#dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann"]
-dataSetColours=[38, 5, 46, 872, 30, 45]
+#dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann", "NonQCD"]
+#dataSetColours=[38, 5, 46, 872, 30, 45]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann"]
+dataSetColours=[38, 5, 46, 872, 30]
+
 
 
 inputFiles=[]
@@ -43,6 +45,9 @@ includeOverFlowBin=True
 # loop over the channel (ee or mumu)
 i_chan = 0
 for chan in channels:
+
+    # sum of background in each SRs
+    Sum1_ = Sum2_ = Sum3_ = 0.
     
     if "ElEl" in chan:
         histo_index=1
@@ -61,6 +66,8 @@ for chan in channels:
     # loop over samples
     i_sam=0
     for sample in dataSetTitles:
+        # variable to
+        Yield1 = Yield2 = Yield3 = 0.
         
         # declare vector necessary for the 4 graps
         xValues=[]
@@ -140,7 +147,7 @@ for chan in channels:
             Ncutx_ = ufloat (Ncutx, Ncutx_error)
 #            print "Ncutx is ", Ncutx
             
-            #  efficiency of first lepton (X)
+            #  efficiency of the first lepton (X)
             eff_x = Ncutx/NTot
 #            print "eff_x is ", eff_x
     
@@ -152,7 +159,7 @@ for chan in channels:
             Ncuty_ = ufloat(Ncuty, Ncuty_error)
 #            print "Ncuty is ", Ncuty
     
-            #  efficiency of first lepton (Y)
+            #  efficiency of the second lepton (Y)
             eff_y = Ncuty/NTot
 #            print "eff_y is ", eff_y
     
@@ -161,7 +168,7 @@ for chan in channels:
             Nfact_ = Ncutx_ * Ncuty_ / NTot_
 #            print "Nfact_ is ", Nfact_
     
-            #Filling the vector for the 4 Graphs
+            # Filling the vector for the 4 Graphs: cut and cout + fact (down, central, up)
             xValues.append(ibin/1000.)
             xValues_error.append(0.)
 
@@ -178,23 +185,19 @@ for chan in channels:
 
             # get the yield for the SRs
             if ibin == 20 and not dataSetTitles[i_sam] == "NonQCD":
-                singleArray=[sample,Nfact_]
-                yieldArray.append(singleArray)
-                Sum_=Sum_+Nfact_
+                Yield1 = Nfact_
+                Sum1_=Sum1_ + Yield1
 
-            """
             if ibin == 50 and not dataSetTitles[i_sam] == "NonQCD":
-                singleArray.append(Nfact_)
-                yieldArray.append(singleArray)
-                Sum_=Sum_+Nfact_
-
+                Yield2 = Nfact_
+                Sum2_=Sum2_ + Yield2
 
             if ibin == 100 and not dataSetTitles[i_sam] == "NonQCD":
-                singleArray.append(Nfact)
-                yieldArray.append(singleArray)
-                Sum_=Sum_+Nfact_
-            """
-            
+                Yield3 = Nfact_
+                Sum3_=Sum3_ + Yield3
+
+
+
             
 
             ####
@@ -202,6 +205,9 @@ for chan in channels:
             
             ibin = ibin + 1
             # eo loop over bins
+
+        singleArray=[sample, Yield1, Yield2, Yield3]
+        yieldArray.append(singleArray)
 
 
         # convert into array of double to allow compability wiht TGraph
@@ -280,7 +286,9 @@ for chan in channels:
 
         # fiddle with y range for appropriate display
         gCut.GetHistogram().SetMaximum(2*gCut.GetHistogram().GetMaximum())
-        gCut.GetHistogram().SetMinimum(0.000005);
+        gCut.GetHistogram().SetMinimum(0.00000005)
+            
+        
         
         # axis labels 
         gCut.GetHistogram().GetXaxis().SetTitle("d_{0} > x cut value [cm]")
@@ -328,7 +336,7 @@ for chan in channels:
 
 
         # make the legend box
-        leg2 = rt.TLegend(0.5,0.7,0.9,0.85)
+        leg2 = rt.TLegend(0.5,0.75,0.85,0.9)
         leg2.SetFillColor(kWhite)
         leg2.SetBorderSize(0)
         
@@ -337,7 +345,10 @@ for chan in channels:
         leg2.AddEntry(gEff_y,"efficiency of the second lepton","l")
         leg2.Draw()
 
-        gEff_x.GetHistogram().SetMinimum(0.0001);
+        if chan == "_ElEl":
+            gEff_x.GetHistogram().SetMinimum(0.0001);
+        elif chan == "_MuMu":
+            gEff_x.GetHistogram().SetMinimum(0.000001);
         
         # set axis title
         gEff_x.GetHistogram().GetXaxis().SetTitle("d_{0} > x cut value [cm]")
@@ -357,7 +368,7 @@ for chan in channels:
         # eo loop over sample
 
     # put the sum of all nonQCD sample in the array
-    singleArray=["Sum of NonQCD background",Sum_]
+    singleArray=["Sum of NonQCD background", Sum1_, Sum2_, Sum3_]
     yieldArray.append(singleArray)
 
 
@@ -372,7 +383,7 @@ for chan in channels:
     fout.write("\\caption{ " + "Yield estimated with the factorisation method in the SR (both lepton with d0 $<$ 0.02 cm) in the "+chan.replace("_"," ")+ " channel." "}"+newLine)
 
     # the actual tabular
-    headers=["background source","Yield +/- uncertainty"]
+    headers=["background source", "SR1" , "SR2", "SR3"]
     fout.write(tabulate(yieldArray, headers, tablefmt="latex"))
 
     # end of table                                                                                           
