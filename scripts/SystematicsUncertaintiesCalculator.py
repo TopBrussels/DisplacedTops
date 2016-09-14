@@ -18,32 +18,23 @@ from tabulate import tabulate
 # my import
 import facoLib as fl
 
-# usefull variables for writing a tex file 
-hLine = "\\hline\n"
-endLine = " \\\\ "
-newLine = " \n"
 
-
-
-
+# dict with the cst systemtic uncertainties
 dict_cstSystType={"lumi":0.05, "trigger_sf_electron":0.20, "trigger_sf_muon":0.10, "trk_sf_electron":0.24, "trk_sf_muon":0.12 }
 
-# 
-#MuonSystTypes=["Cross-Section","evt_Pusf","Sf_Iso_Muon","sf_id_muon","lumi","trigger_sf_muon", "trk_sf_muon"]
+
+# lepton dependent syst type
 muonSystTypes=["XSWeight", "evt_puSF","sf_iso_muon","sf_id_muon","lumi","trigger_sf_muon", "trk_sf_muon"]
 electronSystTypes=["XSWeight", "evt_puSF","sf_reco_electron","sf_id_electron","trigger_sf_electron", "trk_sf_electron"]
-sampleNames=["ZG","WWTo2l2Nu"]
 
 
-
-
+# loop over the channels
 for chan in ["ElEl", "MuMu"]:
 
     # dictionary for the cross section which depends on the samples and on the systShift 
     Yield_dict = fl.getDictFromJson(chan, "", True) 
     print "the merged dict is \n"
     print Yield_dict
-
 
 
     if "ElEl" in chan:
@@ -130,34 +121,6 @@ for chan in ["ElEl", "MuMu"]:
     
     
     
-    
-    print tabulate(doubleArray, headers, tablefmt="latex")
-    
-    
-    # writing results in a tex file 
-    outputFile = "tables/SystematicsTable"+chan+".tex"
-    fout = open (outputFile, "w")
-    fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
-    fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
-    fout.write("\\begin{table}"+newLine)
-    fout.write("\\caption{ " + "Systematic Uncertainty"+chan.replace("_"," ")+ "}"+newLine)
-    
-    # the actual tabular
-    fout.write(tabulate(doubleArray, headers, tablefmt="latex"))
-    
-    
-    # end of table 
-    fout.write("\\end{table}"+newLine)
-    fout.write("\\end{document}"+newLine)
-    fout.close()
-    
-
-
-
-
-# save the dict in a file
-#with open('merged.json', 'w') as f:
-#    json.dump(merged_dict, f)
 
 
 
