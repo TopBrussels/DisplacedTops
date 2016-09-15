@@ -270,6 +270,7 @@ int main (int argc, char *argv[])
   bool printTriggers = false;
   bool applyTriggers = true;
   string channelpostfix = "";
+  string btagpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
   bool applyBlinding = true;
@@ -379,7 +380,7 @@ int main (int argc, char *argv[])
       {
 	cerr << "btagWP is " << btagWP << "and this is not in the list of allowed working points" << endl;
       }
-    channelpostfix += "_" + btagWP;
+    btagpostfix += "_" + btagWP;
   }
   // eo the logic for the btagWP
   
@@ -494,6 +495,8 @@ int main (int argc, char *argv[])
   if (looseIso) channelpostfix = channelpostfix+"_looseIso";
   if (!applyBlinding) channelpostfix = channelpostfix+"_NoBlinding";
   if (selectOnZPeak) channelpostfix = channelpostfix+"_ZPeak";
+
+  channelpostfix = btagpostfix +channelpostfix;
 
   string rootFileName (outputDirectory+"/DisplacedTop"+postfix+channelpostfix+".root");
   if (strJobNum != "0")
