@@ -287,8 +287,8 @@ int main (int argc, char *argv[])
   bool ttmumu = false; // ttbar + mumu 
 
   // Setting a extra bool for the iso requirement on the lepton. This can be cobined with the previous channels
-  bool antiIso = false; // 0.15 < iso < 1.5
-  bool looseIso = false; // iso < 1.5
+  bool antiIso = true; // 0.15 < iso < 1.5
+  bool looseIso = true; // iso < 1.5
 
 
   // extra bool for ttbar enriching cut (one b-jet)
