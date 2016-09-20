@@ -16,7 +16,7 @@ date = dd+"_"+mm+"_"+yyyy
 #date = "10_8_2016"
 
 #directory name
-directory = "Systematics"+"_"+date
+directory = "QCDSyst"+"_"+date
 
 
 #usging argument to filter
@@ -30,22 +30,24 @@ sampleVersion="V4"
 
 # pick the list of channels to be merged
 #channels = ["_MuMu","_ElEl","_bbMu","_bbEl","_ttElEl","_ttMuMu"]
-#channels= ["_bbMu","_bbEl"]
+channels= ["_bbMu","_bbEl"]
 #channels = ["_bbMu"]
 #channels = ["_bbEl"]
 #channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
-channels = ["_MuMu"]
+#channels = ["_MuMu"]
 #channels = ["_ttElEl","_ttMuMu"] 
 #channels = ["_ttMuMu"] 
 #channels = ["_Fail"]
+
+btagFilter="_Tight"
 
 for chan in channels:
     
     
     #Define path where ntuples are stored
     pathNonMerged = "MACRO_Output"+chan+"/"  
-    pathMerged = "MergedTrees/"+directory+"/"+chan+"/"
+    pathMerged = "MergedTrees/"+directory+"/" + btagFilter + chan +"/"
     
     # create dir if not existing yet
     if not os.path.exists(pathMerged):
@@ -90,16 +92,16 @@ for chan in channels:
     
     # loop over data set to search root files
     for n in datasetNames:
-        filenames = glob.glob(pathNonMerged + "/*" + n + chan + "*.root")
+        filenames = glob.glob(pathNonMerged + "/*" + n + btagFilter + chan + "*.root")
         
-#        print filenames
+        print filenames
         
  #       ext=""
  #       if "NoBlinding" in filenames[1]:
   #          ext="_NoBlinding"
   #          print ext
             
-        hadd = "hadd " + pathMerged + "DisplacedTop_Run2_TopTree_Study_" + n + chan + ".root"
+        hadd = "hadd " + pathMerged + "DisplacedTop_Run2_TopTree_Study_" + n + filterSample + chan + ".root"
 
         if (len(filenames) == 0):
             print "no root files found in directory" , pathNonMerged ,  " for dataset " , n , " !!"
