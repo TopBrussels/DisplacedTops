@@ -5,6 +5,7 @@
 #############  
 
 from tabulate import tabulate
+import xml.etree.cElementTree as ET
 import os, sys
 from array import array
 from ROOT import *
@@ -27,15 +28,19 @@ channels=["_ElEl","_MuMu"]
 # samples
 #dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann", "NonQCD"]
 #dataSetColours=[38, 5, 46, 872, 30, 45]
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann"]
-dataSetColours=[38, 5, 46, 872, 30]
 
+dict_colour = {"WJets" : 38, "Diboson" : 5, "SingleTop" : 46, "TTJets_Lept" : 872, "DrellYann" : 30, "stopTobl_m500_Ctau10" : 124}
+#dataSetColours=[38, 5, 46, 872, 30]
+
+
+# name of the tree in the root file 
+treeName="tree"
 
 
 inputFiles=[]
 
-for sample in dataSetTitles:
-    inputFiles.append(TFile("rootFiles/"+sample+"2D.root"))
+#for sample in dataSetTitles:
+#    inputFiles.append(TFile("rootFiles/" + "Composite_" + sample+"2D.root"))
 
 # bool to select upper Edge of the integrals
 includeOverFlowBin=True
@@ -52,9 +57,20 @@ for chan in channels:
     if "ElEl" in chan:
         histo_index=1
         print "In ElEl final state!! \n"
+        tree = ET.ElementTree(file='../config/ElElV4.xml')
     if "MuMu" in chan:
         histo_index=0
         print "In MuMu final state!! \n"
+        tree = ET.ElementTree(file='../config/MuMuV4.xml')
+
+    root =  tree.getroot()
+    datasets = root.find('datasets')
+#    if (debug):
+#        print "found  "  + str(len(datasets)) + " datasets"
+
+
+    # reset the list of dataset 
+    datasetNames = []
 
     # array for the yield 
     yieldArray=[]
@@ -65,8 +81,21 @@ for chan in channels:
 
     # loop over samples
     i_sam=0
-    for sample in dataSetTitles:
-        # variable to
+    for d in datasets:
+#    for sample in dataSetTitles:
+        if d.attrib['add'] != '1' or "Data" in d.attrib['name']  or "QCD" in d.attrib['name'] :
+            continue
+        datasetNames.append(str(d.attrib['name']))
+        print str(d.attrib['name'])
+        ch = rt.TChain(treeName,treeName)
+        sample=d.attrib['name']
+        sampleTitle = d.attrib['title']
+
+
+        inputFile = "rootFiles/" + sample+"2D.root"
+        inputFiles.append(TFile(inputFile))
+
+        # variable to count the yield in each SR
         Yield1 = Yield2 = Yield3 = 0.
         
         # declare vector necessary for the 4 graps
@@ -83,14 +112,21 @@ for chan in channels:
         yFactUp=[]
         yFactDown=[]
 
+        print "sample index is ",  i_sam
         
         histnames = []
         rootkeys = inputFiles[i_sam].GetListOfKeys()
         for key in rootkeys:
             histnames.append(key.GetName())
     
+        # check for empty root file
+        if len(histnames) == 0 :
+            print "There is no histogram in the current file, ", inputFile
+            i_sam = i_sam + 1
+            continue
         histo=inputFiles[i_sam].Get(histnames[histo_index])
         print histo
+
 
 
         # check correlation
@@ -184,15 +220,15 @@ for chan in channels:
             yEff_y.append(eff_y)
 
             # get the yield for the SRs
-            if ibin == 20 and not dataSetTitles[i_sam] == "NonQCD":
+            if ibin == 20 and not datasetNames[i_sam] == "NonQCD":
                 Yield1 = Nfact_
                 Sum1_=Sum1_ + Yield1
 
-            if ibin == 50 and not dataSetTitles[i_sam] == "NonQCD":
+            if ibin == 50 and not datasetNames[i_sam] == "NonQCD":
                 Yield2 = Nfact_
                 Sum2_=Sum2_ + Yield2
 
-            if ibin == 100 and not dataSetTitles[i_sam] == "NonQCD":
+            if ibin == 100 and not datasetNames[i_sam] == "NonQCD":
                 Yield3 = Nfact_
                 Sum3_=Sum3_ + Yield3
 
@@ -239,20 +275,20 @@ for chan in channels:
         # Factorised Central value 
         gFact=rt.TGraph(len(xValuesDouble), xValuesDouble,yFactDouble)
         gFact.SetTitle(sample+chan)
-        gFact.SetLineColor(dataSetColours[i_sam])
+        gFact.SetLineColor(dict_colour[sampleTitle])
         gFact.SetLineWidth(3)
 
         # Factorised Up Value
         gFactUp=rt.TGraph(len(xValuesDouble), xValuesDouble,yFactUpDouble)
         gFactUp.SetTitle(sample+chan)
-        gFactUp.SetLineColor(dataSetColours[i_sam])
+        gFactUp.SetLineColor(dict_colour[sampleTitle])
         gFactUp.SetLineStyle(2)
         gFactUp.SetLineWidth(3)
 
         # Factorised Down Value
         gFactDown=rt.TGraph(len(xValuesDouble), xValuesDouble,yFactDownDouble)
         gFactDown.SetTitle(sample+chan)
-        gFactDown.SetLineColor(dataSetColours[i_sam])
+        gFactDown.SetLineColor(dict_colour[sampleTitle])
         gFactDown.SetLineStyle(2)
         gFactDown.SetLineWidth(3)
         
@@ -316,7 +352,7 @@ for chan in channels:
         # eff of first lepton
         gEff_x=rt.TGraph(len(xValuesDouble), xValuesDouble,yEff_xDouble)
         gEff_x.SetTitle(sample+chan)
-        gEff_x.SetLineColor(dataSetColours[i_sam])
+        gEff_x.SetLineColor(dict_colour[sampleTitle])
         gEff_x.SetLineStyle(2)
         gEff_x.SetLineWidth(3)
 
@@ -324,7 +360,7 @@ for chan in channels:
         # eff of second lepton
         gEff_y=rt.TGraph(len(xValuesDouble), xValuesDouble,yEff_yDouble)
         gEff_y.SetTitle(sample+chan)
-        gEff_y.SetLineColor(dataSetColours[i_sam])
+        gEff_y.SetLineColor(dict_colour[sampleTitle])
         gEff_y.SetLineWidth(3)
         
          # define a Canvas
