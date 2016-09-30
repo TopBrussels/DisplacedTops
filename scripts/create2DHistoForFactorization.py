@@ -48,6 +48,9 @@ muond0VsElectrond0Sum=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0Sum")
 # name of the tree in the root file
 treeName="tree"
 
+
+
+
 # loop over the different composite data set
 i_comp=0
 for compositeDataset in compositeDatasets:
@@ -58,10 +61,14 @@ for compositeDataset in compositeDatasets:
     electrond0VsElectronsd0=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0"+dataSetTitles[i_comp])
     muond0VsMuond0=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0"+dataSetTitles[i_comp])
     muond0VsElectrond0=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0"+dataSetTitles[i_comp])
+
+
+
+    
           
     
     FilterString=compositeDatasets[i_comp]
-    outfile = rt.TFile("rootFiles/"+dataSetTitles[i_comp]+"2D.root",'RECREATE')
+    outfile_comp = rt.TFile("rootFiles/"+"Composite_"+dataSetTitles[i_comp]+"2D.root",'RECREATE')
 
     # loop over the different channels
     for chan in channels :
@@ -93,6 +100,9 @@ for compositeDataset in compositeDatasets:
         i_dataset=0
         for d in datasets:
 
+            outfile = rt.TFile()
+
+
             # get the lumi from the Data
             if d.attrib['add'] == '1' and "Data" in str(d.attrib['name']):
                 lumivalue=float(d.attrib['EqLumi'])
@@ -103,6 +113,15 @@ for compositeDataset in compositeDatasets:
                 print str(d.attrib['name'])
                 ch = rt.TChain(treeName,treeName)
                 sampleName=d.attrib['name']
+                outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'RECREATE')
+
+                # define d0 histograms, one per single dataset
+                electrond0VsElectronsd0Single=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0"+sampleName)
+                muond0VsMuond0Single=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0"+sampleName)
+                muond0VsElectrond0Single=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0"+sampleName)
+
+
+
 
 
                 # fix the type of dataset (bgMC, signal or data)                           
@@ -163,6 +182,7 @@ for compositeDataset in compositeDatasets:
                         d01mu=abs(iev.d0BeamSpot_muon[0])
                         d02mu=abs(iev.d0BeamSpot_muon[1])
                         muond0VsMuond0.Fill(d01mu,d02mu,weight*PileUpWeight*LeptonWeight)
+                        muond0VsMuond0Single.Fill(d01mu,d02mu,weight*PileUpWeight*LeptonWeight)
                         if (debug):
                             print "d0 is " , d0mu
                             print "weight is ", weight
@@ -172,18 +192,26 @@ for compositeDataset in compositeDatasets:
                         d01el=abs(iev.d0BeamSpot_electron[0])
                         d02el=abs(iev.d0BeamSpot_electron[1])
                         electrond0VsElectronsd0.Fill(d01el,d02el,weight*PileUpWeight*LeptonWeight)
+                        electrond0VsElectronsd0Single.Fill(d01el,d02el,weight*PileUpWeight*LeptonWeight)
         
                     # eo loop over the event
+
+
+                outfile.cd()
+                muond0VsMuond0Single.Write()
+                electrond0VsElectronsd0Single.Write()
+                outfile.Close()
+
 
             # eo loop over the dataset
 
         #eo loop over the channnel
 
     # write the two histo and close the file
-    outfile.cd()
+    outfile_comp.cd()
     muond0VsMuond0.Write()
     electrond0VsElectronsd0.Write()
-    outfile.Close()
+    outfile_comp.Close()
 
     
 
