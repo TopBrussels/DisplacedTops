@@ -71,7 +71,7 @@ for compositeDataset in compositeDatasets:
     outfile_comp = rt.TFile("rootFiles/"+"Composite_"+dataSetTitles[i_comp]+"2D.root",'RECREATE')
 
     # loop over the different channels
-    for chan in channels :
+    for i_chan, chan  in enumerate (channels) :
         isElEl =False
         isMuMu =False
     
@@ -113,9 +113,9 @@ for compositeDataset in compositeDatasets:
                 print str(d.attrib['name'])
                 ch = rt.TChain(treeName,treeName)
                 sampleName=d.attrib['name']
-                if isElEl:
+                if i_chan == 0:
                     outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'RECREATE')
-                if isMuMu:
+                else :
                     outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'UPDATE')
 
                 # define d0 histograms, one per single dataset
@@ -215,8 +215,8 @@ for compositeDataset in compositeDatasets:
 
     # write the two histo and close the file
     outfile_comp.cd()
-    muond0VsMuond0.Write()
     electrond0VsElectronsd0.Write()
+    muond0VsMuond0.Write()
     outfile_comp.Close()
 
     
