@@ -113,7 +113,10 @@ for compositeDataset in compositeDatasets:
                 print str(d.attrib['name'])
                 ch = rt.TChain(treeName,treeName)
                 sampleName=d.attrib['name']
-                outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'RECREATE')
+                if isElEl:
+                    outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'RECREATE')
+                if isMuMu:
+                    outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'UPDATE')
 
                 # define d0 histograms, one per single dataset
                 electrond0VsElectronsd0Single=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0"+sampleName)
@@ -198,8 +201,11 @@ for compositeDataset in compositeDatasets:
 
 
                 outfile.cd()
-                muond0VsMuond0Single.Write()
-                electrond0VsElectronsd0Single.Write()
+                if isElEl:
+                    electrond0VsElectronsd0Single.Write()
+                if isMuMu:
+                    muond0VsMuond0Single.Write()
+
                 outfile.Close()
 
 
