@@ -37,7 +37,7 @@ channels=["_MuMu"]
 # path to tree
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 # 
-folderName="NoDisplacedTrigger"
+folderName="Systematics_29_8_2016/"
 
 
 # root file wit d0 distribution
@@ -140,18 +140,18 @@ for binLept1 in binsLept1 :
             # get the xmlfile that corresponds to the channel
             if "MuMu" in chan:
                 isMuMu=True
-                tree = ET.ElementTree(file='../config/Yield_FullSamplesMuMuV0.xml')
+                tree = ET.ElementTree(file='../config/MuMuV4.xml')
                 treeName="tree"
                 FinalState="At least two muons"
                 print FinalState
             elif "ElEl" in chan:
                 isElEl=True
-                tree = ET.ElementTree(file='../config/Yield_FullSamplesElElV0.xml')
+                tree = ET.ElementTree(file='../config/ElElV4.xml')
                 treeName="tree"
                 FinalState="At least two electrons"
                 print FinalState
             elif "ElMu" in chan:
-                tree = ET.ElementTree(file='../config/Yield_FullSamplesElMuV0.xml')
+                tree = ET.ElementTree(file='../config/ElMuV4.xml')
                 treeName="tree"
                 FinalState="One muon and one electron"
                 print FinalState
@@ -174,7 +174,7 @@ for binLept1 in binsLept1 :
         #        if d.attrib['add'] == '1' and "QCD_" in str(d.attrib['name']):
         #            print "found dataset to be added..." + str(d.attrib['name'])
                     datasetNames.append(str(d.attrib['name']))
-#                    print str(d.attrib['name'])
+                    print str(d.attrib['name'])
                     # one array per dataset [name, title, Eqlumi, N1, N2, N3, SR1, SR2, SR3]
                     ch = rt.TChain(treeName,treeName)
                     sampleName=d.attrib['name']
@@ -192,7 +192,7 @@ for binLept1 in binsLept1 :
                         isData = True
         
         
-                    ch.Add(pathTrunc+folderName+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
+                    ch.Add(pathTrunc+folderName+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
 #                    print pathTrunc+folderName+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root"
                     
                     
