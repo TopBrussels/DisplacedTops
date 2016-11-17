@@ -42,7 +42,7 @@ channels = ["MuMu"]
 
 
 # array of btagWP, default is loose
-btagWPs = ["Tight"]
+btagWPs = ["None"]
 
 
 bigSub = open ("bigSub" + date +".txt", 'a')
