@@ -28,11 +28,11 @@ date = dd+"_"+mm+"_"+yyyy
 #channels = ["ttMuMu"]
 #channels = ["bbEl"] 
 #channels = ["bbMu"] 
-channels = ["bbEl","bbMu"]
+#channels = ["bbEl","bbMu"]
 #channels = ["MuMu","ElEl"] 
 #channels = ["ElMu"] 
 
-#channels = ["MuMu"] 
+channels = ["MuMu"] 
 #channels = ["ElEl"] 
 #channels=["test"]
 
@@ -42,7 +42,7 @@ channels = ["bbEl","bbMu"]
 
 
 # array of btagWP, default is loose
-btagWPs = [""]
+btagWPs = ["Tight"]
 
 
 bigSub = open ("bigSub" + date +".txt", 'a')
