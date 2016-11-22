@@ -23,15 +23,20 @@ pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
 date="NoBlinding_12_9_2016"
 
 # array with composite dataset and matching string
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","Signal"]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","stopTobl_m500_Ctau10"]
 compositeDatasets= ["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","stopTobl_m500_Ctau10"] # title in the xml config
+
+
+# dictionary to convert naming convention of Brussels to Ohio
+dict_BxlToOhio = {'WJets': 'WJetsToLNu', 'Diboson': 'Diboson', 'TTJets_Lept': 'TTJets_Lept', 'DrellYann':'DYJetsToLL_50', 
+                  'SingleTop': 'SingleTop', 'stopTobl_m500_Ctau10': 'stopTobl_m500_Ctau10'}
 
 
 # verbosity
 debug = False
 
 # fast run
-fastRun = False
+fastRun = True
 
 
 
@@ -58,9 +63,9 @@ for compositeDataset in compositeDatasets:
 
 
     # define d0 histograms, one per composite dataset
-    electrond0VsElectronsd0=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0"+dataSetTitles[i_comp])
-    muond0VsMuond0=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0"+dataSetTitles[i_comp])
-    muond0VsElectrond0=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0"+dataSetTitles[i_comp])
+    electrond0VsElectronsd0=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0")
+    muond0VsMuond0=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0")
+    muond0VsElectrond0=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0")
 
 
 
@@ -69,6 +74,7 @@ for compositeDataset in compositeDatasets:
     
     FilterString=compositeDatasets[i_comp]
     outfile_comp = rt.TFile("rootFiles/"+"Composite_"+dataSetTitles[i_comp]+"2D.root",'RECREATE')
+    
 
     # loop over the different channels
     for i_chan, chan  in enumerate (channels) :
@@ -119,9 +125,9 @@ for compositeDataset in compositeDatasets:
                     outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'UPDATE')
 
                 # define d0 histograms, one per single dataset
-                electrond0VsElectronsd0Single=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0"+sampleName)
-                muond0VsMuond0Single=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0"+sampleName)
-                muond0VsElectrond0Single=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0"+sampleName)
+                electrond0VsElectronsd0Single=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0")
+                muond0VsMuond0Single=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0")
+                muond0VsElectrond0Single=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0")
 
 
 
@@ -219,9 +225,17 @@ for compositeDataset in compositeDatasets:
     muond0VsMuond0.Write()
     outfile_comp.Close()
 
+
+    # cp root file with Ohio convention
+    print "copying root file"
+    cmd = "cp rootFiles/"+"Composite_"+dataSetTitles[i_comp]+"2D.root rootFiles/"+dict_BxlToOhio[dataSetTitles[i_comp]]+".root"
+    os.system(cmd)
+
+
     
 
     i_comp=i_comp+1
+    
     # end of loop over the comp dataset
 
 
