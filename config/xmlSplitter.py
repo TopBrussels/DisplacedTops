@@ -3,7 +3,7 @@
 """
 python script to make multiple xml config out of the main xml config which contains all the samples.
 This allow to run only on a subset of the samples without having to recalculate the Eq lumi and makes sure that everything is in synch.
-We want to make one xml per channel (bbEl, bbMu, ElEl, MuMu) and one common xml for the channel ttElEl and ttMuMu.
+We want to make one xml per channel (bbEl, bbMu, ElEl, MuMu) and one common xml for the ttElEl and ttMuMu channels .
 """
 
 
@@ -15,10 +15,10 @@ inputFile = "Filled_FullSamples"+Version+".xml"
 
 channels= ["ElEl","MuMu","bbEl","bbMu","ttLeptons"]
 dataSetTitleList=[
-     ["DoubleEG","500_CTau-10_","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Lept","DrellYann"],
-     ["DoubleMuon","500_CTau-10_","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Lept","DrellYann"],
-     ["SingleElectron","500_CTau-10_","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Lept","DrellYann"],
-     ["SingleMuon","500_CTau-10_","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Lept","DrellYann"],
+     ["DoubleEG","stopTobl","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Lept","DrellYann"],
+     ["DoubleMuon","stopTobl","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Lept","DrellYann"],
+     ["SingleElectron","stopTobl","WJets","Diboson","SingleTop","QCDEMEnriched","QCDbcToE","TTJets_Lept","DrellYann"],
+     ["SingleMuon","stopTobl","WJets","Diboson","SingleTop","QCDMuEnriched","TTJets_Lept","DrellYann"],
      ["MET","TTJets_Lept","DrellYann"],
      ]
 
@@ -52,8 +52,12 @@ for chan in channels:
      with open(outFileYield,"r") as input:
           with open(outFileTreeProc,"wb") as output:
                for line in input:
-                    if "data>" not in line:
+                    if "data>" not in line and "stopTobl" not in line:
                          output.write(line)
+                    # removes all signal but the m500 sample
+                    if "stopTobl" in line and "m500" in line:
+                         output.write(line)
+
 
 
 
