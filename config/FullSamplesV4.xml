@@ -162,16 +162,204 @@
 <!-- bo Signal -->
 <!-- ********* -->
 
+<!-- M 200 ctau 1 -->
+
+<d name="stopTobl_m200_Ctau1" title="stopTobl_m200_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="64.5085" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-200_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab160/160727_034821/0000/*.root"/>
+
+<!-- M 200 ctau 10 -->
+
+<d name="stopTobl_m200_Ctau10" title="stopTobl_m200_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="64.5085" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-200_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab159/160727_034812/0000/*.root"/>
+
+<!-- M 200 ctau 100 -->
+
+<d name="stopTobl_m200_Ctau100" title="stopTobl_m200_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="64.5085" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-200_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab158/160727_034800/0000/*.root"/>
+
+<!-- M 200 ctau 1000 -->
+
+<d name="stopTobl_m200_Ctau1000" title="stopTobl_m200_Ctau1000" add="1" color="500" ls="1" lw="2" normf="1" xsection="64.5085" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-200_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_100013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab157/160727_034748/0000/*.root"/>
+
+
+<!-- M 300 ctau 1 -->
+
+<d name="stopTobl_m300_Ctau1" title="stopTobl_m300_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="8.51615" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-300_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab164/160727_034909/0000/*.root"/>
+
+<!-- M 300 ctau 10 -->
+
+<d name="stopTobl_m300_Ctau10" title="stopTobl_m300_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="8.51615" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-300_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab163/160727_034858/0000/*.root"/>
+
+<!-- M 300 ctau 100 -->
+
+<d name="stopTobl_m300_Ctau100" title="stopTobl_m300_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="8.51615" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-300_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab162/160727_034846/0000/*.root"/>
+
+<!-- M 300 ctau 1000 -->
+
+<d name="stopTobl_m300_Ctau1000" title="stopTobl_m300_Ctau1000" add="1" color="500" ls="1" lw="2" normf="1" xsection="8.51615" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-300_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_100013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab161/160727_034835/0000/*.root"/>
+
+
+<!-- M 400 ctau 1 -->
+
+<d name="stopTobl_m400_Ctau1" title="stopTobl_m400_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="1.83537" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-400_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab167/160727_034946/0000/*.root"/>
+
+<!-- M 400 ctau 10 -->
+
+<d name="stopTobl_m400_Ctau10" title="stopTobl_m400_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="1.83537" EqLumi="1" PreselEff="0.0" filenames=""/>
+
+<!-- M 400 ctau 100 -->
+
+<d name="stopTobl_m400_Ctau100" title="stopTobl_m400_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="1.83537" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-400_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab166/160727_034932/0000/*.root"/>
+
+<!-- M 400 ctau 1000 -->
+
+<d name="stopTobl_m400_Ctau1000" title="stopTobl_m400_Ctau1000" add="1" color="500" ls="1" lw="2" normf="1" xsection="1.83537" EqLumi="1" PreselEff="0.0" filamentous="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-400_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_100013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab165/160727_034920/0000/*.root"/>
 
 
 <!-- M 500 ctau 1 -->
-<d name="NP_overlay_stopTobl_m500_Ctau1" title="stopTobl_m500_Ctau1" add="1" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="170941.984262" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-500_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab170/160727_035036//0000/*.root"/>
+
+<d name="stopTobl_m500_Ctau1" title="stopTobl_m500_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.51848" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-500_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab170/160727_035036/0000/*.root"/>
 
 <!-- M 500 ctau 10 -->
-<d name="NP_overlay_stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="170941.984262" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab169/160727_035026/0000/*.root"/>
+
+<d name="stopTobl_m500_Ctau10" title="stopTobl_m500_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.51848" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-500_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab169/160727_035026/0000/*.root"/>
 
 <!-- M 500 ctau 100 -->
-<d name="NP_overlay_stopTobl_m500_Ctau100" title="stopTobl_m500_Ctau100" add="1" color="433" ls="1" lw="2" normf="1"  xsection="0.51848" EqLumi="170941.984262" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-500_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab168/160727_035013/0000/*.root"/>
+
+<d name="stopTobl_m500_Ctau100" title="stopTobl_m500_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.51848" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-500_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab168/160727_035013/0000/*.root"/>
+
+<!-- M 500 ctau 1000 -->
+
+<d name="stopTobl_m500_Ctau1000" title="stopTobl_m500_Ctau1000" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.51848" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-500_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_100013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab187/160727_034957/0000/*.root"/>
+
+
+
+<!-- M 600 ctau 1 -->
+
+<d name="stopTobl_m600_Ctau1" title="stopTobl_m600_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.174599" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-600_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab174/160727_035216/0000/*.root"/>
+
+<!-- M 600 ctau 10 -->
+
+<d name="stopTobl_m600_Ctau10" title="stopTobl_m600_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.174599" EqLumi="1" PreselEff="0.0" filenames=""/>
+
+<!-- M 600 ctau 100 -->
+
+<d name="stopTobl_m600_Ctau100" title="stopTobl_m600_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.174599" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-600_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab172/160727_035102/0000/*.root"/>
+
+<!-- M 600 ctau 1000 -->
+
+<d name="stopTobl_m600_Ctau1000" title="stopTobl_m600_Ctau1000" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.174599" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-600_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_100013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab171/160727_035050/0000/*.root"/>
+
+
+
+<!-- M 700 ctau 1 -->
+
+<d name="stopTobl_m700_Ctau1" title="stopTobl_m700_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0670476" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-700_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab178/160727_035412/0000/*.root"/>
+
+<!-- M 700 ctau 10 -->
+
+<d name="stopTobl_m700_Ctau10" title="stopTobl_m700_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0670476" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-700_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab177/160727_035402/0000/*.root"/>
+
+<!-- M 700 ctau 100 -->
+
+<d name="stopTobl_m700_Ctau100" title="stopTobl_m700_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0670476" EqLumi="1" PreselEff="0.0" filenames=""/>
+
+<!-- M 700 ctau 1000 -->
+
+<d name="stopTobl_m700_Ctau1000" title="stopTobl_m700_Ctau1000" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0670476" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-700_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_100013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab175/160727_035234/0000/*.root"/>
+
+
+
+<!-- M 800 ctau 1 -->
+
+<d name="stopTobl_m800_Ctau1" title="stopTobl_m800_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0283338" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-800_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab182/160727_035509/0000/*.root"/>
+
+<!-- M 800 ctau 10 -->
+
+<d name="stopTobl_m800_Ctau10" title="stopTobl_m800_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0283338" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-800_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab181/160727_035457/0000/*.root"/>
+
+<!-- M 800 ctau 100 -->
+
+<d name="stopTobl_m800_Ctau100" title="stopTobl_m800_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0283338" EqLumi="1" PreselEff="0.0" filenames=""/>
+
+<!-- M 800 ctau 1000 -->
+
+<d name="stopTobl_m800_Ctau1000" title="stopTobl_m800_Ctau1000" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0283338" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-800_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_100013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab179/160727_035422/0000/*.root"/>
+
+
+<!-- M 900 ctau 1 -->
+
+<d name="stopTobl_m900_Ctau1" title="stopTobl_m900_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0128895" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-900_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab185/160727_035552/0000/*.root"/>
+
+<!-- M 900 ctau 10 -->
+
+<d name="stopTobl_m900_Ctau10" title="stopTobl_m900_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0128895" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-900_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab184/160727_035542/0000/*.root"/>
+
+<!-- M 900 ctau 100 -->
+
+<d name="stopTobl_m900_Ctau100" title="stopTobl_m900_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0128895" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-900_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab183/160727_035529/0000/*.root"/>
+
+<!-- M 900 ctau 1000 -->
+
+<d name="stopTobl_m900_Ctau1000" title="stopTobl_m900_Ctau1000" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.0128895" EqLumi="1" PreselEff="0.0" filenames=""/>
+
+
+<!-- M 1000 ctau 1 -->
+
+<d name="stopTobl_m1000_Ctau1" title="stopTobl_m1000_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00615134" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-1000_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab149/160727_034609/0000/*.root"/>
+
+<!-- M 1000 ctau 10 -->
+
+<d name="stopTobl_m1000_Ctau10" title="stopTobl_m1000_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00615134" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-1000_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab186/160727_034552/0000/*.root"/>
+
+<!-- M 1000 ctau 100 -->
+
+<d name="stopTobl_m1000_Ctau100" title="stopTobl_m1000_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00615134" EqLumi="1" PreselEff="0.0" filenames=""/>
+
+<!-- M 1000 ctau 1000 -->
+
+<d name="stopTobl_m1000_Ctau1000" title="stopTobl_m1000_Ctau1000" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00615134" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-1000_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_100013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab148/160727_034540/0000/*.root"/>
+
+
+<!-- M 1100 ctau 1 -->
+
+<d name="stopTobl_m1100_Ctau1" title="stopTobl_m1100_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-1100_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab153/160727_034650/0000/*.root"/>
+
+<!-- M 1100 ctau 10 -->
+
+<d name="stopTobl_m1100_Ctau10" title="stopTobl_m1100_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-1100_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab152/160727_034639/0000/*.root"/>
+
+<!-- M 1100 ctau 100 -->
+
+<d name="stopTobl_m1100_Ctau100" title="stopTobl_m1100_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-1100_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab151/160727_034627/0000/*.root"/>
+
+<!-- M 1100 ctau 1000 -->
+
+<d name="stopTobl_m1100_Ctau1000" title="stopTobl_m1000_Ctau1100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-1100_CTau-1000_TuneCUETP8M1_13TeV_pythia8/crab_100013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab150/160727_034618/0000/*.root"/>
+
+
+<!-- M 1200 ctau 1 -->
+
+<d name="stopTobl_m1200_Ctau1" title="stopTobl_m1200_Ctau1" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-1200_CTau-1_TuneCUETP8M1_13TeV_pythia8/crab_Tau113TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab156/160727_034739/0000"/>
+
+<!-- M 1200 ctau 10 -->
+
+<d name="stopTobl_m1200_Ctau10" title="stopTobl_m1200_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames=""/>
+
+<!-- M 1200 ctau 100 -->
+
+<d name="stopTobl_m1200_Ctau100" title="stopTobl_m1200_Ctau100" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-1200_CTau-100_TuneCUETP8M1_13TeV_pythia8/crab_u10013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab155/160727_034728/0000"/>
+
+<!-- M 1200 ctau 1000 -->
+
+<d name="stopTobl_m1200_Ctau1000" title="stopTobl_m1000_Ctau1200" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.00307413" EqLumi="1" PreselEff="0.0" filenames=""/>
+
+
+
+
+
+
+
+
+
+
 
 <!-- ********* -->
 <!-- eo Signal -->
