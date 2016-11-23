@@ -52,7 +52,8 @@ for chan in channels:
     print "\nSearching list of sample used for ", chan, " channel!"
     # getting the appropriate xml file
     if chan == "MuMu":
-        tree = ET.ElementTree(file='../config/MuMuV4.xml')
+#        tree = ET.ElementTree(file='../config/MuMuV4.xml')
+        tree = ET.ElementTree(file='../config/DisplacedTopsSignal_76XV3.xml')
     elif chan == "ElEl":
         tree = ET.ElementTree(file='../config/ElElV4.xml')
     elif chan == "ElMu":

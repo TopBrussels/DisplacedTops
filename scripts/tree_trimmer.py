@@ -36,7 +36,7 @@ ROOT.gROOT.SetBatch(True)
 # path to root trees                                                                          
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date="15_4_2016"
-date="CMSSW76V4_TTLetp_10_8_2016"
+date="Systematics_29_8_2016"
 
 # debug                                                                                                                                                                            
 debug=False
@@ -60,8 +60,8 @@ isMuMu=True
 # loading the xml
 datasetNames = []
 
-#channels=["_ElEl","_MuMu"]
-channels=["_MuMu"]
+channels=["_ElEl","_MuMu"]
+#channels=["_MuMu"]
 
 # loop over the channel (lepton in final statue)                                       
 for chan in channels:

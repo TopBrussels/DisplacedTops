@@ -37,9 +37,9 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 #channel
-channels=["_MuMu"]
+#channels=["_MuMu"]
 #channels=["_ElEl"]
-#channels=["_ElEl","_MuMu"]
+channels=["_ElEl","_MuMu"]
 
 # path to tree
 folderName="Systematics_29_8_2016"
@@ -180,7 +180,8 @@ for chan in channels:
         
                 # calculate weight
                 if isData :
-                    lumivalue = float(d.attrib['EqLumi'] # Will never get here for now! FIXME
+                    lumivalue = 1
+#                    lumivalue = float(d.attrib['EqLumi'] # Will never get here for now! FIXME
                     
                 weight= lumivalue / float(d.attrib['EqLumi'])
                 if debug:
