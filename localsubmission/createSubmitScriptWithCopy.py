@@ -47,33 +47,39 @@ btagWPs = ["None"]
 
 bigSub = open ("bigSub" + date +".txt", 'a')
 
+
+
+# xml file to load
+xmlFile = ""
+
 # loop over channels
 for chan in channels:
     print "\nSearching list of sample used for ", chan, " channel!"
     # getting the appropriate xml file
     if chan == "MuMu":
-        tree = ET.ElementTree(file='../config/MuMuV4.xml')
-#        tree = ET.ElementTree(file='../config/DisplacedTopsSignal_76XV3.xml')
+        xmlFile = '../config/MuMuV4.xml'
     elif chan == "ElEl":
-        tree = ET.ElementTree(file='../config/ElElV4.xml')
+        xmlFile = '../config/ElElV4.xml'
     elif chan == "ElMu":
-#        tree = ET.ElementTree(file='../config/ElMuV0.xml')
-#        tree = ET.ElementTree(file='../config/DisplacedTopsSignal.xml')
-        tree = ET.ElementTree(file='../config/DisplacedTopsSignal_76XV3.xml')
+        xmlFile = '../config/ElMuV0.xml'
     elif chan ==  "bbEl":
-        tree = ET.ElementTree(file='../config/bbElV4.xml')
+        xmlFile = '../config/bbElV4.xml'
         btagWPs = ["Loose", "Medium", "Tight"]
     elif chan == "bbMu":
-        tree = ET.ElementTree(file='../config/bbMuV4.xml')
+        xmlFile = '../config/bbMuV4.xml'
         btagWPs = ["Loose", "Medium", "Tight"]
     elif chan == "ttElEl" or chan == "ttMuMu" : # same list of samples for two different channels
-#        print "using config ../config/ttLeptonsV4.xml"
-        tree = ET.ElementTree(file='../config/ttLeptonsV4.xml')
+        xmlFile = '../config/ttLeptonsV4.xml'
     elif chan == "test" :
-        tree = ET.ElementTree(file='../config/test.xml')
+        xmlFile =='../config/test.xml'
     else:
         print "Channel '", chan , "' is not a correct channel name. No tree has been loaded!"
         sys.exit()
+
+    # load the tree
+    print "the xml file used is " , xmlFile
+    tree = ET.ElementTree(file = xmlFile)
+
         
 
     root = tree.getroot()
