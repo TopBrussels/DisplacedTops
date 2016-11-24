@@ -28,10 +28,13 @@ for d in datasets:
     root_files = []
     for f in files:
         root_files.append('dcap://maite.iihe.ac.be'+f)
+#        root_files.append(f)
     chain = TChain('eventTree')
     for rf in root_files:
         chain.Add(rf)
+#        print rf
     nEntries = chain.GetEntries()
+    print nEntries
     equivLumi = nEntries/xsec
     if 'data' not in d.attrib['title'].lower():
         d.set('EqLumi',str(equivLumi))

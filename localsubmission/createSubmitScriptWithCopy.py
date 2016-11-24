@@ -29,10 +29,10 @@ date = dd+"_"+mm+"_"+yyyy
 #channels = ["bbEl"] 
 #channels = ["bbMu"] 
 #channels = ["bbEl","bbMu"]
-#channels = ["MuMu","ElEl"] 
+channels = ["MuMu","ElEl"] 
 #channels = ["ElMu"] 
 
-channels = ["MuMu"] 
+#channels = ["MuMu"] 
 #channels = ["ElEl"] 
 #channels=["test"]
 
@@ -52,8 +52,8 @@ for chan in channels:
     print "\nSearching list of sample used for ", chan, " channel!"
     # getting the appropriate xml file
     if chan == "MuMu":
-#        tree = ET.ElementTree(file='../config/MuMuV4.xml')
-        tree = ET.ElementTree(file='../config/DisplacedTopsSignal_76XV3.xml')
+        tree = ET.ElementTree(file='../config/MuMuV4.xml')
+#        tree = ET.ElementTree(file='../config/DisplacedTopsSignal_76XV3.xml')
     elif chan == "ElEl":
         tree = ET.ElementTree(file='../config/ElElV4.xml')
     elif chan == "ElMu":
@@ -121,6 +121,7 @@ for chan in channels:
                 print "found dataset to be added..." + str(d.attrib['name'])
                 commandString = "./TreeMaker "+str(d.attrib['name'])+" "+str(d.attrib['title'])+" "+str(d.attrib['add'])+" "+str(d.attrib['color'])+" "+str(d.attrib['ls'])+" "+str(d.attrib['lw'])+" "+str(d.attrib['normf'])+" "+str(d.attrib['EqLumi'])+" "+str(d.attrib['xsection'])+" "+str(d.attrib['PreselEff'])
                 topTrees = glob.glob(d.attrib['filenames'])
+#                print topTrees
     
                 # setting the number of file per job depending whether it is data sample or not
                 # this ca be tweaked
@@ -152,6 +153,7 @@ for chan in channels:
                     # Combine multiple root files in a single job
                     listOfFiles.append(topTrees[f])
                     CopyCmdlistOfFiles.append("dccp dcap://maite.iihe.ac.be:"+topTrees[f]+" /$TMPDIR/TOPTREE_"+str(f)+".root")
+#                    CopyCmdlistOfFiles.append("dccp "+topTrees[f]+" /$TMPDIR/TOPTREE_"+str(f)+".root")
                     listOfScratchFiles.append(" /scratch/$PBS_JOBID/TOPTREE_"+str(f)+".root")
                     listOfTmpDirFiles.append(" /$TMPDIR/TOPTREE_"+str(f)+".root")
                     
