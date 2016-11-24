@@ -273,7 +273,7 @@ int main (int argc, char *argv[])
   string btagpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
-  bool applyBlinding = true;
+  bool applyBlinding = false;
   bool selectOnZPeak = false;
   bool saveRawCollection = false; // fill the pc tree
 
@@ -376,11 +376,21 @@ int main (int argc, char *argv[])
 	cout << "btagWP is " << btagWP << endl;
 	bTagDiscriminantCut = 0.935;
       }
-    else
+    else if (btagWP == "None")
+      {
+	cerr << "btagWP is " << btagWP << ". This should be the case for ee and mumu channel. However, if you are running in a bbCR region, you are probably doing somehting wrong!!" << endl;
+      }
+    else 
       {
 	cerr << "btagWP is " << btagWP << "and this is not in the list of allowed working points" << endl;
+	exit(1);
       }
-    btagpostfix += "_" + btagWP;
+
+    // set the btagpostfix
+    if (btagWP != "None")
+      {
+	btagpostfix = "_" + btagWP;
+      }
   }
   // eo the logic for the btagWP
   
