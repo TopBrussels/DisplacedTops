@@ -20,10 +20,25 @@ channels=["_ElEl","_MuMu"]
 #base of the path to the root file
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date
-date="NoBlinding_12_9_2016"
+date="NoBlindingRerun_24_11_2016"
 
 # array with composite dataset and matching string
 dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","stopTobl_m500_Ctau10"]
+#dataSetTitles = []
+
+
+# add signal sample to the array
+masses = [str(100*x) for x in range (2, 13)]
+print masses
+ctaus = [str(10**x) for x in range (0, 4)]
+print ctaus
+
+# loop over masses and ctaus to add to the list of dataset to be run over
+for m in masses:
+    for ctau in ctaus:
+        dataSetTitles.append("stopTobl_m"+m+"_Ctau"+ctau)
+        
+
 
 
 # dictionary to convert naming convention of Brussels to Ohio 
@@ -111,6 +126,7 @@ for compositeDataset in dataSetTitles:
             if d.attrib['add'] == '1' and "Data" in str(d.attrib['name']):
                 lumivalue=float(d.attrib['EqLumi'])
 
+
             # check if in the right composite dataset
             if d.attrib['add'] == '1' and FilterString ==  str(d.attrib['title']): 
                 datasetNames.append(str(d.attrib['name']))
@@ -149,6 +165,8 @@ for compositeDataset in dataSetTitles:
         
                 # get the lumi weight 
                 weight= lumivalue / float(d.attrib['EqLumi'])
+                    
+
                 if (debug):
                     print "lumivalue is " ,lumivalue
                     print " float(d.attrib['EqLumi']) is ",  float(d.attrib['EqLumi'])
@@ -226,12 +244,21 @@ for compositeDataset in dataSetTitles:
 
     # making the conversion to match Ohion naming convention
     OhioName = ""
-    # check if a change is needed
+    # check if a change is needed for background
     if dataSetTitles[i_comp] in dict_BxlToOhio.keys():
-        print "switching name ", dataSetTitles[i_comp] , " -> " , dict_BxlToOhio[dataSetTitles[i_comp]]
         OhioName = dict_BxlToOhio[dataSetTitles[i_comp]]
+        print "switching name ", dataSetTitles[i_comp] , " -> " , OhioName
     else :
         OhioName = dataSetTitles[i_comp]
+    
+    # always need to change for signal
+    if "stop" in dataSetTitles[i_comp]:
+        OhioName = dataSetTitles[i_comp]
+        OhioName = OhioName.replace("stopTobl_m","stop")
+        OhioName = OhioName.replace("_Ctau","_")
+        OhioName += "mm_MiniAOD"
+        print "switching name ", dataSetTitles[i_comp] , " -> " , OhioName
+
 
     # cp root file with Ohio convention
     print "copying root file"
