@@ -24,7 +24,6 @@ date="NoBlinding_12_9_2016"
 
 # array with composite dataset and matching string
 dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","stopTobl_m500_Ctau10"]
-compositeDatasets= ["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","stopTobl_m500_Ctau10"] # title in the xml config
 
 
 # dictionary to convert naming convention of Brussels to Ohio 
@@ -57,7 +56,7 @@ treeName="tree"
 
 # loop over the different composite data set
 i_comp=0
-for compositeDataset in compositeDatasets:
+for compositeDataset in dataSetTitles:
     print "\n", "compositeDataset is " , dataSetTitles[i_comp] , ":"
 
 
@@ -71,7 +70,7 @@ for compositeDataset in compositeDatasets:
     
           
     
-    FilterString=compositeDatasets[i_comp]
+    FilterString=dataSetTitles[i_comp]
     outfile_comp = rt.TFile("rootFiles/"+"Composite_"+dataSetTitles[i_comp]+"2D.root",'RECREATE')
     
 
