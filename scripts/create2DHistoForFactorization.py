@@ -23,7 +23,7 @@ pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
 date="NoBlindingRerun_24_11_2016"
 
 # array with composite dataset and matching string
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","stopTobl_m500_Ctau10"]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann"]
 #dataSetTitles = []
 
 
