@@ -27,9 +27,8 @@ dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","stop
 compositeDatasets= ["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","stopTobl_m500_Ctau10"] # title in the xml config
 
 
-# dictionary to convert naming convention of Brussels to Ohio
-dict_BxlToOhio = {'WJets': 'WJetsToLNu', 'Diboson': 'Diboson', 'TTJets_Lept': 'TTJets_Lept', 'DrellYann':'DYJetsToLL_50', 
-                  'SingleTop': 'SingleTop', 'stopTobl_m500_Ctau10': 'stopTobl_m500_Ctau10'}
+# dictionary to convert naming convention of Brussels to Ohio 
+dict_BxlToOhio = {'WJets': 'WJetsToLNu', 'DrellYann':'DYJetsToLL_50',  'stopTobl_m500_Ctau10': 'stopTobl_m500_Ctau10'}
 
 
 # verbosity
@@ -226,10 +225,25 @@ for compositeDataset in compositeDatasets:
     outfile_comp.Close()
 
 
+    # making the conversion to match Ohion naming convention
+    OhioName = ""
+    # check if a change is needed
+    if dataSetTitles[i_comp] in dict_BxlToOhio.keys():
+        print "switching name ", dataSetTitles[i_comp] , " -> " , dict_BxlToOhio[dataSetTitles[i_comp]]
+        OhioName = dict_BxlToOhio[dataSetTitles[i_comp]]
+    else :
+        OhioName = dataSetTitles[i_comp]
+
     # cp root file with Ohio convention
     print "copying root file"
-    cmd = "cp rootFiles/"+"Composite_"+dataSetTitles[i_comp]+"2D.root rootFiles/"+dict_BxlToOhio[dataSetTitles[i_comp]]+".root"
+    cmd = "cp rootFiles/"+"Composite_"+dataSetTitles[i_comp]+"2D.root rootFiles/"+OhioName+".root"
     os.system(cmd)
+
+        
+
+
+
+
 
 
     
