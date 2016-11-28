@@ -49,11 +49,11 @@ dict_BxlToOhio = {'WJets': 'WJetsToLNu', 'DrellYann':'DYJetsToLL_50',  'stopTobl
 debug = False
 
 # fast run
-fastRun = True
+fastRun = False
 
 
 
-electrond0VsElectronsd0Sum=rt.TH2D("electrond0VsElectronsd0Sum","electrond0VsElectronsd0", 100, 0.0, 0.10, 100, 0.0, 0.10)
+electrond0VsElectronsd0Sum=rt.TH2D("electrond0VsElectronsd0Sum","electrond0VsElectrond0", 100, 0.0, 0.10, 100, 0.0, 0.10)
 muond0VsMuond0Sum=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0Sum")
 muond0VsElectrond0Sum=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0Sum")
 
@@ -76,7 +76,7 @@ for compositeDataset in dataSetTitles:
 
 
     # define d0 histograms, one per composite dataset
-    electrond0VsElectronsd0=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0")
+    electrond0VsElectronsd0=electrond0VsElectronsd0Sum.Clone("electrond0VsElectrond0")
     muond0VsMuond0=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0")
     muond0VsElectrond0=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0")
 
@@ -139,7 +139,7 @@ for compositeDataset in dataSetTitles:
                     outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'UPDATE')
 
                 # define d0 histograms, one per single dataset
-                electrond0VsElectronsd0Single=electrond0VsElectronsd0Sum.Clone("electrond0VsElectronsd0")
+                electrond0VsElectronsd0Single=electrond0VsElectronsd0Sum.Clone("electrond0VsElectrond0")
                 muond0VsMuond0Single=electrond0VsElectronsd0Sum.Clone("muond0VsMuond0")
                 muond0VsElectrond0Single=electrond0VsElectronsd0Sum.Clone("muond0VsElectrond0")
 
