@@ -237,7 +237,7 @@
 
 <!-- M 600 ctau 10 -->
 
-<d name="stopTobl_m600_Ctau10" title="stopTobl_m600_Ctau10" add="0" color="500" ls="1" lw="2" normf="1" xsection="0.174599" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-600_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab2/161124_175503/0000/*.root"/>
+<d name="stopTobl_m600_Ctau10" title="stopTobl_m600_Ctau10" add="1" color="500" ls="1" lw="2" normf="1" xsection="0.174599" EqLumi="1" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4/DisplacedSUSY_StopToBL_M-600_CTau-10_TuneCUETP8M1_13TeV_pythia8/crab_au1013TeVpythia8Fall15PU25nsData2015v176XmcRun2asymptoticv12v176XmcRun2asymptoticFall15DR76v1crab2/161124_175503/0000/*.root"/>
 
 <!-- M 600 ctau 100 -->
 
