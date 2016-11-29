@@ -23,6 +23,8 @@ LumiTot=0
 tree = ET.ElementTree(file=inputFile)
 root = tree.getroot()
 datasets = root.find('datasets')
+
+it = 0
 for d in datasets:
     if d.attrib['add'] == 1:
         continue
@@ -44,6 +46,7 @@ for d in datasets:
             d.set('EqLumi',str(equivLumi))
         print d.attrib['name']
         print 'filled xml with eqlumis! \n'
+        it+=1
     # Filter failled
     else :
         print "The eq lumi of the sample " , d.attrib['name'], "was not calculated because it failled to pass the filter '" , Filter , "'"
@@ -51,7 +54,7 @@ for d in datasets:
 
 # write the resulting xml file
 tree.write(output)
-
+print "\nThe total number of eqlumis calculated is ", it
 
 
 """
