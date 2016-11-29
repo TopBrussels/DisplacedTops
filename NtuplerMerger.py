@@ -13,10 +13,10 @@ dd = str(now.day)
 mm = str(now.month)
 yyyy = str(now.year)
 date = dd+"_"+mm+"_"+yyyy
-#date = "10_8_2016"
+date = "24_11_2016"
 
 #directory name
-directory = "QCDSyst"+"_"+date
+directory = "NoBlindingRerun"+"_"+date
 
 
 #usging argument to filter
@@ -30,10 +30,10 @@ sampleVersion="V4"
 
 # pick the list of channels to be merged
 #channels = ["_MuMu","_ElEl","_bbMu","_bbEl","_ttElEl","_ttMuMu"]
-channels= ["_bbMu","_bbEl"]
+#channels= ["_bbMu","_bbEl"]
 #channels = ["_bbMu"]
 #channels = ["_bbEl"]
-#channels = ["_MuMu","_ElEl"]
+channels = ["_MuMu","_ElEl"]
 #channels = ["_ElEl"]
 #channels = ["_MuMu"]
 #channels = ["_ttElEl","_ttMuMu"] 
