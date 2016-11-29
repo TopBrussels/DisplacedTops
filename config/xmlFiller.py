@@ -15,6 +15,9 @@ inputFile = sys.argv[1]
 output = "Filled_"+inputFile
 
 
+# Filter string to gain time 
+Filter = "stop"
+
 LumiTot=0
 
 tree = ET.ElementTree(file=inputFile)
@@ -26,20 +29,27 @@ for d in datasets:
     xsec = float(d.attrib['xsection'])
     files = glob.glob(d.attrib['filenames'])
     root_files = []
-    for f in files:
-        root_files.append('dcap://maite.iihe.ac.be'+f)
-#        root_files.append(f)
-    chain = TChain('eventTree')
-    for rf in root_files:
-        chain.Add(rf)
-#        print rf
-    nEntries = chain.GetEntries()
-    print nEntries
-    equivLumi = nEntries/xsec
-    if 'data' not in d.attrib['title'].lower():
-        d.set('EqLumi',str(equivLumi))
-    print d.attrib['name']
-print 'filled xml with eqlumis!'
+    if Filter in d.attrib['name']:
+        for f in files:
+            root_files.append('dcap://maite.iihe.ac.be'+f)
+    #        root_files.append(f)
+        chain = TChain('eventTree')
+        for rf in root_files:
+            chain.Add(rf)
+#            print rf
+        nEntries = chain.GetEntries()
+        print nEntries
+        equivLumi = nEntries/xsec
+        if 'data' not in d.attrib['title'].lower():
+            d.set('EqLumi',str(equivLumi))
+        print d.attrib['name']
+        print 'filled xml with eqlumis! \n'
+    # Filter failled
+    else :
+        print "The eq lumi of the sample " , d.attrib['name'], "was not calculated because it failled to pass the filter '" , Filter , "'"
+        
+
+# write the resulting xml file
 tree.write(output)
 
 
