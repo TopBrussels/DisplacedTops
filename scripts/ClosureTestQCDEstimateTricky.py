@@ -69,16 +69,25 @@ for wp in wps  :
             
                 
 
+
+
+
+# output root file                                                                       
+outfile = rt.TFile("rootFiles/TFS.root",'RECREATE')
+
+
+
 # Calculate all the TFs (DCR->SR1,SR2,SR3) 
-
-fancyHist = rt.TH1D("bla","bla", 4, -0.5, 3.5)
-
 # loop over leptons
 for lept in lepts:
+
+    # histo
+    fancyHist = rt.TH1D("TF"+lept,"TF"+lept, 12, 0.5, 12.5)
+
     print "\n"
     print "lepton is ", lept
     # loop over the wps
-    for wp in wps :
+    for i_wp, wp in enumerate(wps) :
         print "\n"
         print "Working point is ", wp
 
@@ -90,24 +99,45 @@ for lept in lepts:
         N_DCR_ = ufloat (N_DCR, N_DCR_err)
         
         # loop over the 3 SRs
-        for SR in range (2, 5):
-
+        for i_SR, SR in enumerate(range (1, 4)):
             
 
             # yield in SRX with error
-            N_SR = histo_dict[hist_str].GetBinContent(SR)
-            N_SR_err = histo_dict[hist_str].GetBinError(SR)
+            N_SR = histo_dict[hist_str].GetBinContent(SR+1)
+            N_SR_err = histo_dict[hist_str].GetBinError(SR+1)
             N_SR_ = ufloat (N_SR, N_SR_err) 
 
             # get TF
             TF_ = (N_SR_/N_DCR_)**2
             TF = TF_.nominal_value
             TF_err = TF_.std_dev
-            print "TF (DCR->SR"+str(SR-1)+") is " ,  TF_
-            fancyHist.SetBinContent(1, TF)
+            print "TF (DCR->SR"+str(SR)+") is " ,  TF_
 
 
-            
+            # put everything in a histogram
+            ibin = 2 + i_SR * 4 + i_wp
+
+            # fill 
+            fancyHist.SetBinContent(ibin, TF)
+            fancyHist.SetBinError(ibin, TF_err)
+
+    # style
+    fancyHist.SetMaximum(1)
+    fancyHist.SetMinimum(0.0001)
+#    fancyHist.SetTitle("")
+    
+
+    # canvas
+    outfile.cd()
+    c1 = rt.TCanvas(lept)
+    c1.cd()
+    fancyHist.Draw()
+    c1.SetLogy()
+    fancyHist.Write()
+    c1.Write()
+    c1.SaveAs("plots/TFs_" + lept + ".pdf")
+
+outfile.Close()
 
 
 
