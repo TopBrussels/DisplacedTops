@@ -49,22 +49,10 @@ region_dict={"PCR": {"lb": 0.00 , "ub": 0.01},
 
 #print region_dict["DCR"]["lb"]
 
-
-
 # regions
-
 regions=["PCR", "DCR", "SRs"]
 #regions=["PCR"]
 
-# corresponding bool 
-#bools=[True, True, True, True, True]
-# This defines 5 inclusive regions and exclusIve region can be defined by requiring to to pass cut x and failling cut x+1
-# The exclusive regions the following: Promt Control Region (PCR), Displaced CR (DCR), Singal Region (SR) 1, 2 and 3.
-
-
-
-isElEl=False
-isMuMu=True
 
 # loading the xml
 datasetNames = []
@@ -75,7 +63,6 @@ channels=["_ElEl"]
 
 # loop over the channel (lepton in final state) 
 for chan in channels:
-
 
     isElEl=False
     isMuMu=False
@@ -119,20 +106,11 @@ for chan in channels:
             # max_events
             max_events = ch_in.GetEntries()
     
-    
-    
-            
-#            trees=[]       
-            directories=[]
-
             # loop over the region
             for i_reg, reg in enumerate(regions):
 
-
-#                keep = True
-
-
                 new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+reg+".root", 'RECREATE')
+                mytree=ch_in.CloneTree(0)
 
                 # easier variable
                 lb = region_dict[reg]["lb"] 
@@ -141,30 +119,16 @@ for chan in channels:
                     print "lb is ", lb
                     print "ub is ", ub
 
-
-
-    #            var=ROOT.TTree
-                mytree=ch_in.CloneTree(0)
-#                directory=new_file.mkdir(ch_in.GetName()+regions[i_reg])
-#                directories.append(directory)
-#                trees[i_reg].SetName(ch_in.GetName()+regions[i_reg])
-#                trees[i_reg].SetDirectory(directories[i_reg])
-                
-    #            print trees[i_reg]
-    
     
                 # bo loop over the event
                 for i_event in range(max_events):
             
                     i_entry = ch_in.LoadTree(i_event)
                     ch_in.GetEntry(i_event)
-                    
-        
-                    
+
                     # Define one bool per cut on d0
-        
-                    bools=[True, True]
-                    
+                    keep = True
+
                     # make printout every 10 000 events
                     if i_event % 10000 == 0:
                         print 'Processing event %i of %i' % (i_event, max_events)
@@ -183,7 +147,6 @@ for chan in channels:
                     # loop over all the leptons to check the d0
                     for ilept in range (0,nLept):
                         
-                        
                         # make the logic for the muon 
                         if isMuMu:
     
@@ -192,7 +155,7 @@ for chan in channels:
         
                             # if one of the leptons is outside the [lb;ub] region we reject the event
                             if d0_lept < lb or ub < d0_lept:
-                                bools[0]=False
+                                kepp=False
                                 continue
     #                        if abs(ch_in.pt_muon[ilept]) < 60:
     #                            bools[0]=False
@@ -203,21 +166,17 @@ for chan in channels:
                         # make the logic for the electron 
                         if isElEl :
     
-    
                             # easier variable 
                             d0_lept = abs(ch_in.d0BeamSpot_electron[ilept])
     
-                            
-    
                             # if one of the leptons is outside the [lb;ub] region we reject the event
                             if d0_lept < lb or ub < d0_lept:
-                                bools[0]=False
+                                keep=False
                                 continue
     #                        if abs(ch_in.pt_electron[ilept]) < 60 :
     #                            bools[0]=False
     #                            continue
                                 
-    
     
                         # eo the logic for the electron
     
@@ -244,7 +203,7 @@ for chan in channels:
         
                                         
                     # fill the tree if the condition is passed
-                    if bools[0] == True:
+                    if keep == True:
                         mytree.Fill()
 
                 # eo loop over the event 
@@ -258,8 +217,6 @@ for chan in channels:
 
             # eo loop over the regions
 
-    
     # eo loop over dataset
-                                                       
         
 # eo loop over final state
