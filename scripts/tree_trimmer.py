@@ -73,7 +73,7 @@ datasetNames = []
 #channels=["_MuMu"]
 channels=["_ElEl"]
 
-# loop over the channel (lepton in final statue)                                       
+# loop over the channel (lepton in final state) 
 for chan in channels:
 
 
@@ -121,17 +121,15 @@ for chan in channels:
     
     
     
-            # start new file for each sample and each channel
-#            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"SkimmedHighPt_OnZ_Lowd0.root", 'RECREATE')
-
-    
-            # create one tree per regions in the current file
             
-            trees=[]       
+#            trees=[]       
             directories=[]
 
             # loop over the region
             for i_reg, reg in enumerate(regions):
+
+
+#                keep = True
 
 
                 new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+reg+".root", 'RECREATE')
@@ -146,7 +144,7 @@ for chan in channels:
 
 
     #            var=ROOT.TTree
-                trees.append(ch_in.CloneTree(0))
+                mytree=ch_in.CloneTree(0)
 #                directory=new_file.mkdir(ch_in.GetName()+regions[i_reg])
 #                directories.append(directory)
 #                trees[i_reg].SetName(ch_in.GetName()+regions[i_reg])
@@ -155,119 +153,110 @@ for chan in channels:
     #            print trees[i_reg]
     
     
-            # bo loop over the event
-            for i_event in range(max_events):
+                # bo loop over the event
+                for i_event in range(max_events):
+            
+                    i_entry = ch_in.LoadTree(i_event)
+                    ch_in.GetEntry(i_event)
+                    
         
-                i_entry = ch_in.LoadTree(i_event)
-                ch_in.GetEntry(i_event)
-                
-    
-                
-                # Define one bool per cut on d0
-    
-                bools=[True, True]
-                
-                # make printout every 10 000 events
-                if i_event % 10000 == 0:
-                    print 'Processing event %i of %i' % (i_event, max_events)
-    
-                #  skip 99% of the events just to run faster
-#                if not i_event % 100 == 0:
-#                    continue
                     
-                if isElEl:
-                    nLept=ch_in.nElectrons
-                    nLeptPair=ch_in.nElectronPairs
-                if isMuMu:
-                    nLept=ch_in.nMuons
-                    nLeptPair=ch_in.nMuonPairs
-
-                # loop over all the leptons to check the d0
-                for ilept in range (0,nLept):
-
-
+                    # Define one bool per cut on d0
+        
+                    bools=[True, True]
                     
-                    
-                    # make the logic for the muon 
-                    if isMuMu:
-
-                        # easier variable
-                        d0_lept = abs(ch_in.d0BeamSpot_muon[ilept])
-    
-                        # if one of the leptons is outside the [lb;ub] region we reject the event
-                        if d0_lept < lb or ub < d0_lept:
-                            bools[0]=False
-                            continue
-#                        if abs(ch_in.pt_muon[ilept]) < 60:
-#                            bools[0]=False
-#                            continue
-                    # eo the logic for the muon 
-    
-    
-    
-    
-                    # make the logic for the electron 
-                    if isElEl :
-
-
-                        # easier variable 
-                        d0_lept = abs(ch_in.d0BeamSpot_electron[ilept])
-
+                    # make printout every 10 000 events
+                    if i_event % 10000 == 0:
+                        print 'Processing event %i of %i' % (i_event, max_events)
+        
+                    #  skip 99% of the events just to run faster
+    #                if not i_event % 100 == 0:
+    #                    continue
                         
-
-                        # if one of the leptons is outside the [lb;ub] region we reject the event
-                        if d0_lept < lb or ub < d0_lept:
-                            bools[0]=False
-                            continue
-#                        if abs(ch_in.pt_electron[ilept]) < 60 :
-#                            bools[0]=False
-#                            continue
+                    if isElEl:
+                        nLept=ch_in.nElectrons
+                        nLeptPair=ch_in.nElectronPairs
+                    if isMuMu:
+                        nLept=ch_in.nMuons
+                        nLeptPair=ch_in.nMuonPairs
+    
+                    # loop over all the leptons to check the d0
+                    for ilept in range (0,nLept):
+                        
+                        
+                        # make the logic for the muon 
+                        if isMuMu:
+    
+                            # easier variable
+                            d0_lept = abs(ch_in.d0BeamSpot_muon[ilept])
+        
+                            # if one of the leptons is outside the [lb;ub] region we reject the event
+                            if d0_lept < lb or ub < d0_lept:
+                                bools[0]=False
+                                continue
+    #                        if abs(ch_in.pt_muon[ilept]) < 60:
+    #                            bools[0]=False
+    #                            continue
+                        # eo the logic for the muon 
+        
+        
+                        # make the logic for the electron 
+                        if isElEl :
+    
+    
+                            # easier variable 
+                            d0_lept = abs(ch_in.d0BeamSpot_electron[ilept])
+    
                             
-
-
-                    # eo the logic for the electron
-
-
-                """               
-
-                # loop over all the lepton pairs and check the invmass
-                for ileptPair in range (0,nLeptPair):
-                    # reject if outside the Z peak
-
-                    if isMuMu :
-                        if  ch_in.invMass_mumu[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_mumu[ileptPair] :
-#                        if  81.2 <= ch_in.invMass_mumu[ileptPair] and ch_in.invMass_mumu[ileptPair] <= 101.2  :
-                            bools[0]=False
-                            continue
     
-                    if isElEl :
-                        if  ch_in.invMass_elel[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_elel[ileptPair] :
-#                        if  81.2 <= ch_in.invMass_elel[ileptPair] and ch_in.invMass_elel[ileptPair] <= 101.2  :
-                            bools[0]=False
-                            continue
-                 """
-
+                            # if one of the leptons is outside the [lb;ub] region we reject the event
+                            if d0_lept < lb or ub < d0_lept:
+                                bools[0]=False
+                                continue
+    #                        if abs(ch_in.pt_electron[ilept]) < 60 :
+    #                            bools[0]=False
+    #                            continue
+                                
     
-                                    
-                # fill the tree if the condition is passed
-                if bools[0] == True:
-#                if (True):
-                    trees[i_reg].Fill()
-
-            # eo loop over the event 
     
-            # to be FIXED only write SR for data.
-            # to be FIXED logic for CR...
-            # write the tree
-#                for i_reg in range(0,len(regions)):
-#                directories[i_reg].cd()
-            trees[i_reg].Write()
-#                trees[i_reg].GetCurrentFile().Close()
+                        # eo the logic for the electron
+    
+    
+                    """               
+    
+                    # loop over all the lepton pairs and check the invmass
+                    for ileptPair in range (0,nLeptPair):
+                        # reject if outside the Z peak
+    
+                        if isMuMu :
+                            if  ch_in.invMass_mumu[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_mumu[ileptPair] :
+    #                        if  81.2 <= ch_in.invMass_mumu[ileptPair] and ch_in.invMass_mumu[ileptPair] <= 101.2  :
+                                bools[0]=False
+                                continue
+        
+                        if isElEl :
+                            if  ch_in.invMass_elel[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_elel[ileptPair] :
+    #                        if  81.2 <= ch_in.invMass_elel[ileptPair] and ch_in.invMass_elel[ileptPair] <= 101.2  :
+                                bools[0]=False
+                                continue
+                     """
+    
+        
+                                        
+                    # fill the tree if the condition is passed
+                    if bools[0] == True:
+                        mytree.Fill()
+
+                # eo loop over the event 
+
+                # write the tree
+                mytree.Write()
 
                 # closing files
-            new_file.Close()
-            ch_in.GetCurrentFile().Close()
-        # eo loop over the regions
+                new_file.Close()
+                ch_in.GetCurrentFile().Close()
+
+            # eo loop over the regions
 
     
     # eo loop over dataset
