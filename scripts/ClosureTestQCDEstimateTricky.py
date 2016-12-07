@@ -53,7 +53,7 @@ h_muond0=inputFile.Get("muond0")
 histo_dict={}
 
 #
-wps = ["_Loose", "_Medium", "_Tight"]
+wps = ["Loose", "Medium", "Tight"]
 lepts = ["electron" , "muon"]
 binTypes = ["", "Wide"]
 
@@ -64,7 +64,7 @@ for wp in wps  :
     for lept in lepts:
         # loop over binnig type
         for binType in binTypes:
-            hist_str = lept+"d0"+binType+wp
+            hist_str = lept+"d0"+binType+"_"+wp
             histo_dict[hist_str] = inputFile.Get(hist_str)
             
                 
@@ -91,15 +91,18 @@ for lept in lepts:
         print "\n"
         print "Working point is ", wp
 
-        hist_str = lept+"d0Wide"+wp
+        hist_str = lept+"d0Wide"+"_"+wp
         
         # yield in DCR with error
         N_DCR = histo_dict[hist_str].GetBinContent(1)
         N_DCR_err = histo_dict[hist_str].GetBinError(1)
         N_DCR_ = ufloat (N_DCR, N_DCR_err)
+
+
         
         # loop over the 3 SRs
         for i_SR, SR in enumerate(range (1, 4)):
+            
             
 
             # yield in SRX with error
@@ -113,7 +116,6 @@ for lept in lepts:
             TF_err = TF_.std_dev
             print "TF (DCR->SR"+str(SR)+") is " ,  TF_
 
-
             # put everything in a histogram
             ibin = 2 + i_SR * 4 + i_wp
 
@@ -121,9 +123,19 @@ for lept in lepts:
             fancyHist.SetBinContent(ibin, TF)
             fancyHist.SetBinError(ibin, TF_err)
 
+            # set bin label
+            fancyHist.GetXaxis().SetBinLabel(ibin, wp)
+            fancyHist.GetXaxis().SetBinLabel(1 + i_SR * 4, "SR"+str(SR) )
+
+
+            
+
     # style
     fancyHist.SetMaximum(1)
     fancyHist.SetMinimum(0.0001)
+    fancyHist.SetYTitle("TF(DCR->SRi)")
+    fancyHist.SetStats(False)
+
 #    fancyHist.SetTitle("")
     
 
