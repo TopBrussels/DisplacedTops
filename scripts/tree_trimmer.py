@@ -36,17 +36,26 @@ ROOT.gROOT.SetBatch(True)
 # path to root trees                                                                          
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date="15_4_2016"
-date="Systematics_29_8_2016"
+date="NoBlindingRerun_30_11_2016"
 
 # debug                                                                                                                                                                            
 debug=False
 
+# dictionary to link region Name with bound
+region_dict={"PCR": {"lb": 0.00 , "ub": 0.01},
+             "DCR": {"lb": 0.01 , "ub": 0.02},
+             "SRs": {"lb": 0.02 , "ub": 10}
+             }
+
+#print region_dict["DCR"]["lb"]
 
 
 
 # regions
-#regions=["PCR", "DCR", "SR1","SR2", "SR3"]
-regions=["PCR"]
+
+regions=["PCR", "DCR", "SRs"]
+#regions=["PCR"]
+
 # corresponding bool 
 #bools=[True, True, True, True, True]
 # This defines 5 inclusive regions and exclusIve region can be defined by requiring to to pass cut x and failling cut x+1
@@ -60,8 +69,9 @@ isMuMu=True
 # loading the xml
 datasetNames = []
 
-channels=["_ElEl","_MuMu"]
+#channels=["_ElEl","_MuMu"]
 #channels=["_MuMu"]
+channels=["_ElEl"]
 
 # loop over the channel (lepton in final statue)                                       
 for chan in channels:
@@ -94,9 +104,9 @@ for chan in channels:
     datasetNames = []
     idataset=0
 
-
+    # loop over the dataset
     for d in datasets:
-        if d.attrib['add'] == '1' :
+        if d.attrib['add'] == '1' and d.attrib["title"] not in "Data" :
             datasetNames.append(str(d.attrib['name']))
             print str(d.attrib['name'])
             sampleName=d.attrib['name']
@@ -113,13 +123,28 @@ for chan in channels:
     
             # start new file for each sample and each channel
 #            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"SkimmedHighPt_OnZ_Lowd0.root", 'RECREATE')
-            new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"SkimmedLowd0.root", 'RECREATE')
+
     
             # create one tree per regions in the current file
             
             trees=[]       
             directories=[]
-            for i_reg in range(0,len(regions)):
+
+            # loop over the region
+            for i_reg, reg in enumerate(regions):
+
+
+                new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+reg+".root", 'RECREATE')
+
+                # easier variable
+                lb = region_dict[reg]["lb"] 
+                ub = region_dict[reg]["ub"]
+                if debug :
+                    print "lb is ", lb
+                    print "ub is ", ub
+
+
+
     #            var=ROOT.TTree
                 trees.append(ch_in.CloneTree(0))
 #                directory=new_file.mkdir(ch_in.GetName()+regions[i_reg])
@@ -159,12 +184,18 @@ for chan in channels:
 
                 # loop over all the leptons to check the d0
                 for ilept in range (0,nLept):
+
+
+                    
                     
                     # make the logic for the muon 
                     if isMuMu:
+
+                        # easier variable
+                        d0_lept = abs(ch_in.d0BeamSpot_muon[ilept])
     
-                        # if one of the leptons  is smaller than bound, the event fails                          
-                        if abs(ch_in.d0BeamSpot_muon[ilept])> 0.01:
+                        # if one of the leptons is outside the [lb;ub] region we reject the event
+                        if d0_lept < lb or ub < d0_lept:
                             bools[0]=False
                             continue
 #                        if abs(ch_in.pt_muon[ilept]) < 60:
@@ -177,13 +208,23 @@ for chan in channels:
     
                     # make the logic for the electron 
                     if isElEl :
-                        if abs(ch_in.d0BeamSpot_electron[ilept]) > 0.01:
+
+
+                        # easier variable 
+                        d0_lept = abs(ch_in.d0BeamSpot_electron[ilept])
+
+                        
+
+                        # if one of the leptons is outside the [lb;ub] region we reject the event
+                        if d0_lept < lb or ub < d0_lept:
                             bools[0]=False
                             continue
 #                        if abs(ch_in.pt_electron[ilept]) < 60 :
 #                            bools[0]=False
 #                            continue
                             
+
+
                     # eo the logic for the electron
 
 
@@ -209,23 +250,25 @@ for chan in channels:
     
                                     
                 # fill the tree if the condition is passed
-                if bools[0] ==True:
+                if bools[0] == True:
 #                if (True):
-                     trees[i_reg].Fill()
-    
+                    trees[i_reg].Fill()
+
             # eo loop over the event 
     
             # to be FIXED only write SR for data.
             # to be FIXED logic for CR...
             # write the tree
-            for i_reg in range(0,len(regions)):
+#                for i_reg in range(0,len(regions)):
 #                directories[i_reg].cd()
-                trees[i_reg].Write()
+            trees[i_reg].Write()
 #                trees[i_reg].GetCurrentFile().Close()
 
-            # closing files
+                # closing files
             new_file.Close()
             ch_in.GetCurrentFile().Close()
+        # eo loop over the regions
+
     
     # eo loop over dataset
                                                        
