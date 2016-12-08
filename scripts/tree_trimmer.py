@@ -50,16 +50,16 @@ region_dict={"PCR": {"lb": 0.00 , "ub": 0.01},
 #print region_dict["DCR"]["lb"]
 
 # regions
-regions=["PCR", "DCR", "SRs"]
-#regions=["PCR"]
+#regions=["PCR", "DCR", "SRs"]
+regions=["DCR"]
 
 
 # loading the xml
 datasetNames = []
 
 #channels=["_ElEl","_MuMu"]
-#channels=["_MuMu"]
-channels=["_ElEl"]
+channels=["_MuMu"]
+#channels=["_ElEl"]
 
 # loop over the channel (lepton in final state) 
 for chan in channels:
@@ -91,9 +91,11 @@ for chan in channels:
     datasetNames = []
     idataset=0
 
+    
+
     # loop over the dataset
     for d in datasets:
-        if d.attrib['add'] == '1' and d.attrib["title"] not in "Data" :
+        if d.attrib['add'] == '1' and d.attrib["title"] not in "Data" and "QCD" not in d.attrib["title"] :
             datasetNames.append(str(d.attrib['name']))
             print str(d.attrib['name'])
             sampleName=d.attrib['name']
@@ -101,6 +103,7 @@ for chan in channels:
             # build the chain
             ch_in = ROOT.TChain(treeName,treeName)
             input_files = pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root"
+#            print input_files
             ch_in.Add(input_files)
     
             # max_events
@@ -155,7 +158,7 @@ for chan in channels:
         
                             # if one of the leptons is outside the [lb;ub] region we reject the event
                             if d0_lept < lb or ub < d0_lept:
-                                kepp=False
+                                keep=False
                                 continue
     #                        if abs(ch_in.pt_muon[ilept]) < 60:
     #                            bools[0]=False
