@@ -16,7 +16,7 @@ output = "Filled_"+inputFile
 
 
 # Filter string to gain time 
-Filter = "stop"
+Filter = ""
 
 LumiTot=0
 

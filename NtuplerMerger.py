@@ -13,7 +13,7 @@ dd = str(now.day)
 mm = str(now.month)
 yyyy = str(now.year)
 date = dd+"_"+mm+"_"+yyyy
-date = "24_11_2016"
+#date = "24_11_2016"
 
 #directory name
 directory = "NoBlindingRerun"+"_"+date
