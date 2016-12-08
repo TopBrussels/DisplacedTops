@@ -40,6 +40,7 @@ date="NoBlindingRerun_30_11_2016"
 
 # debug                                                                                                                                                                            
 debug=False
+fastRun=False
 
 # dictionary to link region Name with bound
 region_dict={"PCR": {"lb": 0.00 , "ub": 0.01},
@@ -50,8 +51,8 @@ region_dict={"PCR": {"lb": 0.00 , "ub": 0.01},
 #print region_dict["DCR"]["lb"]
 
 # regions
-#regions=["PCR", "DCR", "SRs"]
-regions=["DCR"]
+regions=["PCR", "DCR", "SRs"]
+#regions=["DCR"]
 
 
 # loading the xml
@@ -97,7 +98,7 @@ for chan in channels:
     for d in datasets:
         if d.attrib['add'] == '1' and d.attrib["title"] not in "Data" and "QCD" not in d.attrib["title"] :
             datasetNames.append(str(d.attrib['name']))
-            print str(d.attrib['name'])
+            print "\n"+str(d.attrib['name'])
             sampleName=d.attrib['name']
     
             # build the chain
@@ -112,6 +113,10 @@ for chan in channels:
             # loop over the region
             for i_reg, reg in enumerate(regions):
 
+                # counter 
+                n_selected = 0
+
+                # output file
                 new_file = ROOT.TFile(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+reg+".root", 'RECREATE')
                 mytree=ch_in.CloneTree(0)
 
@@ -137,52 +142,30 @@ for chan in channels:
                         print 'Processing event %i of %i' % (i_event, max_events)
         
                     #  skip 99% of the events just to run faster
-    #                if not i_event % 100 == 0:
-    #                    continue
+                    if fastRun and not i_event % 100 == 0:
+                            continue
                         
                     if isElEl:
                         nLept=ch_in.nElectrons
                         nLeptPair=ch_in.nElectronPairs
+
                     if isMuMu:
                         nLept=ch_in.nMuons
                         nLeptPair=ch_in.nMuonPairs
     
                     # loop over all the leptons to check the d0
                     for ilept in range (0,nLept):
-                        
-                        # make the logic for the muon 
-                        if isMuMu:
-    
-                            # easier variable
-                            d0_lept = abs(ch_in.d0BeamSpot_muon[ilept])
-        
-                            # if one of the leptons is outside the [lb;ub] region we reject the event
-                            if d0_lept < lb or ub < d0_lept:
-                                keep=False
-                                continue
-    #                        if abs(ch_in.pt_muon[ilept]) < 60:
-    #                            bools[0]=False
-    #                            continue
-                        # eo the logic for the muon 
-        
-        
-                        # make the logic for the electron 
-                        if isElEl :
-    
-                            # easier variable 
+
+                        if isElEl:
                             d0_lept = abs(ch_in.d0BeamSpot_electron[ilept])
-    
-                            # if one of the leptons is outside the [lb;ub] region we reject the event
-                            if d0_lept < lb or ub < d0_lept:
-                                keep=False
-                                continue
-    #                        if abs(ch_in.pt_electron[ilept]) < 60 :
-    #                            bools[0]=False
-    #                            continue
-                                
-    
-                        # eo the logic for the electron
-    
+
+                        if isMuMu:
+                            d0_lept = abs(ch_in.d0BeamSpot_muon[ilept])
+                        
+                        # if one of the leptons is outside the [lb;ub] region we reject the event
+                        if d0_lept < lb or ub < d0_lept:
+                            keep=False
+                            continue
     
                     """               
     
@@ -207,9 +190,13 @@ for chan in channels:
                                         
                     # fill the tree if the condition is passed
                     if keep == True:
+                        n_selected+=1
                         mytree.Fill()
+                
 
                 # eo loop over the event 
+#                print "n_selected is ", n_selected
+
 
                 # write the tree
                 mytree.Write()
