@@ -38,7 +38,7 @@ pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops
 #date="15_4_2016"
 date="NoBlindingRerun_30_11_2016"
 
-# debug                                                                                                                                                                            
+# debug 
 debug=False
 fastRun=False
 
@@ -51,15 +51,15 @@ region_dict={"PCR": {"lb": 0.00 , "ub": 0.01},
 #print region_dict["DCR"]["lb"]
 
 # regions
-regions=["PCR", "DCR", "SRs"]
-#regions=["DCR"]
+#regions=["PCR", "DCR", "SRs"]
+regions=["DCR"]
 
 
 # loading the xml
 datasetNames = []
 
-#channels=["_ElEl","_MuMu"]
-channels=["_MuMu"]
+channels=["_ElEl","_MuMu"]
+#channels=["_MuMu"]
 #channels=["_ElEl"]
 
 # loop over the channel (lepton in final state) 
@@ -96,10 +96,12 @@ for chan in channels:
 
     # loop over the dataset
     for d in datasets:
-        if d.attrib['add'] == '1' and d.attrib["title"] not in "Data" and "QCD" not in d.attrib["title"] :
+        title= d.attrib["title"]
+        if d.attrib['add'] == '1' and "Data" in title  and "QCD" not in title  and "DrellYann" in title :
             datasetNames.append(str(d.attrib['name']))
             print "\n"+str(d.attrib['name'])
             sampleName=d.attrib['name']
+
     
             # build the chain
             ch_in = ROOT.TChain(treeName,treeName)
@@ -148,10 +150,18 @@ for chan in channels:
                     if isElEl:
                         nLept=ch_in.nElectrons
                         nLeptPair=ch_in.nElectronPairs
+                        leptInvMAss=ch_in.invMass_elel[0]
 
                     if isMuMu:
                         nLept=ch_in.nMuons
                         nLeptPair=ch_in.nMuonPairs
+                        leptInvMAss=ch_in.invMass_mumu[0]
+
+                    # removes contribution from Z
+                    if  81.2 <=  leptInvMAss <= 101.2 :
+                        keep=False
+                        continue
+    
     
                     # loop over all the leptons to check the d0
                     for ilept in range (0,nLept):
@@ -167,24 +177,10 @@ for chan in channels:
                             keep=False
                             continue
     
-                    """               
+
     
-                    # loop over all the lepton pairs and check the invmass
-                    for ileptPair in range (0,nLeptPair):
-                        # reject if outside the Z peak
     
-                        if isMuMu :
-                            if  ch_in.invMass_mumu[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_mumu[ileptPair] :
-    #                        if  81.2 <= ch_in.invMass_mumu[ileptPair] and ch_in.invMass_mumu[ileptPair] <= 101.2  :
-                                bools[0]=False
-                                continue
         
-                        if isElEl :
-                            if  ch_in.invMass_elel[ileptPair] <= 81.2 or 101.2 <= ch_in.invMass_elel[ileptPair] :
-    #                        if  81.2 <= ch_in.invMass_elel[ileptPair] and ch_in.invMass_elel[ileptPair] <= 101.2  :
-                                bools[0]=False
-                                continue
-                     """
     
         
                                         
