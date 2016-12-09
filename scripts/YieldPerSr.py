@@ -28,7 +28,7 @@ channels=["_MuMu"]
 #channels=["_ElEl","_MuMu"]
 
 # path to tree
-folderName="CMSSW76V4_NewCutFlow"
+folderName="NoBlindingRerun_30_11_2016"
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 
 # debug
@@ -70,19 +70,21 @@ for chan in channels:
     # get the xmlfile that corresponds to the channel
     if "MuMu" in chan:
         isMuMu=True
-        tree = ET.ElementTree(file='../config/Yield_FullSamplesMuMuV0.xml')
+        myFile='../config/MuMuV4.xml'
         FinalState="At least two muons"
         print FinalState
     elif "ElEl" in chan:
         isElEl=True
-        tree = ET.ElementTree(file='../config/Yield_FullSamplesElElV0.xml')
+        myFile='../config/ElElV4.xml'
         FinalState="At least two electrons"
         print FinalState
     elif "ElMu" in chan:
-        tree = ET.ElementTree(file='../config/Yield_FullSamplesElMuV0.xml')
+        myFile='../config/ElMuV0.xml'
     else:
-        print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
+        print "No tree will be loaded!!! Make sure the correct xml file are in the right directories!!!"
         sys.exit()
+
+    tree = ET.ElementTree(file=myFile)
 
         
 
