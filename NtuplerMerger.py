@@ -13,7 +13,7 @@ dd = str(now.day)
 mm = str(now.month)
 yyyy = str(now.year)
 date = dd+"_"+mm+"_"+yyyy
-#date = "24_11_2016"
+#date = "30_11_2016"
 
 #directory name
 directory = "NoBlindingRerun"+"_"+date
@@ -118,7 +118,7 @@ for chan in channels:
       #          ext="_NoBlinding"
       #          print ext
                 
-            hadd = "hadd " + pathMerged + "DisplacedTop_Run2_TopTree_Study_" + n + filterSample + chan + ".root"
+            hadd = "hadd " + pathMerged + "DisplacedTop_Run2_TopTree_Study_" + n  + chan + ".root"
     
             if (len(filenames) == 0):
                 print "no root files found in directory" , pathNonMerged ,  " for dataset " , n , " !!"
