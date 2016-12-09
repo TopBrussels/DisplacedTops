@@ -28,7 +28,7 @@
 
 <!-- Data RunD -->
 <!-- Lumi = 2610.486  pb-1 -->
-<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="2610.486" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4-SILVER/DoubleEG/crab_DoubleEG-Run2015D-16Dec2015-v2crab7/160727_032605/000*/*19.root"/>
+<d name="DataRunD"     title="Data"    add="1"   color="1"  ls="1"  lw="2" normf="1" xsection="1."  EqLumi="2610.486" PreselEff="0.0" filenames="/pnfs/iihe/cms/store/user/fblekman/TopTree/CMSSW_76X_v4-SILVER/DoubleEG/crab_DoubleEG-Run2015D-16Dec2015-v2crab7/160727_032605/000*/*.root"/>
 
 
 <!-- Data Combined -->
