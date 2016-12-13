@@ -63,6 +63,10 @@ def makeTable(fileName, doubleArray, header, savePDF=False,
     possibility to compile it it directly to get the pdf output
     """
 
+    # create new repository
+    if not os.path.exists("tables"):
+        os.makedirs("tables")
+
     # open the output file
     outputfile = "tables/" + fileName + ".tex"
     fout = open(outputfile, "w")
