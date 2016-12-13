@@ -8,8 +8,10 @@ import xml.etree.cElementTree as ET
 import os, sys
 from array import array
 import ROOT as rt
+from uncertainties import ufloat
 
 
+import facoLib as fl
 
 # usefull variables for writing a tex file
 hLine = "\\hline\n"
@@ -17,9 +19,9 @@ endLine = " \\\\ "
 newLine = " \n"
 
 #channel
-channels=["_MuMu"]
+#channels=["_MuMu"]
 #channels=["_ElEl"]
-#channels=["_ElEl","_MuMu"]
+channels=["_ElEl","_MuMu"]
 
 # path to tree
 folderName="NoBlindingRerun_30_11_2016"
@@ -36,6 +38,9 @@ lumivalue = 3
 
 # loop over the channel (lepton in final statue)
 for chan in channels:
+
+
+    print "cannel is", chan
     
     bgMCSum1=rt.TH1D("bgMCSum1"+chan,"bgMCSum1",1,0,1)
 
@@ -44,6 +49,7 @@ for chan in channels:
     isElEl=False
     isMuMu=False
     doubleArray=[]
+    skimmedDoubleArray = []
 
     # get the xmlfile that corresponds to the channel
     if "MuMu" in chan:
@@ -91,8 +97,13 @@ for chan in channels:
                 isBgMC = True
             if "stop" in sampleName:
                 isSignal = True
+                continue
             if "Data" in sampleName:
                 isData = True
+
+
+            if "QCD" in sampleName:
+                continue
 
 
             ch.Add(pathTrunc+folderName+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"DCR.root")
@@ -111,7 +122,7 @@ for chan in channels:
                 lumivalue=float(d.attrib['EqLumi'])
                 
             weight= lumivalue / float(d.attrib['EqLumi'])
-            if (1):
+            if (0):
                 print "lumivalue is " ,lumivalue
                 print " float(d.attrib['EqLumi']) is ",  float(d.attrib['EqLumi'])
                 print "weight is " , weight
@@ -140,58 +151,86 @@ for chan in channels:
                     # make the logic for the muon
                     if isMuMu:
                         LeptonWeight *= iev.sf_muon[ilept]                        
+                        leptInvMAss=iev.invMass_mumu[0]
 
 
                     # make the logic for the electron
                     if isElEl :
                         LeptonWeight *= iev.sf_electron[ilept]
-                        #for bound in range(0,len(SRxBounds)):                                                                                                                                          
+                        leptInvMAss=iev.invMass_elel[0]
+
 
                 if isData :
                     PileUpWeight=1
                     LeptonWeight=1
-                            
+                
 
+                lb = 91.2 - 0
+                ub = 91.2 + 0
+
+
+#                if lb < leptInvMAss and  leptInvMAss < ub :
+#                    print leptInvMAss , "is close to the Z mass peak [" , lb , ";" , ub , "] !"
                 N1.Fill(0.5,weight*PileUpWeight*LeptonWeight)
 
 
-                if isBgMC :
+                if isBgMC : 
                     bgMCSum1.Fill(0.5,weight*PileUpWeight*LeptonWeight)
                     
             
             # eo event loop
 
+            Yield = N1.GetBinContent(1)
+            Yield_err = N1.GetBinError(1)
+            Yield_ = ufloat (Yield, Yield_err)
 
     
             # Fill the two D array for clearer output
             datasetArray = [ d.attrib['name'], d.attrib['title'], d.attrib['EqLumi'], nevents, N1.GetBinContent(1),N1.GetBinError(1)]
-            print datasetArray
+            skimmedDatasetArray = [d.attrib['name'], Yield_]
+#            print datasetArray
             
             
 #
             doubleArray.append(datasetArray)
+            skimmedDoubleArray.append(skimmedDatasetArray)
             print "double array is"
-            print doubleArray
+#            print doubleArray
 
-        
-            # end of event loop
+    # eo loop over the dataset
+    
+
+    # add bkgd sum
+    Yield_Sum = bgMCSum1.GetBinContent(1)
+    Yield_Sum_err = bgMCSum1.GetBinError(1)
+    Yield_Sum_ = ufloat (Yield_Sum, Yield_Sum_err)
+
+    skimmedDoubleArray.append(["Background Sum", Yield_Sum_])
+
+
+
+    # save the double array into pdf
+    myHeader= ["Source", "Yield"]
+    fl.makeTable("YieldTable_DCR" + chan, skimmedDoubleArray, myHeader, True, "Yield in the DCR", False)
+
 
     # print the summary contained it the double array
-    for i in range (0,len(doubleArray)):
-#    for i in range (0,lendidataset):
-        print "---------"
-        print "NEW SAMPLE!!!"
-        print "---------"
-        for j in range (0,len(doubleArray[i])):
-            print doubleArray[i][j]
-        print ""
-        print ""
-    
+#    for i in range (0,len(doubleArray)):
+#
+#        print "---------"
+#        print "NEW SAMPLE!!!"
+#        print "---------"
+#        for j in range (0,len(doubleArray[i])):
+#            print doubleArray[i][j]
+#        print ""
+#        print ""
+#    
     
 
     # writing results in a tex file
-    outputFile = "tables/YieldTable"+chan+".tex"
-    fout = open (outputFile, "w")
+    fileName = "YieldTable"+chan
+    outputfile = "tables/" + fileName + ".tex"
+    fout = open (outputfile, "w")
     fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
     fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
     fout.write("\\begin{table}"+newLine)
@@ -255,6 +294,20 @@ for chan in channels:
     fout.write("\\end{document}"+newLine)
     fout.close()
 
+
+    # compile tex into pdf 
+    cmd = "pdflatex " + outputfile
+    os.system(cmd)
+
+    # mv table                                                             
+    cmd = "mv " + fileName + ".pdf" + " tables/"
+    os.system(cmd)
+    
+    # clean the mess                                                       
+    cmd = "rm " + fileName + ".aux"
+    os.system(cmd)
+    cmd = "rm " + fileName + ".log"
+    os.system(cmd)
 
 
     # end of sample loop
