@@ -11,6 +11,8 @@ import os, sys
 from array import array
 import ROOT as rt
 import math
+import numpy as np
+import json
 
 
 # usefull variables for writing a tex file
@@ -31,9 +33,9 @@ lvmu=rt.TLorentzVector()
 lve=rt.TLorentzVector()
 
 #channel
-channels=["_MuMu"]
+#channels=["_MuMu"]
 #channels=["_ElEl"]
-#channels=["_ElEl","_MuMu"]
+channels=["_ElEl","_MuMu"]
 
 # path to tree
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
@@ -44,13 +46,19 @@ folderName="Systematics_29_8_2016/"
 # root file wit d0 distribution
 inputFile = rt.TFile("rootFiles/d0forTFsNew.root",'READ')
 
-h_electrond0=inputFile.Get("electrond0")
-h_muond0=inputFile.Get("muond0")
+h_electrond0 = inputFile.Get("electrond0")
+h_muond0 = inputFile.Get("muond0")
 
 
 
 # empty dict of hist
-histo_dict={}
+histo_dict = {}
+
+
+# dictrionary of the average TFs
+TFs_dict = {}
+TFs_err_dict = {}
+
 
 #
 wps = ["Loose", "Medium", "Tight"]
@@ -86,24 +94,26 @@ for lept in lepts:
 
     print "\n"
     print "lepton is ", lept
-    # loop over the wps
-    for i_wp, wp in enumerate(wps) :
-        print "\n"
-        print "Working point is ", wp
 
-        hist_str = lept+"d0Wide"+"_"+wp
+
+    # loop over the 3 SRs
+    for i_SR, SR in enumerate(range (1, 4)):
+
+        TFs_list = []
+        TFs_err_list = []
+
+
+        # loop over the wps
+        for i_wp, wp in enumerate(wps) :
+            print "\n"
+            print "Working point is ", wp
+
+            hist_str = lept+"d0Wide"+"_"+wp
         
-        # yield in DCR with error
-        N_DCR = histo_dict[hist_str].GetBinContent(1)
-        N_DCR_err = histo_dict[hist_str].GetBinError(1)
-        N_DCR_ = ufloat (N_DCR, N_DCR_err)
-
-
-        
-        # loop over the 3 SRs
-        for i_SR, SR in enumerate(range (1, 4)):
-            
-            
+            # yield in LIDCR with error
+            N_DCR = histo_dict[hist_str].GetBinContent(1)
+            N_DCR_err = histo_dict[hist_str].GetBinError(1)
+            N_DCR_ = ufloat (N_DCR, N_DCR_err)
 
             # yield in SRX with error
             N_SR = histo_dict[hist_str].GetBinContent(SR+1)
@@ -113,7 +123,10 @@ for lept in lepts:
             # get TF
             TF_ = (N_SR_/N_DCR_)**2
             TF = TF_.nominal_value
+            TFs_list.append(TF)
             TF_err = TF_.std_dev
+            TFs_err_list.append(TF_err)
+            
             print "TF (DCR->SR"+str(SR)+") is " ,  TF_
 
             # put everything in a histogram
@@ -127,8 +140,22 @@ for lept in lepts:
             fancyHist.GetXaxis().SetBinLabel(ibin, wp)
             fancyHist.GetXaxis().SetBinLabel(1 + i_SR * 4, "SR"+str(SR) )
 
+        # eo over the WP
 
-            
+        # calculate average TF for each SR!
+        average = np.mean(TFs_list)
+        average_err = max(TFs_err_list)
+        average_ = ufloat (average, average_err)
+        print "average is with max error is ", average_
+
+        # save the value in the dictionary
+        TFs_dict["SR" + str(SR) + "_" + lept] = average
+        TFs_err_dict["SR" + str(SR) + "_" + lept] = average_err
+        
+
+        
+
+    # eo loop over the SRs
 
     # style
     fancyHist.SetMaximum(1)
@@ -152,8 +179,17 @@ for lept in lepts:
 outfile.Close()
 
 
+# save the dict
+with open ("jsonFiles/TFs.json", 'w') as f:
+    json.dump(TFs_dict, f)
 
-# checking input histoggram
+with open ("jsonFiles/TFs_err.json", 'w') as f:
+    json.dump(TFs_err_dict, f)
+
+
+
+
+# checking input histogram
 """
 boundsLept1 = []
 
