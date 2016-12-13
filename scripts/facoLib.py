@@ -105,32 +105,30 @@ def getDictFromJson(matchingPattern, vetoPattern="", debug=False):
     """
 
     # json file list
-    os.chdir("jsonFiles")
     jsonFiles = []
-    for fn in os.listdir('.'):
-        print fn
+    pathToJsonFile = '/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/scripts/jsonFiles/' 
+    for fn in os.listdir(pathToJsonFile):
+        if debug:
+            print fn
         if ".json" in fn and matchingPattern in fn:
             if vetoPattern == "":
                 jsonFiles.append(fn)
             elif vetoPattern not in fn:
                 jsonFiles.append(fn)
 
-
-    print "the list of json files to be use is \n", jsonFiles
+    if debug :
+        print "the list of json files to be use is \n", jsonFiles
 
     # list of dictionaries. (one element per json file/ dictrionary)
     dic_list = []
 
     # loop over json file list previously created
     for jsonFile in jsonFiles:
-        with open(jsonFile, 'r') as f:
+        with open(pathToJsonFile+jsonFile, 'r') as f:
             try:
                 dic_list.append(json.load(f))
             except ValueError:
                 print "error!!!"
-
-    os.chdir("..")
-
 
     # declare new dictionary
     my_dict = {}
