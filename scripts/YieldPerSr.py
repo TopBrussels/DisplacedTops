@@ -123,7 +123,7 @@ for chan in channels:
                 isData = True
 
 
-            ch.Add(pathTrunc+folderName+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
+            ch.Add(pathTrunc+folderName+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"DCR.root")
             Sum_SR1=Sum_SR2=Sum_SR3=0
             
             # define 3 histograms containing inclusive yields

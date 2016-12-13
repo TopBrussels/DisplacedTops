@@ -273,7 +273,7 @@ int main (int argc, char *argv[])
   string btagpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
-  bool applyBlinding = false;
+  bool applyBlinding = true;
   bool selectOnZPeak = false;
   bool saveRawCollection = false; // fill the pc tree
 

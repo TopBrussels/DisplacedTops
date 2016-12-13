@@ -97,7 +97,8 @@ for chan in channels:
     # loop over the dataset
     for d in datasets:
         title= d.attrib["title"]
-        if d.attrib['add'] == '1' and "Data" in title  and "QCD" not in title  and "DrellYann" in title :
+#        if d.attrib['add'] == '1' and ("Data" in title  or "DrellYann" in title ) and "QCD" not in title  :
+        if d.attrib['add'] == '1' and "QCD" not in title  :
             datasetNames.append(str(d.attrib['name']))
             print "\n"+str(d.attrib['name'])
             sampleName=d.attrib['name']
