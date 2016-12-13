@@ -116,7 +116,10 @@ for chan in ["ElEl", "MuMu"]:
             doubleArray.append(singleArray)
     
     # eo loop over the samples 
-    
+
+
+
+    # save the table in pdf
     fl.makeTable("SystematicsTable_"+chan, doubleArray, headers, True, "List of the systemtic uncertainties for each sample in the " + chan + " channel.", False)
     
     
