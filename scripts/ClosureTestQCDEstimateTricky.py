@@ -14,6 +14,8 @@ import math
 import numpy as np
 import json
 
+import facoLib as fl
+
 
 # usefull variables for writing a tex file
 hLine = "\\hline\n"
@@ -58,6 +60,7 @@ histo_dict = {}
 # dictrionary of the average TFs
 TFs_dict = {}
 TFs_err_dict = {}
+TFs_syst_dict = {}
 
 
 #
@@ -84,20 +87,45 @@ for wp in wps  :
 outfile = rt.TFile("rootFiles/TFS.root",'RECREATE')
 
 
+#
+
 
 # Calculate all the TFs (DCR->SR1,SR2,SR3) 
 # loop over leptons
 for lept in lepts:
+    
+    SRx_Header = ["Region"]
+    SRx_doubleArray = []
 
     # histo
-    fancyHist = rt.TH1D("TF"+lept,"TF"+lept, 12, 0.5, 12.5)
+    fancyHist = rt.TH1D("TF"+lept,"TF"+lept, 15, 0.5, 15.5)
 
     print "\n"
     print "lepton is ", lept
 
+    # Normalisation region yiel
+    yield_DCR = 0
+    yield_DCR_err = 0
+    
+    if lept is "electron":
+        yield_DCR = 0.1
+        yield_DCR_err = 2.5
+    if lept is "muon" :
+        yield_DCR = 5.406
+        yield_DCR_err = 2.61
+
+    yield_DCR_ = ufloat (yield_DCR, yield_DCR_err)
+
+
 
     # loop over the 3 SRs
     for i_SR, SR in enumerate(range (1, 4)):
+        
+
+        SRx_SingleArray = ["SR"+str(i_SR+1)]
+        
+
+        TFs_valueAndErrorArray_ = []
 
         TFs_list = []
         TFs_err_list = []
@@ -105,6 +133,9 @@ for lept in lepts:
 
         # loop over the wps
         for i_wp, wp in enumerate(wps) :
+            
+            
+            
             print "\n"
             print "Working point is ", wp
 
@@ -127,10 +158,15 @@ for lept in lepts:
             TF_err = TF_.std_dev
             TFs_err_list.append(TF_err)
             
+            SRx_Header.append(wp)
+            SRx_SingleArray.append(TF_)
+            TFs_valueAndErrorArray_.append(TF_)
+            
+            
             print "TF (DCR->SR"+str(SR)+") is " ,  TF_
 
             # put everything in a histogram
-            ibin = 2 + i_SR * 4 + i_wp
+            ibin = 2 + i_SR * 5 + i_wp
 
             # fill 
             fancyHist.SetBinContent(ibin, TF)
@@ -138,22 +174,61 @@ for lept in lepts:
 
             # set bin label
             fancyHist.GetXaxis().SetBinLabel(ibin, wp)
-            fancyHist.GetXaxis().SetBinLabel(1 + i_SR * 4, "SR"+str(SR) )
-
+        
         # eo over the WP
+    
+    
+        # calculate average TF for each SR
+        TF_mean = np.mean(TFs_list)
+        TF_max_err = max(TFs_err_list) # take the max error
+        TF_mean_ = ufloat (TF_mean, TF_max_err)
+        print "average with max error is ", TF_mean_
+        
+        SRx_SingleArray.append(TF_mean_)
+        SRx_Header.append("mean")
 
-        # calculate average TF for each SR!
-        average = np.mean(TFs_list)
-        average_err = max(TFs_err_list)
-        average_ = ufloat (average, average_err)
-        print "average is with max error is ", average_
+
+        # get the QCD yield
+        N_QCD_ = yield_DCR_ * TF_mean_
+        print "yield DCR is ", yield_DCR, "and TF_mean_ is ", TF_mean_
+        SRx_SingleArray.append(N_QCD_)
+        SRx_Header.append("N_QCD")
+
+
+#        print "List for the current SR (" , i_SR , ") is ", TFs_valueAndErrorArray_
+        
+        # properly calculated average if we assume that the TF from all wp are  uncorelated..
+        # which is not the case
+        #        TF_mean_ = np.mean(TFs_valueAndErrorArray_)
+        #        print "average is " , TF_mean_
+    
+        # fill
+        fancyHist.SetBinContent(5 + i_SR * 5,TF_mean_.nominal_value)
+        fancyHist.SetBinError(5 + i_SR * 5, TF_mean_.std_dev)
+    
+        # set bin label
+        fancyHist.GetXaxis().SetBinLabel(1 + i_SR * 5, "SR"+str(SR) )
+        fancyHist.GetXaxis().SetBinLabel(5 + i_SR * 5, "Average" )
 
         # save the value in the dictionary
-        TFs_dict["SR" + str(SR) + "_" + lept] = average
-        TFs_err_dict["SR" + str(SR) + "_" + lept] = average_err
-        
+        TFs_dict["SR" + str(SR) + "_" + lept] = TF_mean
+        TFs_err_dict["SR" + str(SR) + "_" + lept] = TF_max_err
+
+
 
         
+        # calculate the systematic uncertainty
+        TF_sys = (max(TFs_list) - min(TFs_list))
+        TF_sys_rel = TF_sys/ TF_mean
+        SRx_SingleArray.append(fl.floatToPercent(TF_sys_rel))
+        SRx_Header.append("Systematic")
+
+        # put it in a dict
+        TFs_syst_dict["SR" + str(SR) + "_" + lept] = TF_sys_rel
+
+
+        # put the single array in the double array
+        SRx_doubleArray.append(SRx_SingleArray)
 
     # eo loop over the SRs
 
@@ -176,6 +251,16 @@ for lept in lepts:
     c1.Write()
     c1.SaveAs("plots/TFs_" + lept + ".pdf")
 
+
+    # make a table
+    caption = "Values of the transfer factors and the yields in the " + str(lept) + "s final state."
+    fl.makeTable("QCDSumaryTable_" + lept, SRx_doubleArray, SRx_Header, True, caption , False)
+
+
+
+#eo lopp over the lept
+
+
 outfile.Close()
 
 
@@ -185,6 +270,9 @@ with open ("jsonFiles/TFs.json", 'w') as f:
 
 with open ("jsonFiles/TFs_err.json", 'w') as f:
     json.dump(TFs_err_dict, f)
+
+with open ("jsonFiles/TFs_syst.json", 'w') as f:
+    json.dump(TFs_syst_dict, f)
 
 
 
