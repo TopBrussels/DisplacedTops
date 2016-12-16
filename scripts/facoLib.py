@@ -56,14 +56,21 @@ def combinedRelUncertainty(central, array, debug=False):
 
 
 def makeTable(fileName, doubleArray, header, savePDF=False,
-              caption="nice caption bro!!", debug=False):
+              caption="nice caption bro!!", debug=False, rotate = False):
     # type: (str, list[list[float]], str, bool,
-    #       str, bool) -> None
+    #       str, bool, bool) -> None
     """Function that convert a array of array into a latex table with the
     possibility to compile it it directly to get the pdf output
     """
 
-    # create new repository
+    # rotation shebang
+    if rotate :
+        doubleArray.insert(0, header)
+        doubleArray = zip(*doubleArray)
+        header = doubleArray[0]
+        doubleArray.pop(0)
+
+    # create new repository
     if not os.path.exists("tables"):
         os.makedirs("tables")
 
