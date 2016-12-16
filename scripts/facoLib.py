@@ -145,13 +145,13 @@ def getDictFromJson(matchingPattern, vetoPattern="", debug=False):
     return my_dict
 
 
-def floatToPercent(value):
-    # type (float) -> str
+def floatToPercent(value, nDigit=2):
+    # type (float, int) -> str
     """ Converts a value into a string in percentage."""
     if value > 1:
         raise ValueError("Value is bigger than 1!")
     else:
-        return str(100.0 * value) + " %"
+        return str(round(100.0 * value, nDigit)) + " %"
 
 
 def makeEffienciency(hist1, hist2, ymin=False, ymax=False, norm=False):
