@@ -58,9 +58,9 @@ histo_dict = {}
 
 
 # dictrionary of the average TFs
-TFs_dict = {}
-TFs_err_dict = {}
-TFs_syst_dict = {}
+N_QCD_dict = {}
+N_QCD_err_dict = {}
+N_QCD_syst_dict = {}
 
 
 #
@@ -211,8 +211,8 @@ for lept in lepts:
         fancyHist.GetXaxis().SetBinLabel(5 + i_SR * 5, "Average" )
 
         # save the value in the dictionary
-        TFs_dict["SR" + str(SR) + "_" + lept] = TF_mean
-        TFs_err_dict["SR" + str(SR) + "_" + lept] = TF_max_err
+        N_QCD_dict["SR" + str(SR) + "_" + lept] = N_QCD_.nominal_value
+        N_QCD_err_dict["SR" + str(SR) + "_" + lept] = N_QCD_.std_dev
 
 
 
@@ -224,7 +224,7 @@ for lept in lepts:
         SRx_Header.append("Systematic")
 
         # put it in a dict
-        TFs_syst_dict["SR" + str(SR) + "_" + lept] = TF_sys_rel
+        N_QCD_syst_dict["SR" + str(SR) + "_" + lept] = TF_sys_rel
 
 
         # put the single array in the double array
@@ -254,7 +254,7 @@ for lept in lepts:
 
     # make a table
     caption = "Values of the transfer factors and the yields in the " + str(lept) + "s final state."
-    fl.makeTable("QCDSumaryTable_" + lept, SRx_doubleArray, SRx_Header, True, caption , False)
+    fl.makeTable("QCDSumaryTable_" + lept, SRx_doubleArray, SRx_Header, True, caption , False, True)
 
 
 
@@ -265,14 +265,14 @@ outfile.Close()
 
 
 # save the dict
-with open ("jsonFiles/TFs.json", 'w') as f:
-    json.dump(TFs_dict, f)
+with open ("jsonFiles/N_QCD.json", 'w') as f:
+    json.dump(N_QCD_dict, f)
 
-with open ("jsonFiles/TFs_err.json", 'w') as f:
-    json.dump(TFs_err_dict, f)
+with open ("jsonFiles/N_QCD_err.json", 'w') as f:
+    json.dump(N_QCD_err_dict, f)
 
-with open ("jsonFiles/TFs_syst.json", 'w') as f:
-    json.dump(TFs_syst_dict, f)
+with open ("jsonFiles/N_QCD_syst.json", 'w') as f:
+    json.dump(N_QCD_syst_dict, f)
 
 
 
