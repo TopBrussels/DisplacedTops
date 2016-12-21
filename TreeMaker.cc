@@ -1,4 +1,3 @@
-
 ////         Analysis code for search for Displaced letpton.              ////
 //////////////////////////////////////////////////////////////////////////////
 
@@ -606,14 +605,13 @@ int main (int argc, char *argv[])
   // bo defining cuts value --
   // -------------------------
 
-  // think to do it in a loop as it will be faster and much less error prompt
 
   // electron
   float el_pt_cut = 42.; // 42
   float el_eta_cut = 2.4; // 2.4
   float el_d0_cut = 0.02; // 0.02
-  float el_relIsoB_cut = 0.0354;
-  float el_relIsoEC_cut = 0.0646;
+  float el_relIsoB_cut = 0.0354; // 0.0354
+  float el_relIsoEC_cut = 0.0646; // 0.0646
 
 
   // muon
@@ -1658,9 +1656,6 @@ int main (int argc, char *argv[])
 	  //  Pile up Scale Factor
 	  ///////////////////////////////////////////
 
-
-	  
-
 	  double lumiWeight_down = LumiWeights_down_.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
 	  double lumiWeight = LumiWeights_.ITweight( npu ); 
 	  double lumiWeight_up = LumiWeights_up_.ITweight( npu ); 
@@ -1670,17 +1665,6 @@ int main (int argc, char *argv[])
 	  evt_puSF_up = lumiWeight_up;
 	  
 	  if (isData) evt_puSF = evt_puSF_pc = 1;
-
-
-
-	  if (false){
-	    double shiftValue = 11.4 * 0.05 ;
-	    PoissonMeanShifter * myShift = new PoissonMeanShifter (-1. * shiftValue);
-	    double WeightValue = myShift->ShiftWeight(npu);
-	    cout << "ShiftWeight is " << WeightValue << endl;
-	    cout <<  "Checking the pile up stuff .... " << endl;
-	    cout << "npu is " << npu << " lumiWeight is " << lumiWeight << " WeightValue is " << WeightValue << endl;
-	  }
 
 	  ///////////////////////
 	  // JER smearing
@@ -1963,7 +1947,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////////
-	  // Electron Based Plots //
+	  // Electron related variables //
 	  //////////////////////////
 	  if (debug) cout << "before electrons loop" << endl;
 
@@ -2088,7 +2072,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////
-	  // Muon Based Plots //
+	  // Muon related variables //
 	  //////////////////////
 	    
 	  nMuons=0;
@@ -2137,7 +2121,7 @@ int main (int argc, char *argv[])
 
 
 	  /////////////////////////
-	  // MuonPairs Plots //
+	  // MuonPairs related variables //
 	  /////////////////////////
 	  nMuonPairs=0; 
           for (Int_t secondMu = nMuons-1; secondMu > 0; secondMu-- ) 
@@ -2164,7 +2148,7 @@ int main (int argc, char *argv[])
 
 
 	  /////////////////////////////
-	  // Jets Based Plots /////////
+	  // Jets related variables /////////
 	  /////////////////////////////
 
 	  nJets = 0;
@@ -2179,7 +2163,7 @@ int main (int argc, char *argv[])
 	    }
 
 	  /////////////////////////////
-	  // Bjets Based Plots ////////
+	  // Bjets related variables ////////
 	  /////////////////////////////
 
 	  nBjets = 0;
@@ -2195,7 +2179,7 @@ int main (int argc, char *argv[])
 
 
 	  ////////////////////////////////////
-	  // bjetJetPairs Based Plots ////////
+	  // bjetJetPairs related variables ////////
 	  ////////////////////////////////////
 	  nBjetJetPairs = 0;
 	  for (Int_t selbjet =0; selbjet < selectedBjets.size() && selbjet < 10 ; selbjet++ ){
@@ -2213,7 +2197,7 @@ int main (int argc, char *argv[])
 
 
 	  /////////////////////////////
-	  // mcParticles Based Plots //
+	  // mcParticles related variables //
 	  /////////////////////////////
 
 	  nMcParticles = 0;
@@ -2253,7 +2237,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////////
-	  // Electron Based Plots //
+	  // Electron related variables //
 	  //////////////////////////
 	  if (debug) cout << "before electrons pc loop" << endl;
 
@@ -2332,7 +2316,7 @@ int main (int argc, char *argv[])
 
 
 	  ///////////////////////////
-	  // ElectronPairs Based Plots //
+	  // ElectronPairs related variables //
 	  ///////////////////////////
 
 	  nElectronPairs_pc=0;
@@ -2361,7 +2345,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////
-	  // Muon Based Plots //
+	  // Muon related variables //
 	  //////////////////////
 	  //	  selectedLooseIsoMuons
 
@@ -2408,7 +2392,7 @@ int main (int argc, char *argv[])
 	    }
 
 	  ///////////////////////////
-	  // MuonPairs Based Plots //
+	  // MuonPairs related variables //
 	  ///////////////////////////
 
 	  nMuonPairs_pc=0;
@@ -2437,7 +2421,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////
-	  // Jets Based Plots //
+	  // Jets related variables //
 	  //////////////////////
 	  if (debug) cout << "before jets loop" << endl;
 
@@ -2453,7 +2437,7 @@ int main (int argc, char *argv[])
 	    }
 
 	  ///////////////////////
-	  // Bjets Based Plots //
+	  // Bjets related variables //
 	  ///////////////////////
 
 	  nBjets_pc=0;
@@ -2469,7 +2453,7 @@ int main (int argc, char *argv[])
 
 
 	  /////////////////////////////
-	  // mcParticles Based Plots //
+	  // mcParticles related variables //
 	  /////////////////////////////
 
 	  //	http://cmslxr.fnal.gov/source/DataFormats/TrackReco/interface/TrackBase.h#0585
@@ -2497,243 +2481,8 @@ int main (int argc, char *argv[])
 	    //	    else cout << "mcParticles[i]->status() is " << mcParticles[i]->status() << endl;
 	  }
 
-
-	    
 	  // eo  assigning values to the precut tree
-	    
-
-
-	  //////////////////////////
-	  // Electron Based Plots //
-	  //////////////////////////
-	  if (debug) cout << "before electrons loop" << endl;
-
-	  /*	    
-	  nElectrons_elel=0;
-	  for (Int_t selel =0; selel < selectedLooseElectrons.size() && selel < 10; selel++ )
-	    {
-	      pt_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->Pt();
-	      phi_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->Phi();
-	      eta_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->Eta();
-	      eta_superCluster_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->superClusterEta();
-	      E_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->E();
-	      vz_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->vz();
-	      v0_electron_elel[nElectrons_elel]=sqrt(pow (selectedLooseElectrons[selel]->vx(),2 )+pow(selectedLooseElectrons[selel]->vy(),2) );
-	      d0_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->d0();
-	      d0BeamSpot_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->d0BeamSpot();
-	      chargedHadronIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->chargedHadronIso(3);
-	      neutralHadronIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->neutralHadronIso(3);
-	      photonIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->photonIso(3);
-	      pfIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->relPfIso(3,0);
-	      charge_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->charge();
-	      sigmaIEtaIEta_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->sigmaIEtaIEta();
-	      deltaEtaIn_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->deltaEtaIn();
-	      deltaPhiIn_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->deltaPhiIn();
-	      hadronicOverEm_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->hadronicOverEm();
-	      missingHits_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->missingHits();
-	      passConversion_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->passConversion();
-	      // id
-	      isId_electron_elel[nElectrons_elel]=false;
-	      if( fabs(selectedLooseElectrons[selel]->superClusterEta()) <= 1.479
-		  && selectedLooseElectrons[selel]->sigmaIEtaIEta() < 0.0101
-		  && fabs(selectedLooseElectrons[selel]->deltaEtaIn()) < 0.00926
-		  && fabs(selectedLooseElectrons[selel]->deltaPhiIn()) < 0.0336
-		  && selectedLooseElectrons[selel]->hadronicOverEm() < 0.0597
-		  && fabs(1/selectedLooseElectrons[selel]->E() - 1/selectedLooseElectrons[selel]->P()) < 0.012
-		  && selectedLooseElectrons[selel]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
-		  && selectedLooseElectrons[selel]->passConversion()){
-		isId_electron_elel[nElectrons_elel]=true;
-	      }
-	      else if (fabs(selectedLooseElectrons[selel]->superClusterEta()) < 2.5
-		       && selectedLooseElectrons[selel]->sigmaIEtaIEta() < 0.0279
-		       && fabs(selectedLooseElectrons[selel]->deltaEtaIn()) < 0.00724
-		       && fabs(selectedLooseElectrons[selel]->deltaPhiIn()) < 0.0918
-		       && selectedLooseElectrons[selel]->hadronicOverEm() < 0.0615
-		       && fabs(1/selectedLooseElectrons[selel]->E() - 1/selectedLooseElectrons[selel]->P()) < 0.00999
-		       && selectedLooseElectrons[selel]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
-		       && selectedLooseElectrons[selel]->passConversion()){
-		isId_electron_elel[nElectrons_elel]=true;
-	      }
-	      // iso to be checked!!! Make sure what is this function getting! faco
-	      isIso_electron_elel[nElectrons_elel]=false;
-	      if( fabs(selectedLooseElectrons[selel]->superClusterEta()) <= 1.479){
-		if(selectedLooseElectrons[selel]->relPfIso(3,0) < 0.0354) isIso_electron_elel[nElectrons_elel]=true;
-	      }
-	      else if (fabs(selectedLooseElectrons[selel]->superClusterEta()) < 2.5){
-		if(selectedLooseElectrons[selel]->relPfIso(3,0) < 0.0646) isIso_electron_elel[nElectrons_elel]=true;
-	      }
-		
-	      isEBEEGap_elel[nElectrons_elel]=selectedLooseElectrons[selel]->isEBEEGap();
-	      sf_electron_elel[nElectrons_elel]=electronSFWeight_->at(selectedLooseElectrons[selel]->Eta(),selectedLooseElectrons[selel]->Pt(),0);
-	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron_elel[nElectrons_elel] << endl;
-	      nElectrons_elel++;
-            }
-
-
-	  //////////////////////
-	  // Muon Based Plots //
-	  //////////////////////
-	    
-	  nMuons_elel=0;
-	  for (Int_t selmu =0; selmu < selectedLooseMuons.size() && selmu < 10; selmu++ )
-            {
-	      pt_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->Pt();
-	      phi_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->Phi();
-	      eta_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->Eta();
-	      E_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->E();
-	      d0_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->d0();
-	      d0BeamSpot_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->d0BeamSpot();
-	      chargedHadronIso_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->chargedHadronIso(4);
-	      neutralHadronIso_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->neutralHadronIso(4);
-	      photonIso_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->photonIso(4);
-	      // id
-	      isId_muon_elel[nMuons_elel]=false;
-	      if( selectedLooseMuons[selmu]->isGlobalMuon() && selectedLooseMuons[selmu]->isPFMuon()
-		  && selectedLooseMuons[selmu]->chi2() < 10
-		  && selectedLooseMuons[selmu]->nofTrackerLayersWithMeasurement() > 5
-		  &&  selectedLooseMuons[selmu]->nofValidMuHits() > 0
-		  && selectedLooseMuons[selmu]->nofValidPixelHits() > 0 //no more in the twiki (https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Tight_Muon)
-		  && selectedLooseMuons[selmu]->nofMatchedStations()> 1){
-		isId_muon_elel[nMuons_elel]=true;
-	      }
-	      //iso
-	      isIso_muon_elel[nMuons_elel]=false;
-	      if ( (selectedLooseMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedLooseMuons[selmu]->neutralHadronIso(4) + selectedLooseMuons[selmu]->photonIso(4) - 0.5*selectedLooseMuons[selmu]->puChargedHadronIso(4) ) ) / selectedLooseMuons[selmu]->Pt() < mu_iso_cut ) isIso_muon_elel[nMuons_elel]=true;
-	      pfIso_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->relPfIso(4,0);
-	      charge_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->charge();
-	      sf_muon_elel[nMuons_elel]=muonSFWeightIso_TT->at(selectedLooseMuons[selmu]->Eta(), selectedLooseMuons[selmu]->Pt(), 0)* muonSFWeightID_T->at(selectedLooseMuons[selmu]->Eta(), selectedLooseMuons[selmu]->Pt(), 0);
-	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon_elel[nMuons_elel] << endl;
-	      nMuons_elel++;
-
-	    }
-	    
-	  */
-
-
-	  // eo assigning values to the elel tree
-
-
-
-	  // bo assigning values to the mumu tree
-	    
-	  /*
-
-	  nElectrons_mumu=0;
-	  for (Int_t selel =0; selel < selectedLooseElectrons.size() && selel < 10; selel++ )
-	    {
-	      pt_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->Pt();
-	      phi_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->Phi();
-	      eta_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->Eta();
-	      eta_superCluster_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->superClusterEta();
-	      E_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->E();
-	      d0_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->d0();
-	      d0BeamSpot_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->d0BeamSpot();
-	      chargedHadronIso_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->chargedHadronIso(3);
-	      neutralHadronIso_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->neutralHadronIso(3);
-	      photonIso_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->photonIso(3);
-	      pfIso_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->relPfIso(3,0);
-	      charge_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->charge();
-	      sigmaIEtaIEta_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->sigmaIEtaIEta();
-	      deltaEtaIn_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->deltaEtaIn();
-	      deltaPhiIn_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->deltaPhiIn();
-	      hadronicOverEm_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->hadronicOverEm();
-	      missingHits_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->missingHits();
-	      passConversion_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->passConversion();
-	      // id
-	      isId_electron_mumu[nElectrons_mumu]=false;
-	      if( fabs(selectedLooseElectrons[selel]->superClusterEta()) <= 1.479
-		  && selectedLooseElectrons[selel]->sigmaIEtaIEta() < 0.0101
-		  && fabs(selectedLooseElectrons[selel]->deltaEtaIn()) < 0.00926
-		  && fabs(selectedLooseElectrons[selel]->deltaPhiIn()) < 0.0336
-		  && selectedLooseElectrons[selel]->hadronicOverEm() < 0.0597
-		  && fabs(1/selectedLooseElectrons[selel]->E() - 1/selectedLooseElectrons[selel]->P()) < 0.012
-		  && selectedLooseElectrons[selel]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
-		  && selectedLooseElectrons[selel]->passConversion()){
-		isId_electron_mumu[nElectrons_mumu]=true;
-	      }
-	      else if (fabs(selectedLooseElectrons[selel]->superClusterEta()) < 2.5
-		       && selectedLooseElectrons[selel]->sigmaIEtaIEta() < 0.0279
-		       && fabs(selectedLooseElectrons[selel]->deltaEtaIn()) < 0.00724
-		       && fabs(selectedLooseElectrons[selel]->deltaPhiIn()) < 0.0918
-		       && selectedLooseElectrons[selel]->hadronicOverEm() < 0.0615
-		       && fabs(1/selectedLooseElectrons[selel]->E() - 1/selectedLooseElectrons[selel]->P()) < 0.00999
-		       && selectedLooseElectrons[selel]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
-		       && selectedLooseElectrons[selel]->passConversion()){
-		isId_electron_mumu[nElectrons_mumu]=true;
-	      }
-	      // iso to be checked!!! Make sure what is this function getting! faco
-	      isIso_electron_mumu[nElectrons_mumu]=false;
-	      if( fabs(selectedLooseElectrons[selel]->superClusterEta()) <= 1.479){
-		if(selectedLooseElectrons[selel]->relPfIso(3,0) < 0.0354) isIso_electron_mumu[nElectrons_mumu]=true;
-	      }
-	      else if (fabs(selectedLooseElectrons[selel]->superClusterEta()) < 2.5){
-		if(selectedLooseElectrons[selel]->relPfIso(3,0) < 0.0646) isIso_electron_mumu[nElectrons_mumu]=true;
-	      }
-		
-	      isEBEEGap_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->isEBEEGap();
-	      // following code found in http://cmslxr.fnal.gov/source/RecoEgamma/PhotonIdentification/src/PhotonIsolationCalculator.cc#0520
-	
-	      
-
-		isEBEEGap_mumu[nElectrons_mumu] = false;
-		Double_t eta =  eta_superCluster_electron_mumu[nElectrons_mumu];
-		Double_t feta = fabs(eta);
-		if (fabs(feta-1.479)<0.1) isEBEEGap_mumu[nElectrons_mumu] = true ;
-
-	      sf_electron_mumu[nElectrons_mumu]=electronSFWeight_->at(selectedLooseElectrons[selel]->Eta(),selectedLooseElectrons[selel]->Pt(),0);
-	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron_mumu[nElectrons_mumu] << endl;
-	      nElectrons_mumu++;
-            }
-
-
-	  //////////////////////
-	  // Muon Based Plots //
-	  //////////////////////
-	    
-	  nMuons_mumu=0;
-	  for (Int_t selmu =0; selmu < selectedMuons.size() && selmu < 10; selmu++ )
-            {
-	      pt_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->Pt();
-	      phi_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->Phi();
-	      eta_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->Eta();
-	      E_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->E();
-	      vz_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->vz();
-	      v0_muon_mumu[nMuons_mumu]=sqrt( pow(selectedMuons[selmu]->vx(), 2) + pow(selectedMuons[selmu]->vy(), 2) );
-	      d0_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->d0();
-	      d0BeamSpot_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->d0BeamSpot();
-	      chargedHadronIso_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->chargedHadronIso(4);
-	      neutralHadronIso_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->neutralHadronIso(4);
-	      photonIso_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->photonIso(4);
-	      // id
-	      isId_muon_mumu[nMuons_mumu]=false;
-	      if( selectedMuons[selmu]->isGlobalMuon() && selectedMuons[selmu]->isPFMuon()
-		  && selectedMuons[selmu]->chi2() < 10
-		  && selectedMuons[selmu]->nofTrackerLayersWithMeasurement() > 5
-		  &&  selectedMuons[selmu]->nofValidMuHits() > 0
-		  && selectedMuons[selmu]->nofValidPixelHits() > 0 //no more in the twiki (https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Tight_Muon)
-		  && selectedMuons[selmu]->nofMatchedStations()> 1){
-		isId_muon_mumu[nMuons_mumu]=true;
-	      }
-	      //iso
-	      isIso_muon_mumu[nMuons_mumu]=false;
-	      if ( (selectedMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedMuons[selmu]->neutralHadronIso(4) + selectedMuons[selmu]->photonIso(4) - 0.5*selectedMuons[selmu]->puChargedHadronIso(4) ) ) / selectedMuons[selmu]->Pt() < mu_iso_cut ) isIso_muon_mumu[nMuons_mumu]=true;
-	      pfIso_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->relPfIso(4,0); // check wrt formula!!! faco
-	      charge_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->charge();
-	      sf_muon_mumu[nMuons_mumu]=muonSFWeightIso_TT->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0)* muonSFWeightID_T->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
-	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon_mumu[nMuons_mumu] << endl;
-	      nMuons_mumu++;
-
-	    }
-
-
-
-	    
-	  */
-	  
-	  // eo assigning values to the elel tree
-
-	  
-	    
+	    	    
 	    
 	  float nvertices = vertex.size();
 	  float normfactor = datasets[d]->NormFactor();
@@ -3248,7 +2997,7 @@ int main (int argc, char *argv[])
 		  
 		  // debug cout
 		  if ( debug && charge_electron[0] * charge_electron[1] != -1){
-		    cout << "charger requirement failled!!! Charge product = " << charge_electron[0] * charge_electron[1] << endl;
+		    cout << "charge requirement failled!!! Charge product = " << charge_electron[0] * charge_electron[1] << endl;
 		  }
 
 
