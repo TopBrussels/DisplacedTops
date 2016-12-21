@@ -198,7 +198,7 @@ int main (int argc, char *argv[])
 
 
 
-
+  // starting cout
   cout << "---Dataset accepted from command line---" << endl;
   cout << "Dataset Name: " << dName << endl;
   cout << "Dataset Title: " << dTitle << endl;
@@ -214,6 +214,7 @@ int main (int argc, char *argv[])
   cout << "Beginning Event: " << startEvent << endl;
   cout << "Ending Event: " << endEvent << endl;
   cout << "JobNum: " << JobNum << endl;
+
 
   bool isData= false;
   if(dName.find("Data")!=string::npos || dName.find("data")!=string::npos || dName.find("DATA")!=string::npos){
@@ -273,9 +274,30 @@ int main (int argc, char *argv[])
   string btagpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
-  bool applyBlinding = true;
+  bool applyBlinding = false;
   bool selectOnZPeak = false;
   bool saveRawCollection = false; // fill the pc tree
+
+
+  // DANGER ZONE!!!
+  // the following bool should always be set to false
+  // except when you want to unblind !!!
+  bool unblind = false;
+  
+  if (unblind){
+    cout << endl << "---------------------------" << endl;
+    cout << "WARNING!!!!!" << endl;
+    cout << "You are runing with unbling = " << unblind << "!!!" << endl;
+    cout << "This should be the case only ant the latest stage of your analysis!!!" << endl;
+    cout << "Make sure you know what you are doing before looking at the output!" << endl;
+    cout << "WARNING!!!!!" << endl;
+    cout << "---------------------------" << endl;
+  }
+ 
+  // EO DANDER ZONE
+
+
+
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
   bool elel = false; // e-e final state
@@ -433,10 +455,12 @@ int main (int argc, char *argv[])
   Dataset* theDataset = new Dataset(dName, dTitle, true, color, ls, lw, normf, xSect, vecfileNames);
 
   // skip if data and no blinding
-  if ((isData && !applyBlinding && !selectOnZPeak)) cout << endl << "--------------------------------"  << endl 
-				       <<  "You are not applying the blinding cuts but you are trying to run over Data.\
+  if (isData && !applyBlinding && !selectOnZPeak && !unblind){
+    cout << endl << "--------------------------------"  << endl 
+	 <<  "You are not applying the blinding cuts but you are trying to run over Data.\
  You are a bad boy and all the data root file will be empty" << endl
-				       << "--------------------------------" <<  endl << endl;
+	 << "--------------------------------" <<  endl << endl;
+  }
   else  datasets.push_back(theDataset);
 
 
