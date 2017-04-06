@@ -19,6 +19,7 @@ import CMS_lumi, tdrstyle
 
 #set the tdr style
 tdrstyle.setTDRStyle()
+gStyle.SetPalette(56)
 
 
 #change the CMS_lumi variables (see CMS_lumi.py)
@@ -65,15 +66,15 @@ channels=["_ElEl","_MuMu"]
 
 
 # list of root file names
-dataSetTitles=["Signal","WJets", "Diboson", "SingleTop", "TTJets", "DrellYann"]
-dataSetColours=[1, 38, 5, 46, 872, 30, 45]
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann", "Signal"]
+dataSetColours=[38, 5, 46, 872, 30, 1]
 
 
 
 inputFiles=[]
 
 for sample in dataSetTitles:
-    inputFiles.append(TFile("rootFiles/"+sample+"2D.root"))
+    inputFiles.append(TFile("rootFiles/Composite_"+sample+"2D.root"))
 
 
 
@@ -81,11 +82,11 @@ for sample in dataSetTitles:
 i_chan = 0
 for chan in channels:
     if "ElEl" in chan:
-        histo_index=1
+        histo_index=0
         leptonStr="electron"
         print "In ElEl final state!! \n"
     if "MuMu" in chan:
-        histo_index=0
+        histo_index=1
         leptonStr="muon"
         print "In MuMu final state!! \n"
 
@@ -117,14 +118,19 @@ for chan in channels:
         histo.SetXTitle(leptonStr+"1 d_{0} [cm]")
         histo.SetYTitle(leptonStr+"2 d_{0} [cm]")
         histo.GetYaxis().SetTitleOffset(1.4)
+        
 
         # draw signal and then all bkgd 
-        if (i_sam == 0):
-            histo.SetMarkerStyle(1)
-            histo.Draw("")
-        else :
+        if (i_sam != len(dataSetTitles)-1 ):
             histo.SetMarkerStyle(4)
             histo.Draw("SAME")
+            histo.Draw("colz")
+        else :
+            print "i_sam is " , i_sam , "and colour is " , dataSetColours[i_sam]
+            histo.SetMarkerStyle(1)
+            histo.Draw("SAME")
+
+            
         
 
             
