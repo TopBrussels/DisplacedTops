@@ -21,10 +21,10 @@ channels=["_ElEl","_MuMu"]
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date
 date="NoBlindingRerun_30_11_2016"
-
+data=""
 # array with composite dataset and matching string
-dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann"]
-#dataSetTitles = []
+dataSetTitles=["WJets", "Diboson", "SingleTop", "TTJets_Lept", "DrellYann","Data"]
+
 
 
 # add signal sample to the array
@@ -33,7 +33,7 @@ print masses
 ctaus = [str(10**x) for x in range (0, 4)]
 print ctaus
 
-# loop over masses and ctaus to add to the list of dataset to be run over
+#loop over masses and ctaus to add to the list of dataset to be run over
 for m in masses:
     for ctau in ctaus:
         dataSetTitles.append("stopTobl_m"+m+"_Ctau"+ctau)
@@ -42,7 +42,7 @@ for m in masses:
 
 
 # dictionary to convert naming convention of Brussels to Ohio 
-dict_BxlToOhio = {'WJets': 'WJetsToLNu', 'DrellYann':'DYJetsToLL_50',  'stopTobl_m500_Ctau10': 'stopTobl_m500_Ctau10'}
+dict_BxlToOhio = {'WJets': 'WJetsToLNu', 'DrellYann':'DYJetsToLL_50',  'stopTobl_m500_Ctau10': 'stopTobl_m500_Ctau10', 'Data' : 'data'}
 
 
 # verbosity
@@ -160,7 +160,9 @@ for compositeDataset in dataSetTitles:
                     isData = True
                 
 
-                ch.Add(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
+#                ch.Add(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
+                ch.Add(pathTrunc+date+"/"+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"OffZ.root")
+                
 
         
                 # get the lumi weight 
