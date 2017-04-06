@@ -19,7 +19,9 @@ import CMS_lumi, tdrstyle
 
 #set the tdr style
 tdrstyle.setTDRStyle()
-gStyle.SetPalette(56)
+gStyle.SetPalette(55)
+# check the following link for the colour scheme
+#https://root.cern.ch/doc/master/classTColor.html#C05
 
 
 #change the CMS_lumi variables (see CMS_lumi.py)
@@ -142,6 +144,7 @@ for chan in channels:
     
     # update
     canvas.cd()
+#    canvas.SetLogz()
     canvas.Update()
     canvas.RedrawAxis()
     frame = canvas.GetFrame()
