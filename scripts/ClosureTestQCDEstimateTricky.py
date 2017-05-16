@@ -88,9 +88,11 @@ outfile = rt.TFile("rootFiles/TFS.root",'RECREATE')
 
 
 #
+# convert number of the SR into its definition (SR1-> LSR, SR2 -> MSR)
+dictSRX_toXSR = {1:"L", 2: "M" , 3 :"T"}
 
 
-# Calculate all the TFs (DCR->SR1,SR2,SR3) 
+# Calculate all the TFs (DCR->LSR,MSR,TSR) 
 # loop over leptons
 for lept in lepts:
     
@@ -207,7 +209,7 @@ for lept in lepts:
         fancyHist.SetBinError(5 + i_SR * 5, TF_mean_.std_dev)
     
         # set bin label
-        fancyHist.GetXaxis().SetBinLabel(1 + i_SR * 5, "SR"+str(SR) )
+        fancyHist.GetXaxis().SetBinLabel(1 + i_SR * 5, dictSRX_toXSR[SR]+"SR" )
         fancyHist.GetXaxis().SetBinLabel(5 + i_SR * 5, "Average" )
 
         # save the value in the dictionary
@@ -235,7 +237,7 @@ for lept in lepts:
     # style
     fancyHist.SetMaximum(1)
     fancyHist.SetMinimum(0.0001)
-    fancyHist.SetYTitle("TF(DCR->SRi)")
+    fancyHist.SetYTitle("TF(DCR->[L,M,T]SR)")
     fancyHist.SetStats(False)
 
 #    fancyHist.SetTitle("")
