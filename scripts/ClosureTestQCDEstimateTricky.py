@@ -673,7 +673,7 @@ for i in range (0,len(doubleArray)):
 
 # get the info for the table
 #headers=["bounds","DirectCount","Error","EstimatedCount","Error"]
-headers=["bounds","Direct Count", "Estimated Count"]
+headers=["b1 ; b2","Direct Count", "Estimated Count"]
 print tabulate(doubleArray, headers, tablefmt="latex")
 
 # writing results in a tex file                                                                   
