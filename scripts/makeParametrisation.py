@@ -83,7 +83,7 @@ for chan in channels:
     i_sam=0
     for d in datasets:
 #    for sample in dataSetTitles:
-        if d.attrib['add'] != '1' or "Data" in d.attrib['name']  or "QCD" in d.attrib['name'] :
+        if d.attrib['add'] != '1' or "Data" in d.attrib['name']  or "QCD" in d.attrib['name'] or "stop" in d.attrib['name'] :
             continue
         datasetNames.append(str(d.attrib['name']))
         print str(d.attrib['name'])
