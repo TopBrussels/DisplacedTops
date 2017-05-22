@@ -42,7 +42,7 @@ channels=["_ElEl","_MuMu"]
 # path to tree
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 # 
-folderName="Systematics_29_8_2016/"
+folderName="LIDCR_ForClosureTest/"
 
 
 # root file wit d0 distribution
@@ -433,8 +433,10 @@ for binLept1 in binsLept1 :
                         isData = True
         
         
-                    ch.Add(pathTrunc+folderName+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root")
-                    print pathTrunc+folderName+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root"
+                    fullPath= pathTrunc+folderName+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+"DCR.root"
+#                    fullPath= pathTrunc+folderName+chan+"/DisplacedTop_Run2_TopTree_Study_"+sampleName+chan+".root"
+                    ch.Add(fullPath)
+                    print fullPath
                     Sum_SR1=Sum_SR2=Sum_SR3=0
                     
                     
@@ -627,8 +629,10 @@ for binLept1 in binsLept1 :
             EstimatedQCDTarget_ = NQCDBase_ * TF1_ * TF2_
             DirectQCDTarget_ = ufloat (DataTarget.GetBinContent(1),DataTarget.GetBinError(1)) - ufloat(NonQCDTarget.GetBinContent(1),NonQCDTarget.GetBinError(1))
 
+            
             CombinedError = EstimatedQCDTarget.GetBinContent(1) * (TF1_err/TF1 + TF2_err/TF2 + NQCDBase_err/NQCDBase )
             EstimatedQCDTarget.SetBinError(1,CombinedError )
+
 
 #            EstimatedQCDTarget.Fill(0.5,TF * QCDBase.GetBinContent(1) )
         
@@ -647,7 +651,7 @@ for binLept1 in binsLept1 :
             singleArray = [str(binLept1)+" ; "+str(binLept2),DataTarget.GetBinContent(1),  DataTarget.GetBinError(1), EstimatedQCDTarget.GetBinContent(1), EstimatedQCDTarget.GetBinError(1) ] 
 
 
-            singleArray_ = [str(binLept1)+" ; "+str(binLept2), DirectQCDTarget_, EstimatedQCDTarget_ ] 
+            singleArray_ = [str(boundLept1)+" ; "+str(boundLept2), DirectQCDTarget_, EstimatedQCDTarget_ ] 
 
 
             
