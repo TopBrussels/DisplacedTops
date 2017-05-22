@@ -36,16 +36,18 @@ ROOT.gROOT.SetBatch(True)
 # path to root trees                                                                          
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date="15_4_2016"
-date="NoBlindingRerun_30_11_2016"
+#date="NoBlindingRerun_30_11_2016"
+date="Systematics_29_8_2016"
 
 # debug 
 debug=False
-fastRun=False
+fastRun=True
 
 # dictionary to link region Name with bound
 region_dict={"PCR": {"lb": 0.00 , "ub": 0.01},
              "DCR": {"lb": 0.01 , "ub": 0.02},
-             "SRs": {"lb": 0.02 , "ub": 10}
+             "SRs": {"lb": 0.02 , "ub": 10},
+             "OffZ": {"lb": 0.00 , "ub": 10}
              }
 
 #print region_dict["DCR"]["lb"]
@@ -58,8 +60,8 @@ regions=["DCR"]
 # loading the xml
 datasetNames = []
 
-channels=["_ElEl","_MuMu"]
-#channels=["_MuMu"]
+#channels=["_ElEl","_MuMu"]
+channels=["_MuMu"]
 #channels=["_ElEl"]
 
 # loop over the channel (lepton in final state) 
@@ -98,7 +100,8 @@ for chan in channels:
     for d in datasets:
         title= d.attrib["title"]
 #        if d.attrib['add'] == '1' and ("Data" in title  or "DrellYann" in title ) and "QCD" not in title  :
-        if d.attrib['add'] == '1' and "QCD" not in title  :
+#        if d.attrib['add'] == '1' and "QCD" not in title and "DrellYann" in title  :
+        if d.attrib['add'] == '1' and "QCD" not in title and "Data" not in title and "stop" not in title :
             datasetNames.append(str(d.attrib['name']))
             print "\n"+str(d.attrib['name'])
             sampleName=d.attrib['name']
@@ -112,6 +115,7 @@ for chan in channels:
     
             # max_events
             max_events = ch_in.GetEntries()
+
     
             # loop over the region
             for i_reg, reg in enumerate(regions):
@@ -137,7 +141,7 @@ for chan in channels:
                     i_entry = ch_in.LoadTree(i_event)
                     ch_in.GetEntry(i_event)
 
-                    # Define one bool per cut on d0
+                    # Define one bool per event. If it fails one of the requirement it will be rejected.
                     keep = True
 
                     # make printout every 10 000 events
@@ -146,7 +150,7 @@ for chan in channels:
         
                     #  skip 99% of the events just to run faster
                     if fastRun and not i_event % 100 == 0:
-                            continue
+                        continue
                         
                     if isElEl:
                         nLept=ch_in.nElectrons
@@ -158,9 +162,10 @@ for chan in channels:
                         nLeptPair=ch_in.nMuonPairs
                         leptInvMAss=ch_in.invMass_mumu[0]
 
-                    # removes contribution from Z
-                    if  81.2 <=  leptInvMAss <= 101.2 :
-                        keep=False
+                    # removes contribution from Z if offZ region
+                    if reg[i_reg] == "OffZ":
+                        if  81.2 <=  leptInvMAss <= 101.2 :
+                            keep=False
                         continue
     
     
