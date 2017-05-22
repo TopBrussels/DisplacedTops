@@ -335,28 +335,30 @@ h_electrond0 = histo_dict["electrond0_Tight"]
 # random lumivalue
 lumivalue = 3
 
-# double array for table writting
-doubleArray = []
 
-i_lept1 = 0
-# loop over the bound of the first lepton
-for binLept1 in binsLept1 :
 
-    i_lept2 = 0
+# loop over the channel (lepton in final state)
+for chan in channels:
+    # double array for table writting
+    doubleArray = []
+
+    i_lept1 = 0
     # loop over the bound of the first lepton
-    for binLept2 in binsLept2 :
+    for binLept1 in binsLept1 :
+
+        i_lept2 = 0
+        # loop over the bound of the first lepton
+        for binLept2 in binsLept2 :
     
-        print "binLept1 is" , binLept1
-        print "binLept2 is" , binLept2
+            print "binLept1 is" , binLept1
+            print "binLept2 is" , binLept2
         
-        # loop over the channel (lepton in final state)
-        for chan in channels:
  
         
             # loop over the low bounds
-        #    for ilb in range (1,len(LowBounds)+1):
-        #        dict = ('bgMCSum+')
-        #        bgMCSum
+            #    for ilb in range (1,len(LowBounds)+1):
+            #        dict = ('bgMCSum+')
+            #        bgMCSum
             
             # Histogram containing the number of events
             NonQCDBase=rt.TH1D("NonQCDBase"+chan+str(binLept1)+str(binLept2),"NonQCDBase",1,0,1)
@@ -659,44 +661,44 @@ for binLept1 in binsLept1 :
 #            doubleArray[i_lept1].append(singleArray)
             print "doubleArray is " , doubleArray
     
-        i_lept2=i_lept2+1
-    i_lept1=i_lept1+1
+            i_lept2=i_lept2+1
+        i_lept1=i_lept1+1
 
 
 
             
-# print the summary contained it the double array
-for i in range (0,len(doubleArray)):
-    #    for i in range (0,lendidataset):
-    print "---------"
-    print "NEW bound pair!!!"
-    print "---------"
-    for j in range (0,len(doubleArray[i])):
-        print doubleArray[i][j]
-
-
-# get the info for the table
-#headers=["bounds","DirectCount","Error","EstimatedCount","Error"]
-headers=["b1 ; b2","Direct Count", "Estimated Count"]
-print tabulate(doubleArray, headers, tablefmt="latex")
-
-# writing results in a tex file                                                                   
-outputFile = "tables/ClosureTestTable"+chan+".tex"
-fout = open (outputFile, "w")
-fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
-fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
-fout.write("\\begin{table}"+newLine)
-fout.write("\\caption{ " + "QCD Closure Test"+chan.replace("_"," ")+ "}"+newLine)
-
-# the actual tabular
-fout.write(tabulate(doubleArray, headers, tablefmt="latex"))
-
-
-# end of table                                                                   
-fout.write("\\end{table}"+newLine)
-fout.write("\\end{document}"+newLine)
-fout.close()
-
+    # print the summary contained it the double array
+    for i in range (0,len(doubleArray)):
+        #    for i in range (0,lendidataset):
+        print "---------"
+        print "NEW bound pair!!!"
+        print "---------"
+        for j in range (0,len(doubleArray[i])):
+            print doubleArray[i][j]
+    
+    
+    # get the info for the table
+    #headers=["bounds","DirectCount","Error","EstimatedCount","Error"]
+    headers=["b1 ; b2","Direct Count", "Estimated Count"]
+    print tabulate(doubleArray, headers, tablefmt="latex")
+    
+    # writing results in a tex file                                                                   
+    outputFile = "tables/ClosureTestTable"+chan+".tex"
+    fout = open (outputFile, "w")
+    fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
+    fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
+    fout.write("\\begin{table}"+newLine)
+    fout.write("\\caption{ " + "QCD Closure Test"+chan.replace("_"," ")+ "}"+newLine)
+    
+    # the actual tabular
+    fout.write(tabulate(doubleArray, headers, tablefmt="latex"))
+    
+    
+    # end of table                                                                   
+    fout.write("\\end{table}"+newLine)
+    fout.write("\\end{document}"+newLine)
+    fout.close()
+    
 
 # write a line for each value of the bound on the the second letpon
 
