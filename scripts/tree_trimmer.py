@@ -37,11 +37,11 @@ ROOT.gROOT.SetBatch(True)
 pathTrunc="/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/"
 #date="15_4_2016"
 #date="NoBlindingRerun_30_11_2016"
-date="Systematics_29_8_2016"
+date="LIDCR_ForClosureTest"
 
 # debug 
 debug=False
-fastRun=True
+fastRun=False
 
 # dictionary to link region Name with bound
 region_dict={"PCR": {"lb": 0.00 , "ub": 0.01},
@@ -60,8 +60,8 @@ regions=["DCR"]
 # loading the xml
 datasetNames = []
 
-#channels=["_ElEl","_MuMu"]
-channels=["_MuMu"]
+channels=["_ElEl","_MuMu"]
+#channels=["_MuMu"]
 #channels=["_ElEl"]
 
 # loop over the channel (lepton in final state) 
@@ -101,7 +101,9 @@ for chan in channels:
         title= d.attrib["title"]
 #        if d.attrib['add'] == '1' and ("Data" in title  or "DrellYann" in title ) and "QCD" not in title  :
 #        if d.attrib['add'] == '1' and "QCD" not in title and "DrellYann" in title  :
-        if d.attrib['add'] == '1' and "QCD" not in title and "Data" not in title and "stop" not in title :
+        if d.attrib['add'] == '1' and "QCD" not in title and "stop" not in title :
+#        if d.attrib['add'] == '1' and  "Data"  in title  :
+            
             datasetNames.append(str(d.attrib['name']))
             print "\n"+str(d.attrib['name'])
             sampleName=d.attrib['name']
