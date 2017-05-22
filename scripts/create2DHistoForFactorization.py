@@ -86,7 +86,7 @@ for compositeDataset in dataSetTitles:
           
     
     FilterString=dataSetTitles[i_comp]
-    outfile_comp = rt.TFile("rootFiles/"+"Composite_"+dataSetTitles[i_comp]+"2D.root",'RECREATE')
+    outfile_comp = rt.TFile("rootFiles/"+"Composite_"+dataSetTitles[i_comp]+"offZ_2D.root",'RECREATE')
     
 
     # loop over the different channels
@@ -134,9 +134,9 @@ for compositeDataset in dataSetTitles:
                 ch = rt.TChain(treeName,treeName)
                 sampleName=d.attrib['name']
                 if i_chan == 0:
-                    outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'RECREATE')
+                    outfile = rt.TFile("rootFiles/"+sampleName+"offZ_2D.root",'RECREATE')
                 else :
-                    outfile = rt.TFile("rootFiles/"+sampleName+"2D.root",'UPDATE')
+                    outfile = rt.TFile("rootFiles/"+sampleName+"offZ_2D.root",'UPDATE')
 
                 # define d0 histograms, one per single dataset
                 electrond0VsElectronsd0Single=electrond0VsElectronsd0Sum.Clone("electrond0VsElectrond0")
