@@ -92,7 +92,7 @@ for chan in channels:
         sampleTitle = d.attrib['title']
 
 
-        inputFile = "rootFiles/" + sample+"2D.root"
+        inputFile = "rootFiles/" + sample+"_offZ_2D.root"
         inputFiles.append(TFile(inputFile))
 
         # variable to count the yield in each SR
