@@ -331,6 +331,8 @@ for chan in channels:
         highval =gCut.GetHistogram().GetMaximum()
         line.DrawLine(0.01,lowval,0.01,highval)
         line.DrawLine(0.02,lowval,0.02,highval)
+        line.DrawLine(0.05,lowval,0.05,highval)
+        line.DrawLine(0.1,lowval,0.1,highval)
         leg.Draw("same")
 
 
@@ -378,7 +380,7 @@ for chan in channels:
         leg2.Draw()
 
         if chan == "_ElEl":
-            gEff_x.GetHistogram().SetMinimum(0.0001);
+            gEff_x.GetHistogram().SetMinimum(0.000001);
         elif chan == "_MuMu":
             gEff_x.GetHistogram().SetMinimum(0.000001);
         
