@@ -414,10 +414,10 @@ for chan in channels:
     fout.write("\\documentclass{article}"+newLine+"\\begin{document}"+newLine)
     fout.write ("\\renewcommand{\\arraystretch}{1.2}"+newLine)
     fout.write("\\begin{table}"+newLine)
-    fout.write("\\caption{ " + "Yield estimated with the factorisation method in the SR (both lepton with d0 $<$ 0.02 cm) in the "+chan.replace("_"," ")+ " channel." "}"+newLine)
+    fout.write("\\caption{ " + "Yield estimated with the factorisation method in the three inclusive signal regions for each composite datasets in the "+chan.replace("_"," ")+ " channel." "}"+newLine)
 
     # the actual tabular
-    headers=["background source", "SR1" , "SR2", "SR3"]
+    headers=["background source", "LSR" , "MSR", "TSR"]
     fout.write(tabulate(yieldArray, headers, tablefmt="latex"))
 
     # end of table                                                                                           
