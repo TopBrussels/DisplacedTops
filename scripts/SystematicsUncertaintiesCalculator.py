@@ -28,8 +28,24 @@ muonSystTypes=["XSWeight", "evt_puSF","sf_iso_muon","sf_id_muon","lumi","trigger
 electronSystTypes=["XSWeight", "evt_puSF","sf_reco_electron","sf_id_electron","trigger_sf_electron", "trk_sf_electron"]
 
 
+# factis list of samples
+#sampleNames=["WJetsToLNu", "WWToLNuQQ"]
+
+# 
+composite_Single_dict={}
+sampleNames=[]
+sampleTitles=[]
+
+
+
+# channels
+#channels=["ElEl", "MuMu"]
+#channels=["MuMu"]
+channels=["ElEl"]
+
+
 # loop over the channels
-for chan in ["ElEl", "MuMu"]:
+for chan in channels:
 
     # dictionary for the cross section which depends on the samples and on the systShift 
     Yield_dict = fl.getDictFromJson(chan, "", True) 
@@ -54,7 +70,32 @@ for chan in ["ElEl", "MuMu"]:
     else:
         print "No tree has been loaded!!! Make sure the correct xml file are in the right directories!!!"
         sys.exit()
-	    
+
+    root = tree.getroot()
+    datasets = root.find('datasets')
+
+
+    # loop over dataset
+    for d in datasets:
+
+        # whatever filter
+        if d.attrib['add'] == '1' and "Data" not in str(d.attrib['name']) and "QCD" not in str(d.attrib['name']) and "stop" not in d.attrib['name'] :
+
+            sampleName=d.attrib['name']
+            sampleNames.append(sampleName)
+            sampleTitle=d.attrib['title']
+            sampleTitles.append(sampleTitle)
+            composite_Single_dict[sampleName]=sampleTitle
+
+
+    if True:
+        print "list of sampleName is " , sampleNames
+        print "list of sampleTitle is ", sampleTitles
+        print "the dictionary containing the links is ", composite_Single_dict
+
+    
+    dict_maxFromComp={}
+
 
     # double array for table writting 
     headers=["Dataset"]
@@ -64,6 +105,7 @@ for chan in ["ElEl", "MuMu"]:
     for sampleName in sampleNames:
     
 	    singleArray = [sampleName]
+#composite_Single_dict[sampleName]
     
             SumUnc=0
             CurrentUnc=0
@@ -75,7 +117,7 @@ for chan in ["ElEl", "MuMu"]:
     
     
                 if systType in dict_cstSystType:
-                     print "faco!!!", systType
+                     print "Constant systematic type found with name ...", systType , "No need to loop over all the datasets!"
                      uncertaintyMax = dict_cstSystType[systType]
 		     if "trk" in systType and "NP" not in sampleName :
 		         print "removing trk sf for non signal sample"
@@ -87,6 +129,10 @@ for chan in ["ElEl", "MuMu"]:
                     YieldCentral =  Yield_dict[sampleName+"Centralup"]
                     
                     # two diff wrt to central
+                    if YieldCentral == 0 :
+                        print "You are going to divide by zero. You should expect a crash!!!"
+                        print "systype is ", systType, "sample is ", sampleName, "and channel is ", chan
+                    
                     diffDown=abs((YieldCentral-YieldDown)/YieldCentral)
                     diffUp=abs((YieldCentral-YieldUp)/YieldCentral)
         
