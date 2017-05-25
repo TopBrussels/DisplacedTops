@@ -55,11 +55,11 @@ for chan in channels:
     Sum1_ = Sum2_ = Sum3_ = 0.
     
     if "ElEl" in chan:
-        histo_index=1
+        histo_index=0
         print "In ElEl final state!! \n"
         tree = ET.ElementTree(file='../config/ElElV4.xml')
     if "MuMu" in chan:
-        histo_index=0
+        histo_index=1
         print "In MuMu final state!! \n"
         tree = ET.ElementTree(file='../config/MuMuV4.xml')
 
