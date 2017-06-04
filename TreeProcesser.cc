@@ -428,8 +428,28 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //  TFile *outfile = new TFile((pathPNG+"/Output.root").c_str(),"recreate");
   //  outfile->cd();
   string plotname = sVarofinterest;  
+
+
+ 
+  string Xaxis_str = "";
+  string Unit_str = "";
+
+
+
+  //  else if (sVarofinterest.find("muon")!=string::npos)
+  //    {
+  //      Xaxis_str = muon
+  //    }
+
+
+    //\\  if d0BeamSpot_muon 
+  
+
   // make for loop here!!!
-  MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, sVarofinterest.c_str()); 
+  //  MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, sVarofinterest.c_str()); 
+  //  MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, sVarofinterest.c_str(), "GeV", "", ""); 
+  //  MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, Xaxis_str, Unit_str, "Events", ""); 
+
 
   
   //***********************************************OPEN FILES & GET NTUPLES**********************************************
@@ -477,6 +497,19 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   }
   
 
+
+  // do not show the collection in the x-axis
+  Xaxis_str = v[0];
+
+  // make logic to change the string name
+  if(sVarofinterest.find("d0")!=string::npos) Unit_str = "cm";
+  if(sVarofinterest.find("mass")!=string::npos || sVarofinterest.find("pt")!=string::npos ) Unit_str = "GeV";
+
+  
+
+  MSPlot[plotname.c_str()] = new MultiSamplePlot(datasets, plotname.c_str(), nBins, plotLow, plotHigh, Xaxis_str, Unit_str, "Events", ""); 
+
+
   // get the desired directory
 
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/24_3_2016/";
@@ -485,7 +518,7 @@ void DatasetPlotter(int nBins, float plotLow, float plotHigh, string sVarofinter
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/15_4_2016/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/NoDisplacedTrigger/";
   //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/CMSSW76V4/";
-  //  TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/CMSSW76V4_NewCutFlow/";
+  //TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/CMSSW76V4_NewCutFlow/";
   TString CraneenPath = "/user/qpython/TopBrussels7X/CMSSW_7_6_3/src/TopBrussels/DisplacedTops/MergedTrees/QCDSyst_20_9_2016/_Tight";
 
 
@@ -1044,6 +1077,8 @@ void MSPCreator (){
 	cout << " and it->first is " << it->first << endl;
 	cout << " and it->second is " << it->second << endl;
       }
+      // remove preliminary
+      //      temp->setPreliminary(false);
       temp->Draw("MyMSP", 1, false, false, false, 10);
       temp->Write(outfile, "MyMSP"+it->first, true,"myOutput_MSPlots/"+channelpostfix+"/" , "png");
       temp->Write(outfile, "MyMSP"+it->first, true,"myOutput_MSPlots/"+channelpostfix+"/" , "pdf");
