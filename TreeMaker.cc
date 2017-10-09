@@ -451,7 +451,6 @@ int main (int argc, char *argv[])
   double muonSFID, muonSFIso;
 
   // Muon ID SF
-l
   MuonSFWeight* muonSFWeightID_BCDEF;   
   MuonSFWeight* muonSFWeightID_GH;   
   MuonSFWeight* muonSFWeightIso_BCDEF;
