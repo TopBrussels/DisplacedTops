@@ -1,3 +1,4 @@
+
 ////         Analysis code for search for Displaced letpton.              ////
 //////////////////////////////////////////////////////////////////////////////
 
@@ -27,6 +28,7 @@
 #include "TProfile.h"
 #include <iostream>
 #include <map>
+#include <array>
 #include <cstdlib>
 
 //user code
@@ -58,11 +60,12 @@
 // as I hope to merge the functionality into BTagWeigtTools.h
 //#include "TopTreeAnalysisBase/Tools/interface/BTagSFUtil.h"
 #include "TopTreeAnalysisBase/Tools/interface/BTagWeightTools.h"
-#include "TopTreeAnalysisBase/Tools/interface/Trigger.h"
-
 
 #include "TopTreeAnalysisBase/Tools/interface/JetCombiner.h"
 #include "TopTreeAnalysisBase/Tools/interface/JetTools.h"
+
+#include "Trigger_displaced.h"
+#include "Constants.h"
 
 using namespace std;
 using namespace TopTree;
@@ -162,7 +165,7 @@ int main (int argc, char *argv[])
   //Placing arguments in properly typed variables for Dataset creation
 
 
-  const string dName              = argv[1];
+  string dName              	  = argv[1];
   const string dTitle             = argv[2];
   const int color                 = strtol(argv[4], NULL, 10);
   const int ls                    = strtol(argv[5], NULL, 10);
@@ -197,7 +200,7 @@ int main (int argc, char *argv[])
 
 
 
-  // starting cout
+
   cout << "---Dataset accepted from command line---" << endl;
   cout << "Dataset Name: " << dName << endl;
   cout << "Dataset Title: " << dTitle << endl;
@@ -214,14 +217,14 @@ int main (int argc, char *argv[])
   cout << "Ending Event: " << endEvent << endl;
   cout << "JobNum: " << JobNum << endl;
 
-
+  std::transform(dName.begin(), dName.end(), dName.begin(), ::tolower);
   bool isData= false;
   if(dName.find("Data")!=string::npos || dName.find("data")!=string::npos || dName.find("DATA")!=string::npos){
     isData = true;
     cout << "running on data !!!!" << endl;
   }
   bool isSignal = false;
-  if(dName.find("stopTobl")!=string::npos){
+  if(dName.find("stoptobl")!=string::npos){
     isSignal = true;
     cout << "running on signal !!!!" << endl;
   }
@@ -273,30 +276,10 @@ int main (int argc, char *argv[])
   string btagpostfix = "";
   string xmlFileName = "";
   bool writeTable = false;
-  bool applyBlinding = false;
+  bool applyBlinding = true;
+  //bool applyBlinding = false;
   bool selectOnZPeak = false;
   bool saveRawCollection = false; // fill the pc tree
-
-
-  // DANGER ZONE!!!
-  // the following bool should always be set to false
-  // except when you want to unblind !!!
-  bool unblind = false;
-  
-  if (unblind){
-    cout << endl << "---------------------------" << endl;
-    cout << "WARNING!!!!!" << endl;
-    cout << "You are runing with unbling = " << unblind << "!!!" << endl;
-    cout << "This should be the case only ant the latest stage of your analysis!!!" << endl;
-    cout << "Make sure you know what you are doing before looking at the output!" << endl;
-    cout << "WARNING!!!!!" << endl;
-    cout << "---------------------------" << endl;
-  }
- 
-  // EO DANDER ZONE
-
-
-
 
   //Setting bools for different channal and or final state. They are all mutually exclusive
   bool elel = false; // e-e final state
@@ -310,6 +293,8 @@ int main (int argc, char *argv[])
   // Setting a extra bool for the iso requirement on the lepton. This can be cobined with the previous channels
   bool antiIso = false; // 0.15 < iso < 1.5
   bool looseIso = false; // iso < 1.5
+  //bool antiIso = true; // 0.15 < iso < 1.5
+  //bool looseIso = true; // iso < 1.5
 
 
   // extra bool for ttbar enriching cut (one b-jet)
@@ -385,33 +370,23 @@ int main (int argc, char *argv[])
     if(btagWP == "Loose")
       {
 	cout << "btagWP is " << btagWP << endl;
-	bTagDiscriminantCut = 0.460;
+	bTagDiscriminantCut = 0.5426;
       }
     else if(btagWP == "Medium")
       {
 	cout << "btagWP is " << btagWP << endl;
-	bTagDiscriminantCut = 0.800;
+	bTagDiscriminantCut = 0.8484;
       }
     else if(btagWP == "Tight")
       {
 	cout << "btagWP is " << btagWP << endl;
-	bTagDiscriminantCut = 0.935;
+	bTagDiscriminantCut = 0.9535;
       }
-    else if (btagWP == "None")
-      {
-	cerr << "btagWP is " << btagWP << ". This should be the case for ee and mumu channel. However, if you are running in a bbCR region, you are probably doing somehting wrong!!" << endl;
-      }
-    else 
+    else
       {
 	cerr << "btagWP is " << btagWP << "and this is not in the list of allowed working points" << endl;
-	exit(1);
       }
-
-    // set the btagpostfix
-    if (btagWP != "None")
-      {
-	btagpostfix = "_" + btagWP;
-      }
+    btagpostfix += "_" + btagWP;
   }
   // eo the logic for the btagWP
   
@@ -431,7 +406,7 @@ int main (int argc, char *argv[])
   anaEnv.FatJetCollection = "FatJets_slimmedJetsAK8";
   anaEnv.METCollection = "PFMET_slimmedMETs";
   anaEnv.MuonCollection = "Muons_slimmedMuons";
-  anaEnv.ElectronCollection = "Electrons_slimmedElectrons";
+  anaEnv.ElectronCollection = "Electrons_selectedElectrons";
   anaEnv.GenJetCollection   = "GenJets_slimmedGenJets";
   anaEnv.NPGenEventCollection = "NPGenEvent";
   anaEnv.MCParticlesCollection = "MCParticles";
@@ -454,12 +429,10 @@ int main (int argc, char *argv[])
   Dataset* theDataset = new Dataset(dName, dTitle, true, color, ls, lw, normf, xSect, vecfileNames);
 
   // skip if data and no blinding
-  if (isData && !applyBlinding && !selectOnZPeak && !unblind){
-    cout << endl << "--------------------------------"  << endl 
-	 <<  "You are not applying the blinding cuts but you are trying to run over Data.\
+  if ((isData && !applyBlinding && !selectOnZPeak)) cout << endl << "--------------------------------"  << endl 
+				       <<  "You are not applying the blinding cuts but you are trying to run over Data.\
  You are a bad boy and all the data root file will be empty" << endl
-	 << "--------------------------------" <<  endl << endl;
-  }
+				       << "--------------------------------" <<  endl << endl;
   else  datasets.push_back(theDataset);
 
 
@@ -478,31 +451,45 @@ int main (int argc, char *argv[])
   double muonSFID, muonSFIso;
 
   // Muon ID SF
-  MuonSFWeight *muonSFWeightID_T_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonID_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);
+  MuonSFWeight *muonSFWeightID_T_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/MuonSF/"+"MuonID_Z_RunBCD_prompt80X_7p65.root", "MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);
   
   // Muon Iso SF depending on the WP of the muon ID SF
-  MuonSFWeight *muonSFWeightIso_TT_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/"+"MuonIso_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);  // Tight RelIso, Tight ID
+  MuonSFWeight *muonSFWeightIso_TT_ = new MuonSFWeight(pathToCaliDir+"LeptonSF/MuonSF/"+"MuonIso_Z_RunBCD_prompt80X_7p65.root", "MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio",true, false, false);  // Tight RelIso, Tight ID
 
+  MuonSFWeight* muonSFWeightID_BCDEF;   
+  MuonSFWeight* muonSFWeightID_GH;   
+  MuonSFWeight* muonSFWeightIso_BCDEF;
+  MuonSFWeight* muonSFWeightIso_GH;
+    
+  TFile *muontrackfile = new TFile("../TopTreeAnalysisBase/Calibrations/LeptonSF/MuonSF/Tracking_EfficienciesAndSF_BCDEFGH.root","read");
+  TGraph* h_muonSFWeightTrack = static_cast<TGraph*>( muontrackfile->Get("ratio_eff_eta3_dr030e030_corr")->Clone() );//Tracking efficiency as function of eta
+
+  muonSFWeightID_BCDEF = new MuonSFWeight("../TopTreeAnalysisBase/Calibrations/LeptonSF/MuonSF/MuonID_EfficienciesAndSF_BCDEF.root", "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio", true, false, false);
+  muonSFWeightID_GH = new MuonSFWeight("../TopTreeAnalysisBase/Calibrations/LeptonSF/MuonSF/MuonID_EfficienciesAndSF_GH.root", "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio", true, false, false);
+  muonSFWeightIso_BCDEF = new MuonSFWeight("../TopTreeAnalysisBase/Calibrations/LeptonSF/MuonSF/MuonIso_EfficienciesAndSF_BCDEF.root", "TightISO_TightID_pt_eta/abseta_pt_ratio", true, false, false);  // Tight RelIso, Tight ID
+  muonSFWeightIso_GH = new MuonSFWeight("../TopTreeAnalysisBase/Calibrations/LeptonSF/MuonSF/MuonIso_EfficienciesAndSF_GH.root", "TightISO_TightID_pt_eta/abseta_pt_ratio", true, false, false);  // Tight RelIso, Tight ID
+   
   // eo  Muon SF
 
   // Electron SF
 
   // Electron reco SF
-  ElectronSFWeight *electronSFWeightReco_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+"eleRECO.txt.egamma_SF2D.root","EGamma_SF2D",true, false, false);   // (... , ... , extendRange , debug, print warning)
+  string electronRecoSFFile= "../TopTreeAnalysisBase/Calibrations/LeptonSF/ElectronSF/Moriond17/egammaEffi.txt_EGM2D_RecoEff.root";
+  ElectronSFWeight *electronSFWeightReco_ = new ElectronSFWeight (electronRecoSFFile,"EGamma_SF2D",true, false, false);   // (... , ... , extendRange , debug, print warning)
   
 
   // Electron ID SF
-  string electronIdSFFile= "CutBasedID_TightWP_76X_18Feb.txt_SF2D.root";
-  ElectronSFWeight *electronSFWeightId_T_ = new ElectronSFWeight (pathToCaliDir+"LeptonSF/"+electronIdSFFile,"EGamma_SF2D",true, false, false);
-
+  string electronIdSFFile= "../TopTreeAnalysisBase/Calibrations/LeptonSF/ElectronSF/Moriond17/egammaEffi.txt_EGM2D_CutBasedTightID.root";
+  ElectronSFWeight *electronSFWeightId_T_ = new ElectronSFWeight (electronIdSFFile,"EGamma_SF2D",true, false, false);
+  
 
   // eo  Electron SF
   
 
   // PU SF
-  LumiReWeighting LumiWeights_down_(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIIFall15DR76-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data76X_25ns-Run246908-260627Cert_Silver_down.root","pileup","pileup");
-  LumiReWeighting LumiWeights_(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIIFall15DR76-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data76X_25ns-Run246908-260627Cert_Silver.root","pileup","pileup");
-  LumiReWeighting LumiWeights_up_(pathToCaliDir+"PileUpReweighting/pileup_MC_RunIIFall15DR76-Asympt25ns.root",pathToCaliDir+"PileUpReweighting/pileup_2015Data76X_25ns-Run246908-260627Cert_Silver_up.root","pileup","pileup");
+  LumiReWeighting LumiWeights_down_("../TopTreeAnalysisBase/Calibrations/PileUpReweighting/MCPileup_Summer16.root", "../TopTreeAnalysisBase/Calibrations/PileUpReweighting/pileup_2016Data80X_Run271036-284044Cert__Full2016DataSet.root", "pileup", "pileup");    
+  LumiReWeighting LumiWeights_("../TopTreeAnalysisBase/Calibrations/PileUpReweighting/MCPileup_Summer16.root", "../TopTreeAnalysisBase/Calibrations/PileUpReweighting/pileup_2016Data80X_Run271036-284044Cert__Full2016DataSet.root", "pileup", "pileup");    
+  LumiReWeighting LumiWeights_up_("../TopTreeAnalysisBase/Calibrations/PileUpReweighting/MCPileup_Summer16.root", "../TopTreeAnalysisBase/Calibrations/PileUpReweighting/pileup_2016Data80X_Run271036-284044Cert__Full2016DataSet_sysPlus.root", "pileup", "pileup");    
 
   /////////////////////////////////
   //  Loop over Datasets
@@ -516,6 +503,7 @@ int main (int argc, char *argv[])
   double newlumi;
 
   //Output ROOT file
+  channelpostfix += "_v9_mutrig_nod0cut_noIsocut";
   string outputDirectory("MACRO_Output"+channelpostfix);
   mkdir(outputDirectory.c_str(),0777);
 
@@ -605,20 +593,23 @@ int main (int argc, char *argv[])
   // bo defining cuts value --
   // -------------------------
 
+  // think to do it in a loop as it will be faster and much less error prompt
 
   // electron
   float el_pt_cut = 42.; // 42
   float el_eta_cut = 2.4; // 2.4
-  float el_d0_cut = 0.02; // 0.02
-  float el_relIsoB_cut = 0.0354; // 0.0354
-  float el_relIsoEC_cut = 0.0646; // 0.0646
+  //float el_d0_cut = 0.02; // 0.02
+  float el_d0_cut = 10.0; // 0.02
+  float el_relIsoB_cut = 0.0354;
+  float el_relIsoEC_cut = 0.0646;
 
 
   // muon
   float mu_pt_cut = 40.; // 40
   float mu_eta_cut = 2.4; // 2.4
   float mu_iso_cut = 0.15; // 0.15
-  float mu_d0_cut = 0.02; //0.02
+  //float mu_d0_cut = 0.02; //0.02
+  float mu_d0_cut = 10.0; //0.02
 
 
 
@@ -842,6 +833,13 @@ int main (int argc, char *argv[])
 
       cout <<"found sample with equivalent lumi "<<  theDataset->EquivalentLumi() <<endl;
 	
+      
+     TTree * booktup = new TTree("bookkeeping", "bookkeeping");
+     long long runId = 0;			booktup -> Branch("Runnr",&runId,"Runnr/I");
+     long long evId  = 0;			booktup -> Branch("Eventnr",&evId,"Evnr/I");
+     long long lumBlkId = 0;			booktup -> Branch("Lumisec",&lumBlkId,"Lumisec/I");
+     long long nPV = 0; 			booktup -> Branch("nPV",&nPV,"nPV/I");
+     std::string tag = "v6(7)DispDLSLPrompt";      		booktup -> Branch("Tag",&tag);
 
       /// book triggers
       if (applyTriggers) {
@@ -928,6 +926,9 @@ int main (int argc, char *argv[])
 
       // bo of the main Tree
 
+
+      // trigger variables
+      std::array<Int_t,200> triggers_container;
 
       // variables for electrons
       Int_t nElectrons;
@@ -1197,6 +1198,28 @@ int main (int argc, char *argv[])
 
       // bo of the tree with all the cuts applied for e-mu final state
       TTree* myTree = new TTree("tree","tree");
+
+      cout << "checking triggers: " << endl;
+      for(int iter_trig=0; iter_trig<trigger->triggerList.size() && iter_trig<200; iter_trig++){
+	      TString trigname = trigger->triggerList[iter_trig];
+	      trigname.ReplaceAll("_v*","");
+	      trigname.ReplaceAll("_v1","");
+	      trigname.ReplaceAll("_v2","");
+	      trigname.ReplaceAll("_v3","");
+	      trigname.ReplaceAll("_v4","");
+	      trigname.ReplaceAll("_v5","");
+	      trigname.ReplaceAll("_v6","");
+	      trigname.ReplaceAll("_v7","");
+	      trigname.ReplaceAll("_v8","");
+	      trigname.ReplaceAll("_v9","");
+	      trigname.ReplaceAll("_v10","");
+	      trigname.ReplaceAll("_v11","");
+	      trigname.ReplaceAll("_v12","");
+	      TString branchname = trigname+"/I";
+	      std::cout << "adding trigger to trees " << trigname << " mapped to element " << iter_trig << " " << branchname << std::endl;
+	      myTree->Branch(trigname,&(triggers_container[iter_trig]),branchname);
+
+      }
 
       // electrons
       //	myTree->Branch("templatevar",templatevar,"templatevar[nElectrons]/D");
@@ -1562,6 +1585,12 @@ int main (int argc, char *argv[])
 	  string currentFilename = datasets[d]->eventTree()->GetFile()->GetName();
 	  int currentRun = event->runId();
 
+          
+          runId    = event->runId(); 
+	  evId     = event->eventId();
+	  lumBlkId = event->lumiBlockId();
+          nPV      = event->nTruePU();
+          booktup -> Fill();
 	    
 	  float rho = event->fixedGridRhoFastjetAll();
 	  if (debug)cout <<"Rho: " << rho <<endl;
@@ -1569,15 +1598,6 @@ int main (int argc, char *argv[])
 	  if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
 	  //            MSPlot["NbOfElectronsInit"]->Fill(init_electrons.size(), datasets[d], true, Luminosity*globalScaleFactor );
 	  
-	  
-	  /*
-	    for (Int_t initel =0; initel < init_electrons.size(); initel++ )
-	    {
-	    float initreliso = ElectronRelIso(init_electrons[initel], rho);
-	    MSPlot["InitElectronPt"]->Fill(init_electrons[initel]->Pt(), datasets[d], true, Luminosity*globalScaleFactor);
-	      
-	    }
-	  */
 	    
 
 
@@ -1623,6 +1643,7 @@ int main (int argc, char *argv[])
 	  if (applyTriggers)
 	    {
 	      trigger->checkAvail(currentRun, datasets, d, &treeLoader, event, printTriggers);
+	      //treeLoader.ListTriggers(currentRun,0);
 	      trigged = trigger->checkIfFired();
 
 	      // only if ttbarenriched we had the cross trigger
@@ -1632,6 +1653,11 @@ int main (int argc, char *argv[])
 	      }
         
 	      if (trigged) {
+		//fill ntuple
+		triggers_container.fill(0);
+		for(int iter_trig=0; iter_trig<trigger->triggerList.size() && iter_trig<200; iter_trig++){
+			triggers_container[iter_trig] = trigger->triggermap.find(trigger->triggerList[iter_trig])->second.second;
+		}
 		// trigged
 		histo1D["h_cutFlow"]->Fill(1., 1);
 		if (debug)cout << "event " << ievt << " was Trigged!!" << endl;
@@ -1656,6 +1682,8 @@ int main (int argc, char *argv[])
 	  //  Pile up Scale Factor
 	  ///////////////////////////////////////////
 
+
+	  
 	  double lumiWeight_down = LumiWeights_down_.ITweight( npu ); // simplest reweighting, just use reconstructed number of PV.
 	  double lumiWeight = LumiWeights_.ITweight( npu ); 
 	  double lumiWeight_up = LumiWeights_up_.ITweight( npu ); 
@@ -1665,6 +1693,8 @@ int main (int argc, char *argv[])
 	  evt_puSF_up = lumiWeight_up;
 	  
 	  if (isData) evt_puSF = evt_puSF_pc = 1;
+
+
 
 	  ///////////////////////
 	  // JER smearing
@@ -1701,8 +1731,8 @@ int main (int argc, char *argv[])
 	  if (debug)cout<<"Getting Muons"<<endl;
 
 	  // different iso 
-	  selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, true, true); // id and iso 
-	  if (looseIso && antiIso && bbmu) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, 1.5, true, true); // id and iso
+	  selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, mu_iso_cut, false, true); // id and iso 
+	  if (looseIso && antiIso && bbmu) selectedMuons = selection.GetSelectedDisplacedMuons(mu_pt_cut, mu_eta_cut, 1.5, false, false); // id and iso
 
 
 	  // make extra collections of muons for the synch exercise
@@ -1714,13 +1744,13 @@ int main (int argc, char *argv[])
 	  if (debug)cout<<"Getting Electrons"<<endl;
 
 	  // different iso 
-	  selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, true, true);// pt, eta, id, iso
-	  if (looseIso && antiIso && bbel) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, true, true);// pt, eta, id, iso 
+	  selectedElectrons = selection.GetSelectedElectrons(el_pt_cut, el_eta_cut, "Tight", "Spring16_80X", false, true);// pt, eta, id, iso
+	  if (looseIso && antiIso && bbel) selectedElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, 1.5, 1.5, false, false);// pt, eta, id, iso 
 
 
 	  // make extra collection of muons for the synch exercise
-	  KynElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, false);// pt, eta
-	  KynIdElectrons = selection.GetSelectedDisplacedElectrons(el_pt_cut, el_eta_cut, el_relIsoB_cut, el_relIsoEC_cut, false, true);// pt, eta, id
+	  KynElectrons = selection.GetSelectedElectrons(el_pt_cut, el_eta_cut, "Tight", "Spring16_80X", true, true);// pt, eta
+	  KynIdElectrons = selection.GetSelectedElectrons(el_pt_cut, el_eta_cut, "Tight", "Spring16_80X", true, true);// pt, eta, id
 
 
 
@@ -1742,15 +1772,15 @@ int main (int argc, char *argv[])
 
 	  }
 
-	  if (antiIso && bbmu){
-	    // remove isolated muons
-	    for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
-	      if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15  ){
-		selectedMuons[i_mu]= selectedMuons.back();
-		selectedMuons.pop_back();
-	      }
-	    }
-	  }
+	  //if (antiIso && bbmu){
+	  //  // remove isolated muons
+	  //  for (int i_mu = selectedMuons.size()-1; i_mu >= 0 ; i_mu-- ){
+	  //    if ( selectedMuons[i_mu]->relPfIso(4,0.5) < 0.15  ){
+	  //      selectedMuons[i_mu]= selectedMuons.back();
+	  //      selectedMuons.pop_back();
+	  //    }
+	  //  }
+	  //}
 
 	  // eo antiIso
 
@@ -1947,7 +1977,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////////
-	  // Electron related variables //
+	  // Electron Based Plots //
 	  //////////////////////////
 	  if (debug) cout << "before electrons loop" << endl;
 
@@ -2072,7 +2102,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////
-	  // Muon related variables //
+	  // Muon Based Plots //
 	  //////////////////////
 	    
 	  nMuons=0;
@@ -2106,12 +2136,35 @@ int main (int argc, char *argv[])
 	      relIso_muon[nMuons]=(selectedMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedMuons[selmu]->neutralHadronIso(4) + selectedMuons[selmu]->photonIso(4) - 0.5*selectedMuons[selmu]->puChargedHadronIso(4) ) ) / selectedMuons[selmu]->Pt();
 	      //	      relIso_muon[nMuons]=selectedMuons[selmu]->relPfIso(4,0.5)
 	      charge_muon[nMuons]=selectedMuons[selmu]->charge();
-	      sf_iso_down_muon[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), -1.);
-	      sf_iso_muon[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
-	      sf_iso_up_muon[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 1.);
-	      sf_id_down_muon[nMuons]= muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), -1.);
-	      sf_id_muon[nMuons]= muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
-	      sf_id_up_muon[nMuons]= muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 1.);
+	      //sf_iso_down_muon[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), -1.);
+	      //sf_iso_muon[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
+	      //sf_iso_up_muon[nMuons]=muonSFWeightIso_TT_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 1.);
+	      //sf_id_down_muon[nMuons]= muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), -1.);
+	      //sf_id_muon[nMuons]= muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
+	      //sf_id_up_muon[nMuons]= muonSFWeightID_T_->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 1.);
+              
+                auto MuonTrackSF = h_muonSFWeightTrack->Eval(selectedMuons[0]->Eta());
+                
+                auto W_MuonIsoSF_BCDEF = muonSFWeightIso_BCDEF->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), 0)*Constant::lum_RunsBCDEF;
+                auto W_MuonIsoSF_GH    = muonSFWeightIso_GH->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), 0)*Constant::lum_RunsGH;
+                sf_iso_muon[nMuons]    = (W_MuonIsoSF_BCDEF + W_MuonIsoSF_GH)/(Constant::lum_RunsGH+Constant::lum_RunsBCDEF);
+                auto W_MuonIsoSF_BCDEF_up = muonSFWeightIso_BCDEF->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), 1)*Constant::lum_RunsBCDEF;
+                auto W_MuonIsoSF_GH_up    = muonSFWeightIso_GH->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), 1)*Constant::lum_RunsGH;
+                sf_iso_up_muon[nMuons]    = (W_MuonIsoSF_BCDEF_up + W_MuonIsoSF_GH_up)/(Constant::lum_RunsGH+Constant::lum_RunsBCDEF);
+                auto W_MuonIsoSF_BCDEF_dw = muonSFWeightIso_BCDEF->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), -1)*Constant::lum_RunsBCDEF;
+                auto W_MuonIsoSF_GH_dw    = muonSFWeightIso_GH->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), -1)*Constant::lum_RunsGH;
+                sf_iso_down_muon[nMuons]    = (W_MuonIsoSF_BCDEF_dw + W_MuonIsoSF_GH_dw)/(Constant::lum_RunsGH+Constant::lum_RunsBCDEF);
+                
+                auto W_MuonIDSF_BCDEF = muonSFWeightID_BCDEF->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), 0)*Constant::lum_RunsBCDEF;
+                auto W_MuonIDSF_GH    = muonSFWeightID_GH->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), 0)*Constant::lum_RunsGH;
+                sf_id_muon[nMuons]    = (W_MuonIDSF_BCDEF + W_MuonIDSF_GH)/(Constant::lum_RunsGH+Constant::lum_RunsBCDEF) * MuonTrackSF;
+                auto W_MuonIDSF_BCDEF_up = muonSFWeightID_BCDEF->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), 1)*Constant::lum_RunsBCDEF;
+                auto W_MuonIDSF_GH_up    = muonSFWeightID_GH->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), 1)*Constant::lum_RunsGH;
+                sf_id_up_muon[nMuons]    = (W_MuonIDSF_BCDEF_up + W_MuonIDSF_GH_up)/(Constant::lum_RunsGH+Constant::lum_RunsBCDEF) * MuonTrackSF;
+                auto W_MuonIDSF_BCDEF_dw = muonSFWeightID_BCDEF->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), -1)*Constant::lum_RunsBCDEF;
+                auto W_MuonIDSF_GH_dw    = muonSFWeightID_GH->at(selectedMuons[0]->Eta(), selectedMuons[0]->Pt(), -1)*Constant::lum_RunsGH;
+                sf_id_down_muon[nMuons]    = (W_MuonIDSF_BCDEF_dw + W_MuonIDSF_GH_dw)/(Constant::lum_RunsGH+Constant::lum_RunsBCDEF) * MuonTrackSF;
+              
 	      // global sf
 	      sf_muon[nMuons]= sf_iso_muon[nMuons] * sf_id_muon[nMuons];
 	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon[nMuons] << endl;
@@ -2121,7 +2174,7 @@ int main (int argc, char *argv[])
 
 
 	  /////////////////////////
-	  // MuonPairs related variables //
+	  // MuonPairs Plots //
 	  /////////////////////////
 	  nMuonPairs=0; 
           for (Int_t secondMu = nMuons-1; secondMu > 0; secondMu-- ) 
@@ -2148,7 +2201,7 @@ int main (int argc, char *argv[])
 
 
 	  /////////////////////////////
-	  // Jets related variables /////////
+	  // Jets Based Plots /////////
 	  /////////////////////////////
 
 	  nJets = 0;
@@ -2163,7 +2216,7 @@ int main (int argc, char *argv[])
 	    }
 
 	  /////////////////////////////
-	  // Bjets related variables ////////
+	  // Bjets Based Plots ////////
 	  /////////////////////////////
 
 	  nBjets = 0;
@@ -2179,7 +2232,7 @@ int main (int argc, char *argv[])
 
 
 	  ////////////////////////////////////
-	  // bjetJetPairs related variables ////////
+	  // bjetJetPairs Based Plots ////////
 	  ////////////////////////////////////
 	  nBjetJetPairs = 0;
 	  for (Int_t selbjet =0; selbjet < selectedBjets.size() && selbjet < 10 ; selbjet++ ){
@@ -2197,7 +2250,7 @@ int main (int argc, char *argv[])
 
 
 	  /////////////////////////////
-	  // mcParticles related variables //
+	  // mcParticles Based Plots //
 	  /////////////////////////////
 
 	  nMcParticles = 0;
@@ -2237,7 +2290,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////////
-	  // Electron related variables //
+	  // Electron Based Plots //
 	  //////////////////////////
 	  if (debug) cout << "before electrons pc loop" << endl;
 
@@ -2316,7 +2369,7 @@ int main (int argc, char *argv[])
 
 
 	  ///////////////////////////
-	  // ElectronPairs related variables //
+	  // ElectronPairs Based Plots //
 	  ///////////////////////////
 
 	  nElectronPairs_pc=0;
@@ -2345,7 +2398,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////
-	  // Muon related variables //
+	  // Muon Based Plots //
 	  //////////////////////
 	  //	  selectedLooseIsoMuons
 
@@ -2392,7 +2445,7 @@ int main (int argc, char *argv[])
 	    }
 
 	  ///////////////////////////
-	  // MuonPairs related variables //
+	  // MuonPairs Based Plots //
 	  ///////////////////////////
 
 	  nMuonPairs_pc=0;
@@ -2421,7 +2474,7 @@ int main (int argc, char *argv[])
 
 
 	  //////////////////////
-	  // Jets related variables //
+	  // Jets Based Plots //
 	  //////////////////////
 	  if (debug) cout << "before jets loop" << endl;
 
@@ -2437,7 +2490,7 @@ int main (int argc, char *argv[])
 	    }
 
 	  ///////////////////////
-	  // Bjets related variables //
+	  // Bjets Based Plots //
 	  ///////////////////////
 
 	  nBjets_pc=0;
@@ -2453,7 +2506,7 @@ int main (int argc, char *argv[])
 
 
 	  /////////////////////////////
-	  // mcParticles related variables //
+	  // mcParticles Based Plots //
 	  /////////////////////////////
 
 	  //	http://cmslxr.fnal.gov/source/DataFormats/TrackReco/interface/TrackBase.h#0585
@@ -2481,8 +2534,243 @@ int main (int argc, char *argv[])
 	    //	    else cout << "mcParticles[i]->status() is " << mcParticles[i]->status() << endl;
 	  }
 
+
+	    
 	  // eo  assigning values to the precut tree
-	    	    
+	    
+
+
+	  //////////////////////////
+	  // Electron Based Plots //
+	  //////////////////////////
+	  if (debug) cout << "before electrons loop" << endl;
+
+	  /*	    
+	  nElectrons_elel=0;
+	  for (Int_t selel =0; selel < selectedLooseElectrons.size() && selel < 10; selel++ )
+	    {
+	      pt_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->Pt();
+	      phi_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->Phi();
+	      eta_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->Eta();
+	      eta_superCluster_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->superClusterEta();
+	      E_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->E();
+	      vz_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->vz();
+	      v0_electron_elel[nElectrons_elel]=sqrt(pow (selectedLooseElectrons[selel]->vx(),2 )+pow(selectedLooseElectrons[selel]->vy(),2) );
+	      d0_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->d0();
+	      d0BeamSpot_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->d0BeamSpot();
+	      chargedHadronIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->chargedHadronIso(3);
+	      neutralHadronIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->neutralHadronIso(3);
+	      photonIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->photonIso(3);
+	      pfIso_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->relPfIso(3,0);
+	      charge_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->charge();
+	      sigmaIEtaIEta_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->sigmaIEtaIEta();
+	      deltaEtaIn_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->deltaEtaIn();
+	      deltaPhiIn_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->deltaPhiIn();
+	      hadronicOverEm_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->hadronicOverEm();
+	      missingHits_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->missingHits();
+	      passConversion_electron_elel[nElectrons_elel]=selectedLooseElectrons[selel]->passConversion();
+	      // id
+	      isId_electron_elel[nElectrons_elel]=false;
+	      if( fabs(selectedLooseElectrons[selel]->superClusterEta()) <= 1.479
+		  && selectedLooseElectrons[selel]->sigmaIEtaIEta() < 0.0101
+		  && fabs(selectedLooseElectrons[selel]->deltaEtaIn()) < 0.00926
+		  && fabs(selectedLooseElectrons[selel]->deltaPhiIn()) < 0.0336
+		  && selectedLooseElectrons[selel]->hadronicOverEm() < 0.0597
+		  && fabs(1/selectedLooseElectrons[selel]->E() - 1/selectedLooseElectrons[selel]->P()) < 0.012
+		  && selectedLooseElectrons[selel]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
+		  && selectedLooseElectrons[selel]->passConversion()){
+		isId_electron_elel[nElectrons_elel]=true;
+	      }
+	      else if (fabs(selectedLooseElectrons[selel]->superClusterEta()) < 2.5
+		       && selectedLooseElectrons[selel]->sigmaIEtaIEta() < 0.0279
+		       && fabs(selectedLooseElectrons[selel]->deltaEtaIn()) < 0.00724
+		       && fabs(selectedLooseElectrons[selel]->deltaPhiIn()) < 0.0918
+		       && selectedLooseElectrons[selel]->hadronicOverEm() < 0.0615
+		       && fabs(1/selectedLooseElectrons[selel]->E() - 1/selectedLooseElectrons[selel]->P()) < 0.00999
+		       && selectedLooseElectrons[selel]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
+		       && selectedLooseElectrons[selel]->passConversion()){
+		isId_electron_elel[nElectrons_elel]=true;
+	      }
+	      // iso to be checked!!! Make sure what is this function getting! faco
+	      isIso_electron_elel[nElectrons_elel]=false;
+	      if( fabs(selectedLooseElectrons[selel]->superClusterEta()) <= 1.479){
+		if(selectedLooseElectrons[selel]->relPfIso(3,0) < 0.0354) isIso_electron_elel[nElectrons_elel]=true;
+	      }
+	      else if (fabs(selectedLooseElectrons[selel]->superClusterEta()) < 2.5){
+		if(selectedLooseElectrons[selel]->relPfIso(3,0) < 0.0646) isIso_electron_elel[nElectrons_elel]=true;
+	      }
+		
+	      isEBEEGap_elel[nElectrons_elel]=selectedLooseElectrons[selel]->isEBEEGap();
+	      sf_electron_elel[nElectrons_elel]=electronSFWeight_->at(selectedLooseElectrons[selel]->Eta(),selectedLooseElectrons[selel]->Pt(),0);
+	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron_elel[nElectrons_elel] << endl;
+	      nElectrons_elel++;
+            }
+
+
+	  //////////////////////
+	  // Muon Based Plots //
+	  //////////////////////
+	    
+	  nMuons_elel=0;
+	  for (Int_t selmu =0; selmu < selectedLooseMuons.size() && selmu < 10; selmu++ )
+            {
+	      pt_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->Pt();
+	      phi_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->Phi();
+	      eta_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->Eta();
+	      E_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->E();
+	      d0_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->d0();
+	      d0BeamSpot_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->d0BeamSpot();
+	      chargedHadronIso_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->chargedHadronIso(4);
+	      neutralHadronIso_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->neutralHadronIso(4);
+	      photonIso_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->photonIso(4);
+	      // id
+	      isId_muon_elel[nMuons_elel]=false;
+	      if( selectedLooseMuons[selmu]->isGlobalMuon() && selectedLooseMuons[selmu]->isPFMuon()
+		  && selectedLooseMuons[selmu]->chi2() < 10
+		  && selectedLooseMuons[selmu]->nofTrackerLayersWithMeasurement() > 5
+		  &&  selectedLooseMuons[selmu]->nofValidMuHits() > 0
+		  && selectedLooseMuons[selmu]->nofValidPixelHits() > 0 //no more in the twiki (https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Tight_Muon)
+		  && selectedLooseMuons[selmu]->nofMatchedStations()> 1){
+		isId_muon_elel[nMuons_elel]=true;
+	      }
+	      //iso
+	      isIso_muon_elel[nMuons_elel]=false;
+	      if ( (selectedLooseMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedLooseMuons[selmu]->neutralHadronIso(4) + selectedLooseMuons[selmu]->photonIso(4) - 0.5*selectedLooseMuons[selmu]->puChargedHadronIso(4) ) ) / selectedLooseMuons[selmu]->Pt() < mu_iso_cut ) isIso_muon_elel[nMuons_elel]=true;
+	      pfIso_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->relPfIso(4,0);
+	      charge_muon_elel[nMuons_elel]=selectedLooseMuons[selmu]->charge();
+	      sf_muon_elel[nMuons_elel]=muonSFWeightIso_TT->at(selectedLooseMuons[selmu]->Eta(), selectedLooseMuons[selmu]->Pt(), 0)* muonSFWeightID_T->at(selectedLooseMuons[selmu]->Eta(), selectedLooseMuons[selmu]->Pt(), 0);
+	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon_elel[nMuons_elel] << endl;
+	      nMuons_elel++;
+
+	    }
+	    
+	  */
+
+
+	  // eo assigning values to the elel tree
+
+
+
+	  // bo assigning values to the mumu tree
+	    
+	  /*
+
+	  nElectrons_mumu=0;
+	  for (Int_t selel =0; selel < selectedLooseElectrons.size() && selel < 10; selel++ )
+	    {
+	      pt_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->Pt();
+	      phi_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->Phi();
+	      eta_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->Eta();
+	      eta_superCluster_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->superClusterEta();
+	      E_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->E();
+	      d0_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->d0();
+	      d0BeamSpot_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->d0BeamSpot();
+	      chargedHadronIso_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->chargedHadronIso(3);
+	      neutralHadronIso_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->neutralHadronIso(3);
+	      photonIso_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->photonIso(3);
+	      pfIso_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->relPfIso(3,0);
+	      charge_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->charge();
+	      sigmaIEtaIEta_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->sigmaIEtaIEta();
+	      deltaEtaIn_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->deltaEtaIn();
+	      deltaPhiIn_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->deltaPhiIn();
+	      hadronicOverEm_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->hadronicOverEm();
+	      missingHits_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->missingHits();
+	      passConversion_electron_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->passConversion();
+	      // id
+	      isId_electron_mumu[nElectrons_mumu]=false;
+	      if( fabs(selectedLooseElectrons[selel]->superClusterEta()) <= 1.479
+		  && selectedLooseElectrons[selel]->sigmaIEtaIEta() < 0.0101
+		  && fabs(selectedLooseElectrons[selel]->deltaEtaIn()) < 0.00926
+		  && fabs(selectedLooseElectrons[selel]->deltaPhiIn()) < 0.0336
+		  && selectedLooseElectrons[selel]->hadronicOverEm() < 0.0597
+		  && fabs(1/selectedLooseElectrons[selel]->E() - 1/selectedLooseElectrons[selel]->P()) < 0.012
+		  && selectedLooseElectrons[selel]->missingHits() <= 2 // check wrt to expectedMissingInnerHits        
+		  && selectedLooseElectrons[selel]->passConversion()){
+		isId_electron_mumu[nElectrons_mumu]=true;
+	      }
+	      else if (fabs(selectedLooseElectrons[selel]->superClusterEta()) < 2.5
+		       && selectedLooseElectrons[selel]->sigmaIEtaIEta() < 0.0279
+		       && fabs(selectedLooseElectrons[selel]->deltaEtaIn()) < 0.00724
+		       && fabs(selectedLooseElectrons[selel]->deltaPhiIn()) < 0.0918
+		       && selectedLooseElectrons[selel]->hadronicOverEm() < 0.0615
+		       && fabs(1/selectedLooseElectrons[selel]->E() - 1/selectedLooseElectrons[selel]->P()) < 0.00999
+		       && selectedLooseElectrons[selel]->missingHits() <= 1 // check wrt to expectedMissingInnerHits  
+		       && selectedLooseElectrons[selel]->passConversion()){
+		isId_electron_mumu[nElectrons_mumu]=true;
+	      }
+	      // iso to be checked!!! Make sure what is this function getting! faco
+	      isIso_electron_mumu[nElectrons_mumu]=false;
+	      if( fabs(selectedLooseElectrons[selel]->superClusterEta()) <= 1.479){
+		if(selectedLooseElectrons[selel]->relPfIso(3,0) < 0.0354) isIso_electron_mumu[nElectrons_mumu]=true;
+	      }
+	      else if (fabs(selectedLooseElectrons[selel]->superClusterEta()) < 2.5){
+		if(selectedLooseElectrons[selel]->relPfIso(3,0) < 0.0646) isIso_electron_mumu[nElectrons_mumu]=true;
+	      }
+		
+	      isEBEEGap_mumu[nElectrons_mumu]=selectedLooseElectrons[selel]->isEBEEGap();
+	      // following code found in http://cmslxr.fnal.gov/source/RecoEgamma/PhotonIdentification/src/PhotonIsolationCalculator.cc#0520
+	
+	      
+
+		isEBEEGap_mumu[nElectrons_mumu] = false;
+		Double_t eta =  eta_superCluster_electron_mumu[nElectrons_mumu];
+		Double_t feta = fabs(eta);
+		if (fabs(feta-1.479)<0.1) isEBEEGap_mumu[nElectrons_mumu] = true ;
+
+	      sf_electron_mumu[nElectrons_mumu]=electronSFWeight_->at(selectedLooseElectrons[selel]->Eta(),selectedLooseElectrons[selel]->Pt(),0);
+	      if (debug) cout << "in electrons loops, nelectrons equals to " << nElectrons << " and pt equals to " << pt_electron_mumu[nElectrons_mumu] << endl;
+	      nElectrons_mumu++;
+            }
+
+
+	  //////////////////////
+	  // Muon Based Plots //
+	  //////////////////////
+	    
+	  nMuons_mumu=0;
+	  for (Int_t selmu =0; selmu < selectedMuons.size() && selmu < 10; selmu++ )
+            {
+	      pt_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->Pt();
+	      phi_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->Phi();
+	      eta_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->Eta();
+	      E_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->E();
+	      vz_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->vz();
+	      v0_muon_mumu[nMuons_mumu]=sqrt( pow(selectedMuons[selmu]->vx(), 2) + pow(selectedMuons[selmu]->vy(), 2) );
+	      d0_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->d0();
+	      d0BeamSpot_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->d0BeamSpot();
+	      chargedHadronIso_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->chargedHadronIso(4);
+	      neutralHadronIso_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->neutralHadronIso(4);
+	      photonIso_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->photonIso(4);
+	      // id
+	      isId_muon_mumu[nMuons_mumu]=false;
+	      if( selectedMuons[selmu]->isGlobalMuon() && selectedMuons[selmu]->isPFMuon()
+		  && selectedMuons[selmu]->chi2() < 10
+		  && selectedMuons[selmu]->nofTrackerLayersWithMeasurement() > 5
+		  &&  selectedMuons[selmu]->nofValidMuHits() > 0
+		  && selectedMuons[selmu]->nofValidPixelHits() > 0 //no more in the twiki (https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Tight_Muon)
+		  && selectedMuons[selmu]->nofMatchedStations()> 1){
+		isId_muon_mumu[nMuons_mumu]=true;
+	      }
+	      //iso
+	      isIso_muon_mumu[nMuons_mumu]=false;
+	      if ( (selectedMuons[selmu]->chargedHadronIso(4) + max( 0.0, selectedMuons[selmu]->neutralHadronIso(4) + selectedMuons[selmu]->photonIso(4) - 0.5*selectedMuons[selmu]->puChargedHadronIso(4) ) ) / selectedMuons[selmu]->Pt() < mu_iso_cut ) isIso_muon_mumu[nMuons_mumu]=true;
+	      pfIso_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->relPfIso(4,0); // check wrt formula!!! faco
+	      charge_muon_mumu[nMuons_mumu]=selectedMuons[selmu]->charge();
+	      sf_muon_mumu[nMuons_mumu]=muonSFWeightIso_TT->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0)* muonSFWeightID_T->at(selectedMuons[selmu]->Eta(), selectedMuons[selmu]->Pt(), 0);
+	      if (debug) cout << "in muons loops, nmuons equals to " << nMuons << " and pt equals to " << pt_muon_mumu[nMuons_mumu] << endl;
+	      nMuons_mumu++;
+
+	    }
+
+
+
+	    
+	  */
+	  
+	  // eo assigning values to the elel tree
+
+	  
+	    
 	    
 	  float nvertices = vertex.size();
 	  float normfactor = datasets[d]->NormFactor();
@@ -2997,7 +3285,7 @@ int main (int argc, char *argv[])
 		  
 		  // debug cout
 		  if ( debug && charge_electron[0] * charge_electron[1] != -1){
-		    cout << "charge requirement failled!!! Charge product = " << charge_electron[0] * charge_electron[1] << endl;
+		    cout << "charger requirement failled!!! Charge product = " << charge_electron[0] * charge_electron[1] << endl;
 		  }
 
 
@@ -3266,6 +3554,9 @@ int main (int argc, char *argv[])
 	}
 	
       if (debug) cout << "Done writing the Tree" << endl;
+      
+      booktup->Write();
+      
       fout->Write();   
       fout->Close();
 
@@ -3275,7 +3566,7 @@ int main (int argc, char *argv[])
       //      cout <<"n events with at least two id and iso electrons with pt > "+el_pt_cut_str+" GeV is  =  "<< passed_elel <<endl;
       //      cout <<"n events with at least two id and iso muons with pt > "+mu_pt_cut_str+" GeV is  =  "<< passed_mumu <<endl;
       cout << "Event Count: " << eventCount << endl;
-      cout << "Number of event skipped because they failled the trigger requirement is " << skippedEvent << endl;
+      cout << "Number of event skipped because they failed the trigger requirement is " << skippedEvent << endl;
       cout << "The trigger efficiency is " << eventCount-skippedEvent << "/" << eventCount << " = "  << 100.0*(eventCount-skippedEvent)/eventCount << " % " << endl;
       if (ttbarEnriched){
 	cout << "The number of events that pass both triggers is " << passedBothTrig << "/" << eventCount << " = "  << 100.0*(passedBothTrig)/eventCount << " % " << endl;
