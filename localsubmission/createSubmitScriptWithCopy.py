@@ -29,10 +29,11 @@ date = dd+"_"+mm+"_"+yyyy
 #channels = ["bbEl"] 
 #channels = ["bbMu"] 
 #channels = ["bbEl","bbMu"]
-channels = ["MuMu","ElEl"] 
+#channels = ["MuMu","ElEl"] 
 #channels = ["ElMu"] 
 
-#channels = ["MuMu"] 
+#channels = ["MuMu","ElEl"] 
+channels = ["MuMu"] 
 #channels = ["ElEl"] 
 #channels=["test"]
 
@@ -42,44 +43,43 @@ channels = ["MuMu","ElEl"]
 
 
 # array of btagWP, default is loose
-btagWPs = ["None"]
+btagWPs = [""]
 
 
 bigSub = open ("bigSub" + date +".txt", 'a')
-
-
-
-# xml file to load
-xmlFile = ""
 
 # loop over channels
 for chan in channels:
     print "\nSearching list of sample used for ", chan, " channel!"
     # getting the appropriate xml file
     if chan == "MuMu":
-        xmlFile = '../config/MuMuV4.xml'
+        #tree = ET.ElementTree(file='../config/TreeProc_MuMu.xml')
+        tree = ET.ElementTree(file='../config/MuMu_v9.xml')
+        #tree = ET.ElementTree(file='../config/MuMu_dataonly.xml')
+        btagWPs = ["None"]
     elif chan == "ElEl":
-        xmlFile = '../config/ElElV4.xml'
+        #tree = ET.ElementTree(file='../config/TreeProc_ElEl.xml')
+        tree = ET.ElementTree(file='../config/ElEl.xml')
+        #tree = ET.ElementTree(file='../config/ElEl_dataonly.xml')
+        btagWPs = ["None"]
     elif chan == "ElMu":
-        xmlFile = '../config/ElMuV0.xml'
+#        tree = ET.ElementTree(file='../config/ElMuV0.xml')
+#        tree = ET.ElementTree(file='../config/DisplacedTopsSignal.xml')
+        tree = ET.ElementTree(file='../config/DisplacedTopsSignal_76XV3.xml')
     elif chan ==  "bbEl":
-        xmlFile = '../config/bbElV4.xml'
+        tree = ET.ElementTree(file='../config/ElEl.xml')
         btagWPs = ["Loose", "Medium", "Tight"]
     elif chan == "bbMu":
-        xmlFile = '../config/bbMuV4.xml'
+        tree = ET.ElementTree(file='../config/MuMu.xml')
         btagWPs = ["Loose", "Medium", "Tight"]
     elif chan == "ttElEl" or chan == "ttMuMu" : # same list of samples for two different channels
-        xmlFile = '../config/ttLeptonsV4.xml'
+#        print "using config ../config/ttLeptonsV4.xml"
+        tree = ET.ElementTree(file='../config/ttLeptonsV4.xml')
     elif chan == "test" :
-        xmlFile =='../config/test.xml'
+        tree = ET.ElementTree(file='../config/test.xml')
     else:
         print "Channel '", chan , "' is not a correct channel name. No tree has been loaded!"
         sys.exit()
-
-    # load the tree
-    print "the xml file used is " , xmlFile
-    tree = ET.ElementTree(file = xmlFile)
-
         
 
     root = tree.getroot()
@@ -123,17 +123,18 @@ for chan in channels:
     
         # loop over all the dataset with add="1"
         for d in datasets:
-            if d.attrib['add'] == '1' and "Data" in d.attrib['title']:
+            if d.attrib['add'] == '1':
                 print "found dataset to be added..." + str(d.attrib['name'])
                 commandString = "./TreeMaker "+str(d.attrib['name'])+" "+str(d.attrib['title'])+" "+str(d.attrib['add'])+" "+str(d.attrib['color'])+" "+str(d.attrib['ls'])+" "+str(d.attrib['lw'])+" "+str(d.attrib['normf'])+" "+str(d.attrib['EqLumi'])+" "+str(d.attrib['xsection'])+" "+str(d.attrib['PreselEff'])
                 topTrees = glob.glob(d.attrib['filenames'])
-#                print topTrees
     
                 # setting the number of file per job depending whether it is data sample or not
                 # this ca be tweaked
-                if "Data" in str(d.attrib['name']):
-                    FilePerJob=75
-                else:
+                if "data" in str(d.attrib['name']).lower():
+                    FilePerJob=10
+                elif "DY" in str(d.attrib['name']):
+		    FilePerJob=15
+		else:
                     FilePerJob=3
     
                 # create a test job for each dataset
@@ -159,7 +160,6 @@ for chan in channels:
                     # Combine multiple root files in a single job
                     listOfFiles.append(topTrees[f])
                     CopyCmdlistOfFiles.append("dccp dcap://maite.iihe.ac.be:"+topTrees[f]+" /$TMPDIR/TOPTREE_"+str(f)+".root")
-#                    CopyCmdlistOfFiles.append("dccp "+topTrees[f]+" /$TMPDIR/TOPTREE_"+str(f)+".root")
                     listOfScratchFiles.append(" /scratch/$PBS_JOBID/TOPTREE_"+str(f)+".root")
                     listOfTmpDirFiles.append(" /$TMPDIR/TOPTREE_"+str(f)+".root")
                     
@@ -206,7 +206,7 @@ for chan in channels:
     
                         # run on the files
                         print >> outfile, "# now run on the file copied under /$TMPDIR/ "
-                        print >> outfile, commandString, scractFiles_str , " ", chan , " " , btagWP, " ",  str(N_job+1) , " 0" , " 2000000" 
+                        print >> outfile, commandString, scractFiles_str , " ", chan , " " , btagWP, " ",  str(N_job+1) , " 0" , " 20000000" 
     
                         # cleaning
                         listOfFiles=[]
